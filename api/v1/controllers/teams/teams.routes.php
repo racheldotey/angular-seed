@@ -9,26 +9,44 @@ class TeamRoutes {
         
         $app->group('/team', $authenticateForRole('registered-user'), function () use ($app) {
             
+            /*
+             * id
+             */
             $app->map("/get/:teamId/", function ($teamId) use ($app) {
                 TeamController::getTeam($app, $teamId);
             })->via('GET', 'POST');
 
+            /*
+             * name
+             */
             $app->post("/insert/", function () use ($app) {
                 TeamController::addTeam($app);
             });
 
-            $app->post("/member/add/", function () use ($app) {
-                TeamController::addTeamMember($app);
-            });
-
-            $app->post("/member/remove/", function () use ($app) {
-                TeamController::removeTeamMember($app);
-            });
-
+            /*
+             * id
+             */
             $app->post("/update/:teamId/", function ($teamId) use ($app) {
                 TeamController::saveTeam($app, $teamId);
             });
 
+            /*
+             * id, name
+             */
+            $app->post("/member/add/", function () use ($app) {
+                TeamController::addTeamMember($app);
+            });
+
+            /*
+             * id
+             */
+            $app->post("/member/remove/", function () use ($app) {
+                TeamController::removeTeamMember($app);
+            });
+
+            /*
+             * id
+             */
             $app->map("/delete/:teamId/", function ($teamId) use ($app) {
                 TeamController::deleteTeam($app, $teamId);
             })->via('DELETE', 'POST');
