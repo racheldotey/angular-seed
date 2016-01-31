@@ -58,6 +58,52 @@ class TeamController {
         }
     }
     
+    static function addTeamMember($app) {
+        if(!v::key('teamId', v::intVal())->validate($app->request->post()) || 
+           !v::key('userId', v::intVal())->validate($app->request->post())) {
+            return $app->render(400, array('msg' => 'Add team member failed. Check your parameters and try again.'));
+        }
+        
+        if(TeamData::isUserATeamMember(array(
+            ':team_id' => $app->request->post('teamId'), 
+            ':user_id' => $app->request->post('userId')
+        ))) {
+            return $app->render(400, array('msg' => 'User is already a member of this team'));
+        }
+        
+        $saved = TeamData::addTeamMember(array(
+            ':team_id' => $app->request->post('teamId'), 
+            ':user_id' => $app->request->post('userId'),
+            ":added_by" => APIAuth::getUserId()
+        ));
+        
+        if($saved) {
+            $team = TeamData::getTeam($app->request->post('teamId'));
+            return $app->render(200, array('msg' => 'Team member successfully added.', 'team' => $team));
+        } else {
+            return $app->render(400,  array('msg' => 'Could not add team member.'));
+        }
+    }
+    
+    static function removeTeamMember($app) {
+        if(!v::key('teamId', v::intVal())->validate($app->request->post()) || 
+           !v::key('userId', v::intVal())->validate($app->request->post())) {
+            return $app->render(400, array('msg' => 'Remove team member failed. Check your parameters and try again.'));
+        }
+        
+        $saved = TeamData::deleteTeamMember(array(
+            ':team_id' => $app->request->post('teamId'), 
+            ':user_id' => $app->request->post('userId')
+        ));
+        
+        if($saved) {
+            $team = TeamData::getTeam($app->request->post('teamId'));
+            return $app->render(200, array('msg' => 'Team member successfully removed.', 'team' => $team));
+        } else {
+            return $app->render(400,  array('msg' => 'Could not remove team member team.'));
+        }
+    }
+    
     static function deleteTeam($app, $teamId) {
         if(!v::intVal()->validate($teamId)) {
             return $app->render(400,  array('msg' => 'Could not delete team. Check your parameters and try again.'));
