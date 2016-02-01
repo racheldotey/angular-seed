@@ -25,14 +25,16 @@ class GameController {
         }
         $validGame = array(
             ":name" => $app->request->post('name'),
-            ":venueId" => $app->request->post('venueId'),
-            ":hostId" => $app->request->post('hostId'),
+            ":venue_id" => $app->request->post('venueId'),
+            ":host_user_id" => $app->request->post('hostId'),
             ":scheduled" => $app->request->post('scheduled'),
-            ":created_user_id" => APIAuth::getUserId()
+            ":created_user_id" => APIAuth::getUserId(),
+            ":last_updated_by" => APIAuth::getUserId()
         );
         
-        $game = GameData::insertGame();
-        if($game) {
+        $gameId = GameData::insertGame($validGame);
+        if($gameId) {
+            $game = GameData::getGame($gameId);
             return $app->render(200, array('game' => $game));
         } else {
             return $app->render(400,  array('msg' => 'Could not add game.'));
@@ -40,7 +42,8 @@ class GameController {
     }
     
     static function saveGame($app, $gameId) {
-        if(!v::key('name', v::stringType()->length(1,255))->validate($app->request->post()) ||
+        if(!v::intVal()->validate($gameId) ||
+            !v::key('name', v::stringType()->length(1,255))->validate($app->request->post()) ||
             !v::key('venueId', v::intVal())->validate($app->request->post()) || 
             !v::key('hostId', v::intVal())->validate($app->request->post()) || 
             !v::key('scheduled', v::stringType())->validate($app->request->post())) {
@@ -50,17 +53,54 @@ class GameController {
         $validGame = array(
             ":id" => $gameId,
             ":name" => $app->request->post('name'),
-            ":venueId" => $app->request->post('venueId'),
-            ":hostId" => $app->request->post('hostId'),
+            ":venue_id" => $app->request->post('venueId'),
+            ":host_user_id" => $app->request->post('hostId'),
             ":scheduled" => $app->request->post('scheduled'),
             ":last_updated_by" => APIAuth::getUserId()
         );
         
-        $game = GameData::updateGame($validGame);
-        if($game) {
+        $saved = GameData::updateGame($validGame);
+        if($saved) {
+            $game = GameData::getGame($gameId);
             return $app->render(200, array('game' => $game));
         } else {
             return $app->render(400,  array('msg' => 'Could not update game.'));
+        }
+    }
+    
+    static function startGame($app, $gameId) {
+        if(!v::intVal()->validate($gameId)) {
+            return $app->render(400,  array('msg' => 'Start game failed. Could not find game.'));
+        }
+        
+        $saved = GameData::updateStartGame(array(
+            ":id" => $gameId,
+            ":last_updated_by" => APIAuth::getUserId()
+        ));
+        
+        if($saved) {
+            $game = GameData::getGame($gameId);
+            return $app->render(200, array('game' => $game));
+        } else {
+            return $app->render(400,  array('msg' => 'System failed to start game.'));
+        }
+    }
+    
+    static function endGame($app, $gameId) {
+        if(!v::intVal()->validate($gameId)) {
+            return $app->render(400,  array('msg' => 'End game failed. Could not find game.'));
+        }
+        
+        $saved = GameData::updateEndGame(array(
+            ":id" => $gameId,
+            ":last_updated_by" => APIAuth::getUserId()
+        ));
+        
+        if($saved) {
+            $game = GameData::getGame($gameId);
+            return $app->render(200, array('game' => $game));
+        } else {
+            return $app->render(400,  array('msg' => 'System failed to end game.'));
         }
     }
     

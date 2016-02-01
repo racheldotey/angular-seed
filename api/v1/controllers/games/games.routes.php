@@ -9,26 +9,44 @@ class GameRoutes {
         
         $app->group('/game', $authenticateForRole('registered-user'), function () use ($app) {
             
+            /*
+             * id
+             */
             $app->map("/get/:gameId/", function ($gameId) use ($app) {
                 GameController::getGame($app, $gameId);
             })->via('GET', 'POST');
 
+            /*
+             * name, venueId, hostId, scheduled
+             */
             $app->post("/insert/", function () use ($app) {
                 GameController::addGame($app);
             });
 
+            /*
+             * id, name, venueId, hostId, scheduled
+             */
             $app->post("/update/:gameId/", function ($gameId) use ($app) {
                 GameController::saveGame($app, $gameId);
             });
 
+            /*
+             * id
+             */
             $app->post("/start/:gameId/", function ($gameId) use ($app) {
-                GameController::saveGame($app, $gameId);
+                GameController::startGame($app, $gameId);
             });
 
+            /*
+             * id
+             */
             $app->post("/finish/:gameId/", function ($gameId) use ($app) {
-                GameController::saveGame($app, $gameId);
+                GameController::endGame($app, $gameId);
             });
 
+            /*
+             * id
+             */
             $app->map("/delete/:gameId/", function ($gameId) use ($app) {
                 GameController::deleteGame($app, $gameId);
             })->via('DELETE', 'POST');
