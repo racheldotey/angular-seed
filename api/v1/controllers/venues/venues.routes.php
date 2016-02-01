@@ -9,18 +9,30 @@ class VenueRoutes {
         
         $app->group('/venue', $authenticateForRole('registered-user'), function () use ($app) {
             
+            /*
+             * id
+             */
             $app->map("/get/:venueId/", function ($venueId) use ($app) {
                 VenueController::getVenue($app, $venueId);
             })->via('GET', 'POST');
 
+            /*
+             * 
+             */
             $app->post("/insert/", function () use ($app) {
                 VenueController::addVenue($app);
             });
 
+            /*
+             * id, 
+             */
             $app->post("/update/:venueId/", function ($venueId) use ($app) {
                 VenueController::saveVenue($app, $venueId);
             });
 
+            /*
+             * id
+             */
             $app->map("/delete/:venueId/", function ($venueId) use ($app) {
                 VenueController::deleteVenue($app, $venueId);
             })->via('DELETE', 'POST');
