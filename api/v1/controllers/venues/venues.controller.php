@@ -1,5 +1,5 @@
 <?php namespace API;
-require_once dirname(__FILE__) . '/venue.data.php';
+require_once dirname(__FILE__) . '/venues.data.php';
 require_once dirname(dirname(dirname(__FILE__))) . '/services/api.auth.php';
 
 use \Respect\Validation\Validator as v;
