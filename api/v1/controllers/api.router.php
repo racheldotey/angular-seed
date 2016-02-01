@@ -3,11 +3,13 @@ require_once dirname(dirname(__FILE__)) . '/services/logging.php';  // Logging S
 require_once dirname(__FILE__) . '/auth/auth.routes.php';
 require_once dirname(__FILE__) . '/datatables/datatables.routes.php';
 require_once dirname(__FILE__) . '/field-visibility/fields.routes.php';
+require_once dirname(__FILE__) . '/games/games.routes.php';
 require_once dirname(__FILE__) . '/groups/groups.routes.php';
 require_once dirname(__FILE__) . '/roles/roles.routes.php';
 require_once dirname(__FILE__) . '/system-variables/config.routes.php';
 require_once dirname(__FILE__) . '/teams/teams.routes.php';
 require_once dirname(__FILE__) . '/user/user.routes.php';
+require_once dirname(__FILE__) . '/venues/venues.routes.php';
 
 class ApiRouter {
     
@@ -18,11 +20,13 @@ class ApiRouter {
         AuthRoutes::addRoutes($app, $authenticateForRole);
         DatatableRoutes::addRoutes($app, $authenticateForRole);
         FieldRoutes::addRoutes($app, $authenticateForRole);
+        GameRoutes::addRoutes($app, $authenticateForRole);
         GroupRoutes::addRoutes($app, $authenticateForRole);
         RoleRoutes::addRoutes($app, $authenticateForRole);
         ConfigRoutes::addRoutes($app, $authenticateForRole);
         TeamRoutes::addRoutes($app, $authenticateForRole);
         UserRoutes::addRoutes($app, $authenticateForRole);
+        VenueRoutes::addRoutes($app, $authenticateForRole);
     }
     
     
