@@ -80,6 +80,12 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
                     templateUrl: 'app/views/member/scoreboard/scoreboard.html',
                     controller: 'MemberScoreboardDashboardCtrl'
                 }
+            },
+            resolve: {
+                API: 'ApiRoutesGames',
+                currentGame: function(initUser, API, $stateParams) {
+                    return API.getGame($stateParams.gameId);
+                }
             }
         });
         

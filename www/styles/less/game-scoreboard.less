@@ -1,0 +1,37 @@
+@scoreboardWidth: 320px;
+@scoreboardRowHeight: 54px;
+.game-scoreboard {
+    border: 2px solid black;
+    display: table-row;
+    
+    .teams {
+        width: @scoreboardWidth;
+                                   border: 1px solid red;
+        display: table-cell;
+        
+        .team {
+            height: @scoreboardRowHeight;
+                               border: 1px solid #ccc;
+        }
+    }
+    
+    .game-rounds {
+        display: table-cell;
+                                         border: 1px dotted #ccc;
+            
+        .game-round {
+            width: @scoreboardWidth;
+                               border: 1px solid blue;
+            
+            
+            .score-list {
+                                         border: 1px solid green;
+                .team-score {
+                    height: @scoreboardRowHeight;
+                                         border: 1px solid pink;
+                }
+            }
+        }
+    }
+}
+

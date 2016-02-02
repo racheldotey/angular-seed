@@ -246,6 +246,34 @@ code {
  * 
  * Styles for each area footer that the website may use.
  */
+.game-scoreboard {
+  border: 2px solid black;
+  display: table-row;
+}
+.game-scoreboard .teams {
+  width: 320px;
+  border: 1px solid red;
+  display: table-cell;
+}
+.game-scoreboard .teams .team {
+  height: 54px;
+  border: 1px solid #ccc;
+}
+.game-scoreboard .game-rounds {
+  display: table-cell;
+  border: 1px dotted #ccc;
+}
+.game-scoreboard .game-rounds .game-round {
+  width: 320px;
+  border: 1px solid blue;
+}
+.game-scoreboard .game-rounds .game-round .score-list {
+  border: 1px solid green;
+}
+.game-scoreboard .game-rounds .game-round .score-list .team-score {
+  height: 54px;
+  border: 1px solid pink;
+}
 .store.item-details .page-header {
   margin-top: 0;
 }

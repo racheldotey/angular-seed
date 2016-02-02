@@ -9,6 +9,7 @@
 angular.module('api.v1', [
     'apiRoutes.auth',
     'apiRoutes.datatables',
+    'apiRoutes.games',
     'apiRoutes.users'
 ])
 .factory('ApiService', ['$http', '$httpParamSerializerJQLike', '$q', '$log', 'UserSession',
