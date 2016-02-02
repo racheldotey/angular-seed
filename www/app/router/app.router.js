@@ -62,6 +62,7 @@ var app = angular.module('app.router', [
   'app.error',
   'app.router.admin',
   'app.router.auth',
+  'app.router.host',
   'app.router.member',
   'app.router.public',
   'app.router.store'

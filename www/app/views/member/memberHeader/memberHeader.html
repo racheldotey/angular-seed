@@ -11,13 +11,15 @@
 <div class="collapse navbar-collapse" data-uib-collapse="navbarCollapsed">
     <ul class="nav navbar-nav">
         <li data-ui-sref-active="active"><a data-ui-sref="app.member.dashboard">Dashboard</a></li>
+        <li data-ui-sref-active="active"><a data-ui-sref="app.member.game({'gameId' : 1 })">Game Scoreboard</a></li>
+        <li data-ui-sref-active="active"><a data-ui-sref="app.host.game({'gameId' : 1 })">Host Game Scoreboard</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
         <li data-uib-dropdown data-is-open="userNavDropdownIsOpen">
             <a data-uib-dropdown-toggle>Hi {{userDisplayName}} <b class="caret"></b></a>
             <ul data-uib-dropdown-menu>
                 <li data-ui-sref-active="active"><a data-ui-sref="app.member.profile">Profile</a></li>
-                <li data-ui-sref-active="active"><a data-ui-sref="app.member.settings">Settings</a></li>
+                <li data-ui-sref-active="active"><a data-ui-sref="app.member.profile">Profile</a></li>
                 <li class="divider"></li>
                 <li><a ng-click="logout()">Logout</a></li>
             </ul>

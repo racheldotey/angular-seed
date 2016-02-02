@@ -12,5 +12,6 @@ angular.module('app.member', [
     'app.member.footer',
     'app.member.dashboard',
     'app.member.profile',
+    'app.member.scoreboard',
     'app.member.settings'
 ]);

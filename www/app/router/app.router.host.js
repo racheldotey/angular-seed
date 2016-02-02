@@ -1,7 +1,7 @@
 'use strict';
 
 /*
- * State Declarations: Member / Authenticated
+ * State Declarations: Host / Authenticated
  * 
  * Set up the states for logged in user routes, such as the 
  * user profile page and other authenticated states.
@@ -12,19 +12,19 @@
  * Set auth access for each state.
  */
 
-var app = angular.module('app.router.member', [
+var app = angular.module('app.router.host', [
     'rcAuth.constants',
-    'app.member'
+    'app.host'
 ]);
 app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES) {
 
         /*  Abstract Member (Authenticated) Route */
-        $stateProvider.state('app.member', {
-            url: '',
+        $stateProvider.state('app.host', {
+            url: '/host',
             abstract: true,
             data: {authorizedRoles: USER_ROLES.user},
             views: {
-                'header@app.member': {
+                'header@app.host': {
                     templateUrl: 'app/views/member/memberHeader/memberHeader.html',
                     controller: 'MemberHeaderCtrl'
                 },
@@ -32,53 +32,31 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
                     templateUrl: 'app/views/member/memberLayout/memberLayout.html',
                     controller: 'MemberLayoutCtrl'
                 },
-                'footer@app.member': {
+                'footer@app.host': {
                     templateUrl: 'app/views/member/memberFooter/memberFooter.html',
                     controller: 'MemberFooterCtrl'
                 }
             }
         });
 
-        $stateProvider.state('app.member.dashboard', {
-            title: 'Member Dashboard',
+        $stateProvider.state('app.host.dashboard', {
+            title: 'Host Dashboard',
             url: '/dashboard',
             views: {
-                'content@app.member': {
+                'content@app.host': {
                     templateUrl: 'app/views/member/dashboard/dashboard.html',
                     controller: 'MemberDashboardCtrl'
                 }
             }
         });
-
-        $stateProvider.state('app.member.profile', {
-            title: 'User Profile',
-            url: '/profile',
-            views: {
-                'content@app.member': {
-                    templateUrl: 'app/views/member/profile/profile.html',
-                    controller: 'MemberProfileCtrl'
-                }
-            }
-        });
-
-        $stateProvider.state('app.member.settings', {
-            title: 'User Settings',
-            url: '/settings',
-            views: {
-                'content@app.member': {
-                    templateUrl: 'app/views/member/settings/settings.html',
-                    controller: 'MemberSettingsCtrl'
-                }
-            }
-        });
         
-        $stateProvider.state('app.member.game', {
-            title: 'Game Scoreboard',
+        $stateProvider.state('app.host.game', {
+            title: 'Game Host Scoreboard',
             url: '/game-scoreboard/:gameId',
             views: {
-                'content@app.member': {
-                    templateUrl: 'app/views/member/scoreboard/scoreboard.html',
-                    controller: 'MemberScoreboardDashboardCtrl'
+                'content@app.host': {
+                    templateUrl: 'app/views/host/scoreboard/scoreboard.html',
+                    controller: 'HostScoreboardDashboardCtrl'
                 }
             }
         });
