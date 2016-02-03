@@ -62,7 +62,7 @@ angular.module('apiRoutes.auth', [])
     
     api.postAdditionalInfo = function(user) {
         if(!user.userId ||
-                !(user.triviaLove || user.referrer)) {
+                !(user.triviaLove || user.referrer || user.terms)) {
             return API.reject('Invalid user please verify your information and try again.');
         }
         return API.post('auth/signup/additional/', user, 'System unable to save additional user questions.');

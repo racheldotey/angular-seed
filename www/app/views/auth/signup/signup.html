@@ -1,3 +1,9 @@
+<style>
+    .page.auth.login {
+        
+    }
+</style>
+
 <div class="page auth login">
 
     <div class="row" ng-if="$state.is('app.auth.signup.terms')">
@@ -53,7 +59,7 @@
                 <h3>Tell us about you…</h3>
             </div>
             
-            <form name="form.signup" role="form" class="form-horizontal" novalidate>                
+            <form name="form.signupTwo" role="form" class="form-horizontal" novalidate>    
                 <uib-alert ng-repeat="alert in additionalAlerts" type="{{alert.type}}" close="closeAlert(additionalAlerts, $index)">{{alert.msg}}</uib-alert>
                 
                 <div class="form-group">
@@ -61,25 +67,30 @@
                     <div class="col-xs-12 col-sm-6 col-md-8">
                         <div class="radio">
                             <label>
-                                <input type="radio" ng-model="additionalInfo.triviaLove" value="hot">
+                                <input type="radio" ng-model="additionalInfo.triviaLove" value="hot" required>
                                 I LIVE TRIVIA!
                             </label>
                         </div>
                         <div class="radio">
                             <label>
-                                <input type="radio" ng-model="additionalInfo.triviaLove" value="warm">
+                                <input type="radio" ng-model="additionalInfo.triviaLove" value="warm" required>
                                 Sort Of
                             </label>
                         </div>
                         <div class="radio disabled">
                             <label>
-                                <input type="radio" ng-model="additionalInfo.triviaLove" value="cold">
+                                <input type="radio" ng-model="additionalInfo.triviaLove" value="cold" required>
                                 meh
                             </label>
                         </div>
                     </div>
-                </div>              
-                
+                </div>
+
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" ng-model="additionalInfo.acceptTerms" ng-true-value="true" ng-true-value="false" required> Agree to our terms of <a data-ui-sref="app.auth.signup.terms">terms of service</a>.
+                    </label>
+                </div>
                 
             </form>
 

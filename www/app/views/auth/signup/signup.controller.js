@@ -10,6 +10,14 @@ angular.module('app.auth.signup', [])
         .controller('AuthSignupCtrl', ['$rootScope', '$scope', '$state', '$log', 'AuthService', 'ApiRoutesAuth',
         function ($rootScope, $scope, $state, $log, AuthService, ApiRoutesAuth) {
         
+        
+        if(($state.is('app.auth.signup') || $state.is('app.auth.signup.stepTwo') || $state.is('app.auth.signup.success')) 
+                && typeof($rootScope.newUser) === 'undefined') {
+            $rootScope.newUser = {id:1};
+            //$state.go('app.auth.signup');
+        }
+        
+        
         $scope.$state = $state;
         $scope.form = {};
 
@@ -107,15 +115,22 @@ angular.module('app.auth.signup', [])
         };
         
         $scope.becomeMember = function() {
-            var data = $scope.additionalInfo;
-            data.userId = $rootScope.newUser.id;
-            ApiRoutesAuth.postAdditionalInfo(data).then(function (resp) {
-                $scope.showSuccess("Save successful.", 'additional');
-                $state.go('app.auth.signup.success');
-                $scope.clearAlerts();
-            }, function (err) {
-                $scope.showError(err, 'additional');
-            });
+            
+            if($scope.form.signupTwo.$valid) {
+                var data = $scope.additionalInfo;
+                data.userId = $rootScope.newUser.id;
+                ApiRoutesAuth.postAdditionalInfo(data).then(function (resp) {
+                    $scope.showSuccess("Save successful.", 'additional');
+                    $state.go('app.auth.signup.success');
+                    $scope.clearAlerts();
+                }, function (err) {
+                    $scope.showError(err, 'additional');
+                });
+            
+            } else {
+                $scope.form.signupTwo.$setDirty();
+               $scope.showError('Please answer the question and accept the terms of services below.', 'additional');
+            }
         };
         
     }]);
