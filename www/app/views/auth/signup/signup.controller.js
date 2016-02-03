@@ -13,8 +13,7 @@ angular.module('app.auth.signup', [])
         
         if(($state.is('app.auth.signup') || $state.is('app.auth.signup.stepTwo') || $state.is('app.auth.signup.success')) 
                 && typeof($rootScope.newUser) === 'undefined') {
-            $rootScope.newUser = {id:1};
-            //$state.go('app.auth.signup');
+            $state.go('app.auth.signup');
         }
         
         
