@@ -55,7 +55,7 @@ angular.module('AuthService', [
                     'email': '',
                     'password': '',
                     'passwordB': '',
-                    'referer': ''
+                    'referrer': ''
                 };
              */
             
