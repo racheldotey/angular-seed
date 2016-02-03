@@ -147,9 +147,10 @@ body {
   background-color: black;
   font-family: 'Kalam', cursive;
   color: white;
+  font-size: 16px;
 }
 body .auth .container .logo {
-  padding: 20px 0;
+  padding: 30px 0 50px;
 }
 body .align-right,
 body .text-right {
