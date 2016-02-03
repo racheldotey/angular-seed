@@ -34,14 +34,14 @@ angular.module('app.auth.signup', [])
             $log.error(msg);
             switch(type) {
                 case 'facebook':
-                    $scope.signupAlerts.push({type: 'danger', msg: msg});
+                    $scope.facebookAlerts.push({type: 'danger', msg: msg});
                     break;
                 case 'additional':
-                    $scope.facebookAlerts.push({type: 'danger', msg: msg});
+                    $scope.additionalAlerts.push({type: 'danger', msg: msg});
                     break;
                 case 'signup':
                 default:
-                    $scope.additionalAlerts.push({type: 'danger', msg: msg});
+                    $scope.signupAlerts.push({type: 'danger', msg: msg});
                     break;
             }
         };
@@ -50,14 +50,14 @@ angular.module('app.auth.signup', [])
             $log.info(msg);
             switch(type) {
                 case 'facebook':
-                    $scope.signupAlerts.push({type: 'success', msg: msg});
+                    $scope.facebookAlerts.push({type: 'success', msg: msg});
                     break;
                 case 'additional':
-                    $scope.facebookAlerts.push({type: 'success', msg: msg});
+                    $scope.additionalAlerts.push({type: 'success', msg: msg});
                     break;
                 case 'signup':
                 default:
-                    $scope.additionalAlerts.push({type: 'success', msg: msg});
+                    $scope.signupAlerts.push({type: 'success', msg: msg});
                     break;
             }
         };
@@ -66,8 +66,8 @@ angular.module('app.auth.signup', [])
           array.push({msg: msg});
         };
 
-        $scope.closeAlert = function(index) {
-          $scope.alerts.splice(index, 1);
+        $scope.closeAlert = function(array, index) {
+          array.splice(index, 1);
         };
         
         $scope.clearAlerts = function() {
@@ -98,9 +98,9 @@ angular.module('app.auth.signup', [])
         $scope.facebookSignup = function() {
             AuthService.facebookSignup().then(function (resp) {
                 $rootScope.newUser = resp;
-                $scope.showSuccess("Facebook signup Successful!");
-                $state.go('app.auth.signup.stepTwo', 'facebook');
-                    $scope.clearAlerts();
+                $scope.showSuccess("Facebook signup Successful!", 'facebook');
+                $state.go('app.auth.signup.stepTwo');
+                $scope.clearAlerts();
             }, function (err) {
                 $scope.showError(err, 'facebook');
             });
@@ -112,7 +112,7 @@ angular.module('app.auth.signup', [])
             ApiRoutesAuth.postAdditionalInfo(data).then(function (resp) {
                 $scope.showSuccess("Save successful.", 'additional');
                 $state.go('app.auth.signup.success');
-                    $scope.clearAlerts();
+                $scope.clearAlerts();
             }, function (err) {
                 $scope.showError(err, 'additional');
             });
