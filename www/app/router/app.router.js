@@ -58,13 +58,13 @@
 var app = angular.module('app.router', [
   'ui.router',
   'rcAuth.constants',
-  'app.maintenance',
-  'app.error',
-  'app.router.admin',
-  'app.router.auth',
-  'app.router.member',
-  'app.router.public',
-  'app.router.store'
+  //'app.maintenance',
+  //'app.error',
+  //'app.router.admin',
+  'app.router.auth'//,
+  //'app.router.member',
+  //'app.router.public',
+  //'app.router.store'
 ]);
 app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', 
     function ($stateProvider, $urlRouterProvider, USER_ROLES) {
@@ -74,14 +74,10 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES',
             abstract: true,
             data: {authorizedRoles: USER_ROLES.guest},
             resolve: {
-                AuthService: 'AuthService',
-                initUser: function(AuthService) {
-                    return AuthService.init();
-                },
                 siteSystemVariables: function() {
                     return {
-                        siteTitle : 'Angular Seed',
-                        siteUrl : 'angular-seed.com',
+                        siteTitle : 'Trivia Joint',
+                        siteUrl : 'www.triviajoint.com',
                         siteCopywrite : 'All rights reserved.'
                     };
                 }
@@ -138,7 +134,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES',
         });
 
         // For any unmatched url, redirect to /
-        $urlRouterProvider.when('', '/');
-        $urlRouterProvider.when('/#', '/');
-        $urlRouterProvider.otherwise('/error/404');
+        $urlRouterProvider.when('', '/signup');
+        $urlRouterProvider.when('/#', '/signup');
+        $urlRouterProvider.otherwise('/signup');
     }]);
