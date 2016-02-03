@@ -25,10 +25,10 @@ app.config(['$stateProvider', 'USER_ROLES',
             abstract: true,
             data: {authorizedRoles: USER_ROLES.guest},
             views: {
-                'header@app.auth': {
+                /*'header@app.auth': {
                     templateUrl: 'app/views/auth/authHeader/authHeader.html',
                     controller: 'AuthHeaderCtrl'
-                },
+                },*/
                 'layout@': {
                     templateUrl: 'app/views/auth/authLayout/authLayout.html',
                     controller: 'AuthLayoutCtrl'
@@ -50,7 +50,7 @@ app.config(['$stateProvider', 'USER_ROLES',
                     templateUrl: 'app/views/auth/signup/signup.html',
                     controller: 'AuthSignupCtrl'
                 }
-            },
+            }/*,
             resolve: {
                 $q: '$q',
                 $rootScope: '$rootScope',
@@ -67,17 +67,47 @@ app.config(['$stateProvider', 'USER_ROLES',
                         }
                     });
                 }
+            }*/
+        });
+        
+        $stateProvider.state('app.auth.signup.terms', {
+            title: 'Terms and Conditions',
+            url: '/terms-and-conditions',
+            views: {
+                'content@app.auth': {
+                    templateUrl: 'app/views/auth/signup/signup.html',
+                    controller: 'AuthSignupCtrl'
+                }
             }
         });
+        
+        $stateProvider.state('app.auth.signup.stepTwo', {
+            title: 'Sign up step 2',
+            url: '/step-2',
+            views: {
+                'content@app.auth': {
+                    templateUrl: 'app/views/auth/signup/signup.html',
+                    controller: 'AuthSignupCtrl'
+                }
+            }
+        });
+        
+        $stateProvider.state('app.auth.signup.success', {
+            title: 'Success! Your a member.',
+            url: '/success',
+            views: {
+                'content@app.auth': {
+                    templateUrl: 'app/views/auth/signup/signup.html',
+                    controller: 'AuthSignupCtrl'
+                }
+            }
+        });
+        
+        /*
 
         $stateProvider.state('app.auth.signup.confirmEmail', {
             title: 'Please Confirm Your Email',
             url: '/please-confirm-email'
-        });
-        
-        $stateProvider.state('app.auth.signup.success', {
-            title: 'Success! Your Email is Confirmed',
-            url: '/success'
         });
         
         $stateProvider.state('app.auth.login', {
@@ -108,6 +138,7 @@ app.config(['$stateProvider', 'USER_ROLES',
             }
         });
         
+        
         $stateProvider.state('app.auth.login.locked', {
             title: 'Account Locked',
             url: '/account-locked'
@@ -134,5 +165,5 @@ app.config(['$stateProvider', 'USER_ROLES',
         $stateProvider.state('app.auth.logout', {
             url: '/logout'
         });
-
+        */
     }]);
