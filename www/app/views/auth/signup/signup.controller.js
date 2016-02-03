@@ -7,19 +7,32 @@
  */
 
 angular.module('app.auth.signup', [])
-        .controller('AuthSignupCtrl', ['$scope', '$state', '$log', 'AuthService', 
-        function ($scope, $state, $log, AuthService) {
+        .controller('AuthSignupCtrl', ['$rootScope', '$scope', '$state', '$log', 'AuthService', 'ApiRoutesAuth',
+        function ($rootScope, $scope, $state, $log, AuthService, ApiRoutesAuth) {
         
         $scope.$state = $state;
         $scope.form = {};
 
         $scope.newUser = {
-            'nameFirst' : '',
-            'nameLast' : '',
-            'email' : '',
-            'password' : '',
-            'passwordB' : '',
-            'referer' : ''
+            'nameFirst' : 'Jane',
+            'nameLast' : 'Trivia',
+            'email' : 'jane@trivia.org',
+            'password' : 'gameOn2332',
+            'passwordB' : 'gameOn2332',
+            'referrer' : 'The internet!'
+        };
+        
+        $scope.additionalInfo = {
+            'triviaLove' : 'warm'
+        };
+        
+        $scope.showError = function(error) {
+            $log.error(error);
+            
+        };
+        
+        $scope.showSuccess = function(msg) {
+            $log.info(msg);
         };
 
         $scope.signup = function() {
@@ -27,22 +40,36 @@ angular.module('app.auth.signup', [])
 
             if($scope.form.signup.$valid) {
                 AuthService.signup($scope.newUser).then(function(results) {
-                    $log.debug(results);
+                    $rootScope.newUser = results;
+                    $scope.showSuccess(results);
+                    $state.go('app.auth.signup.stepTwo');
                 }, function(error) {
                     $log.debug(error);
                 });
             } else {
                 $scope.form.signup.$setDirty();
-                $log.debug("Nope");
+               $scope.showError('Please fill in all required form fields.');
             }
         };
 
         $scope.facebookSignup = function() {
             AuthService.facebookSignup().then(function (resp) {
-                $log.debug(resp);
-                $scope.newUser = resp;
+                $rootScope.newUser = resp;
+                $scope.showSuccess(resp);
+                $state.go('app.auth.signup.stepTwo');
             }, function (err) {
-                $log.debug(err);
+                $scope.showError(err);
+            });
+        };
+        
+        $scope.becomeMember = function() {
+            var data = $scope.additionalInfo;
+            data.userId = $rootScope.newUser.id;
+            ApiRoutesAuth.postAdditionalInfo(data).then(function (resp) {
+                $scope.showSuccess(resp);
+                $state.go('app.auth.signup.success');
+            }, function (err) {
+                $scope.showError(err);
             });
         };
         
