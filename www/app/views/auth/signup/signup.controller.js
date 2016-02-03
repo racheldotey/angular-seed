@@ -14,25 +14,66 @@ angular.module('app.auth.signup', [])
         $scope.form = {};
 
         $scope.newUser = {
-            'nameFirst' : 'Jane',
-            'nameLast' : 'Trivia',
-            'email' : 'jane@trivia.org',
-            'password' : 'gameOn2332',
-            'passwordB' : 'gameOn2332',
-            'referrer' : 'The internet!'
+            'nameFirst' : '',
+            'nameLast' : '',
+            'email' : '',
+            'password' : '',
+            'passwordB' : '',
+            'referrer' : ''
         };
         
         $scope.additionalInfo = {
-            'triviaLove' : 'warm'
+            'triviaLove' : ''
         };
         
-        $scope.showError = function(error) {
-            $log.error(error);
-            
+        $scope.signupAlerts = [];
+        $scope.facebookAlerts = [];
+        $scope.additionalAlerts = [];
+        
+        $scope.showError = function(msg, type) {
+            $log.error(msg);
+            switch(type) {
+                case 'facebook':
+                    $scope.signupAlerts.push({type: 'danger', msg: msg});
+                    break;
+                case 'additional':
+                    $scope.facebookAlerts.push({type: 'danger', msg: msg});
+                    break;
+                case 'signup':
+                default:
+                    $scope.additionalAlerts.push({type: 'danger', msg: msg});
+                    break;
+            }
         };
         
-        $scope.showSuccess = function(msg) {
+        $scope.showSuccess = function(msg, type) {
             $log.info(msg);
+            switch(type) {
+                case 'facebook':
+                    $scope.signupAlerts.push({type: 'success', msg: msg});
+                    break;
+                case 'additional':
+                    $scope.facebookAlerts.push({type: 'success', msg: msg});
+                    break;
+                case 'signup':
+                default:
+                    $scope.additionalAlerts.push({type: 'success', msg: msg});
+                    break;
+            }
+        };
+        
+        $scope.addAlert = function(array, msg) {
+          array.push({msg: msg});
+        };
+
+        $scope.closeAlert = function(index) {
+          $scope.alerts.splice(index, 1);
+        };
+        
+        $scope.clearAlerts = function() {
+            $scope.signupAlerts = [];
+            $scope.facebookAlerts = [];
+            $scope.additionalAlerts = [];
         };
 
         $scope.signup = function() {
@@ -41,24 +82,27 @@ angular.module('app.auth.signup', [])
             if($scope.form.signup.$valid) {
                 AuthService.signup($scope.newUser).then(function(results) {
                     $rootScope.newUser = results;
-                    $scope.showSuccess(results);
+                    $scope.showSuccess("Signup successful!", 'signup');
                     $state.go('app.auth.signup.stepTwo');
+                    $scope.clearAlerts();
                 }, function(error) {
                     $log.debug(error);
+                    $scope.showError(error, 'signup');
                 });
             } else {
                 $scope.form.signup.$setDirty();
-               $scope.showError('Please fill in all required form fields.');
+               $scope.showError('Please fill in all required form fields.', 'signup');
             }
         };
 
         $scope.facebookSignup = function() {
             AuthService.facebookSignup().then(function (resp) {
                 $rootScope.newUser = resp;
-                $scope.showSuccess(resp);
-                $state.go('app.auth.signup.stepTwo');
+                $scope.showSuccess("Facebook signup Successful!");
+                $state.go('app.auth.signup.stepTwo', 'facebook');
+                    $scope.clearAlerts();
             }, function (err) {
-                $scope.showError(err);
+                $scope.showError(err, 'facebook');
             });
         };
         
@@ -66,10 +110,11 @@ angular.module('app.auth.signup', [])
             var data = $scope.additionalInfo;
             data.userId = $rootScope.newUser.id;
             ApiRoutesAuth.postAdditionalInfo(data).then(function (resp) {
-                $scope.showSuccess(resp);
+                $scope.showSuccess("Save successful.", 'additional');
                 $state.go('app.auth.signup.success');
+                    $scope.clearAlerts();
             }, function (err) {
-                $scope.showError(err);
+                $scope.showError(err, 'additional');
             });
         };
         

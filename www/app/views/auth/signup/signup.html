@@ -54,6 +54,7 @@
             </div>
             
             <form name="form.signup" role="form" class="form-horizontal" novalidate>                
+                <uib-alert ng-repeat="alert in additionalAlerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
                 
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-6 col-md-4 control-label">Committed?</label>
@@ -104,6 +105,8 @@
                             
             <form name="form.justabutton" role="form" class="form-horizontal" novalidate>
 
+                <uib-alert ng-repeat="alert in facebookAlerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
+                
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-6 col-md-4 control-label">Login with Facebook:</label>
 
@@ -124,6 +127,7 @@
             </div>
             
             <form name="form.signup" role="form" class="form-horizontal" novalidate>                
+                <uib-alert ng-repeat="alert in signupAlerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
                 
                 <div class="form-group">
                     <label for="nameFirst" class="col-xs-12 col-sm-6 col-md-4 control-label">First Name:</label>
