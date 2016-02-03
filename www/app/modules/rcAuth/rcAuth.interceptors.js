@@ -69,12 +69,12 @@ app.run(['$rootScope', '$state', 'AUTH_EVENTS', 'AuthService',
                 // If the state was saved during a previous auth event
                 if(angular.isDefined($rootScope.redirectPlaceholder)) {
                     // Go to that state after login
-                    $state.go($rootScope.redirectPlaceholder.state, $rootScope.redirectPlaceholder.params);
+                    //$state.go($rootScope.redirectPlaceholder.state, $rootScope.redirectPlaceholder.params);
                     // And get rid of the evidence 
                     delete $rootScope.redirectPlaceholder;
                 } else {
                     // Go to the loged in user dashboard
-                    $state.go('app.member.dashboard');
+                    //$state.go('app.member.dashboard');
                 }
             });
         });
@@ -83,7 +83,7 @@ app.run(['$rootScope', '$state', 'AUTH_EVENTS', 'AuthService',
         $rootScope.$on(AUTH_EVENTS.loginFailed, function(event, args) {
             $rootScope.$evalAsync(function () {
                 // Go to the login state
-                $state.go('app.auth.login');
+                //$state.go('app.auth.login');
             });
         });
 
@@ -91,7 +91,7 @@ app.run(['$rootScope', '$state', 'AUTH_EVENTS', 'AuthService',
         $rootScope.$on(AUTH_EVENTS.logoutSuccess, function(event, args) {
             $rootScope.$evalAsync(function () {
                 // Go to the login state
-                $state.go('app.public.landing');
+                //$state.go('app.public.landing');
             });
         });
 
@@ -104,7 +104,7 @@ app.run(['$rootScope', '$state', 'AUTH_EVENTS', 'AuthService',
                     $rootScope.redirectPlaceholder = args;
                 }
                 // Go to the login state
-                $state.go('app.auth.login');
+                //$state.go('app.auth.login');
             });
         });
 
@@ -117,7 +117,7 @@ app.run(['$rootScope', '$state', 'AUTH_EVENTS', 'AuthService',
                     $rootScope.redirectPlaceholder = args;
                 }
                 // Go to the login state
-                $state.go('app.auth.login');
+                //$state.go('app.auth.login');
             });
         });
 
@@ -125,7 +125,7 @@ app.run(['$rootScope', '$state', 'AUTH_EVENTS', 'AuthService',
         $rootScope.$on(AUTH_EVENTS.notAuthorized, function(event, args) {
             $rootScope.$evalAsync(function () {
                 // Go to the user not authorized error page
-                $state.go('app.error.notauthorized');
+                //$state.go('app.error.notauthorized');
             });
         });
         
