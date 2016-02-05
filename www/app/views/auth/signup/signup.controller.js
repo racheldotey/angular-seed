@@ -7,15 +7,9 @@
  */
 
 angular.module('app.auth.signup', [])
-        .controller('AuthSignupCtrl', ['$rootScope', '$scope', '$state', '$log', 'AuthService', 'ApiRoutesAuth',
-        function ($rootScope, $scope, $state, $log, AuthService, ApiRoutesAuth) {
-        
-        
-        if(($state.is('app.auth.signup') || $state.is('app.auth.signup.stepTwo') || $state.is('app.auth.signup.success')) 
-                && typeof($rootScope.newUser) === 'undefined') {
-            $state.go('app.auth.signup');
-        }
-        
+        .controller('AuthSignupCtrl', ['$rootScope', '$scope', '$state', '$log', 'AuthService', 'ApiRoutesAuth', '$window', '$timeout',
+        function ($rootScope, $scope, $state, $log, AuthService, ApiRoutesAuth, $window, $timeout) {
+               
         
         $scope.$state = $state;
         $scope.form = {};
@@ -26,25 +20,19 @@ angular.module('app.auth.signup', [])
             'email' : '',
             'password' : '',
             'passwordB' : '',
-            'referrer' : ''
-        };
-        
-        $scope.additionalInfo = {
+            'referrer' : '',
+            'acceptTerms' : false,
             'triviaLove' : ''
         };
         
         $scope.signupAlerts = [];
-        $scope.facebookAlerts = [];
-        $scope.additionalAlerts = [];
+        $scope.termsAlerts = [];
         
         $scope.showError = function(msg, type) {
             $log.error(msg);
             switch(type) {
-                case 'facebook':
-                    $scope.facebookAlerts.push({type: 'danger', msg: msg});
-                    break;
-                case 'additional':
-                    $scope.additionalAlerts.push({type: 'danger', msg: msg});
+                case 'terms':
+                    $scope.termsAlerts.push({type: 'danger', msg: msg});
                     break;
                 case 'signup':
                 default:
@@ -56,11 +44,8 @@ angular.module('app.auth.signup', [])
         $scope.showSuccess = function(msg, type) {
             $log.info(msg);
             switch(type) {
-                case 'facebook':
-                    $scope.facebookAlerts.push({type: 'success', msg: msg});
-                    break;
-                case 'additional':
-                    $scope.additionalAlerts.push({type: 'success', msg: msg});
+                case 'terms':
+                    $scope.termsAlerts.push({type: 'success', msg: msg});
                     break;
                 case 'signup':
                 default:
@@ -79,57 +64,65 @@ angular.module('app.auth.signup', [])
         
         $scope.clearAlerts = function() {
             $scope.signupAlerts = [];
-            $scope.facebookAlerts = [];
-            $scope.additionalAlerts = [];
+            $scope.termsAlerts = [];
         };
 
         $scope.signup = function() {
+            $scope.clearAlerts();
             $scope.$broadcast('show-errors-check-validity');
+            var stop = false;
 
-            if($scope.form.signup.$valid) {
+            if(!$scope.form.terms.$valid) {
+                $scope.form.terms.$setDirty();
+                $scope.showError('Please fill in all required form fields.', 'terms');
+                stop = true;
+            }
+            if(!$scope.form.signup.$valid) {
+                $scope.form.signup.$setDirty();
+                $scope.showError('Please fill in all required form fields.', 'signup');
+                stop = true;
+            }
+            if(!stop) {
                 AuthService.signup($scope.newUser).then(function(results) {
                     $rootScope.newUser = results;
                     $scope.showSuccess("Signup successful!", 'signup');
-                    $state.go('app.auth.signup.stepTwo');
-                    $scope.clearAlerts();
+                    
+                    $timeout(function() {
+                        $scope.clearAlerts();
+                        $window.location.href = 'http://www.triviajoint.com/registration-thank-you-page/';
+                    }, 3000);
+                    
                 }, function(error) {
                     $log.debug(error);
                     $scope.showError(error, 'signup');
                 });
-            } else {
-                $scope.form.signup.$setDirty();
-               $scope.showError('Please fill in all required form fields.', 'signup');
             }
         };
 
         $scope.facebookSignup = function() {
-            AuthService.facebookSignup().then(function (resp) {
-                $rootScope.newUser = resp;
-                $scope.showSuccess("Facebook signup Successful!", 'facebook');
-                $state.go('app.auth.signup.stepTwo');
-                $scope.clearAlerts();
-            }, function (err) {
-                $scope.showError(err, 'facebook');
-            });
-        };
-        
-        $scope.becomeMember = function() {
-            
-            if($scope.form.signupTwo.$valid) {
-                var data = $scope.additionalInfo;
-                data.userId = $rootScope.newUser.id;
-                ApiRoutesAuth.postAdditionalInfo(data).then(function (resp) {
-                    $scope.showSuccess("Save successful.", 'additional');
-                    $state.go('app.auth.signup.success');
-                    $scope.clearAlerts();
-                }, function (err) {
-                    $scope.showError(err, 'additional');
-                });
-            
-            } else {
-                $scope.form.signupTwo.$setDirty();
-               $scope.showError('Please answer the question and accept the terms of services below.', 'additional');
+            $scope.clearAlerts();
+            $scope.$broadcast('show-errors-check-validity');
+
+            if(!$scope.form.terms.$valid) {
+                $scope.form.terms.$setDirty();
+                $scope.showError('Please fill in all required form fields.', 'terms');
             }
+            else if(!$scope.form.signup.$valid) {
+                AuthService.facebookSignup($scope.newUser).then(function (resp) {
+                    $rootScope.newUser = resp;
+                    $scope.showSuccess("Facebook signup Successful!", 'terms');
+
+                    $timeout(function() {
+                        $scope.clearAlerts();
+                        $window.location.href = 'http://www.triviajoint.com/registration-thank-you-page/';
+                    }, 3000);
+
+                }, function (err) {
+                    $scope.showError(err, 'terms');
+                });
+            }
+            
+            
         };
         
     }]);

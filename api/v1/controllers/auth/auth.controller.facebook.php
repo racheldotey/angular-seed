@@ -157,6 +157,9 @@ class AuthControllerFacebook {
                 ':expires' => date('Y-m-d H:i:s', time() + ($hours * 60 * 60))
             ));
             
+            // Save "Where did you hear about us" question
+            InfoController::quietlySaveAdditional($post, $user->id);
+            
             // Send the session life back (in hours) for the cookies
             return array('registered' => true, 'user' => $user, 'sessionLifeHours' => $hours);
         }

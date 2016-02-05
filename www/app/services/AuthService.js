@@ -202,7 +202,7 @@ angular.module('AuthService', [
             });
         };
         
-        factory.facebookSignup = function() {
+        factory.facebookSignup = function(additionalPrams) {
              /* Facebook Signup:
              * var newUser = {
                     'nameFirst' : data.user.first_name,
@@ -233,8 +233,10 @@ angular.module('AuthService', [
                             'ageRange' : angular.toJson(data.user.age_range)
                         };
                         
+                        var user = angular.extend({}, additionalPrams, newUser);
+                        
                         //* Signup through our normal method
-                        API.postFacebookSignup(newUser).then(function (data) {
+                        API.postFacebookSignup(user).then(function (data) {
                             
                             if (UserSession.create(data.user)) {
                                 //put valid login creds in a cookie

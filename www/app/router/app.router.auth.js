@@ -70,39 +70,6 @@ app.config(['$stateProvider', 'USER_ROLES',
             }*/
         });
         
-        $stateProvider.state('app.auth.signup.terms', {
-            title: 'Terms and Conditions',
-            url: '/terms-and-conditions',
-            views: {
-                'content@app.auth': {
-                    templateUrl: 'app/views/auth/signup/signup.html',
-                    controller: 'AuthSignupCtrl'
-                }
-            }
-        });
-        
-        $stateProvider.state('app.auth.signup.stepTwo', {
-            title: 'Sign up step 2',
-            url: '/step-2',
-            views: {
-                'content@app.auth': {
-                    templateUrl: 'app/views/auth/signup/signup.html',
-                    controller: 'AuthSignupCtrl'
-                }
-            }
-        });
-        
-        $stateProvider.state('app.auth.signup.success', {
-            title: 'Success! Your a member.',
-            url: '/success',
-            views: {
-                'content@app.auth': {
-                    templateUrl: 'app/views/auth/signup/signup.html',
-                    controller: 'AuthSignupCtrl'
-                }
-            }
-        });
-        
         /*
 
         $stateProvider.state('app.auth.signup.confirmEmail', {

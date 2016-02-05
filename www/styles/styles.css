@@ -144,13 +144,21 @@
  * General typography and text elements style overrides.
  */
 body {
-  background-color: black;
+  background-color: #800 !important;
+  background-image: url('/media/images/trivia-background.png');
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: cover;
+  background-attachment: fixed;
   font-family: 'Kalam', cursive;
   color: white;
   font-size: 16px;
 }
 body .auth .container .logo {
   padding: 30px 0 50px;
+}
+body .auth .container .list-group-item label {
+  color: #000;
 }
 body .align-right,
 body .text-right {

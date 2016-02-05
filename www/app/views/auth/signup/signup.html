@@ -5,160 +5,69 @@
 </style>
 
 <div class="page auth login">
-
-    <div class="row" ng-if="$state.is('app.auth.signup.terms')">
-        <div class="col-sm-0 col-md-3"></div>
-        <div class="col-sm-12 col-md-6">
         
-            <div class="page-header">
-                <h1>Terms and Conditions</h1>
-            </div> 
-
-            <p>I agree that I love trivia, beer, having fun, going out, community competition and money making opportunities. 
-                I agree to download and try out this awesome new trivia app and all the cool things it’s going to offer. 
-                I agree to tell the team how I feel about it, suggest awesome edits and ideas and be a part of creating 
-                this awesome new TriviaJoint experience.</p>
-            
-            
-                <div class="text-right">
-                    <button type="submit" class="btn btn-primary" data-ui-sref="app.auth.signup.stepTwo"><i class="fa fa-arrow-left"></i> Back</button>
-                </div>
-        
-        </div>
-        <div class="col-sm-0 col-md-3"></div>
-    </div>
-
-    <div class="row" ng-if="$state.is('app.auth.signup.success')">
-        <div class="col-sm-0 col-md-3"></div>
-        <div class="col-sm-12 col-md-6">
-        
-            <h1 class="text-center" style="margin-top: 30px;">Congratulations!</h1>
-            <p class="lead text-center">You are now one of our founding members.</p>
-            
-            <div class="logo text-center">
-                <img src="/media/images/trivia-joint-logo.png" alt="Trivia Joint" />
-            </div>
-            
-            <p class="lead text-center">Welcome to the game.</p>
-
-            
-        
-        </div>
-        <div class="col-sm-0 col-md-3"></div>
-    </div>
-    
-    <div class="row" ng-if="$state.is('app.auth.signup.stepTwo')">
-        <div class="col-xs-0 col-sm-2"></div>
-        <div class="col-xs-12 col-sm-8">
-                
-            <div class="logo text-center">
-                <img src="/media/images/trivia-joint-logo.png" />
-            </div>
-                
-            <div class="page-header">
-                <h3>Tell us about you…</h3>
-            </div>
-            
-            <form name="form.signupTwo" role="form" class="form-horizontal" novalidate>    
-                <uib-alert ng-repeat="alert in additionalAlerts" type="{{alert.type}}" close="closeAlert(additionalAlerts, $index)">{{alert.msg}}</uib-alert>
-                
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-6 col-md-4 control-label">Committed?</label>
-                    <div class="col-xs-12 col-sm-6 col-md-8">
-                        <div class="radio">
-                            <label>
-                                <input type="radio" ng-model="additionalInfo.triviaLove" value="hot" required>
-                                I LIVE TRIVIA!
-                            </label>
-                        </div>
-                        <div class="radio">
-                            <label>
-                                <input type="radio" ng-model="additionalInfo.triviaLove" value="warm" required>
-                                Sort Of
-                            </label>
-                        </div>
-                        <div class="radio disabled">
-                            <label>
-                                <input type="radio" ng-model="additionalInfo.triviaLove" value="cold" required>
-                                meh
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" ng-model="additionalInfo.acceptTerms" ng-true-value="true" ng-true-value="false" required> Agree to our terms of <a data-ui-sref="app.auth.signup.terms">terms of service</a>.
-                    </label>
-                </div>
-                
-            </form>
-
-            
-            <hr />
-            
-            <div class="row text-center">
-                <button type="submit" class="btn btn-primary btn-lg" ng-click="becomeMember()">Click here to become a founding member!</button>
-            </div>
-       
-            <div class="col-xs-0 col-sm-2"></div>
-            
-        </div>
-    </div>
-        
-    <div class="row" ng-if="$state.is('app.auth.signup')">
-        <div class="col-xs-0 col-sm-2"></div>
-        <div class="col-xs-12 col-sm-8">
+    <div class="row">
+        <div class="col-xs-0 col-sm-3"></div>
+        <div class="col-xs-12 col-sm-6">
                 
             <div class="logo text-center">
                 <img src="/media/images/trivia-joint-logo.png" alt="Trivia Joint" />
             </div>
                             
-            <form name="form.justabutton" role="form" class="form-horizontal" novalidate>
-
-                <uib-alert ng-repeat="alert in facebookAlerts" type="{{alert.type}}" close="closeAlert(facebookAlerts, $index)">{{alert.msg}}</uib-alert>
+            <form name="form.terms" role="form" novalidate>
+                
+                <uib-alert ng-repeat="alert in termsAlerts" type="{{alert.type}}" close="closeAlert(termsAlerts, $index)">{{alert.msg}}</uib-alert>
                 
                 <div class="form-group">
-                    <label class="col-xs-12 col-sm-6 col-md-4 control-label">Login with Facebook:</label>
-
-                    <div class="col-xs-12 col-sm-6 col-md-8">
-                        <a ng-click="facebookSignup()" class="btn btn-block btn-social btn-facebook">
-                            <span class="fa fa-facebook"></span>
-                            Sign up with Facebook
-                        </a>
-                    </div>
+                    
+                    <ul class="list-group">
+                      <li class="list-group-item" ng-click="newUser.triviaLove = 'hot'"><label>
+                            <input type="radio" ng-model="newUser.triviaLove" value="hot" required>
+                            I Love Trivia!
+                        </label>
+                      </li>
+                      <li class="list-group-item" ng-click="newUser.triviaLove = 'warm'">
+                        <label>
+                            <input type="radio" ng-model="newUser.triviaLove" value="warm" required>
+                            I Play Occasionally
+                        </label>
+                      </li>
+                    </ul>
                 </div>
 
-            </form>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" ng-model="newUser.acceptTerms" ng-true-value="true" ng-true-value="false" required> Agree to our terms of <a href="http://www.triviajoint.com/terms-and-conditions/" target="_blank">terms of service</a>.
+                    </label>
+                </div>
                 
+            </form>
+                            
+            <hr/>
+
+            <div class="form-group">
+                <a ng-click="facebookSignup()" class="btn btn-block btn-social btn-facebook">
+                    <span class="fa fa-facebook"></span>
+                    Sign up with Facebook
+                </a>
+            </div>
+
             <hr/>
                 
-            <div class="page-header">
-                <h3>Or we need…</h3>
-            </div>
+            <form name="form.signup" role="form" novalidate>
             
-            <form name="form.signup" role="form" class="form-horizontal" novalidate>                
                 <uib-alert ng-repeat="alert in signupAlerts" type="{{alert.type}}" close="closeAlert(signupAlerts, $index)">{{alert.msg}}</uib-alert>
                 
                 <div class="form-group">
-                    <label for="nameFirst" class="col-xs-12 col-sm-6 col-md-4 control-label">First Name:</label>
-                    <div class="col-xs-12 col-sm-6 col-md-8">
-                        <input ng-model="newUser.nameFirst" type="text" class="form-control" name="nameFirst" placeholder="Joe">
-                    </div>
+                    <input ng-model="newUser.nameFirst" type="text" class="form-control" name="nameFirst" placeholder="Joe" required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="nameLast" class="col-xs-12 col-sm-6 col-md-4 control-label">Last Name:</label>
-                    <div class="col-xs-12 col-sm-6 col-md-8">
-                        <input ng-model="newUser.nameLast" type="text" class="form-control" name="nameLast" placeholder="Trivia">
-                    </div>
+                    <input ng-model="newUser.nameLast" type="text" class="form-control" name="nameLast" placeholder="Trivia" required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="email" class="col-xs-12 col-sm-6 col-md-4 control-label">Your Email:</label>
-                    <div class="col-xs-12 col-sm-6 col-md-8">
-                        <input ng-model="newUser.email" type="email" class="form-control" name="email" placeholder="best-email@example.com">
-                    </div>
+                   <input ng-model="newUser.email" type="email" class="form-control" name="email" placeholder="best-email@example.com" required>
                 </div>
                 
                 <div ng-if="false" class="alert alert-info" role="alert">
@@ -170,49 +79,20 @@
                 </div>
             
                 <div class="form-group">
-                    <label for="password" class="col-xs-12 col-sm-6 col-md-4 control-label">Password</label>
-                    <div class="col-xs-12 col-sm-6 col-md-8">
-                        <input ng-model="newUser.password" type="password" class="form-control" name="password" placeholder="Enter password">
-                    </div>
+                     <input ng-model="newUser.password" type="password" class="form-control" name="password" placeholder="Enter password" required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="passwordB" class="col-xs-12 col-sm-6 col-md-4 control-label">Confirm Password</label>
-                    <div class="col-xs-12 col-sm-6 col-md-8">
-                        <input ng-model="newUser.passwordB" type="password" class="form-control" name="passwordB" placeholder="Enter password again">
-                    </div>
+                    <input ng-model="newUser.passwordB" type="password" class="form-control" name="passwordB" placeholder="Enter password again" required>
                 </div>
-                
-                <div class="form-group">
-                    <label for="referrer" class="col-xs-12 col-sm-6 col-md-4 control-label">How did you hear about us?</label>
-                    <div class="col-xs-12 col-sm-6 col-md-8">
-                        <input ng-model="newUser.referrer" type="text" class="form-control" name="referrer" placeholder="(Google, Facebook, Email...)">
-                    </div>
-                </div>
-                
-                
-            </form>
+                          
 
-            
-            
             <hr />
             
-            <div class="row">
-
-                <div class="col-md-6">
-                </div>
-
-                <div class="col-md-6">
-                    <div class="form-group text-right">
-                        <button type="submit" class="btn btn-primary" ng-click="signup()">Sign Up</button>
-                    </div>
-                </div>
-
-            </div>
-       
-            <div class="col-xs-0 col-sm-2"></div>
+            <button type="submit" class="btn btn-block  btn-primary" ng-click="signup()">Sign Up without Facebook</button>
             
         </div>
+        <div class="col-xs-0 col-sm-3"></div>
     </div>
 
 </div>
