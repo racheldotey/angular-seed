@@ -74,12 +74,12 @@ angular.module('app.auth.signup', [])
 
             if(!$scope.form.terms.$valid) {
                 $scope.form.terms.$setDirty();
-                $scope.showError('Please fill in all required form fields.', 'terms');
+                $scope.showError('Please fill in all form fields.', 'terms');
                 stop = true;
             }
             if(!$scope.form.signup.$valid) {
                 $scope.form.signup.$setDirty();
-                $scope.showError('Please fill in all required form fields.', 'signup');
+                $scope.showError('Please fill in all form fields.', 'signup');
                 stop = true;
             }
             if(!stop) {
@@ -105,7 +105,7 @@ angular.module('app.auth.signup', [])
 
             if(!$scope.form.terms.$valid) {
                 $scope.form.terms.$setDirty();
-                $scope.showError('Please fill in all required form fields.', 'terms');
+                $scope.showError('Please fill in all form fields.', 'terms');
             }
             else if(!$scope.form.signup.$valid) {
                 AuthService.facebookSignup($scope.newUser).then(function (resp) {

@@ -160,6 +160,14 @@ body .auth .container .logo {
 body .auth .container .list-group-item label {
   color: #000;
 }
+body .auth .container .btn-danger {
+  background-color: #bb0000;
+  border-color: #d40000;
+}
+body .auth .container .btn-danger:hover {
+  background-color: #a20000;
+  border-color: #bb0000;
+}
 body .align-right,
 body .text-right {
   text-align: right;
