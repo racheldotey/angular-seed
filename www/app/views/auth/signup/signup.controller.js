@@ -22,7 +22,7 @@ angular.module('app.auth.signup', [])
             'passwordB' : '',
             'referrer' : '',
             'acceptTerms' : false,
-            'triviaLove' : ''
+            'triviaLove' : 'unanswered'
         };
         
         $scope.signupAlerts = [];
