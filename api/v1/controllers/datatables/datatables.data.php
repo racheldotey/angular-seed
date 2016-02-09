@@ -4,7 +4,7 @@
 class DatatablesData {
     
     public static function selectUsers() {
-        $qUsers = DBConn::executeQuery("SELECT u.id, u.name_first AS firstName, u.name_last AS lastName, "
+        $qUsers = DBConn::executeQuery("SELECT u.id, u.name_first AS nameFirst, u.name_last AS nameLast, "
                 . "u.email, u.email_verified AS verified, u.created, u.last_updated AS lastUpdated, "
                 . "u.disabled, CONCAT(u1.name_first, ' ', u1.name_last) AS updatedBy "
                 . "FROM " . DBConn::prefix() . "users AS u "
@@ -25,7 +25,7 @@ class DatatablesData {
     }
     
     public static function selectUserGroups() {
-        $qGroups = DBConn::executeQuery("SELECT g.id, g.group, g.desc, g.created, g.last_updated AS lastUpdated, "
+        $qGroups = DBConn::executeQuery("SELECT g.id, g.group, g.slug AS identifier, g.desc, g.created, g.last_updated AS lastUpdated, "
                 . "CONCAT(u1.name_first, ' ', u1.name_last) AS createdBy, "
                 . "CONCAT(u2.name_first, ' ', u2.name_last) AS updatedBy "
                 . "FROM " . DBConn::prefix() . "auth_groups AS g "
@@ -49,7 +49,7 @@ class DatatablesData {
     }
     
     public static function selectGroupRoles() {
-        $qRoles = DBConn::executeQuery("SELECT r.id, r.role, r.desc, r.created, r.last_updated AS lastUpdated, "
+        $qRoles = DBConn::executeQuery("SELECT r.id, r.role, r.slug AS identifier, r.desc, r.created, r.last_updated AS lastUpdated, "
                 . "CONCAT(u1.name_first, ' ', u1.name_last) AS createdBy, "
                 . "CONCAT(u2.name_first, ' ', u2.name_last) AS updatedBy "
                 . "FROM " . DBConn::prefix() . "auth_roles AS r "
@@ -82,7 +82,7 @@ class DatatablesData {
     }
     
     public static function selectConfigVariables() {
-        return DBConn::selectAll("SELECT c.id, c.name, c.value, c.created, c.last_updated AS lastUpdated, c.disabled, c.indestructable, c.locked, "
+        return DBConn::selectAll("SELECT c.id, c.name, c.value, c.created, c.last_updated AS lastUpdated, c.disabled, c.indestructible, c.locked, "
                 . "CONCAT(u1.name_first, ' ', u1.name_last) AS createdBy, "
                 . "CONCAT(u2.name_first, ' ', u2.name_last) AS updatedBy "
                 . "FROM " . DBConn::prefix() . "system_config AS c "

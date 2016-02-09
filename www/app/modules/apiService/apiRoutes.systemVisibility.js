@@ -6,57 +6,52 @@
  * API calls related to field visibility.
  */
 
-angular.module('apiRoutes.visibilityFields', [])
-.factory('ApiRoutesVisibilityField', ['ApiService', function (API) {
+angular.module('apiRoutes.systemVisibility', [])
+.factory('ApiRoutesSystemVisibility', ['ApiService', function (API) {
         
     var api = {};
 
     api.getVisibilityField = function(id) {
-        return API.get('field/' + id, 'Could not get user.');
+        if(angular.isUndefined(id)) {
+            return API.reject('Invalid visibility field please check your parameters and try again.');
+        }
+        return API.get('field/get/' + id, 'Could not get visibility field.');
     };
     
-    api.newVisibilityField = function(user) {
-        if(!user.first || !user.last || !user.email || !user.password) {
-            return API.reject('Invalid credentials please verify your information and try again.');
+    api.newVisibilityField = function(field) {
+        if(angular.isUndefined(field.identifier) || angular.isUndefined(field.type) || angular.isUndefined(field.desc)) {
+            return API.reject('Invalid visibility field please check your parameters and try again.');
+        }
+        return API.post('field/insert/', field, 'System unable to create new visibility field.');
+    };
+
+    api.saveVisibilityField = function(field) {
+        if(angular.isUndefined(field.id) || angular.isUndefined(field.identifier) || angular.isUndefined(field.type) || angular.isUndefined(field.desc)) {
+            return API.reject('Invalid visibility field please check your parameters and try again.');
         }
 
-        return API.post('user/', user, 'System unable to create new user.');
+        return API.post('field/update/' + field.id, field, 'System unable to save visibility field.');
     };
 
-    api.saveVisibilityField = function(user) {
-        if(!user.first || !user.last || !user.email) {
-            return API.reject('Invalid credentials please verify your information and try again.');
+    api.deleteVisibilityField = function(id) {
+        if(angular.isUndefined(id)) {
+            return API.reject('Invalid visibility field please check your parameters and try again.');
         }
-
-        return API.post('auth/login/', user, 'System unable to save user.');
+        return API.delete('field/delete/' + id, 'System unable to delete visibility field.');
     };
-
-    api.deleteVisibilityField = function(userId) {
-        return API.delete('delete/user/' + userId, 'System unable to delete user.');
-    };
-
-    api.disableVisibilityField = function(userId) {
-        return API.post('user/disable/' + userId, 'System unable to disable user.');
-    };
-
-    api.enableVisibilityField = function(userId) {
-        return API.post('user/enable/' + userId, 'System unable to enable user.');
-    };
-
-    api.addVisibilityFieldGroup = function(userGroupPair) {
-        if(!userGroupPair.userId || !userGroupPair.groupIdl) {
-            return API.reject('Invalid credentials please verify your information and try again.');
+    
+    api.unassignRoleFromField = function(pair) {
+        if(angular.isUndefined(pair.roleId) || angular.isUndefined(pair.fieldId)) {
+            return API.reject('Invalid role / field pair please check your parameters and try again.');
         }
-        
-        return API.post('user/add/group/', userGroupPair, 'System unable to add group to user.');
+        return API.post('field/unassign-role', pair, 'System unable to unassign role to field.');
     };
-
-    api.removeVisibilityFieldGroup = function(userGroupPair) {
-        if(!userGroupPair.userId || !userGroupPair.groupIdl) {
-            return API.reject('Invalid credentials please verify your information and try again.');
+    
+    api.assignRoleToField = function(pair) {
+        if(angular.isUndefined(pair.roleId) || angular.isUndefined(pair.fieldId)) {
+            return API.reject('Invalid role / field pair please check your parameters and try again.');
         }
-        
-        return API.post('user/remove/group/', userGroupPair, 'System unable to remove group from user.');
+        return API.post('field/assign-role', pair, 'System unable to assign role from field.');
     };
 
     return api;

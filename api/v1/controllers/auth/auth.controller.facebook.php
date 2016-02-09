@@ -156,7 +156,7 @@ class AuthControllerFacebook {
                 ':token' => password_hash($user->apiToken, PASSWORD_DEFAULT),
                 ':expires' => date('Y-m-d H:i:s', time() + ($hours * 60 * 60))
             ));
-
+            
             // Send the session life back (in hours) for the cookies
             return array('registered' => true, 'user' => $user, 'sessionLifeHours' => $hours);
         }

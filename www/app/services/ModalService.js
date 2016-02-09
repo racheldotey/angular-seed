@@ -47,76 +47,23 @@ angular.module('ModalService', [
     };
     
     /*
-     * Open Edit Assign Element Roles Modal
-     * 
-     * @return uibModalInstance
-     */
-    api.openAssignElementRole = function (elementId, roleId) {
-        return api.openModal({
-            templateUrl: templatePath + 'admin/assignElementRoles/assignElementRoles.html',
-            controller: 'EditAssignElementRolesModalCtrl',
-            resolve: {
-                ApiRoutesUsers: 'ApiRoutesUsers',
-                ApiRoutesGroups: 'ApiRoutesGroups',
-                editing: function(ApiRoutesUsers) {
-                    ApiRoutesUsers.getUserGroups(data);
-                },
-                list: function(ApiRoutesGroups) {
-                    ApiRoutesGroups.getGroupList(data);
-                }
-            }
-        });
-        
-    };
-    api.openAssignRoleElement = function(roleId, elementId) {
-        api.openAssignElementRole(elementId, roleId);
-    };
-    
-    /*
-     * Open Edit Assign Group Roles Modal
-     * 
-     * @return uibModalInstance
-     */
-    api.openAssignGroupRole = function(groupId, roleId) {
-        var data = { roleId: roleId, groupId: groupId };
-        return api.openModal({
-            templateUrl: templatePath + 'admin/assignGroupRoles/assignGroupRoles.html',
-            controller: 'EditAssignGroupRolesModalCtrl'
-        });
-    };
-    api.openAssignRoleGroup = function(roleId, groupId) {
-        api.openAssignGroupRole(groupId, roleId);
-    };
-    
-    /*
-     * Open Edit Assign User Groups Modal
-     * 
-     * @return uibModalInstance
-     */
-    api.openAssignUserGroup = function(userId, groupId) {
-        var data = { userId: userId, groupId: groupId };
-        return api.openModal({
-            templateUrl: templatePath + 'admin/assignUserGroups/assignUserGroups.html',
-            controller: 'EditAssignUserGroupsModalCtrl'
-        });
-    };
-    api.openAssignGroupUser = function(groupId, userId) {
-        api.openAssignUserGroups(userId, groupId);
-    };
-    
-    /*
      * Open Edit Config Variable Modal
      * 
      * @return uibModalInstance
      */
-    api.openSystemVariable = function(variableId) {
+    api.openSystemVariable = function(variable) {
         return api.openModal({
             templateUrl: templatePath + 'admin/editSystemVariable/editSystemVariable.html',
             controller: 'EditSystemVariableModalCtrl',
             resolve: {
                 ApiRoutesSystemVariables: 'ApiRoutesSystemVariables',
                 editing: function(ApiRoutesSystemVariables) {
-                    return (variableId) ? ApiRoutesSystemVariables.getVariable(variableId) : {};
+                    if(angular.isDefined(variable)) {
+                        return (angular.isObject(variable)) ? variable : 
+                                ApiRoutesSystemVariables.getVariable(variable);
+                    } else {
+                        return {};
+                    }
                 }
             }
         });
@@ -127,14 +74,23 @@ angular.module('ModalService', [
      * 
      * @return uibModalInstance
      */
-    api.openEditGroup = function(groupId) {
+    api.openEditGroup = function(group) {
         return api.openModal({
             templateUrl: templatePath + 'admin/editGroup/editGroup.html',
             controller: 'EditGroupModalCtrl',
             resolve: {
                 ApiRoutesGroups: 'ApiRoutesGroups',
+                ApiRoutesSimpleLists: 'ApiRoutesSimpleLists',
+                roleList: function(ApiRoutesSimpleLists) {
+                    return ApiRoutesSimpleLists.simpleRolesList();
+                },
                 editing: function(ApiRoutesGroups) {
-                    return (groupId) ? ApiRoutesGroups.getGroup(groupId) : {};
+                    if(angular.isDefined(group)) {
+                        return (angular.isObject(group)) ? group : 
+                                ApiRoutesGroups.getGroup(group);
+                    } else {
+                        return {};
+                    }
                 }
             }
         });
@@ -145,14 +101,26 @@ angular.module('ModalService', [
      * 
      * @return uibModalInstance
      */
-    api.openEditRole = function(roleId) {
+    api.openEditRole = function(role) {
         return api.openModal({
             templateUrl: templatePath + 'admin/editRole/editRole.html',
             controller: 'EditRoleModalCtrl',
             resolve: {
                 ApiRoutesRoles: 'ApiRoutesRoles',
+                ApiRoutesSimpleLists: 'ApiRoutesSimpleLists',
+                groupList: function(ApiRoutesSimpleLists) {
+                    return ApiRoutesSimpleLists.simpleGroupsList();
+                },
+                fieldList: function(ApiRoutesSimpleLists) {
+                    return ApiRoutesSimpleLists.simpleVisibilityFieldList();
+                },
                 editing: function(ApiRoutesRoles) {
-                    return (roleId) ? ApiRoutesRoles.getRole(roleId) : {};
+                    if(angular.isDefined(role)) {
+                        return (angular.isObject(role)) ? role : 
+                                ApiRoutesRoles.getRole(role);
+                    } else {
+                        return {};
+                    }
                 }
             }
         });
@@ -163,14 +131,23 @@ angular.module('ModalService', [
      * 
      * @return uibModalInstance
      */
-    api.openEditUser = function(userId) {
+    api.openEditUser = function(user) {
         return api.openModal({
             templateUrl: templatePath + 'admin/editUser/editUser.html',
             controller: 'EditUserModalCtrl',
             resolve: {
                 ApiRoutesUsers: 'ApiRoutesUsers',
+                ApiRoutesSimpleLists: 'ApiRoutesSimpleLists',
+                groupList: function(ApiRoutesSimpleLists) {
+                    return ApiRoutesSimpleLists.simpleGroupsList();
+                },
                 editing: function(ApiRoutesUsers) {
-                    return (userId) ? ApiRoutesUsers.getUser(userId) : {};
+                    if(angular.isDefined(user)) {
+                        return (angular.isObject(user)) ? user : 
+                                ApiRoutesUsers.getUser(user);
+                    } else {
+                        return {};
+                    }
                 }
             }
         });
@@ -181,14 +158,23 @@ angular.module('ModalService', [
      * 
      * @return uibModalInstance
      */
-    api.openEditVisibilityField = function(fieldId) {
+    api.openEditVisibilityField = function(field) {
         return api.openModal({
-            templateUrl: templatePath + 'admin/editVisibilityElement/editVisibilityField.html',
+            templateUrl: templatePath + 'admin/editVisibilityField/editVisibilityField.html',
             controller: 'EditVisibilityFieldModalCtrl',
             resolve: {
-                ApiRoutesFieldVisibility: 'ApiRoutesFieldVisibility',
-                editing: function(ApiRoutesFieldVisibility) {
-                    return (fieldId) ? ApiRoutesFieldVisibility.getField(fieldId) : {};
+                ApiRoutesSystemVisibility: 'ApiRoutesSystemVisibility',
+                ApiRoutesSimpleLists: 'ApiRoutesSimpleLists',
+                roleList: function(ApiRoutesSimpleLists) {
+                    return ApiRoutesSimpleLists.simpleRolesList();
+                },
+                editing: function(ApiRoutesSystemVisibility) {
+                    if(angular.isDefined(field)) {
+                        return (angular.isObject(field)) ? field : 
+                                ApiRoutesSystemVisibility.getField(field);
+                    } else {
+                        return {};
+                    }
                 }
             }
         });
