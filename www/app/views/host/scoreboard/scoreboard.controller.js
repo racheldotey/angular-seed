@@ -7,7 +7,8 @@
  */
 
 angular.module('app.host.scoreboard', [])
-    .controller('HostScoreboardDashboardCtrl', ['$scope', 'currentGame', function($scope, currentGame) {
+    .controller('HostScoreboardDashboardCtrl', ['$scope', 'currentGame', 
+        function($scope, currentGame) {
             $scope.game = currentGame.game;
         
             console.log($scope.game);
