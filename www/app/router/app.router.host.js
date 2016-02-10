@@ -52,7 +52,7 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
         
         $stateProvider.state('app.host.game', {
             title: 'Game Host Scoreboard',
-            url: '/game-scoreboard/:gameId/:roundId',
+            url: '/game-scoreboard/:gameId',
             views: {
                 'content@app.host': {
                     templateUrl: 'app/views/host/scoreboard/scoreboard.html',
