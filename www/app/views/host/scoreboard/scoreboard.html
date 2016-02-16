@@ -4,8 +4,11 @@
     <div class="row">
         <div class="col-xs-12">
             
-            <div class="pull-right">
+            <div class="well pull-right">
                 <p class="lead">Welcome host!</p>
+                <p>{{game.scheduled  }}</p>
+                <button ng-if="game.started" type="button" class="btn btn-round btn-success" title="Start Game"><i class="fa fa-play"></i></button>
+                <button ng-if="game.started && !game.ended" type="button" class="btn btn-round btn-danger" title="Stop Game"><i class="fa fa-stop"></i></button>
             </div>
             
             <div class="page-header">
@@ -15,55 +18,12 @@
         </div>
     </div>
     
-    
-    
-    <div class="row">
-        <div class="col-xs-12 col-md-6 align-left">
-            <button type="button" class="btn btn-success"><i class="fa fa-play"></i> Start Game</button>
-            <button type="button" class="btn btn-danger"><i class="fa fa-stop"></i> Stop Game</button>
-        </div>
-        <div class="col-xs-12 col-md-6 align-right">
-            <button type="button" class="btn btn-primary"><i class="fa fa-user"></i> Add Team</button>
-            <button type="button" class="btn btn-info"><i class="fa fa-users"></i> Add Player</button>
-            <button type="button" class="btn btn-success btn-lg"><i class="fa fa-plus"></i> Add round</button>
-        </div>
+    <div class="well pull-right">
+        <button type="button" class="btn btn-primary"><i class="fa fa-user"></i> Add Team</button>
+        <button type="button" class="btn btn-info"><i class="fa fa-users"></i> Add Player</button>
+        <button type="button" class="btn btn-success"><i class="fa fa-plus"></i> Add round</button>
     </div>
     
-    <div class="game-scoreboard">
-        
-        <div class="teams" ng-repeat="team in game.teams">
-            <div class="team" data-team-id="{{team.id}}"><span>{{team.id}}</span> - {{team.name}}</div>
-        </div>
-        
-        
-        <div class="game-rounds" ng-repeat="round in game.rounds">
-            
-            <div class="game-round">
-                {{round.name}}
-
-                <div class="form-group">
-                    <label>Max Points</label>
-                    <input type="number" class="form-control" value="5">
-                </div>
-
-                <div class="score-list" ng-repeat="score in round.scores">
-
-                    <div class="team-score" data-team-id="{{score.teamId}}">
-                        {{score.score}}
-                        <table>
-                            <tr>
-                                <td><button type="button" class="btn btn-warning btn-sm"><i class="fa fa-minus"></i></button></td>
-                                <td><input type="number" class="form-control input-sm" data-string-to-number ng-model="score.score" min="0"></td>
-                                <td><button type="button" class="btn btn-success btn-sm"><i class="fa fa-plus"></i></button></td>
-                            </tr>
-                        </table>
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
-        
-    </div> <!-- /game-scoreboard -->
+    <div rc-trivia-scoreboard="game">Should erase this</div>
     
 </div>

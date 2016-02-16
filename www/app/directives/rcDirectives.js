@@ -10,8 +10,7 @@ angular.module('rcDirectives', [
     'rc.bootstrapAlerts',
     'rc.placeholdBrokenImg',
     'rc.stateRedirectTimeout',
-    'rcMessages',
-    'triviaScoreboard'
+    'rcMessages'
 ])
 .constant('DIRECTIVES_URL', (function () {
     var scripts = document.getElementsByTagName("script");

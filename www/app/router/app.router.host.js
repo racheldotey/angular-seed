@@ -60,9 +60,9 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
                 }
             },
             resolve: {
-                TriviaHost: 'TriviaHost',
-                currentGame: function(TriviaHost, $stateParams) {
-                    return TriviaHost.loadGame($stateParams.gameId, $stateParams.roundId);
+                API: 'ApiRoutesGames',
+                currentGame: function(initUser, API, $stateParams) {
+                    return API.getGame($stateParams.gameId);
                 }
             }
         });

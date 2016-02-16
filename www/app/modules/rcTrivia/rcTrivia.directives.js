@@ -16,12 +16,43 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
         scope: {
             game: '=rcTriviaScoreboard'
         },
-        controller: ['$scope', '$timeout', '$state', function($scope, $timeout, $state) {
-                
+        controller: ['$scope', '$filter', '$state', function($scope, $filter, $state) {
+            $scope.viewRound = function(roundId) {
+                console.log("View Round " + roundId);
+                var found = $filter('filter')($scope.game.rounds, {'id':roundId}, true);
+                if(angular.isDefined(found[0])) {
+                    $scope.game.round = found[0];
+                }
+                console.log(found);
+            };
         }],
         link: function(scope, element, attrs) {
             
         }
     };
     
+});
+
+app.directive('rcTriviaScoreboardTeams', function(THIS_DIRECTORY) {
+    return {
+        restrict: 'E',          // Must be a html element
+        transclude: true,       // The element is replaced with the template
+        templateUrl: THIS_DIRECTORY + 'views/scoreboard.teams.html'
+    };
+});
+
+app.directive('rcTriviaScoreboardRounds', function(THIS_DIRECTORY) {
+    return {
+        restrict: 'E',          // Must be a html element
+        transclude: true,       // The element is replaced with the template
+        templateUrl: THIS_DIRECTORY + 'views/scoreboard.rounds.html'
+    };
+});
+
+app.directive('rcTriviaScoreboardQuestion', function(THIS_DIRECTORY) {
+    return {
+        restrict: 'E',          // Must be a html element
+        transclude: true,       // The element is replaced with the template
+        templateUrl: THIS_DIRECTORY + 'views/scoreboard.round.question.html'
+    };
 });

@@ -1,3 +1,11 @@
-<div class="teams" ng-repeat="team in game.teams">
-    <div class="team" data-team-id="{{team.id}}"><span>{{team.id}}</span> - {{team.name}}</div>
+<div class="teams">
+    
+    <div class="section-header">
+        <h4>Competing Teams:</h4>
+    </div>
+    
+    <ul class="teams-list">
+        <li ng-repeat="team in game.teams" class="team" data-team-id="{{team.id}}"><span>{{team.id}} - {{team.name}}</span></li>
+    </ul>
+         
 </div>

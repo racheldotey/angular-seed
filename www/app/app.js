@@ -17,6 +17,7 @@ angular.module('theApp', [
     'api.v1',
     'rcDirectives',
     'rcCart',
+    'rcTrivia',
     'app.config',
     'app.router',
     'app.run',

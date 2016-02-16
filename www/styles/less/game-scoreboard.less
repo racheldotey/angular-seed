@@ -1,22 +1,47 @@
 @scoreboardWidth: 320px;
 @scoreboardRowHeight: 54px;
+@scoreboardHeaderHeight: @scoreboardRowHeight * 2;
 .game-scoreboard {
     border: 2px solid black;
-    display: table-row;
+    display: block;
+    clear: both;
     
     .teams {
         width: @scoreboardWidth;
-                                   border: 1px solid red;
-        display: table-cell;
         
-        .team {
-            height: @scoreboardRowHeight;
-                               border: 1px solid #ccc;
+        .section-header {
+            background-color: #880000;
+            color: #fff;
+            height: @scoreboardHeaderHeight;
+            h1,h2,h3,h4,h5,h6 {
+                margin: 0;
+                padding: 0;
+                font-size: 18px;
+                padding-top: (@scoreboardHeaderHeight / 2) - (18px / 2);
+            }
+        }
+        .teams-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            .team {
+                height: @scoreboardRowHeight;
+                background-color: #47413a;
+                color: #dad9d8;
+                //border-top: 1px solid #dad9d8;
+                font-size: 16px;
+                padding: 0 0 0 8px;
+                margin: 0;
+                padding-top: (@scoreboardRowHeight / 2) - (16px / 2);
+              border-bottom: 1px solid lighten(#47413a, 15%);
+              border-top: 1px solid darken(#47413a, 5%);
+            }
+            
+            
         }
     }
     
     .game-rounds {
-        display: table-cell;
                                          border: 1px dotted #ccc;
             
         .game-round {
@@ -24,6 +49,11 @@
                                border: 1px solid blue;
             
             
+    
+    input.form-control {
+        max-width: 100px;
+    }
+    
             .score-list {
                                          border: 1px solid green;
                 .team-score {

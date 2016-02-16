@@ -1,4 +1,3 @@
-/* CSS crunched with Crunch - http://crunchapp.net/ */
 /*
  * Main Constructor Less File
  * 
@@ -262,6 +261,24 @@ table.dataTable tbody tr td {
 .modal-body .meta p {
   margin: 0 0 5px;
 }
+/* CSS Styles for Bootstrap Circle Buttons */
+.btn-round {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+.btn-round.btn-lg {
+  width: 48px;
+  height: 48px;
+}
+.btn-round.btn-sm {
+  width: 34px;
+  height: 34px;
+}
+.btn-round.btn-xs {
+  width: 24px;
+  height: 24px;
+}
 /*
  * Layout(s) Styles
  * 
@@ -325,24 +342,53 @@ code {
  */
 .game-scoreboard {
   border: 2px solid black;
-  display: table-row;
+  display: block;
+  clear: both;
 }
 .game-scoreboard .teams {
   width: 320px;
-  border: 1px solid red;
-  display: table-cell;
 }
-.game-scoreboard .teams .team {
+.game-scoreboard .teams .section-header {
+  background-color: #880000;
+  color: #fff;
+  height: 108px;
+}
+.game-scoreboard .teams .section-header h1,
+.game-scoreboard .teams .section-header h2,
+.game-scoreboard .teams .section-header h3,
+.game-scoreboard .teams .section-header h4,
+.game-scoreboard .teams .section-header h5,
+.game-scoreboard .teams .section-header h6 {
+  margin: 0;
+  padding: 0;
+  font-size: 18px;
+  padding-top: 45px;
+}
+.game-scoreboard .teams .teams-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.game-scoreboard .teams .teams-list .team {
   height: 54px;
-  border: 1px solid #ccc;
+  background-color: #47413a;
+  color: #dad9d8;
+  font-size: 16px;
+  padding: 0 0 0 8px;
+  margin: 0;
+  padding-top: 19px;
+  border-bottom: 1px solid #71685c;
+  border-top: 1px solid #39342f;
 }
 .game-scoreboard .game-rounds {
-  display: table-cell;
   border: 1px dotted #ccc;
 }
 .game-scoreboard .game-rounds .game-round {
   width: 320px;
   border: 1px solid blue;
+}
+.game-scoreboard .game-rounds .game-round input.form-control {
+  max-width: 100px;
 }
 .game-scoreboard .game-rounds .game-round .score-list {
   border: 1px solid green;

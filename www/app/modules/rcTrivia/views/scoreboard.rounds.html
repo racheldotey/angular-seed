@@ -1,14 +1,32 @@
-<div class="game-rounds" ng-repeat="round in game.rounds">
+<div class="game-rounds">
+
+    <div>
+        <nav>
+            <ul class="pagination">
+                <li>
+                    <a href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li ng-repeat="round in game.rounds"><a ng-click="viewRound(round.id)">{{round.name}}</a></li>
+                <li>
+                    <a href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
 
     <div class="game-round">
-        {{round.name}}
+        {{game.round.name}}
 
         <div class="form-group">
             <label>Max Points</label>
             <input type="number" class="form-control" value="5">
         </div>
 
-        <div class="score-list" ng-repeat="score in round.scores">
+        <div class="score-list" ng-repeat="score in game.round.scores">
 
             <div class="team-score" data-team-id="{{score.teamId}}">
                 {{score.score}}
@@ -23,5 +41,5 @@
 
         </div>
     </div>
-
+    
 </div>

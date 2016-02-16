@@ -61,6 +61,17 @@ class GameData {
                     . "FROM as_game_score_rounds AS s JOIN as_teams AS t ON t.id = s.team_id "
                     . "JOIN as_users AS u ON u.id = s.last_updated_by WHERE s.game_round_id = :game_round_id ORDER BY s.score;");
             
+            $qRoundQuestions = DBConn::preparedQuery("SELECT s.score, s.last_updated AS updated, t.id AS teamId, t.name AS team, "
+                    . "CONCAT(u.name_first, ' ', u.name_last) AS updatedBy "
+                    . "FROM as_game_score_rounds AS s JOIN as_teams AS t ON t.id = s.team_id "
+                    . "JOIN as_users AS u ON u.id = s.last_updated_by WHERE s.game_round_id = :game_round_id ORDER BY s.score;");
+            
+            
+            $qRoundQuestionScores = DBConn::preparedQuery("SELECT s.score, s.last_updated AS updated, t.id AS teamId, t.name AS team, "
+                    . "CONCAT(u.name_first, ' ', u.name_last) AS updatedBy "
+                    . "FROM as_game_score_rounds AS s JOIN as_teams AS t ON t.id = s.team_id "
+                    . "JOIN as_users AS u ON u.id = s.last_updated_by WHERE s.game_round_id = :game_round_id ORDER BY s.score;");
+            
             $rounds = Array();
             while($round = $qGameRounds->fetch(\PDO::FETCH_OBJ)) {
                 // Team Round Scores
