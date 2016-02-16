@@ -229,6 +229,31 @@ table.dataTable tbody tr td {
  * 
  * General typography and text elements style overrides.
  */
+body {
+  background-color: #800 !important;
+  background-image: url('/media/images/trivia-background.png');
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: cover;
+  background-attachment: fixed;
+  font-family: 'Kalam', cursive;
+  color: white;
+  font-size: 16px;
+}
+.auth .container .logo {
+  padding: 30px 0 50px;
+}
+.auth .container .list-group-item label {
+  color: #000;
+}
+.auth .container .btn-danger {
+  background-color: #bb0000;
+  border-color: #d40000;
+}
+.auth .container .btn-danger:hover {
+  background-color: #a20000;
+  border-color: #bb0000;
+}
 .align-right,
 .alignRight,
 .text-right,
@@ -340,6 +365,13 @@ code {
  * 
  * Styles for each area footer that the website may use.
  */
+footer.footer {
+  background-color: #47413a;
+}
+footer.footer .text-muted {
+  color: #dad9d8;
+  font-size: .8em;
+}
 .game-scoreboard {
   border: 2px solid black;
   display: block;
@@ -417,3 +449,5 @@ code {
   border-top: none;
   margin-bottom: 15px;
 }
+
+/*# sourceMappingURL=styles.css.map */

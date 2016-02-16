@@ -23,7 +23,7 @@ class InfoController {
             
         } else if(v::key('userId', v::stringType())->validate($app->request->post()) &&
            v::key('triviaLove', v::stringType())->validate($app->request->post()) &&
-           v::key('terms', v::stringType())->validate($app->request->post())) {
+           v::key('acceptTerms', v::stringType())->validate($app->request->post())) {
             
             $question = array(
                 ':user_id' => $app->request->post('userId'),
@@ -31,28 +31,29 @@ class InfoController {
                 ':answer' => $app->request->post('triviaLove')
             );
             
-            $terms = array(
+            $acceptTerms = array(
                 ':user_id' => $app->request->post('userId'),
-                ':accepted_terms' => ($app->request->post('terms') === 1 || 
-                        $app->request->post('terms') === '1' || 
-                        $app->request->post('terms') === true || 
-                        $app->request->post('terms') === 'true') ? 1 : 0
+                ':accepted_terms' => ($app->request->post('acceptTerms') === 1 || 
+                        $app->request->post('acceptTerms') === '1' || 
+                        $app->request->post('acceptTerms') === true || 
+                        $app->request->post('acceptTerms') === 'true') ? 1 : 0
             );
-            
-            if(InfoData::insertQuestion($question) && InfoData::saveTerms($terms)) {
+            $a = InfoData::insertQuestion($question);
+            $b = InfoData::saveTerms($acceptTerms);
+            if($a && $b) {
                 return $app->render(200, array('msg' => 'Additional info saved.'));
             } else {
                 return $app->render(400, array('msg' => 'Additional info  could not be saved.'));
             }
         } else if(v::key('userId', v::stringType())->validate($app->request->post()) &&
-           v::key('terms', v::stringType())->validate($app->request->post())) {
+           v::key('acceptTerms', v::stringType())->validate($app->request->post())) {
             
             $data = array(
                 ':user_id' => $app->request->post('userId'),
-                ':accepted_terms' => ($app->request->post('terms') === 1 || 
-                        $app->request->post('terms') === '1' || 
-                        $app->request->post('terms') === true || 
-                        $app->request->post('terms') === 'true') ? 1 : 0
+                ':accepted_terms' => ($app->request->post('acceptTerms') === 1 || 
+                        $app->request->post('acceptTerms') === '1' || 
+                        $app->request->post('acceptTerms') === true || 
+                        $app->request->post('acceptTerms') === 'true') ? 1 : 0
             );
             
             if(InfoData::saveTerms($data)) {
@@ -95,16 +96,16 @@ class InfoController {
             $saved = InfoData::insertQuestion($data);
         } 
         
-        if($userId && v::key('terms', v::stringType())->validate($post)) {
+        if($userId && v::key('acceptTerms', v::stringType())->validate($post)) {
             
-            $terms = ($post['terms'] === 1 || 
-                        $post['terms'] === '1' || 
-                        $post['terms'] === true || 
-                        $post['terms'] === 'true') ? 1 : 0;
+            $acceptTerms = ($post['acceptTerms'] === 1 || 
+                        $post['acceptTerms'] === '1' || 
+                        $post['acceptTerms'] === true || 
+                        $post['acceptTerms'] === 'true') ? 1 : 0;
             
             $data = array(
                 ':user_id' => $userId,
-                ':accepted_terms' => $terms
+                ':accepted_terms' => $acceptTerms
             );
             
             $saved = InfoData::saveTerms($data);
