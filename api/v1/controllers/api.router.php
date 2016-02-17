@@ -19,6 +19,7 @@ class ApiRouter {
         self::addDefaultRoutes();
         //self::addErrorRoutes($app, $debugEnabled);
         
+        TestRoutes::addRoutes($app, $authenticateForRole);
         AuthRoutes::addRoutes($app, $authenticateForRole);
         DatatableRoutes::addRoutes($app, $authenticateForRole);
         FieldRoutes::addRoutes($app, $authenticateForRole);
