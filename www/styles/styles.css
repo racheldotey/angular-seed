@@ -230,7 +230,7 @@ table.dataTable tbody tr td {
  * General typography and text elements style overrides.
  */
 body {
-  background-color: #800 !important;
+  background-color: #800000;
   background-image: url('/media/images/trivia-background.png');
   background-repeat: no-repeat;
   background-position: 0 0;
@@ -239,6 +239,23 @@ body {
   font-family: 'Kalam', cursive;
   color: white;
   font-size: 16px;
+}
+body.admin {
+  background: #fff;
+}
+body.admin .layout.admin .container {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  color: #333;
+}
+body.admin .layout.admin .container h1,
+body.admin .layout.admin .container h2,
+body.admin .layout.admin .container h3,
+body.admin .layout.admin .container h4,
+body.admin .layout.admin .container h5,
+body.admin .layout.admin .container h6,
+body.admin .layout.admin .container .navbar-brand {
+  font-family: 'Kalam', cursive;
 }
 .auth .container .logo {
   padding: 30px 0 50px;
@@ -271,6 +288,18 @@ body {
 .text-left,
 .textLeft {
   text-align: left;
+}
+.clear-both,
+.clearBoth {
+  clear: both;
+}
+.clear-left,
+.clearLeft {
+  clear: left;
+}
+.clear-right,
+.clearRight {
+  clear: right;
 }
 .alert {
   padding: 7px 7px 7px 14px;
@@ -325,14 +354,12 @@ body {
   width: 100%;
   /* Set the fixed height of the footer here */
   height: 60px;
-  background-color: #f5f5f5;
 }
 .page {
   margin-bottom: 60px;
 }
 /* Custom page CSS
 -------------------------------------------------- */
-/* Not required for template or sticky footer method. */
 body > .layout-view > .layout > .container {
   padding: 0 15px 0;
 }
@@ -345,15 +372,6 @@ body > .layout-view > .layout > .container {
 }
 code {
   font-size: 80%;
-}
-.clear-both {
-  clear: both;
-}
-.clear-left {
-  clear: left;
-}
-.clear-right {
-  clear: right;
 }
 /*
  * Header(s) Styles

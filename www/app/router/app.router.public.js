@@ -40,6 +40,7 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
         });
 
         $stateProvider.state('app.public.landing', {
+            bodyClass: 'public landing',
             title: 'Welcome',
             url: '/',
             views: {
@@ -51,6 +52,7 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
         });
 
         $stateProvider.state('app.public.about', {
+            bodyClass: 'public about',
             title: 'About Us',
             url: '/about',
             views: {
@@ -62,6 +64,7 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
         });
 
         $stateProvider.state('app.public.tour', {
+            bodyClass: 'public tour',
             title: 'Tour',
             url: '/tour',
             views: {
@@ -73,6 +76,7 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
         });
 
         $stateProvider.state('app.public.contact', {
+            bodyClass: 'public contact',
             title: 'Contact Us',
             url: '/contact',
             views: {
@@ -90,6 +94,7 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
         
         /* Site Map */
         $stateProvider.state('app.public.sitemap', {
+            bodyClass: 'public sitemap',
             title: 'Site Map',
             url: '/sitemap',
             views: {

@@ -43,6 +43,7 @@ app.config(['$stateProvider', 'USER_ROLES',
         /* Login / Authentication Related States */
 
         $stateProvider.state('app.auth.signup', {
+            bodyClass: 'auth signup',
             title: 'Sign Up',
             url: '/signup',
             views: {
@@ -81,6 +82,7 @@ app.config(['$stateProvider', 'USER_ROLES',
         });
         
         $stateProvider.state('app.auth.login', {
+            bodyClass: 'auth login',
             title: 'Login',
             url: '/login',
             views: {
@@ -132,6 +134,7 @@ app.config(['$stateProvider', 'USER_ROLES',
         // Trigger the logout method and then redirect
         // to public.
         $stateProvider.state('app.auth.logout', {
+            bodyClass: 'auth logout',
             url: '/logout'
         });
 

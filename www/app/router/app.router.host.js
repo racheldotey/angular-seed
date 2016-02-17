@@ -40,6 +40,7 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
         });
 
         $stateProvider.state('app.host.dashboard', {
+            bodyClass: 'host dashboard',
             title: 'Host Dashboard',
             url: '/dashboard',
             views: {
@@ -51,6 +52,7 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
         });
         
         $stateProvider.state('app.host.game', {
+            bodyClass: 'host scoreboard',
             title: 'Game Host Scoreboard',
             url: '/game-scoreboard/:gameId',
             views: {

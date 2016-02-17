@@ -40,6 +40,7 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
         });
 
         $stateProvider.state('app.member.dashboard', {
+            bodyClass: 'member dashboard',
             title: 'Member Dashboard',
             url: '/dashboard',
             views: {
@@ -51,6 +52,7 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
         });
 
         $stateProvider.state('app.member.profile', {
+            bodyClass: 'member profile',
             title: 'User Profile',
             url: '/profile',
             views: {
@@ -62,6 +64,7 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
         });
 
         $stateProvider.state('app.member.settings', {
+            bodyClass: 'member settings',
             title: 'User Settings',
             url: '/settings',
             views: {
@@ -73,6 +76,7 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
         });
         
         $stateProvider.state('app.member.game', {
+            bodyClass: 'member scoreboard',
             title: 'Game Scoreboard',
             url: '/game-scoreboard/:gameId',
             views: {
