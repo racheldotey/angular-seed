@@ -64,8 +64,7 @@ var app = angular.module('app.router', [
   'app.router.auth',
   'app.router.host',
   'app.router.member',
-  'app.router.public',
-  'app.router.store'
+  'app.router.public'
 ]);
 app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', 
     function ($stateProvider, $urlRouterProvider, USER_ROLES) {
