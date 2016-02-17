@@ -81,8 +81,8 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES',
                 },
                 siteSystemVariables: function() {
                     return {
-                        siteTitle : 'Angular Seed',
-                        siteUrl : 'angular-seed.com',
+                        siteTitle : 'Trivia Joint',
+                        siteUrl : 'triviajoint.com',
                         siteCopywrite : 'All rights reserved.'
                     };
                 }
