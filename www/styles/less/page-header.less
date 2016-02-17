@@ -3,3 +3,21 @@
  * 
  * Styles for each area header that the website may use.
  */
+ 
+ .navbar-default {
+    background-color: @medium-brown;
+    border-color: darken(@medium-brown, 5%);
+    
+    .navbar-nav>li>a {
+        color: @pale-brown;
+        &:hover {
+            color: darken(@pale-brown, 15%);
+        }
+    }
+    .navbar-nav>.active {
+        &>a, &>a:focus, &>a:hover {
+            color: darken(@pale-brown, 15%);
+            background-color: darken(@medium-brown, 5%);
+        }
+    }
+}

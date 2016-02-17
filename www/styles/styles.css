@@ -317,18 +317,18 @@ html {
 }
 body {
   /* Margin bottom by footer height */
-  margin-bottom: 75px;
+  margin-bottom: 60px;
 }
 .footer {
   position: absolute;
   bottom: 0;
   width: 100%;
   /* Set the fixed height of the footer here */
-  height: 75px;
+  height: 60px;
   background-color: #f5f5f5;
 }
 .page {
-  margin-bottom: 75px;
+  margin-bottom: 60px;
 }
 /* Custom page CSS
 -------------------------------------------------- */
@@ -360,6 +360,22 @@ code {
  * 
  * Styles for each area header that the website may use.
  */
+.navbar-default {
+  background-color: #47413a;
+  border-color: #39342f;
+}
+.navbar-default .navbar-nav > li > a {
+  color: #dad9d8;
+}
+.navbar-default .navbar-nav > li > a:hover {
+  color: #b5b3b1;
+}
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:focus,
+.navbar-default .navbar-nav > .active > a:hover {
+  color: #b5b3b1;
+  background-color: #39342f;
+}
 /*
  * Footer(s) Styles
  * 
@@ -367,6 +383,7 @@ code {
  */
 footer.footer {
   background-color: #47413a;
+  border-top: 1px solid #39342f;
 }
 footer.footer .text-muted {
   color: #dad9d8;

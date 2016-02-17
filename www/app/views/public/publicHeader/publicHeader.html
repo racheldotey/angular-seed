@@ -10,11 +10,6 @@
 
 <div class="collapse navbar-collapse" data-uib-collapse="navbarCollapsed">
     <ul class="nav navbar-nav">
-        <li data-ui-sref-active="active"><a data-ui-sref="app.public.landing">Home</a></li>
-        <li data-ui-sref-active="active"><a data-ui-sref="app.public.about">About</a></li>
-        <li data-ui-sref-active="active"><a data-ui-sref="app.public.tour">Tour</a></li>
-        <li data-ui-sref-active="active"><a data-ui-sref="app.store.home">Store</a></li>
-        <li data-ui-sref-active="active"><a data-ui-sref="app.public.contact">Contact</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
         <li data-ui-sref-active="active" ng-if="userDisplayName"><a data-ui-sref="app.member.dashboard">Members Area</a></li>
@@ -29,6 +24,5 @@
         </li>
         <li data-ui-sref-active="active" ng-if="!userDisplayName"><a data-ui-sref="app.auth.login">Login</a></li>
         <li data-ui-sref-active="active" ng-if="!userDisplayName"><a data-ui-sref="app.auth.signup">Sign Up</a></li>
-        <li data-ui-sref-active="active"><a data-ui-sref="app.store.cart">View Cart</a></li>
     </ul>
 </div>
