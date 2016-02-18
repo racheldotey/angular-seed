@@ -5,75 +5,116 @@
  */
 
 angular.module('rcTrivia.game', [])
-    .factory('TriviaGame', ['$q', 'ApiRoutesGames', function($q, ApiRoutesGames) {
+    .factory('TriviaGame', ['$q', '$filter', 'ApiRoutesGames', 
+        function($q, $filter, ApiRoutesGames) {
+            
         var self = this;
         var api = {};
         
             function Game(newGame) {
-
-                this.id = newGame.id | 0;
-                this.name = newGame.name | 0;
-                this.scheduled = newGame.scheduled | 0;
-                this.started = newGame.started | 0;
-                this.ended = newGame.ended | 0;
-                this.totalRounds = newGame.totalRounds | 0;
-                this.maxPoints = newGame.maxPoints | 0.00;
-
-                this.host = newGame.host | {};
-                this.venue = newGame.venue | {};
-                this.teams = newGame.teams | {};
-                this.rounds = newGame.rounds | {};
+                var game = this;
                 
-                this.getGame = function(id) {
-                    return {
-                        'id' : this.id,
-                        'name' : this.name,
-                        'scheduled' : this.scheduled,
-                        'started' : this.started,
-                        'ended' : this.ended,
-                        'totalRounds' : this.totalRounds,
-                        'maxPoints' : this.maxPoints,
+                game.getGame = function() {
+                    var ga = {
+                        'id' : game.id,
+                        'name' : game.name,
+                        'scheduled' : game.scheduled,
+                        'started' : game.started,
+                        'ended' : game.ended,
+                        'totalRounds' : game.totalRounds,
+                        'maxPoints' : game.maxPoints,
 
-                        'host' : this.host,
-                        'venue' : this.venue
+                        'host' : game.host,
+                        'venue' : game.venue,
+                        'teams' : game.teams,
+                        'round' : game.round,
+                        'rounds' : game.rounds
                     };
+                    return ga;
                 };
                 
-                this.getTeams = function(id) {
-                    return this.rounds[id] | false;
+                game.getRound = function(roundNumber) {
+                    var found = $filter('filter')(game.rounds, {'roundNumber': roundNumber}, true);
+                    return (angular.isDefined(found[0]) && angular.isDefined(found[0].questions)) ? found[0] : false;
                 };
                 
-                this.getRound = function(id) {
-                    return this.rounds[id] | false;
+                game.addRound = function(round) {
+                    var cont = true;
+                    for(var i = 0; i < game.rounds.length; i++) {
+                        if(cont && game.rounds[i].roundNumber == round.roundNumber) {
+                            game.rounds[i] = round;
+                            cont = false;
+                            break;
+                        }
+                    }
+                    
+                    if(cont) {
+                        game.rounds.push(round);
+                    }
                 };
                 
-                this.addRound = function(round) {
-                    this.rounds[round.id] = round;
-                    return this.rounds[round.id];
+                game.viewRound = function(roundNumber, newRound) {
+                    if(newRound) {
+                        game.addRound(newRound);
+                    }
+                    var found = game.getRound(roundNumber);
+                    game.round = (found) ? found : {};
+                    
                 };
+                
+                /* Init */
+                game.id = parseInt(newGame.id) || 0;
+                game.name = newGame.name || 0;
+                game.scheduled = newGame.scheduled || 0;
+                game.started = newGame.started || 0;
+                game.ended = newGame.ended || 0;
+                game.totalRounds = (newGame.rounds) ? newGame.rounds.length : 0;
+                game.maxPoints = parseFloat(newGame.maxPoints) || 0.00;
+
+                game.host = newGame.host || {};
+                game.venue = newGame.venue || {};
+                game.teams = newGame.teams || [];
+                game.rounds = newGame.rounds || [];
+                
+                // Current Round - If one was sent set it as current round
+                if (angular.isDefined(newGame.round)) {
+                    game.viewRound(newGame.roundNumber, newGame.round);
+                } else {
+                    game.round = {};
+                }
             }
-        
-        self.game = new Game({});
     
     
     
         
-        api.loadGame = function(id, round) {
+        api.loadGame = function(gameId, roundNumber) {
             return $q(function (resolve, reject) {
-                ApiRoutesGames.getGame(id).then(function (result) {
-                        self.game = new Game({});
+                ApiRoutesGames.getGame(gameId, roundNumber).then(function (result) {
+                        self.game = new Game(result.game);
+                        var gm = self.game.getGame();
+                        resolve(gm);
                     }, function (error) {
                         reject(error);
                     });
             });          
         };
         
-        api.loadRound = function(id) {
-                ApiRoutesGames.getRound(id).then(function(result) {
-
-                    }, function(error) {
-
+        api.loadRound = function(roundNumber) {
+            return $q(function (resolve, reject) {
+                var round = self.game.viewRound(roundNumber);
+                
+                if(round) {
+                    resolve(round);
+                } else {
+                    ApiRoutesGames.getRound(self.game.id, roundNumber).then(function (result) {
+                        self.game.viewRound(result.round.roundNumber, result.round);
+                        var gm = self.game.getGame();
+                        resolve(gm);
+                    }, function (error) {
+                        reject(error);
                     });
+                }
+            });          
         };
         
         return api;

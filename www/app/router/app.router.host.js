@@ -54,7 +54,7 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
         $stateProvider.state('app.host.game', {
             bodyClass: 'host scoreboard',
             title: 'Game Host Scoreboard',
-            url: '/game-scoreboard/:gameId',
+            url: '/game-scoreboard/:gameId/:roundNumber',
             views: {
                 'content@app.host': {
                     templateUrl: 'app/views/host/scoreboard/scoreboard.html',
@@ -62,9 +62,10 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
                 }
             },
             resolve: {
-                API: 'ApiRoutesGames',
-                currentGame: function(initUser, API, $stateParams) {
-                    return API.getGame($stateParams.gameId);
+                TriviaHost: 'TriviaHost',
+                currentGame: function(initUser, TriviaHost, $stateParams) {
+                    $stateParams.roundNumber = (parseInt($stateParams.roundNumber)) ? $stateParams.roundNumber : 1;
+                    return TriviaHost.loadGame($stateParams.gameId, $stateParams.roundNumber);
                 }
             }
         });

@@ -3,7 +3,74 @@
 
 class GameData {
   
-    static function getGame($id) {
+    static function selectGame($gameId, $roundNumber) {
+        $game = DBConn::selectOne("SELECT g.id, g.name, g.scheduled, g.venue_id AS venueId, g.host_user_id AS hostId, "
+                . "game_started AS started, game_ended AS ended, max_points maxPoints, "
+                . "CONCAT(u.name_first, ' ', u.name_last) AS updatedBy "
+                . "FROM as_games AS g "
+                . "JOIN as_users AS u ON u.id = g.last_updated_by WHERE g.id = :game_id LIMIT 1;", array(':game_id' => $gameId));
+
+        if($game) {
+            // Host
+            $game->host = DBConn::selectOne("SELECT id, name_first AS nameFirst, name_last AS nameLast, email, "
+                    . "CONCAT(name_first, ' ', name_last) AS displayName "
+                    . "FROM as_users WHERE id = :hotst_user_id LIMIT 1;", array(':hotst_user_id' => $game->hostId));
+            unset($game->hostId);
+                        
+            // Venue
+            $game->venue = DBConn::selectOne("SELECT id, name, address, address_b AS addressB, city, state, zip, phone, website "
+                    . "FROM as_venues WHERE id = :venue_id LIMIT 1;", array(':venue_id' => $game->venueId));
+            unset($game->venueId);
+            
+            // Teams and their score
+            $game->teams = DBConn::selectAll("SELECT t.id, t.name FROM as_teams AS t "
+                    . "JOIN as_game_score_teams AS g ON g.team_id = t.id WHERE g.game_id = :game_id;", array(':game_id' => $gameId));
+            
+            $game->rounds = DBConn::selectAll("SELECT r.id, r.order AS roundNumber, r.name FROM as_game_rounds AS r "
+                    . "WHERE r.game_id = :game_id ORDER BY r.order;", array(':game_id' => $gameId));
+            
+            $game->round = self::getGameRound($gameId, $roundNumber);
+        }
+        
+        return $game;
+    }
+  
+    static function getGameRound($gameId, $roundNumber) {
+            
+            // Game Rounds
+            $round = DBConn::selectOne("SELECT r.id AS roundId, r.order AS roundNumber, r.name, r.max_points AS maxPoints "
+                    . "FROM as_game_rounds AS r WHERE r.game_id = :game_id AND r.order = :order;", 
+                    array(':game_id' => $gameId, ':order' => $roundNumber));
+            
+            if($round) {
+
+                $round->scores = DBConn::selectAll("SELECT s.team_id AS teamId, s.score "
+                        . "FROM as_game_score_rounds AS s WHERE s.game_round_id = :game_round_id "
+                        . "ORDER BY s.team_id;", array(':game_round_id' => $round->roundId));
+
+                $qRoundQuestions = DBConn::executeQuery("SELECT q.id AS questionId, q.order AS questionNumber, q.question, q.max_points AS maxPoints "
+                        . "FROM as_game_round_questions AS q  WHERE q.round_id = :round_id ORDER BY q.order;", 
+                        array(':round_id' => $round->roundId));
+
+                $qRoundQuestionScores = DBConn::preparedQuery("SELECT q.team_id AS teamId, q.score "
+                        . "FROM as_game_score_questions AS q WHERE q.question_id = :question_id ORDER BY q.team_id;");
+
+                $questions = Array();
+                while($question = $qRoundQuestions->fetch(\PDO::FETCH_OBJ)) {
+                    // Team Round Scores
+                    $qRoundQuestionScores->execute(array(':question_id' => $question->questionId));
+                    $question->scores = $qRoundQuestionScores->fetchAll(\PDO::FETCH_OBJ);
+
+                    array_push($questions, $question);
+                }
+                $round->questions = $questions;
+                
+            }
+            
+            return $round;
+    }
+  
+    static function getScoreboard($gameId) {
         $game = DBConn::selectOne("SELECT g.id, g.name, g.scheduled, g.venue_id AS venueId, g.host_user_id AS hostId, "
                 . "game_started AS started, game_ended AS ended, max_points maxPoints, "
                 . "CONCAT(u.name_first, ' ', u.name_last) AS updatedBy "
@@ -27,7 +94,7 @@ class GameData {
             // Scoreboard
             $game->scoreboard = DBConn::selectAll("SELECT s.team_id AS teamId, s.score, s.game_winner AS winner, s.last_updated AS updated, t.name AS team, "
                     . "CONCAT(u.name_first, ' ', u.name_last) AS updatedBy "
-                    . "FROM `as_game_score_teams` AS s JOIN as_teams AS t ON t.id = s.team_id "
+                    . "FROM as_game_score_teams AS s JOIN as_teams AS t ON t.id = s.team_id "
                     . "JOIN as_users AS u ON u.id = s.last_updated_by WHERE s.game_id = 1 ORDER BY s.score;", array(':game_id' => $id));
             
             // Teams and their score
@@ -86,6 +153,10 @@ class GameData {
         }
         return $game;
     }
+    
+    
+    
+    /* CRUD for Games */
   
     static function insertGame($validGame) {
         return DBConn::insert("INSERT INTO as_games(name, venue_id, host_user_id, scheduled, created_user_id, last_updated_by) "

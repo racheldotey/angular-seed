@@ -11,8 +11,12 @@ angular.module('apiRoutes.games', [])
         
     var api = {};
 
-    api.getGame = function(id) {
-        return API.get('game/get/' + id, 'Could not get game.');
+    api.getGame = function(gameId, roundNumber) {
+        return API.get('game/get/' + gameId + '/' + roundNumber, 'Could not get game.');
+    };
+
+    api.getRound = function(gameId, roundNumber) {
+        return API.get('game/round/get/' + gameId + '/' + roundNumber, 'Could not get game round.');
     };
     
     return api;

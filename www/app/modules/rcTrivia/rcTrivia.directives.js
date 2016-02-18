@@ -16,15 +16,18 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
         scope: {
             game: '=rcTriviaScoreboard'
         },
-        controller: ['$scope', '$filter', '$state', function($scope, $filter, $state) {
-            $scope.viewRound = function(roundId) {
-                console.log("View Round " + roundId);
-                var found = $filter('filter')($scope.game.rounds, {'id':roundId}, true);
-                if(angular.isDefined(found[0])) {
-                    $scope.game.round = found[0];
-                }
-                console.log(found);
+        controller: ['$scope', 'TriviaHost', '$state', function($scope, TriviaHost, $state) {
+                
+            $scope.buttonViewRound = function(roundNumber) {
+                TriviaHost.loadRound(roundNumber).then(function (result) {
+                        $scope.game = result;
+                        console.log($scope.game);
+                    }, function (error) {
+                        console.log(error);
+                    });
             };
+            
+            
         }],
         link: function(scope, element, attrs) {
             
@@ -35,24 +38,21 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
 
 app.directive('rcTriviaScoreboardTeams', function(THIS_DIRECTORY) {
     return {
-        restrict: 'E',          // Must be a html element
-        transclude: true,       // The element is replaced with the template
+        restrict: 'A',          // Must be a element attribute
         templateUrl: THIS_DIRECTORY + 'views/scoreboard.teams.html'
     };
 });
 
-app.directive('rcTriviaScoreboardRounds', function(THIS_DIRECTORY) {
+app.directive('rcTriviaScoreboardRound', function(THIS_DIRECTORY) {
     return {
-        restrict: 'E',          // Must be a html element
-        transclude: true,       // The element is replaced with the template
-        templateUrl: THIS_DIRECTORY + 'views/scoreboard.rounds.html'
+        restrict: 'A',          // Must be a element attribute
+        templateUrl: THIS_DIRECTORY + 'views/scoreboard.round.html'
     };
 });
 
-app.directive('rcTriviaScoreboardQuestion', function(THIS_DIRECTORY) {
+app.directive('rcTriviaScoreboardRoundNavigation', function(THIS_DIRECTORY) {
     return {
-        restrict: 'E',          // Must be a html element
-        transclude: true,       // The element is replaced with the template
-        templateUrl: THIS_DIRECTORY + 'views/scoreboard.round.question.html'
+        restrict: 'A',          // Must be a element attribute
+        templateUrl: THIS_DIRECTORY + 'views/scoreboard.roundNavigation.html'
     };
 });

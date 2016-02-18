@@ -5,10 +5,11 @@
     border: 2px solid black;
     display: block;
     clear: both;
+    overflow-x:auto;
+    overflow-y:hidden;
+    white-space: nowrap;
     
-    .teams {
-        width: @scoreboardWidth;
-        
+    >header {
         .section-header {
             background-color: #880000;
             color: #fff;
@@ -20,6 +21,12 @@
                 padding-top: (@scoreboardHeaderHeight / 2) - (18px / 2);
             }
         }
+    }
+    
+    .teams {
+        width: @scoreboardWidth;
+        display: inline-block; 
+        
         .teams-list {
             list-style: none;
             padding: 0;
@@ -41,26 +48,16 @@
         }
     }
     
-    .game-rounds {
-                                         border: 1px dotted #ccc;
-            
-        .game-round {
+    .game-round {
+        display: inline-block; 
+    overflow-x:auto;
+    overflow-y:hidden;
+    white-space: nowrap;
+        
+        .question {
             width: @scoreboardWidth;
-                               border: 1px solid blue;
-            
-            
-    
-    input.form-control {
-        max-width: 100px;
-    }
-    
-            .score-list {
-                                         border: 1px solid green;
-                .team-score {
-                    height: @scoreboardRowHeight;
-                                         border: 1px solid pink;
-                }
-            }
+            display: inline-block; 
+                    border: 1px solid green;
         }
     }
 }

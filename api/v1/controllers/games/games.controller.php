@@ -7,12 +7,21 @@ use \Respect\Validation\Validator as v;
 
 class GameController {
 
-    static function getGame($app, $gameId) {
-        $game = GameData::getGame($gameId);
+    static function getGame($app, $gameId, $roundNumber = 1) {
+        $game = GameData::selectGame($gameId, $roundNumber);
         if($game) {
             return $app->render(200, array('game' => $game));
         } else {
             return $app->render(400,  array('msg' => 'Could not select game.'));
+        }
+    }
+
+    static function getGameRound($app, $gameId, $roundNumber) {
+        $round = GameData::getGameRound($gameId, $roundNumber);
+        if($round) {
+            return $app->render(200, array('round' => $round));
+        } else {
+            return $app->render(400,  array('msg' => 'Could not select game round.'));
         }
     }
     

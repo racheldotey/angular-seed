@@ -11,6 +11,7 @@ angular.module('rcTrivia.host', [])
         var self = this;
         var api = {};
         
+        api.getGame = TriviaGame.getGame;
         api.loadGame = TriviaGame.loadGame;
         api.loadRound = TriviaGame.loadRound;
         

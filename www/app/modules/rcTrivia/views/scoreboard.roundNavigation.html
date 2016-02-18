@@ -1,0 +1,15 @@
+<nav class="game-round-navigation">
+    <ul class="pagination">
+        <li>
+            <a href="#" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        <li ng-repeat="round in game.rounds" ng-class="{'active' : game.round.roundNumber == round.roundNumber}" class="paginate_button"><a ng-click="buttonViewRound(round.roundNumber)">{{round.name}}</a></li>
+        <li>
+            <a href="#" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</nav>

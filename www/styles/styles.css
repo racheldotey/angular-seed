@@ -411,25 +411,29 @@ footer.footer .text-muted {
   border: 2px solid black;
   display: block;
   clear: both;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
 }
-.game-scoreboard .teams {
-  width: 320px;
-}
-.game-scoreboard .teams .section-header {
+.game-scoreboard > header .section-header {
   background-color: #880000;
   color: #fff;
   height: 108px;
 }
-.game-scoreboard .teams .section-header h1,
-.game-scoreboard .teams .section-header h2,
-.game-scoreboard .teams .section-header h3,
-.game-scoreboard .teams .section-header h4,
-.game-scoreboard .teams .section-header h5,
-.game-scoreboard .teams .section-header h6 {
+.game-scoreboard > header .section-header h1,
+.game-scoreboard > header .section-header h2,
+.game-scoreboard > header .section-header h3,
+.game-scoreboard > header .section-header h4,
+.game-scoreboard > header .section-header h5,
+.game-scoreboard > header .section-header h6 {
   margin: 0;
   padding: 0;
   font-size: 18px;
   padding-top: 45px;
+}
+.game-scoreboard .teams {
+  width: 320px;
+  display: inline-block;
 }
 .game-scoreboard .teams .teams-list {
   list-style: none;
@@ -447,22 +451,16 @@ footer.footer .text-muted {
   border-bottom: 1px solid #71685c;
   border-top: 1px solid #39342f;
 }
-.game-scoreboard .game-rounds {
-  border: 1px dotted #ccc;
+.game-scoreboard .game-round {
+  display: inline-block;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
 }
-.game-scoreboard .game-rounds .game-round {
+.game-scoreboard .game-round .question {
   width: 320px;
-  border: 1px solid blue;
-}
-.game-scoreboard .game-rounds .game-round input.form-control {
-  max-width: 100px;
-}
-.game-scoreboard .game-rounds .game-round .score-list {
+  display: inline-block;
   border: 1px solid green;
-}
-.game-scoreboard .game-rounds .game-round .score-list .team-score {
-  height: 54px;
-  border: 1px solid pink;
 }
 .store.item-details .page-header {
   margin-top: 0;
