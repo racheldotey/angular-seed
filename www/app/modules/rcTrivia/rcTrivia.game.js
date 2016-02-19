@@ -78,7 +78,7 @@ angular.module('rcTrivia.game', [])
                 
                 // Current Round - If one was sent set it as current round
                 if (angular.isDefined(newGame.round)) {
-                    game.viewRound(newGame.roundNumber, newGame.round);
+                    game.viewRound(newGame.round.roundNumber, newGame.round);
                 } else {
                     game.round = {};
                 }

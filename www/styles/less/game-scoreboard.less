@@ -2,63 +2,121 @@
 @scoreboardRowHeight: 54px;
 @scoreboardHeaderHeight: @scoreboardRowHeight * 2;
 .game-scoreboard {
-    border: 2px solid black;
-    display: block;
+    border: 1px solid @medium-brown;
+    display: table;
     clear: both;
-    overflow-x:auto;
-    overflow-y:hidden;
-    white-space: nowrap;
+    width: 100%;
+    max-width: 100%;
+    overflow:hidden;
     
     >header {
-        .section-header {
-            background-color: #880000;
-            color: #fff;
-            height: @scoreboardHeaderHeight;
-            h1,h2,h3,h4,h5,h6 {
-                margin: 0;
+        border-bottom: 1px solid @medium-brown;
+        display: table-row;
+        >div {
+            display: table-cell;
+        }
+        
+        
+        .game-header {
+            padding: 0 0 0 8px;
+            .game-title {
+                margin: 0 0 10px;
+            }
+            .game-host {
+                
+            }
+        }
+        
+        .game-round-navigation nav {
+            text-align: center;
+            ul {
                 padding: 0;
-                font-size: 18px;
-                padding-top: (@scoreboardHeaderHeight / 2) - (18px / 2);
+                margin: 20px 0 10px;
             }
         }
     }
     
-    .teams {
-        width: @scoreboardWidth;
-        display: inline-block; 
+    >section {
+        display: table-row;
+                //white-space: nowrap;
+        >div {
+            display: table-cell;
+            vertical-align: top;
+            &.fixed {
+                width: @scoreboardWidth;
+            }
+            &.scrolling {
+                overflow-x:auto;
+                overflow-y:hidden;
+                white-space: nowrap;
+            }
+        }
         
-        .teams-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            .team {
-                height: @scoreboardRowHeight;
-                background-color: #47413a;
-                color: #dad9d8;
-                //border-top: 1px solid #dad9d8;
-                font-size: 16px;
-                padding: 0 0 0 8px;
+        .teams {
+            width: @scoreboardWidth;     
+            .header {
+                height: @scoreboardHeaderHeight;
+            }
+            .teams-list {
+                list-style: none;
+                padding: 0;
                 margin: 0;
-                padding-top: (@scoreboardRowHeight / 2) - (16px / 2);
-              border-bottom: 1px solid lighten(#47413a, 15%);
-              border-top: 1px solid darken(#47413a, 5%);
+                .team {
+                    height: @scoreboardRowHeight;
+                    background-color: @medium-brown;
+                    color: @pale-brown;
+                    font-size: 16px;
+                    padding: 0 0 0 8px;
+                    margin: 0;
+                    padding-top: (@scoreboardRowHeight / 2) - (16px / 2);
+                    border-bottom: 1px solid lighten(#47413a, 15%);
+                    border-top: 1px solid darken(#47413a, 5%);
+                }
             }
-            
-            
+        }
+        
+        .game-round {
+            .question {
+                width: @scoreboardWidth;
+                display: inline-block; 
+                border-right: 1px solid lighten(@pale-brown, 15%);
+                border-left: 1px solid lighten(@pale-brown, 5%);
+                        
+                .question-header {
+                    height: @scoreboardHeaderHeight;
+                    display: block;
+                    padding: 8px;
+                    white-space: normal;
+                }
+                .team-score {
+                    height: @scoreboardRowHeight;
+                    text-align: center;
+                    background-color: @pale-brown;
+                    color: @medium-brown;
+                    padding: 0 0 0 8px;
+                    margin: 0;
+                    padding-top: (@scoreboardRowHeight / 2) - (30px / 2);
+                    border-bottom: 1px solid lighten(@pale-brown, 15%);
+                    border-top: 1px solid darken(@pale-brown, 5%);
+                    
+                    table {
+                        margin: 0 auto;
+                    }
+                    input {
+                        width: 100px;
+                        margin: 0 10px;
+                    }
+                }
+            }
         }
     }
     
-    .game-round {
-        display: inline-block; 
-    overflow-x:auto;
-    overflow-y:hidden;
-    white-space: nowrap;
-        
-        .question {
-            width: @scoreboardWidth;
-            display: inline-block; 
-                    border: 1px solid green;
+    >footer {
+        display: table-row;
+        >div {
+            display: table-cell;
         }
     }
+    
 }
 

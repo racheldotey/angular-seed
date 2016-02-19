@@ -44,10 +44,11 @@ class GameData {
             
             if($round) {
 
-                $round->scores = DBConn::selectAll("SELECT s.team_id AS teamId, s.score "
-                        . "FROM as_game_score_rounds AS s WHERE s.game_round_id = :game_round_id "
+                $round->scores = DBConn::selectAll("SELECT s.team_id AS teamId, IFNULL(s.score, 0) AS score "
+                        . "FROM as_game_score_teams AS t LEFT JOIN as_game_score_rounds AS s "
+                        . "ON t.team_id = s.team_id AND s.game_round_id = :game_round_id "
                         . "ORDER BY s.team_id;", array(':game_round_id' => $round->roundId));
-
+                
                 $qRoundQuestions = DBConn::executeQuery("SELECT q.id AS questionId, q.order AS questionNumber, q.question, q.max_points AS maxPoints "
                         . "FROM as_game_round_questions AS q  WHERE q.round_id = :round_id ORDER BY q.order;", 
                         array(':round_id' => $round->roundId));
@@ -69,7 +70,7 @@ class GameData {
             
             return $round;
     }
-  
+
     static function getScoreboard($gameId) {
         $game = DBConn::selectOne("SELECT g.id, g.name, g.scheduled, g.venue_id AS venueId, g.host_user_id AS hostId, "
                 . "game_started AS started, game_ended AS ended, max_points maxPoints, "

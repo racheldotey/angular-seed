@@ -236,26 +236,17 @@ body {
   background-position: 0 0;
   background-size: cover;
   background-attachment: fixed;
-  font-family: 'Kalam', cursive;
   color: white;
-  font-size: 16px;
+}
+body panel,
+body .well {
+  color: #333;
 }
 body.admin {
   background: #fff;
 }
 body.admin .layout.admin .container {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 14px;
   color: #333;
-}
-body.admin .layout.admin .container h1,
-body.admin .layout.admin .container h2,
-body.admin .layout.admin .container h3,
-body.admin .layout.admin .container h4,
-body.admin .layout.admin .container h5,
-body.admin .layout.admin .container h6,
-body.admin .layout.admin .container .navbar-brand {
-  font-family: 'Kalam', cursive;
 }
 .auth .container .logo {
   padding: 30px 0 50px;
@@ -408,39 +399,60 @@ footer.footer .text-muted {
   font-size: .8em;
 }
 .game-scoreboard {
-  border: 2px solid black;
-  display: block;
+  border: 1px solid #47413a;
+  display: table;
   clear: both;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+.game-scoreboard > header {
+  border-bottom: 1px solid #47413a;
+  display: table-row;
+}
+.game-scoreboard > header > div {
+  display: table-cell;
+}
+.game-scoreboard > header .game-header {
+  padding: 0 0 0 8px;
+}
+.game-scoreboard > header .game-header .game-title {
+  margin: 0 0 10px;
+}
+.game-scoreboard > header .game-round-navigation nav {
+  text-align: center;
+}
+.game-scoreboard > header .game-round-navigation nav ul {
+  padding: 0;
+  margin: 20px 0 10px;
+}
+.game-scoreboard > section {
+  display: table-row;
+}
+.game-scoreboard > section > div {
+  display: table-cell;
+  vertical-align: top;
+}
+.game-scoreboard > section > div.fixed {
+  width: 320px;
+}
+.game-scoreboard > section > div.scrolling {
   overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
 }
-.game-scoreboard > header .section-header {
-  background-color: #880000;
-  color: #fff;
+.game-scoreboard > section .teams {
+  width: 320px;
+}
+.game-scoreboard > section .teams .header {
   height: 108px;
 }
-.game-scoreboard > header .section-header h1,
-.game-scoreboard > header .section-header h2,
-.game-scoreboard > header .section-header h3,
-.game-scoreboard > header .section-header h4,
-.game-scoreboard > header .section-header h5,
-.game-scoreboard > header .section-header h6 {
-  margin: 0;
-  padding: 0;
-  font-size: 18px;
-  padding-top: 45px;
-}
-.game-scoreboard .teams {
-  width: 320px;
-  display: inline-block;
-}
-.game-scoreboard .teams .teams-list {
+.game-scoreboard > section .teams .teams-list {
   list-style: none;
   padding: 0;
   margin: 0;
 }
-.game-scoreboard .teams .teams-list .team {
+.game-scoreboard > section .teams .teams-list .team {
   height: 54px;
   background-color: #47413a;
   color: #dad9d8;
@@ -451,16 +463,41 @@ footer.footer .text-muted {
   border-bottom: 1px solid #71685c;
   border-top: 1px solid #39342f;
 }
-.game-scoreboard .game-round {
-  display: inline-block;
-  overflow-x: auto;
-  overflow-y: hidden;
-  white-space: nowrap;
-}
-.game-scoreboard .game-round .question {
+.game-scoreboard > section .game-round .question {
   width: 320px;
   display: inline-block;
-  border: 1px solid green;
+  border-right: 1px solid #ffffff;
+  border-left: 1px solid #e6e6e5;
+}
+.game-scoreboard > section .game-round .question .question-header {
+  height: 108px;
+  display: block;
+  padding: 8px;
+  white-space: normal;
+}
+.game-scoreboard > section .game-round .question .team-score {
+  height: 54px;
+  text-align: center;
+  background-color: #dad9d8;
+  color: #47413a;
+  padding: 0 0 0 8px;
+  margin: 0;
+  padding-top: 12px;
+  border-bottom: 1px solid #ffffff;
+  border-top: 1px solid #cecccb;
+}
+.game-scoreboard > section .game-round .question .team-score table {
+  margin: 0 auto;
+}
+.game-scoreboard > section .game-round .question .team-score input {
+  width: 100px;
+  margin: 0 10px;
+}
+.game-scoreboard > footer {
+  display: table-row;
+}
+.game-scoreboard > footer > div {
+  display: table-cell;
 }
 .store.item-details .page-header {
   margin-top: 0;
