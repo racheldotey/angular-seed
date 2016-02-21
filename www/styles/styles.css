@@ -400,11 +400,8 @@ footer.footer .text-muted {
 }
 .game-scoreboard {
   border: 1px solid #47413a;
-  display: table;
   clear: both;
   width: 100%;
-  max-width: 100%;
-  overflow: hidden;
 }
 .game-scoreboard > header {
   border-bottom: 1px solid #47413a;
@@ -426,78 +423,47 @@ footer.footer .text-muted {
   padding: 0;
   margin: 20px 0 10px;
 }
-.game-scoreboard > section {
-  display: table-row;
-}
-.game-scoreboard > section > div {
-  display: table-cell;
-  vertical-align: top;
-}
-.game-scoreboard > section > div.fixed {
+.game-scoreboard > section table td {
   width: 320px;
-}
-.game-scoreboard > section > div.scrolling {
-  overflow-x: auto;
-  overflow-y: hidden;
-  white-space: nowrap;
-}
-.game-scoreboard > section .teams {
-  width: 320px;
-}
-.game-scoreboard > section .teams .header {
-  height: 108px;
-}
-.game-scoreboard > section .teams .teams-list {
-  list-style: none;
-  padding: 0;
+  padding: 0 0 0 8px;
   margin: 0;
 }
-.game-scoreboard > section .teams .teams-list .team {
+.game-scoreboard > section table th {
+  width: 320px;
+  padding: 0 0 0 8px;
+  margin: 0;
+  background-color: #800000;
+  color: #fff;
+  border-bottom: 1px solid #cd0000;
+  border-top: 1px solid #670000;
+}
+.game-scoreboard > section table .team {
   height: 54px;
   background-color: #47413a;
   color: #dad9d8;
   font-size: 16px;
-  padding: 0 0 0 8px;
-  margin: 0;
   padding-top: 19px;
   border-bottom: 1px solid #71685c;
   border-top: 1px solid #39342f;
 }
-.game-scoreboard > section .game-round .question {
-  width: 320px;
-  display: inline-block;
-  border-right: 1px solid #ffffff;
-  border-left: 1px solid #e6e6e5;
-}
-.game-scoreboard > section .game-round .question .question-header {
-  height: 108px;
-  display: block;
-  padding: 8px;
-  white-space: normal;
-}
-.game-scoreboard > section .game-round .question .team-score {
+.game-scoreboard > section table .question-score {
   height: 54px;
   text-align: center;
   background-color: #dad9d8;
   color: #47413a;
-  padding: 0 0 0 8px;
-  margin: 0;
-  padding-top: 12px;
-  border-bottom: 1px solid #ffffff;
+  padding-top: 9px;
   border-top: 1px solid #cecccb;
+  border-right: 1px solid #cecccb;
+  border-bottom: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
 }
-.game-scoreboard > section .game-round .question .team-score table {
+.game-scoreboard > section table .question-score table.score-control {
   margin: 0 auto;
+  border: none;
 }
-.game-scoreboard > section .game-round .question .team-score input {
+.game-scoreboard > section table .question-score input {
   width: 100px;
   margin: 0 10px;
-}
-.game-scoreboard > footer {
-  display: table-row;
-}
-.game-scoreboard > footer > div {
-  display: table-cell;
 }
 .store.item-details .page-header {
   margin-top: 0;

@@ -3,11 +3,8 @@
 @scoreboardHeaderHeight: @scoreboardRowHeight * 2;
 .game-scoreboard {
     border: 1px solid @medium-brown;
-    display: table;
     clear: both;
     width: 100%;
-    max-width: 100%;
-    overflow:hidden;
     
     >header {
         border-bottom: 1px solid @medium-brown;
@@ -37,84 +34,56 @@
     }
     
     >section {
-        display: table-row;
-                //white-space: nowrap;
-        >div {
-            display: table-cell;
-            vertical-align: top;
-            &.fixed {
+        table {
+            td {
                 width: @scoreboardWidth;
-            }
-            &.scrolling {
-                overflow-x:auto;
-                overflow-y:hidden;
-                white-space: nowrap;
-            }
-        }
-        
-        .teams {
-            width: @scoreboardWidth;     
-            .header {
-                height: @scoreboardHeaderHeight;
-            }
-            .teams-list {
-                list-style: none;
-                padding: 0;
+                padding: 0 0 0 8px;
                 margin: 0;
-                .team {
-                    height: @scoreboardRowHeight;
-                    background-color: @medium-brown;
-                    color: @pale-brown;
-                    font-size: 16px;
-                    padding: 0 0 0 8px;
-                    margin: 0;
-                    padding-top: (@scoreboardRowHeight / 2) - (16px / 2);
-                    border-bottom: 1px solid lighten(#47413a, 15%);
-                    border-top: 1px solid darken(#47413a, 5%);
-                }
             }
-        }
-        
-        .game-round {
-            .question {
+            th {
                 width: @scoreboardWidth;
-                display: inline-block; 
-                border-right: 1px solid lighten(@pale-brown, 15%);
-                border-left: 1px solid lighten(@pale-brown, 5%);
-                        
-                .question-header {
-                    height: @scoreboardHeaderHeight;
-                    display: block;
-                    padding: 8px;
-                    white-space: normal;
+                padding: 0 0 0 8px;
+                margin: 0;
+                background-color: @brick-red;
+                color: #fff;
+                border-bottom: 1px solid lighten(@brick-red, 15%);
+                border-top: 1px solid darken(@brick-red, 5%);
+            }
+            .team {
+                height: @scoreboardRowHeight;
+                background-color: @medium-brown;
+                color: @pale-brown;
+                font-size: 16px;
+                padding-top: (@scoreboardRowHeight / 2) - (16px / 2);
+                border-bottom: 1px solid lighten(@medium-brown, 15%);
+                border-top: 1px solid darken(@medium-brown, 5%);
+            }
+            
+            .question-score {
+                height: @scoreboardRowHeight;
+                text-align: center;
+                background-color: @pale-brown;
+                color: @medium-brown;
+                padding-top: (@scoreboardRowHeight / 2) - (36px / 2);
+                border-top: 1px solid darken(@pale-brown, 5%);
+                border-right: 1px solid darken(@pale-brown, 5%);
+                border-bottom: 1px solid lighten(@pale-brown, 15%);
+                border-left: 1px solid lighten(@pale-brown, 15%);
+                
+                table.score-control {
+                    margin: 0 auto;
+                    border: none;
                 }
-                .team-score {
-                    height: @scoreboardRowHeight;
-                    text-align: center;
-                    background-color: @pale-brown;
-                    color: @medium-brown;
-                    padding: 0 0 0 8px;
-                    margin: 0;
-                    padding-top: (@scoreboardRowHeight / 2) - (30px / 2);
-                    border-bottom: 1px solid lighten(@pale-brown, 15%);
-                    border-top: 1px solid darken(@pale-brown, 5%);
-                    
-                    table {
-                        margin: 0 auto;
-                    }
-                    input {
-                        width: 100px;
-                        margin: 0 10px;
-                    }
+                input {
+                    width: 100px;
+                    margin: 0 10px;
                 }
             }
         }
     }
     
     >footer {
-        display: table-row;
         >div {
-            display: table-cell;
         }
     }
     

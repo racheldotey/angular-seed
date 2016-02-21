@@ -9,31 +9,51 @@
     </header>
     
     <section>
-        <table>
-            <tr ng-repeat="question in game.round.questions">
-                <td></td>
-            </tr>
-        </table>
-        
-        
-    <div class="question" ng-repeat="question in game.round.questions">
-
-        <div class="question-header">
-            <p># {{question.questionNumber}}</p>
-            <p>{{question.question}}</p>
-        </div>
-        
-        <div class="team-score" ng-repeat="score in question.scores">
-            <table>
+        <table class="scoreboard">
+            <thead>
                 <tr>
-                    <td><button type="button" class="btn btn-danger btn-sm btn-round"><i class="fa fa-ban"></i></button></td>
-                    <td><input type="number" class="form-control input-sm" data-string-to-number ng-model="score.score" min="0"></td>
-                    <td><button type="button" class="btn btn-success btn-sm btn-round"><i class="fa fa-check"></i></button></td>
+                    <th>Teams:</th>
+                    <th ng-repeat="question in game.round.questions" data-team-id="{{question.questionId}}">
+                        #{{question.questionId}} — {{question.question}}
+                    </th>
                 </tr>
-            </table>
-        </div>
-
-    </div>
+            </thead>
+            <tbody>
+                <tr ng-repeat="team in game.round.teams" data-team-id="{{team.teamId}}">
+                    <td class="team">{{team.team}}</td>
+                    <td class="question-score" ng-repeat="teamScore in team.scores" data-question-id="{{teamScore.questionId}}">
+                        <table class="score-control">
+                            <tr>
+                                <td>
+                                    <button 
+                                        ng-click="buttonQuestionWrong(teamScore.questionId, teamScore.questionScore)" 
+                                        type="button" 
+                                        class="btn btn-danger btn-sm btn-round">
+                                        <i class="fa fa-ban"></i>
+                                    </button>
+                                </td>
+                                <td>
+                                    <input 
+                                        type="number" 
+                                        class="form-control input-sm" 
+                                        data-string-to-number 
+                                        ng-model="teamScore.questionScore" 
+                                        min="0">
+                                </td>
+                                <td>
+                                    <button 
+                                        ng-click="buttonQuestionCorrect(teamScore.questionId, teamScore.questionScore)" 
+                                        type="button" 
+                                        class="btn btn-success btn-sm btn-round">
+                                        <i class="fa fa-check"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </section>
     
     <footer>

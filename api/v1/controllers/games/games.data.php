@@ -12,6 +12,8 @@ class GameData {
 
         if($game) {
             // Host
+            
+            /*
             $game->host = DBConn::selectOne("SELECT id, name_first AS nameFirst, name_last AS nameLast, email, "
                     . "CONCAT(name_first, ' ', name_last) AS displayName "
                     . "FROM as_users WHERE id = :hotst_user_id LIMIT 1;", array(':hotst_user_id' => $game->hostId));
@@ -25,6 +27,8 @@ class GameData {
             // Teams and their score
             $game->teams = DBConn::selectAll("SELECT t.id, t.name FROM as_teams AS t "
                     . "JOIN as_game_score_teams AS g ON g.team_id = t.id WHERE g.game_id = :game_id;", array(':game_id' => $gameId));
+            
+             */
             
             $game->rounds = DBConn::selectAll("SELECT r.id, r.order AS roundNumber, r.name FROM as_game_rounds AS r "
                     . "WHERE r.game_id = :game_id ORDER BY r.order;", array(':game_id' => $gameId));
@@ -44,27 +48,31 @@ class GameData {
             
             if($round) {
 
-                $round->scores = DBConn::selectAll("SELECT s.team_id AS teamId, IFNULL(s.score, 0) AS score "
-                        . "FROM as_game_score_teams AS t LEFT JOIN as_game_score_rounds AS s "
-                        . "ON t.team_id = s.team_id AND s.game_round_id = :game_round_id "
-                        . "ORDER BY s.team_id;", array(':game_round_id' => $round->roundId));
-                
-                $qRoundQuestions = DBConn::executeQuery("SELECT q.id AS questionId, q.order AS questionNumber, q.question, q.max_points AS maxPoints "
+                $round->questions = DBConn::selectAll("SELECT q.id AS questionId, q.order AS questionNumber, q.question, q.max_points AS maxPoints "
                         . "FROM as_game_round_questions AS q  WHERE q.round_id = :round_id ORDER BY q.order;", 
                         array(':round_id' => $round->roundId));
+                
+                $qRoundTeams = DBConn::executeQuery("SELECT s.team_id AS teamId, t.name AS team, IFNULL(r.score, 0) AS roundScore 
+FROM as_game_score_teams AS s
+LEFT JOIN as_game_score_rounds AS r ON s.team_id = r.team_id AND r.game_round_id = :game_round_id
+JOIN as_teams AS t ON t.id = s.team_id
+ORDER BY s.team_id;", array(':game_round_id' => $round->roundId));
 
-                $qRoundQuestionScores = DBConn::preparedQuery("SELECT q.team_id AS teamId, q.score "
-                        . "FROM as_game_score_questions AS q WHERE q.question_id = :question_id ORDER BY q.team_id;");
+                $qTeamScores = DBConn::preparedQuery("SELECT q.id AS questionId, IFNULL(s.score, 0) AS questionScore 
+FROM as_game_round_questions AS q 
+LEFT JOIN as_game_score_questions AS s ON s.question_id = q.id AND s.team_id = :team_id
+WHERE q.round_id = :round_id
+ORDER BY q.order;");
 
-                $questions = Array();
-                while($question = $qRoundQuestions->fetch(\PDO::FETCH_OBJ)) {
+                $teams = Array();
+                while($team = $qRoundTeams->fetch(\PDO::FETCH_OBJ)) {
                     // Team Round Scores
-                    $qRoundQuestionScores->execute(array(':question_id' => $question->questionId));
-                    $question->scores = $qRoundQuestionScores->fetchAll(\PDO::FETCH_OBJ);
+                    $qTeamScores->execute(array(':round_id' => $round->roundId, ':team_id' => $team->teamId));
+                    $team->scores = $qTeamScores->fetchAll(\PDO::FETCH_OBJ);
 
-                    array_push($questions, $question);
+                    array_push($teams, $team);
                 }
-                $round->questions = $questions;
+                $round->teams = $teams;
                 
             }
             
