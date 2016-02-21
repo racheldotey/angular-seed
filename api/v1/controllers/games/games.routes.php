@@ -7,7 +7,7 @@ class GameRoutes {
             
         //* /game/ routes - for registered users
         
-        $app->group('/game', $authenticateForRole('registered-user'), function () use ($app) {
+        $app->group('/trivia', $authenticateForRole('registered-user'), function () use ($app) {
             
             /*
              * id

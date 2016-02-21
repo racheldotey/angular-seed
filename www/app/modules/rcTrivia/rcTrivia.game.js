@@ -84,15 +84,11 @@ angular.module('rcTrivia.game', [])
                 }
             }
     
-    
-    
-        
         api.loadGame = function(gameId, roundNumber) {
             return $q(function (resolve, reject) {
                 ApiRoutesGames.getGame(gameId, roundNumber).then(function (result) {
                         self.game = new Game(result.game);
-                        var gm = self.game.getGame();
-                        resolve(gm);
+                        resolve(self.game.getGame());
                     }, function (error) {
                         reject(error);
                     });
@@ -108,13 +104,72 @@ angular.module('rcTrivia.game', [])
                 } else {
                     ApiRoutesGames.getRound(self.game.id, roundNumber).then(function (result) {
                         self.game.viewRound(result.round.roundNumber, result.round);
-                        var gm = self.game.getGame();
-                        resolve(gm);
+                        resolve(self.game.getGame());
                     }, function (error) {
                         reject(error);
                     });
                 }
             });          
+        };
+        
+        api.startGame = function() {
+            return $q(function (resolve, reject) {
+                ApiRoutesGames.startGame(self.game.id).then(function (result) {
+                    self.game.started = result.started;
+                    resolve(self.game.getGame());
+                }, function (error) {
+                    reject(error);
+                });
+            });    
+        };
+        
+        api.endGame = function() {
+            return $q(function (resolve, reject) {
+                ApiRoutesGames.endGame(self.game.id).then(function (result) {
+                    self.game.ended = result.ended;
+                    resolve(self.game.getGame());
+                }, function (error) {
+                    reject(error);
+                });
+            });    
+        };
+        
+        api.teamAnsweredIncorrectly = function(teamId, questionId) {
+            for(var i = 0; i < self.game.round.teams.length; i++) {
+                if(self.game.round.teams[i].teamId == teamId) {
+                    for (var q = 0; q < self.game.round.teams[i].scores.length; q++) {
+                        if (self.game.round.teams[i].scores[q].questionId == questionId) {
+                            self.game.round.teams[i].scores[q].questionScore = 0;
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+            return self.game.getGame();
+        };
+        
+        api.teamAnsweredCorrectly = function(teamId, questionId) {
+            var maxPoints = 1;
+            for(var i = 0; i < self.game.round.questions.length; i++) {
+                if(self.game.round.questions[i].questionId == questionId) {
+                    maxPoints = self.game.round.questions[i].maxPoints;
+                    break;
+                }
+            }
+            
+            for(var i = 0; i < self.game.round.teams.length; i++) {
+                if(self.game.round.teams[i].teamId == teamId) {
+                    for (var q = 0; q < self.game.round.teams[i].scores.length; q++) {
+                        if (self.game.round.teams[i].scores[q].questionId == questionId) {
+                            self.game.round.teams[i].scores[q].questionScore = maxPoints;
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+            return self.game.getGame();
         };
         
         return api;

@@ -88,8 +88,8 @@ class GameController {
         ));
         
         if($saved) {
-            $game = GameData::getGame($gameId);
-            return $app->render(200, array('game' => $game));
+            $started = GameData::selectStarted($gameId);
+            return $app->render(200, array('msg' => 'Game has started.', 'started' => $started));
         } else {
             return $app->render(400,  array('msg' => 'System failed to start game.'));
         }
@@ -106,8 +106,8 @@ class GameController {
         ));
         
         if($saved) {
-            $game = GameData::getGame($gameId);
-            return $app->render(200, array('game' => $game));
+            $ended = GameData::selectEnded($gameId);
+            return $app->render(200, array('msg' => 'Game has ended.', 'ended' => $ended));
         } else {
             return $app->render(400,  array('msg' => 'System failed to end game.'));
         }

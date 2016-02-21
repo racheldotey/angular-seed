@@ -28,7 +28,6 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                     });
             };
             
-            
             $scope.buttonStartGame = function() {
                 AlertConfirmService.confirm('Are you sure you want to start this game? It cannot be paused once started.', 'Confirm Start Game.')
                     .result.then(function () {

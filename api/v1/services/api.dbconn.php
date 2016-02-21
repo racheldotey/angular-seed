@@ -187,6 +187,30 @@ class DBConn {
             return false;
         }
     }
+    
+    /*
+     * Preform fetchAll opperation with on a prepared PDO query.
+     * 
+     * @param string A valid SQL statement template for the target database server.
+     * @param array|optional An array of values with as many elements as there 
+     * are bound parameters in the SQL statement being executed.
+     * @param enum This value must be one of the \PDO::FETCH_* constants, 
+     * defaulting to \PDO::FETCH_OBJ (php.net/manual/en/pdostatement.fetch.php)
+     * 
+     * @return array|bool returns a single column in the next row of a result set,
+     * or FALSE if no results were found.
+     */
+    public static function selectColumn($query, $data = array(), $style = \PDO::FETCH_OBJ) {
+        $pdo = self::connect();
+        try {
+            $q = $pdo->prepare($query);            
+            $q->execute($data);
+            return $q->fetchColumn();
+        } catch (\PDOException $e) {
+            self::logPDOError($q);
+            return false;
+        }
+    }
 
     /*
      * Preform delete opperation with on a prepared PDO query.
