@@ -6,8 +6,8 @@
  */
 
 angular.module('rcTrivia', [
+    'TriviaModalService',
     'rcTrivia.directives',
     'rcTrivia.game',
-    'rcTrivia.host',
     'rcTrivia.scoreboard'
 ]);

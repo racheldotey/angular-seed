@@ -4,6 +4,16 @@
         <div class="game-header">
             <h1 class="game-title">{{game.name}}</h1>
             <p class="game-host">Hosted by: {{game.host.displayName}}</p>
+            
+            
+                <button ng-click="buttonStartGame()" ng-if="game.started" type="button" class="btn btn-round btn-success btn-sm" title="Start Game"><i class="fa fa-play"></i></button>
+                <button ng-click="buttonEndGame()" ng-if="game.started && !game.ended" type="button" class="btn btn-round btn-danger btn-sm" title="Stop Game"><i class="fa fa-stop"></i></button>
+                
+                <button ng-click="buttonAddTeam()" type="button" class="btn btn-primary btn-sm"><i class="fa fa-user"></i> Add Team</button>
+                <button ng-click="buttonAddPlayer()" type="button" class="btn btn-info btn-sm"><i class="fa fa-users"></i> Add Player</button>
+                <button ng-click="buttonAddRound()" type="button" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> Add Round</button>
+                <button ng-click="buttonAddQuestion()" type="button" class="btn btn-success btn-sm"><i class="fa fa-question"></i> Add Question</button>
+
         </div>
         <div class="game-round-navigation" data-rc-trivia-scoreboard-round-navigation></div>
     </header>
@@ -22,34 +32,24 @@
                 <tr ng-repeat="team in game.round.teams" data-team-id="{{team.teamId}}">
                     <td class="team">{{team.team}}</td>
                     <td class="question-score" ng-repeat="teamScore in team.scores" data-question-id="{{teamScore.questionId}}">
-                        <table class="score-control">
-                            <tr>
-                                <td>
-                                    <button 
-                                        ng-click="buttonQuestionWrong(teamScore.questionId, teamScore.questionScore)" 
-                                        type="button" 
-                                        class="btn btn-danger btn-sm btn-round">
-                                        <i class="fa fa-ban"></i>
-                                    </button>
-                                </td>
-                                <td>
-                                    <input 
-                                        type="number" 
-                                        class="form-control input-sm" 
-                                        data-string-to-number 
-                                        ng-model="teamScore.questionScore" 
-                                        min="0">
-                                </td>
-                                <td>
-                                    <button 
-                                        ng-click="buttonQuestionCorrect(teamScore.questionId, teamScore.questionScore)" 
-                                        type="button" 
-                                        class="btn btn-success btn-sm btn-round">
-                                        <i class="fa fa-check"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        </table>
+                        <button 
+                            ng-click="buttonQuestionWrong(team.teamId, teamScore.questionId)" 
+                            type="button" 
+                            class="btn btn-danger btn-sm btn-round">
+                            <i class="fa fa-ban"></i>
+                        </button>
+                        <input 
+                            type="number" 
+                            class="form-control input-sm" 
+                            data-string-to-number 
+                            ng-model="teamScore.questionScore" 
+                            min="0">
+                        <button 
+                            ng-click="buttonQuestionCorrect(team.teamId, teamScore.questionId)" 
+                            type="button" 
+                            class="btn btn-success btn-sm btn-round">
+                            <i class="fa fa-check"></i>
+                        </button>
                     </td>
                 </tr>
             </tbody>

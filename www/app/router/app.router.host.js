@@ -62,10 +62,10 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
                 }
             },
             resolve: {
-                TriviaHost: 'TriviaHost',
-                currentGame: function(initUser, TriviaHost, $stateParams) {
+                TriviaGame: 'TriviaGame',
+                currentGame: function(initUser, TriviaGame, $stateParams) {
                     $stateParams.roundNumber = (parseInt($stateParams.roundNumber)) ? $stateParams.roundNumber : 1;
-                    return TriviaHost.loadGame($stateParams.gameId, $stateParams.roundNumber);
+                    return TriviaGame.loadGame($stateParams.gameId, $stateParams.roundNumber);
                 }
             }
         });

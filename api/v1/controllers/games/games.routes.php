@@ -48,7 +48,7 @@ class GameRoutes {
             /*
              * id
              */
-            $app->post("/finish/:gameId/", function ($gameId) use ($app) {
+            $app->post("/end/:gameId/", function ($gameId) use ($app) {
                 GameController::endGame($app, $gameId);
             });
 

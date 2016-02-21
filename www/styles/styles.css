@@ -248,6 +248,15 @@ body.admin {
 body.admin .layout.admin .container {
   color: #333;
 }
+.modal-content {
+  background-color: #47413a;
+}
+.modal-content .modal-header {
+  border-color: #39342f;
+}
+.modal-content .modal-footer {
+  border-color: #39342f;
+}
 .auth .container .logo {
   padding: 30px 0 50px;
 }
@@ -442,7 +451,7 @@ footer.footer .text-muted {
   background-color: #47413a;
   color: #dad9d8;
   font-size: 16px;
-  padding-top: 19px;
+  padding-top: 0px;
   border-bottom: 1px solid #71685c;
   border-top: 1px solid #39342f;
 }
@@ -451,19 +460,20 @@ footer.footer .text-muted {
   text-align: center;
   background-color: #dad9d8;
   color: #47413a;
-  padding-top: 9px;
+  padding-top: 0px;
   border-top: 1px solid #cecccb;
   border-right: 1px solid #cecccb;
   border-bottom: 1px solid #ffffff;
   border-left: 1px solid #ffffff;
-}
-.game-scoreboard > section table .question-score table.score-control {
-  margin: 0 auto;
-  border: none;
+  white-space: nowrap;
 }
 .game-scoreboard > section table .question-score input {
-  width: 100px;
-  margin: 0 10px;
+  width: 75px;
+  margin: 0 8px;
+}
+.game-scoreboard > section table .question-score button,
+.game-scoreboard > section table .question-score input {
+  display: inline-block;
 }
 .store.item-details .page-header {
   margin-top: 0;

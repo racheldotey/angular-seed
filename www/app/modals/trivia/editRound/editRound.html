@@ -1,0 +1,81 @@
+<div class="modal-header">
+    <h3 ng-if="newMode" class="modal-title">New Round</h3>
+    <h3 ng-if="!newMode && editMode" class="modal-title">Edit Round #{{saved.id}}</h3>
+    <h3 ng-if="!newMode && !editMode" class="modal-title">Round #{{saved.id}}</h3>
+</div>
+
+<div class="modal-body">
+    
+    <div data-rc-bootstrap-alerts="alertProxy"></div>
+    
+    
+    <div ng-if="!editMode && !manageRolesMode">
+        
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <label>Game</label>
+                    <p class="form-control-static">{{saved.gameName}}</p>
+                </div>
+            </div>
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <label>Round Name</label>
+                    <p class="form-control-static">{{saved.round}}</p>
+                </div>
+            </div>
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <label>Questions:</label>
+                    <ol>
+                        <li ng-repeat="question in saved.questions">{{question.question}}</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="meta" ng-if="!newMode">
+            <hr/>
+            <p class="text-muted"><strong>Created:</strong> {{saved.created | formatMySQLDate}} by {{saved.createdBy}}</p>
+            <p class="text-muted"><strong>Updated:</strong> {{saved.lastUpdated | formatMySQLDate}} by {{saved.updatedBy}}</p>
+        </div>
+
+    </div>
+    
+    <form ng-if="editMode" name="form.modalForm" role="form" novalidate>
+        
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <label>Game</label>
+                    <select name="group" id="group" ng-model="editing.gameId">
+                        <option ng-repeat="game in selectLists.games" value="{{game.gameId}}">{{game.game}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <label>Round Name</label>
+                    <input class="form-control" name="group" ng-model="editing.round" type="text" maxlength="255" required />
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>
+
+<div ng-if="!editMode" class="modal-footer">
+    <button class="btn btn-default pull-left" ng-click="buttonEdit()">Edit</button>
+    <button class="btn btn-info" ng-click="buttonCancel()">Done</button>
+</div>
+
+<div ng-if="editMode" class="modal-footer">
+    <button class="btn btn-danger pull-left" ng-if="!newMode" ng-click="buttonDelete()">Delete</button>
+    
+    <button class="btn btn-info" ng-click="buttonCancel()">Cancel</button>
+    <button class="btn btn-primary" ng-if="newMode" ng-click="buttonNew()">Add</button>
+    <button class="btn btn-primary" ng-if="!newMode" ng-click="buttonSave()">Save</button>
+</div>

@@ -1,29 +1,5 @@
 <div class="page host scoreboard">
     
-    
-    <div class="row">
-        <div class="col-xs-12">
-            
-            <div class="well pull-right">
-                <p class="lead">Welcome host!</p>
-                <p>{{game.scheduled  }}</p>
-                <button ng-if="game.started" type="button" class="btn btn-round btn-success" title="Start Game"><i class="fa fa-play"></i></button>
-                <button ng-if="game.started && !game.ended" type="button" class="btn btn-round btn-danger" title="Stop Game"><i class="fa fa-stop"></i></button>
-            </div>
-            
-            <div class="page-header">
-                <h1>Host Game Scoreboard</h1>
-                <h3>Game: "{{game.name}}"</h3>
-            </div>
-        </div>
-    </div>
-    
-    <div class="well pull-right">
-        <button type="button" class="btn btn-primary"><i class="fa fa-user"></i> Add Team</button>
-        <button type="button" class="btn btn-info"><i class="fa fa-users"></i> Add Player</button>
-        <button type="button" class="btn btn-success"><i class="fa fa-plus"></i> Add round</button>
-    </div>
-    
-    <div rc-trivia-scoreboard="game">Should erase this</div>
+    <div rc-trivia-scoreboard="game"></div>
     
 </div>

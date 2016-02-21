@@ -16,10 +16,11 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
         scope: {
             game: '=rcTriviaScoreboard'
         },
-        controller: ['$scope', 'TriviaHost', '$state', function($scope, TriviaHost, $state) {
+        controller: ['$scope', 'TriviaGame', 'AlertConfirmService', 'TriviaModalService', 
+            function($scope, TriviaGame, AlertConfirmService, TriviaModalService) {
                 
             $scope.buttonViewRound = function(roundNumber) {
-                TriviaHost.loadRound(roundNumber).then(function (result) {
+                TriviaGame.loadRound(roundNumber).then(function (result) {
                         $scope.game = result;
                         console.log($scope.game);
                     }, function (error) {
@@ -28,26 +29,87 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
             };
             
             
+            $scope.buttonStartGame = function() {
+                AlertConfirmService.confirm('Are you sure you want to start this game? It cannot be paused once started.', 'Confirm Start Game.')
+                    .result.then(function () {
+                        TriviaGame.startGame().then(function (result) {
+                            $scope.game = result;
+                            console.log($scope.game);
+                        }, function (error) {
+                            console.log(error);
+                        });
+                    }, function (declined) {});
+            };
+            
+            $scope.buttonEndGame = function() {
+                AlertConfirmService.confirm('Are you sure you want to end this game? It cannot be started again once it has been closed.', 'Confirm End Game.')
+                    .result.then(function () {
+                        AlertConfirmService.confirm('Are you sure you positive you would like to close this game? It will finalize team scores.', 'Warning! Closing Game.')
+                            .result.then(function () {
+                                TriviaGame.endGame().then(function (result) {
+                                    $scope.game = result;
+                                    console.log($scope.game);
+                                }, function (error) {
+                                    console.log(error);
+                                });
+                            }, function (declined) {});
+                    }, function (declined) {});
+            };
+            
+            // Add Trivia Team Modal
+            $scope.buttonAddTeam = function() {
+                var modalInstance = TriviaModalService.openAddTeam($scope.game.id);
+                modalInstance.result.then(function (result) {
+                    console.log(result);
+                    $scope.game = result;
+                }, function () {});
+                
+            };
+            
+            // Add Trivia Player Modal
+            $scope.buttonAddPlayer = function() {
+                var modalInstance = TriviaModalService.openAddPlayer($scope.game.id);
+                modalInstance.result.then(function (result) {
+                    console.log(result);
+                    $scope.game = result;
+                }, function () {});
+                
+            };
+            
+            // Add Trivia Round Modal
+            $scope.buttonAddRound = function() {
+                var modalInstance = TriviaModalService.openEditRound($scope.game.id);
+                modalInstance.result.then(function (result) {
+                    console.log(result);
+                    $scope.game = result;
+                }, function () {});
+            };
+            
+            // Add Trivia Round Question Modal
+            $scope.buttonAddQuestion = function() {
+                var modalInstance = TriviaModalService.openEditQuestion($scope.game.id);
+                modalInstance.result.then(function (result) {
+                    console.log(result);
+                    $scope.game = result;
+                }, function () {});
+            };
+            
+            $scope.buttonQuestionWrong = function(teamId, questionId) {
+                console.log('buttonQuestionWrong');
+                $scope.game = TriviaGame.teamAnsweredIncorrectly(teamId, questionId);      
+            };
+            
+            $scope.buttonQuestionCorrect = function(teamId, questionId) {
+                console.log('buttonQuestionCorrect');
+                $scope.game = TriviaGame.teamAnsweredCorrectly(teamId, questionId);                
+            };
+            
         }],
         link: function(scope, element, attrs) {
             
         }
     };
     
-});
-
-app.directive('rcTriviaScoreboardTeams', function(THIS_DIRECTORY) {
-    return {
-        restrict: 'A',          // Must be a element attribute
-        templateUrl: THIS_DIRECTORY + 'views/scoreboard.teams.html'
-    };
-});
-
-app.directive('rcTriviaScoreboardRound', function(THIS_DIRECTORY) {
-    return {
-        restrict: 'A',          // Must be a element attribute
-        templateUrl: THIS_DIRECTORY + 'views/scoreboard.round.html'
-    };
 });
 
 app.directive('rcTriviaScoreboardRoundNavigation', function(THIS_DIRECTORY) {

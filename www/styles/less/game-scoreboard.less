@@ -54,7 +54,7 @@
                 background-color: @medium-brown;
                 color: @pale-brown;
                 font-size: 16px;
-                padding-top: (@scoreboardRowHeight / 2) - (16px / 2);
+                padding-top: (@scoreboardRowHeight / 2) - (@scoreboardRowHeight / 2);
                 border-bottom: 1px solid lighten(@medium-brown, 15%);
                 border-top: 1px solid darken(@medium-brown, 5%);
             }
@@ -64,19 +64,19 @@
                 text-align: center;
                 background-color: @pale-brown;
                 color: @medium-brown;
-                padding-top: (@scoreboardRowHeight / 2) - (36px / 2);
+                padding-top: (@scoreboardRowHeight / 2) - (@scoreboardRowHeight / 2);
                 border-top: 1px solid darken(@pale-brown, 5%);
                 border-right: 1px solid darken(@pale-brown, 5%);
                 border-bottom: 1px solid lighten(@pale-brown, 15%);
                 border-left: 1px solid lighten(@pale-brown, 15%);
+                white-space: nowrap;
                 
-                table.score-control {
-                    margin: 0 auto;
-                    border: none;
-                }
                 input {
-                    width: 100px;
-                    margin: 0 10px;
+                    width: 75px;
+                    margin: 0 8px;
+                }
+                button, input {
+                    display: inline-block;
                 }
             }
         }
