@@ -15,13 +15,13 @@
             <div class="col-xs-12">
                 <div class="form-group">
                     <label>Game</label>
-                    <p class="form-control-static">{{saved.gameName}}</p>
+                    <p class="form-control-static">#{{game.id}} - {{game.name}}</p>
                 </div>
             </div>
             <div class="col-xs-12">
                 <div class="form-group">
                     <label>Round Name</label>
-                    <p class="form-control-static">{{saved.round}}</p>
+                    <p class="form-control-static">{{saved.name}}</p>
                 </div>
             </div>
             <div class="col-xs-12">
@@ -48,9 +48,7 @@
             <div class="col-xs-12">
                 <div class="form-group">
                     <label>Game</label>
-                    <select name="group" id="group" ng-model="editing.gameId">
-                        <option ng-repeat="game in selectLists.games" value="{{game.gameId}}">{{game.game}}</option>
-                    </select>
+                    <p class="form-control-static">#{{game.id}} - {{game.name}}</p>
                 </div>
             </div>
         </div>
@@ -59,7 +57,7 @@
             <div class="col-xs-12">
                 <div class="form-group">
                     <label>Round Name</label>
-                    <input class="form-control" name="group" ng-model="editing.round" type="text" maxlength="255" required />
+                    <input class="form-control" name="group" ng-model="editing.name" type="text" maxlength="255" required />
                 </div>
             </div>
         </div>

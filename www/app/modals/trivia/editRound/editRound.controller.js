@@ -3,8 +3,11 @@
 /* @author  Rachel Carbone */
 
 angular.module('app.modal.trivia.editRound', [])        
-    .controller('TriviaEditRoundModalCtrl', ['$scope', '$uibModalInstance', '$filter', 'AlertConfirmService', 'editing', 'ApiRoutesGroups',
-    function($scope, $uibModalInstance, $filter, AlertConfirmService, editing, ApiRoutesGroups) {        
+    .controller('TriviaEditRoundModalCtrl', ['$scope', '$uibModalInstance', '$filter', 'AlertConfirmService', 'editing', 'TriviaGame', 'ApiRoutesGames',
+    function($scope, $uibModalInstance, $filter, AlertConfirmService, editing, TriviaGame, ApiRoutesGames) {        
+    
+    $scope.game = TriviaGame.getGame();
+    
     /* Used to restrict alert bars */
     $scope.alertProxy = {};
     
@@ -57,6 +60,14 @@ angular.module('app.modal.trivia.editRound', [])
     
     /* Click event for the Add / New button */
     $scope.buttonNew = function() {
+        ApiRoutesGames.addGameRound({ 
+            'gameId' : $scope.game.id, 
+            'name' : $scope.editing.name }).then(
+            function (result) {
+                $uibModalInstance.close(result.game);
+            }, function (error) {
+                $scope.alertProxy.error(error);
+            });
     };
     
     /* Click event for the Save button */
