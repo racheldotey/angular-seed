@@ -59,6 +59,20 @@ class GameRoutes {
                 GameController::deleteGame($app, $gameId);
             })->via('DELETE', 'POST');
             
+                        
+            /*
+             * gameId, name
+             */
+            $app->post("/insert/round", function () use ($app) {
+                GameController::addRound($app);
+            });
+                    
+            /*
+             * gameId, roundId, question
+             */
+            $app->post("/insert/question", function () use ($app) {
+                GameController::addQuestion($app);
+            });
         });
     }
 }

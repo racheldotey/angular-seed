@@ -3,7 +3,7 @@
 
 class GameData {
   
-    static function selectGame($gameId, $roundNumber) {
+    static function selectGame($gameId, $roundNumber = 1) {
         $game = DBConn::selectOne("SELECT g.id, g.name, g.scheduled, g.venue_id AS venueId, g.host_user_id AS hostId, "
                 . "game_started AS started, game_ended AS ended, max_points maxPoints, "
                 . "CONCAT(u.name_first, ' ', u.name_last) AS updatedBy "
@@ -29,13 +29,13 @@ class GameData {
             $game->rounds = DBConn::selectAll("SELECT r.id, r.order AS roundNumber, r.name FROM " . DBConn::prefix() . "game_rounds AS r "
                     . "WHERE r.game_id = :game_id ORDER BY r.order;", array(':game_id' => $gameId));
             
-            $game->round = self::getGameRound($gameId, $roundNumber);
+            $game->round = self::selectGameRound($gameId, $roundNumber);
         }
         
         return $game;
     }
   
-    static function getGameRound($gameId, $roundNumber) {
+    static function selectGameRound($gameId, $roundNumber) {
             
             // Game Rounds
             $round = DBConn::selectOne("SELECT r.id AS roundId, r.order AS roundNumber, r.name, r.max_points AS maxPoints "
@@ -159,7 +159,25 @@ ORDER BY q.order;");
         return $game;
     }
     
+    static function getRoundCount($gameId) {
+        return DBConn::selectColumn("SELECT COUNT(id) AS count FROM " . DBConn::prefix() . "game_rounds "
+                . "WHERE game_id=:game_id LIMIT 1;", array(':game_id' => $gameId));
+    }
     
+    static function getQuestionCount($roundId) {
+        return DBConn::selectColumn("SELECT COUNT(id) AS count FROM " . DBConn::prefix() . "game_round_questions "
+                . "WHERE round_id=:round_id LIMIT 1;", array(':round_id' => $roundId));
+    }
+    
+    static function insertRound($validRound) {
+        return DBConn::insert("INSERT INTO " . DBConn::prefix() . "game_rounds(`name`, `order`, `game_id`, `max_points`, `created_user_id`, `last_updated_by`) "
+                . "VALUES (:name, :order, :game_id, :max_points, :created_user_id, :last_updated_by);", $validRound);
+    }
+    
+    static function insertQuestion($validQuestion) {
+        return DBConn::insert("INSERT INTO " . DBConn::prefix() . "game_round_questions(`question`, `order`, `game_id`, `round_id`, `max_points`, `created_user_id`, `last_updated_by`) "
+                . "VALUES (:question, :order, :game_id, :round_id, :max_points, :created_user_id, :last_updated_by);", $validQuestion);
+    }
     
     /* CRUD for Games */
   

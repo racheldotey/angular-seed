@@ -4,8 +4,8 @@
         <div class="game-header">
             <h1 class="game-title">{{game.name}}</h1>
             <p class="game-host">Hosted by: {{game.host.displayName}}</p>
-            <p class="game-host">Started: {{game.started}}</p>
-            <p class="game-host">Ended: {{game.ended}}</p>
+            <p class="game-host">Started: {{game.started | formatMySQLDate}}</p>
+            <p class="game-host">Ended: {{game.ended | formatMySQLDate}}</p>
             
             
                 <button ng-click="buttonStartGame()" ng-if="true || game.started" type="button" class="btn btn-round btn-success btn-sm" title="Start Game"><i class="fa fa-play"></i></button>

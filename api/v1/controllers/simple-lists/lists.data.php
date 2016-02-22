@@ -9,11 +9,13 @@ class ListsData {
     }
     
     static function selectGroups() {
-        return DBConn::selectAll("SELECT g.id, g.group AS label FROM " . DBConn::prefix() . "auth_groups AS g ORDER BY g.group;");
+        return DBConn::selectAll("SELECT g.id, g.group AS label "
+                . "FROM " . DBConn::prefix() . "auth_groups AS g ORDER BY g.group;");
     }
     
     static function selectRoles() {
-        return DBConn::selectAll("SELECT r.id, r.role AS label FROM " . DBConn::prefix() . "auth_roles AS r ORDER BY r.role;");
+        return DBConn::selectAll("SELECT r.id, r.role AS label "
+                . "FROM " . DBConn::prefix() . "auth_roles AS r ORDER BY r.role;");
     }
     
     static function selectVisibilityFields() {
@@ -21,4 +23,15 @@ class ListsData {
                 . "FROM " . DBConn::prefix() . "auth_fields AS f ORDER BY label;");
     }
     
+    
+    
+    static function selectTeams() {
+        return DBConn::selectAll("SELECT t.id, t.name AS label "
+                . "FROM " . DBConn::prefix() . "teams AS t ORDER BY t.name;");
+    }
+    
+    static function selectGames() {
+        return DBConn::selectAll("SELECT g.id, g.name AS label "
+                . "FROM " . DBConn::prefix() . "games AS g ORDER BY g.name;");
+    }
 }

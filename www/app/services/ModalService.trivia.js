@@ -46,19 +46,18 @@ angular.module('TriviaModalService', [
      * 
      * @return uibModalInstance
      */
-    api.openAddTeam = function(variable) {
+    api.openAddTeam = function(gameId) {
         return api.openModal({
             templateUrl: templatePath + 'editTeam/editTeam.html',
             controller: 'TriviaEditTeamModalCtrl',
             resolve: {
                 ApiRoutesGames: 'ApiRoutesGames',
+                ApiRoutesSimpleLists: 'ApiRoutesSimpleLists',
                 editing: function(ApiRoutesGames) {
-                    if(angular.isDefined(variable)) {
-                        return (angular.isObject(variable)) ? variable : 
-                                ApiRoutesGames.getRound(variable);
-                    } else {
-                        return {};
-                    }
+                    return { 'gameId' : gameId };
+                },
+                gameList: function(ApiRoutesSimpleLists) {
+                    return ApiRoutesSimpleLists.simpleGamesList();
                 }
             }
         });
@@ -69,19 +68,18 @@ angular.module('TriviaModalService', [
      * 
      * @return uibModalInstance
      */
-    api.openAddPlayer = function(variable) {
+    api.openAddPlayer = function(gameId) {
         return api.openModal({
             templateUrl: templatePath + 'editTeam/editTeam.html',
             controller: 'TriviaEditTeamModalCtrl',
             resolve: {
                 ApiRoutesGames: 'ApiRoutesGames',
+                ApiRoutesSimpleLists: 'ApiRoutesSimpleLists',
                 editing: function(ApiRoutesGames) {
-                    if(angular.isDefined(variable)) {
-                        return (angular.isObject(variable)) ? variable : 
-                                ApiRoutesGames.getRound(variable);
-                    } else {
-                        return {};
-                    }
+                    return { 'gameId' : gameId };
+                },
+                gameList: function(ApiRoutesSimpleLists) {
+                    return ApiRoutesSimpleLists.simpleGamesList();
                 }
             }
         });
@@ -92,19 +90,18 @@ angular.module('TriviaModalService', [
      * 
      * @return uibModalInstance
      */
-    api.openEditRound = function(variable) {
+    api.openEditRound = function(gameId, roundId) {
         return api.openModal({
             templateUrl: templatePath + 'editRound/editRound.html',
             controller: 'TriviaEditRoundModalCtrl',
             resolve: {
                 ApiRoutesGames: 'ApiRoutesGames',
+                ApiRoutesSimpleLists: 'ApiRoutesSimpleLists',
                 editing: function(ApiRoutesGames) {
-                    if(angular.isDefined(variable)) {
-                        return (angular.isObject(variable)) ? variable : 
-                                ApiRoutesGames.getRound(variable);
-                    } else {
-                        return {};
-                    }
+                    return { 'gameId' : gameId };
+                },
+                gameList: function(ApiRoutesSimpleLists) {
+                    return ApiRoutesSimpleLists.simpleGamesList();
                 }
             }
         });
@@ -115,19 +112,13 @@ angular.module('TriviaModalService', [
      * 
      * @return uibModalInstance
      */
-    api.openEditQuestion = function(variable) {
+    api.openEditQuestion = function(question) {
         return api.openModal({
-            templateUrl: templatePath + 'editRound/editRound.html',
-            controller: 'TriviaEditRoundModalCtrl',
+            templateUrl: templatePath + 'editQuestion/editQuestion.html',
+            controller: 'TriviaEditQuestionModalCtrl',
             resolve: {
-                ApiRoutesGames: 'ApiRoutesGames',
-                editing: function(ApiRoutesGames) {
-                    if(angular.isDefined(variable)) {
-                        return (angular.isObject(variable)) ? variable : 
-                                ApiRoutesGames.getRound(variable);
-                    } else {
-                        return {};
-                    }
+                editing: function() {
+                    return (angular.isDefined(question)) ? question : {};
                 }
             }
         });

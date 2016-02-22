@@ -25,6 +25,16 @@ class ListRoutes {
                 ListsController::getVisibilityFieldsList($app);
             })->via('GET', 'POST');
             
+            
+            
+            $app->map("/teams", function () use ($app) {
+                ListsController::getTeamsList($app);
+            })->via('GET', 'POST');
+            
+            $app->map("/games", function () use ($app) {
+                ListsController::getGamesList($app);
+            })->via('GET', 'POST');
+            
         });
     }
 }

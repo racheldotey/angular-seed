@@ -19,8 +19,6 @@ angular.module('apiRoutes.games', [])
         return API.get('trivia/round/get/' + gameId + '/' + roundNumber, 'Could not get game round.');
     };
 
-
-
     api.startGame = function(gameId) {
         return API.get('trivia/start/' + gameId, 'Could not start game.');
     };
@@ -31,13 +29,22 @@ angular.module('apiRoutes.games', [])
 
 
 
-    api.addGameRound = function(gameId, roundNumber) {
-        return API.get('trivia/round/get/' + gameId + '/' + roundNumber, 'Could not get game round.');
+    api.addGameRound = function(round) {
+        if(angular.isUndefined(round.gameId) || angular.isUndefined(round.name)) {
+            return API.reject('Invalid game round please check your parameters and try again.');
+        }
+        return API.post('trivia/insert/round', round, 'Could not insert game round.');
     };
     
-    api.addGameRoundQuestion = function(gameId, roundId, roundName) {
-        return API.get('trivia/round/get/' + gameId + '/' + roundNumber, 'Could not get game round.');
+    api.addGameRoundQuestion = function(question) {
+        if(angular.isUndefined(question.gameId) || angular.isUndefined(question.roundId) || angular.isUndefined(question.question)) {
+            return API.reject('Invalid game question please check your parameters and try again.');
+        }
+        return API.post('trivia/insert/question', question, 'Could not insert game question.');
     };
+
+
+
 
     api.addTeamToGame = function(gameId, roundNumber) {
         return API.get('trivia/round/get/' + gameId + '/' + roundNumber, 'Could not get game round.');

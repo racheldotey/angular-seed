@@ -39,5 +39,14 @@ angular.module('apiRoutes.lists', [])
         return getList('/simple-list/visibility-fields');
     };
     
+    
+    api.simpleTeamsList = function() { 
+        return getList('/simple-list/teams');
+    };
+    
+    api.simpleGamesList = function() { 
+        return getList('/simple-list/games');
+    };
+    
     return api;
 }]);

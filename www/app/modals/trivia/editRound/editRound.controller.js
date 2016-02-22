@@ -3,10 +3,8 @@
 /* @author  Rachel Carbone */
 
 angular.module('app.modal.trivia.editRound', [])        
-    .controller('TriviaEditRoundModalCtrl', ['$scope', '$uibModalInstance', '$filter', 'AlertConfirmService', 'editing', 'ApiRoutesGroups', 'roleList',
-    function($scope, $uibModalInstance, $filter, AlertConfirmService, editing, ApiRoutesGroups, roleList) {
-    $scope.roleList = roleList;
-        
+    .controller('TriviaEditRoundModalCtrl', ['$scope', '$uibModalInstance', '$filter', 'AlertConfirmService', 'editing', 'ApiRoutesGroups',
+    function($scope, $uibModalInstance, $filter, AlertConfirmService, editing, ApiRoutesGroups) {        
     /* Used to restrict alert bars */
     $scope.alertProxy = {};
     
@@ -18,17 +16,14 @@ angular.module('app.modal.trivia.editRound', [])
         $scope.viewMode = false;
         $scope.newMode = false;
         $scope.editMode = false;
-        $scope.manageRolesMode = false;
         
         switch(type) {
             case 'new':
                 $scope.newMode = true;
+                $scope.editMode = true;
                 break;
             case 'edit':
                 $scope.editMode = true;
-                break;
-            case 'roles':
-                $scope.manageRolesMode = true;
                 break;
             case 'view':
             default:
@@ -48,8 +43,6 @@ angular.module('app.modal.trivia.editRound', [])
             return 'new';
         } else if($scope.editMode) {
             return 'edit';
-        } else if($scope.manageRolesMode) {
-            return 'roles';
         } else {
             return 'view';
         }
@@ -57,57 +50,21 @@ angular.module('app.modal.trivia.editRound', [])
     
     
     /* Save for resetting purposes */
-    $scope.saved = (angular.isDefined(editing.id)) ? angular.copy(editing) : {
-        'group' : '',
-        'desc' : ''
-    };
+    $scope.saved = (angular.isDefined(editing.id)) ? angular.copy(editing) : {};
     
     /* Item to display and edit */
     $scope.editing = angular.copy($scope.saved);
     
     /* Click event for the Add / New button */
     $scope.buttonNew = function() {
-        ApiRoutesGroups.newGroup($scope.editing).then(
-            function (result) {
-                $uibModalInstance.close(result);
-            }, function (error) {
-                $scope.alertProxy.error(error);
-            });
     };
     
     /* Click event for the Save button */
     $scope.buttonSave = function() {
-        AlertConfirmService.confirm('Are you sure you want to change this user group? It may effect system settings.', 'System Wide Setting')
-            .result.then(function () {
-                ApiRoutesGroups.saveGroup($scope.editing).then(
-                    function (result) {
-                        $uibModalInstance.close(result);
-                    }, function (error) {
-                        $scope.alertProxy.error(error);
-                    });
-            }, function (declined) {
-                $scope.alertProxy.info('No changes were saved.');
-            });
     };
     
     /* Click event for the Delete button */
     $scope.buttonDelete = function() {
-        AlertConfirmService.confirm('Are you sure you want to delete this user group? It may effect system settings.', 'Delete Warning')
-            .result.then(function () {
-                ApiRoutesGroups.deleteGroup($scope.editing.id).then(
-                    function (result) {
-                        $uibModalInstance.close(result);
-                    }, function (error) {
-                        $scope.alertProxy.error(error);
-                    });
-            }, function (declined) {
-                $scope.alertProxy.info('No changes were saved.');
-            });
-    };
-    
-    /* Click event for the Manage Roles button */
-    $scope.buttonManageRoles = function() {
-        $scope.setMode('roles');
     };
         
     /* Click event for the Cancel button */
@@ -116,7 +73,6 @@ angular.module('app.modal.trivia.editRound', [])
         
         switch(mode) {
             case 'edit':
-            case 'roles':
                 $scope.setMode('view');
                 break;
             case 'new':
@@ -130,43 +86,6 @@ angular.module('app.modal.trivia.editRound', [])
     /* Click event for the Edit button*/
     $scope.buttonEdit = function() {
         $scope.setMode('edit');
-    };
-    
-    /* Return BOOL if Role is assigned to this group */
-    $scope.isRoleAssignedToGroup = function(roleId) {
-        var found = $filter('filter')($scope.saved.roles, {id: roleId}, true);
-        return (angular.isDefined(found[0]));
-    };
-    
-    $scope.buttonRemoveRoleFromGroup = function(roleId) {
-        ApiRoutesGroups.unassignRoleFromGroup({ 'groupId':$scope.saved.id, 'roleId': roleId }).then(
-            function (result) {
-                $scope.alertProxy.success(result.msg);
-                
-                angular.forEach($scope.saved.roles, function (obj, index) {
-                    if (obj.id == roleId) {
-                        $scope.saved.roles.splice(index, 1);
-                        return;
-                    }
-                });
-        
-            }, function (error) {
-                $scope.alertProxy.error(error);
-            });
-    };
-    
-    $scope.buttonAddRoleToGroup = function(roleId) {
-        ApiRoutesGroups.assignRoleToGroup({ 'groupId':$scope.saved.id, 'roleId': roleId }).then(
-            function (result) {
-                $scope.alertProxy.success(result.msg);
-                
-                var found = $filter('filter')($scope.roleList, {id: roleId}, true);
-                if (angular.isDefined(found[0])) {
-                    $scope.saved.roles.push(found[0]);
-                }
-            }, function (error) {
-                $scope.alertProxy.error(error);
-            });
     };
     
 }]);

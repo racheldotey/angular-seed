@@ -83,6 +83,10 @@ angular.module('rcTrivia.game', [])
                     game.round = {};
                 }
             }
+        
+        api.getGame = function() {
+            return self.game.getGame();
+        };
     
         api.loadGame = function(gameId, roundNumber) {
             return $q(function (resolve, reject) {
