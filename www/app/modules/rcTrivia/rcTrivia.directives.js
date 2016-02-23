@@ -124,6 +124,25 @@ app.directive('rcTriviaScoreboardReadonly', function(THIS_DIRECTORY) {
         templateUrl: THIS_DIRECTORY + 'views/scoreboard.readonly.html',
         scope: {
             game: '=rcTriviaScoreboardReadonly'
-        }
+        },
+        controller: ['$scope', 'DTOptionsBuilder', 'DTColumnDefBuilder', 
+            function($scope, DTOptionsBuilder, DTColumnDefBuilder) {
+                
+            $scope.scoreboard = {};
+            $scope.scoreboard.dtOptions = DTOptionsBuilder.newOptions()
+                    .withDOM('t');
+            $scope.scoreboard.dtColumnDefs = [
+                DTColumnDefBuilder.newColumnDef(0),
+                DTColumnDefBuilder.newColumnDef(1),
+                DTColumnDefBuilder.newColumnDef(2),
+                DTColumnDefBuilder.newColumnDef(3),
+                DTColumnDefBuilder.newColumnDef(4),
+                DTColumnDefBuilder.newColumnDef(5),
+                DTColumnDefBuilder.newColumnDef(6),
+                DTColumnDefBuilder.newColumnDef(7),
+                DTColumnDefBuilder.newColumnDef(8)
+            ];
+            
+        }]
     };
 });
