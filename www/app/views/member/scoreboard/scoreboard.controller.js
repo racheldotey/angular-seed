@@ -7,8 +7,7 @@
  */
 
 angular.module('app.member.scoreboard', [])
-    .controller('MemberScoreboardDashboardCtrl', ['$scope', 'currentGame', function($scope, currentGame) {
-            $scope.game = currentGame.game;
-        
-            console.log($scope.game);
+    .controller('MemberScoreboardDashboardCtrl', ['$scope', 'currentGame', 
+        function($scope, currentGame) {
+            $scope.game = currentGame;
     }]);

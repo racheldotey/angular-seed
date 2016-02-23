@@ -420,7 +420,7 @@ footer.footer .text-muted {
   display: table-cell;
 }
 .game-scoreboard > header .game-header {
-  padding: 0 0 0 8px;
+  padding: 0 8px;
 }
 .game-scoreboard > header .game-header .game-title {
   margin: 0 0 10px;
@@ -433,12 +433,12 @@ footer.footer .text-muted {
   margin: 20px 0 10px;
 }
 .game-scoreboard > section table td {
-  width: 320px;
-  padding: 0 0 0 8px;
+  width: 200px;
+  padding: 0 8px;
   margin: 0;
 }
 .game-scoreboard > section table th {
-  width: 320px;
+  width: 200px;
   padding: 0 0 0 8px;
   margin: 0;
   background-color: #800000;

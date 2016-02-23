@@ -78,7 +78,7 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
         $stateProvider.state('app.member.game', {
             bodyClass: 'member scoreboard',
             title: 'Game Scoreboard',
-            url: '/game-scoreboard/:gameId',
+            url: '/game-scoreboard/:gameId/:roundNumber',
             views: {
                 'content@app.member': {
                     templateUrl: 'app/views/member/scoreboard/scoreboard.html',
@@ -86,9 +86,10 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
                 }
             },
             resolve: {
-                API: 'ApiRoutesGames',
-                currentGame: function(initUser, API, $stateParams) {
-                    return API.getGame($stateParams.gameId);
+                TriviaGame: 'TriviaGame',
+                currentGame: function(initUser, TriviaGame, $stateParams) {
+                    $stateParams.roundNumber = (parseInt($stateParams.roundNumber)) ? $stateParams.roundNumber : 1;
+                    return TriviaGame.loadGame($stateParams.gameId, $stateParams.roundNumber);
                 }
             }
         });

@@ -117,3 +117,13 @@ app.directive('rcTriviaScoreboardRoundNavigation', function(THIS_DIRECTORY) {
         templateUrl: THIS_DIRECTORY + 'views/scoreboard.roundNavigation.html'
     };
 });
+
+app.directive('rcTriviaScoreboardReadonly', function(THIS_DIRECTORY) {
+    return {
+        restrict: 'A',          // Must be a element attribute
+        templateUrl: THIS_DIRECTORY + 'views/scoreboard.readonly.html',
+        scope: {
+            game: '=rcTriviaScoreboardReadonly'
+        }
+    };
+});

@@ -1,9 +1,9 @@
 'use strict';
 
 /* 
- * Host Scoreboard Page
+ * Player Scoreboard Page
  * 
- * Controller the game for the host.
+ * Controller the game for the player.
  */
 
 angular.module('app.host.scoreboard', [])
