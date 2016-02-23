@@ -56,9 +56,9 @@ app.config(['$stateProvider', 'USER_ROLES',
                 $q: '$q',
                 $rootScope: '$rootScope',
                 $state: '$state',
-                alreadyLoggedIn: function($rootScope, $state, $q, initUser) {
+                alreadyLoggedIn: function($rootScope, $state, $q, AuthService) {
                     return $q(function(resolve, reject) {  
-                        if(initUser) {
+                        if(AuthService.getUser()) {
                             $rootScope.$evalAsync(function () {
                                 $state.go('app.member.dashboard');
                             });
@@ -95,9 +95,9 @@ app.config(['$stateProvider', 'USER_ROLES',
                 $q: '$q',
                 $rootScope: '$rootScope',
                 $state: '$state',
-                alreadyLoggedIn: function($rootScope, $state, $q, initUser) {
+                alreadyLoggedIn: function($rootScope, $state, $q, AuthService) {
                     return $q(function(resolve, reject) {  
-                        if(initUser) {
+                        if(AuthService.getUser()) {
                             $rootScope.$evalAsync(function () {
                                 $state.go('app.member.dashboard');
                             });

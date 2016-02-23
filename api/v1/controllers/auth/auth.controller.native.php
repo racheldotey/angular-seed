@@ -13,13 +13,15 @@ class AuthControllerNative {
     ///// Authentication
     ///// 
     
-    static function isAuthenticated($post) {
+    static function isAuthenticated($app) {
+        $post = $app->request->post();
+        
         if(!v::key('apiKey', v::stringType())->validate($post) || 
            !v::key('apiToken', v::stringType())->validate($post)) {
             return array('authenticated' => false, 'msg' => 'Unauthenticated: Invalid request. Check your parameters and try again.');
         }
         
-        $user = UserData::selectUserByIdentifierToken($post['apiKey']);
+        $user = AuthData::selectUserByIdentifierToken($post['apiKey']);
         
         if(!$user) {
             // Validate existing user
@@ -40,66 +42,93 @@ class AuthControllerNative {
     }
     
     // Signup Function
-    static function signup($post) {
-        if(!v::key('email', v::email())->validate($post) || 
-           !v::key('nameFirst', v::stringType())->validate($post) || 
-           !v::key('nameLast', v::stringType())->validate($post) || 
-           !v::key('password', v::stringType())->validate($post)) {
-            // Validate input parameters
-            return array('registered' => false, 'msg' => 'Signup failed. Check your parameters and try again.');
-        } else if(!self::validatePasswordRequirements($post, 'password')) {
-            // Validate input parameters
-            return array('registered' => false, 'msg' => 'Signup failed. ' . self::$passwordRules);
+    static function signup($app) {
+        // Get Post Data
+        $post = $app->request->post();
+        
+        // Validate Sent Input
+        $valid = self::signup_validateSentParameters($post);
+        if($valid !== true) {
+            return array('registered' => false, 'msg' => $valid);
         }
         
-        $existing = UserData::selectUserByEmail($post['email']);
+        // Look for user with that email
+        $existing = AuthData::selectUserByEmail($post['email']);
         if($existing) { 
+            /// FAIL - If a user with that email already exists
             return array('registered' => false, 'msg' => 'Signup failed. A user with that email already exists.');        
         }
         
+        // Create and insert a new user
         $validUser = array(
             ':email' => $post['email'],
             ':name_first' => $post['nameFirst'],
             ':name_last' => $post['nameLast'],
             ':password' => password_hash($post['password'], PASSWORD_DEFAULT)
         );
-        $userId = UserData::insertUser($validUser);
-        if($userId) {
-            $user = UserData::selectUserById($userId);
-            if(!$user) { 
-                return array('registered' => false, 'msg' => 'Signup failed. Could not select user.');        
-            }
-            $user->apiKey = hash('sha512', uniqid());
-            $user->apiToken = hash('sha512', uniqid());
-            $hours = self::login_getSessionExpirationInHours($post);
-        
-            // Congrats - you're logged in!
-            AuthData::insertAuthToken(array(
-                ':user_id' => $user->id,
-                ':identifier' => $user->apiKey,
-                ':token' => password_hash($user->apiToken, PASSWORD_DEFAULT),
-                ':expires' => date('Y-m-d H:i:s', time() + ($hours * 60 * 60))
-            ));
-
-            // Save "Where did you hear about us" question
-            InfoController::quietlySaveAdditional($post, $user->id);
-            
-            // Send the session life back (in hours) for the cookies
-            return array('registered' => true, 'user' => $user, 'sessionLifeHours' => $hours);
+        $userId = AuthData::insertUser($validUser);
+        if(!$userId) {
+            /// FAIL - If Inserting the user failed
+            return array('registered' => false, 'msg' => 'Signup failed. Could not save user.');
         }
-        return array('registered' => false, 'msg' => 'Signup failed. Could not save user.');
+        
+        // Select our new user
+        $found = AuthData::selectUserById($userId);
+        if(!$found) { 
+            /// FAIL - If Inserting the user failed (hopefully this is redundant)
+            return array('registered' => false, 'msg' => 'Signup failed. Could not select user.');        
+        }
+
+        // Save "Where did you hear about us" and any other additional questions
+        // This is "quiet" in that it may not execute if no paramters match
+        // And it doesnt set the response for the api call
+        InfoController::quietlySaveAdditional($post, $found->id);
+
+        // Create an authorization
+        $token = self::createAuthToken($app, $found->id);
+        if($token) {
+            // Create the return object
+            $found['registered'] = true;
+            $found['user']->apiKey = $token['apiKey'];
+            $found['user']->apiToken = $token['apiToken'];
+            $found['sessionLifeHours'] = $token['sessionLifeHours'];
+
+            // Send the session life back (in hours) for the cookies
+            return $found;
+        } else {
+            /// FAIL - If the auth token couldnt be created and saved
+            return array('registered' => false, 'msg' => 'Signup failed to creat auth token.');    
+        }
     }
     
     static function validatePasswordRequirements($post, $key = 'password') {
         return (v::key($key, v::stringType()->length(8,255)->noWhitespace()->alnum('!@#$%^&*_+=-')->regex('/^(?=.*[a-zA-Z])(?=.*[0-9])/'))->validate($post));
     }
     
+    /*
+     * return String|bool Failed message or true 
+     */
+    private function signup_validateSentParameters($post) {
+        if(!v::key('email', v::email())->validate($post) || 
+           !v::key('nameFirst', v::stringType())->validate($post) || 
+           !v::key('nameLast', v::stringType())->validate($post) || 
+           !v::key('password', v::stringType())->validate($post)) {
+            return 'Signup failed. Check your parameters and try again.';
+        } else if(!self::validatePasswordRequirements($post, 'password')) {
+            // Validate that the password is valid
+            return 'Signup failed. ' . self::$passwordRules;
+        } else {
+            return true;
+        }
+    }
 
     ///// 
     ///// Login
     ///// 
     
-    static function login($post) {
+    static function login($app) {
+        $post = $app->request->post();
+        
         // If anone is logged in currently, log them out
         self::login_logoutCurrentAccount($post);
         
@@ -113,25 +142,46 @@ class AuthControllerNative {
         if(!$found['authenticated']) { 
             return $found;
         }
-        $found['user']->apiKey = hash('sha512', uniqid());
-        $found['user']->apiToken = hash('sha512', uniqid());
-        
-        $found['sessionLifeHours'] = self::login_getSessionExpirationInHours($post);
+        $token = self::createAuthToken($app, $found['user']->id);
+        if($token) {
+            $found['user']->apiKey = $token['apiKey'];
+            $found['user']->apiToken = $token['apiToken'];
+            $found['sessionLifeHours'] = $token['sessionLifeHours'];
+
+            // Send the session life back (in hours) for the cookies
+            return $found;
+        } else {
+            return array('registered' => false, 'msg' => 'Signup failed to creat auth token.');   
+        }
+    }
+    
+    static function createAuthToken($app, $userId) {
+        $token = array();
+        $token['apiKey'] = hash('sha512', uniqid());
+        $token['apiToken'] = hash('sha512', uniqid());
+        $token['sessionLifeHours'] = self::login_getSessionExpirationInHours($app->request->post());
         
         // Congrats - you're logged in!
-        AuthData::insertAuthToken(array(
-            ':user_id' => $found['user']->id,
-            ':identifier' => $found['user']->apiKey,
-            ':token' => password_hash($found['user']->apiToken, PASSWORD_DEFAULT),
-            ':expires' => date('Y-m-d H:i:s', time() + ($found['sessionLifeHours'] * 60 * 60))
+        $saved = AuthData::insertAuthToken(array(
+            ':user_id' => $userId,
+            ':identifier' => $token['apiKey'],
+            ':token' => password_hash($token['apiToken'], PASSWORD_DEFAULT),
+            ':ip_address' => $app->request->getIp(),
+            ':user_agent' => $app->request->getUserAgent(),
+            ':expires' => date('Y-m-d H:i:s', time() + ($token['sessionLifeHours'] * 60 * 60))
         ));
         
-        // Send the session life back (in hours) for the cookies
-        return $found;
+        AuthData::insertLoginLocation(array(
+            ':user_id' => $userId,
+            ':ip_address' => $app->request->getIp(),
+            ':user_agent' => $app->request->getUserAgent()
+        ));
+        
+        return ($saved) ? $token : false;
     }
     
     private static function login_validateFoundUser($post) {
-        $user = UserData::selectUserByEmail($post['email']);
+        $user = AuthData::selectUserByEmail($post['email']);
         
         if(!$user) {
             // Validate existing user
@@ -162,8 +212,8 @@ class AuthControllerNative {
     ///// Logout
     ///// 
     
-    static function logout($post) {
-        return self::login_logoutCurrentAccount($post);
+    static function logout($app) {
+        return self::login_logoutCurrentAccount($app->request->post());
     }
     
     private static function login_logoutCurrentAccount($post) {
