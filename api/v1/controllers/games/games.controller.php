@@ -143,7 +143,7 @@ class GameController {
         
         $roundId = GameData::insertRound($validRound);
         if($roundId) {
-            $game = GameData::selectGame($app->request->post('gameId'));
+            $game = GameData::selectGame($app->request->post('gameId'), $roundId);
             return $app->render(200, array('game' => $game));
         } else {
             return $app->render(400,  array('msg' => 'Could not add game round.'));
@@ -170,7 +170,7 @@ class GameController {
         
         $questionId = GameData::insertQuestion($validQuestion);
         if($questionId) {
-            $game = GameData::selectGame($app->request->post('gameId'));
+            $game = GameData::selectGame($app->request->post('gameId'), $app->request->post('roundId'));
             return $app->render(200, array('game' => $game));
         } else {
             return $app->render(400,  array('msg' => 'Could not add question.'));
