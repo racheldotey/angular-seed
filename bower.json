@@ -6,7 +6,7 @@
   ],
   "description": "A project seed used for creating single page AngularJS aplications.",
   "license": "MIT",
-  "homepage": "http://www.rachellcarbone.com",
+  "homepage": "http://www.triviajoint.com",
   "ignore": [
     "**/.*",
     "node_modules",
@@ -22,7 +22,6 @@
     "angular-qtip2-directive": "~0.1.2",
     "angular-ui-router": "~0.2.15",
     "bootstrap": "~3.3.6",
-    "datatables": "~1.10.10",
     "font-awesome": "~4.5.0",
     "jquery": "~2.2.0",
     "moment": "~2.11.1",
@@ -32,12 +31,5 @@
     "angular-cookies": "~1.4.9",
     "ng-facebook-api": "~0.1.3",
     "bootstrap-social": "~4.12.0"
-  },
-  "resolutions": {
-    "jquery": "~2.2.0",
-    "angular-bootstrap": "~1.1.2",
-    "moment": "~2.11.1",
-    "angular": "~1.4.9",
-    "font-awesome": "~4.5.0"
   }
 }
