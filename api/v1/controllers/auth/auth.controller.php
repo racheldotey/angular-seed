@@ -75,8 +75,12 @@ class AuthController {
     }
     
     static function facebookLogin($app) {
-        AuthControllerFacebook::login($app);
-        return $app->render(200, array('msg' => "Deleted expired auth tokens." ));
+        $result = AuthControllerFacebook::login($app);
+        if($result['authenticated']) {
+            return $app->render(200, $result);
+        } else {
+            return $app->render(401, $result);
+        }
     }
             
     ///// 
@@ -94,6 +98,14 @@ class AuthController {
         }
     }
         
+    static function changeUserPassword($app) {
+        if(AuthControllerNative::updateUserPassword($app)) {
+            return $app->render(200, array('msg' => "Password successfully changed." ));
+        } else {
+            return $app->render(400, array('msg' => "Password could not be changed. Check your parameters and try again." ));
+        }
+    }
+
     ///// 
     // System Admin
     // TODO: Create system functions class
@@ -101,7 +113,7 @@ class AuthController {
     
     // TODO: Add this to Cron Job
     static function deleteExpiredAuthTokens($app) {
-        AuthData::deleteExpiredAuthTokens($app);
+        AuthData::deleteExpiredAuthTokens();
         return $app->render(200, array('msg' => "Deleted expired auth tokens." ));
     }
     
