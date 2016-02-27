@@ -1,107 +1,149 @@
-<style>
-    .page.auth.login {
-        
-    }
-</style>
-
 <div class="page auth login">
-        
-    <div class="row">
-        <div class="col-xs-0 col-sm-2"></div>
-        <div class="col-xs-12 col-sm-8">
-                
-            <div class="logo text-center">
-                <img src="/media/images/trivia-joint-logo.png" alt="Trivia Joint" />
-                <h2>Become a founder!</h2>
+
+    <div class="row" ng-if="$state.is('app.auth.signup.confirmEmail')">
+        <div class="col-sm-0 col-md-3"></div>
+        <div class="col-sm-12 col-md-6">
+
+            <div class="page-header">
+                <h1>Please Confirm Your Email</h1>
+            </div> 
+
+            <p class="lead">Thank you for signing up with us.</p>
+
+            <p>A message has been sent to {{userEmail}} with a link
+                to confirm your email address.</p>
+
+            <p>You will be redirected to the <a data-ui-sref="app.public.landing">home page</a> in <span data-state-redirect-timeout data-to-state="public.landing" data-timeout-seconds="10"></span> seconds.</p>
+
+        </div>
+        <div class="col-sm-0 col-md-3"></div>
+    </div>
+
+    <div class="row" ng-if="$state.is('app.auth.signup.success')">
+        <div class="col-sm-0 col-md-3"></div>
+        <div class="col-sm-12 col-md-6">
+
+            <div class="page-header">
+                <h1>Success!</h1>
+            </div> 
+
+            <p class="lead">Your account has been confirmed.</p>
+
+            <p>In {{seconds}} you will be redirected to the 
+                <a ui-sref="app.auth.login">Login Page</a> in <span data-state-redirect-timeout data-to-state="auth.login" data-timeout-seconds="6"></span>
+                seconds to login with your new username and password.</p>
+
+        </div>
+        <div class="col-sm-0 col-md-3"></div>
+    </div>
+
+    <div class="row" ng-if="$state.is('app.auth.signup')">
+        <div class="col-xs-0 col-sm-3"></div>
+        <div class="col-xs-12 col-sm-6">
+
+            <div class="page-header">
+                <h1>Sign Up</h1>
             </div>
-                            
-            <form name="form.terms" role="form" novalidate>
-                
-                <uib-alert ng-repeat="alert in termsAlerts" type="{{alert.type}}" close="closeAlert(termsAlerts, $index)">{{alert.msg}}</uib-alert>
-                
-                <div class="form-group" ng-show="false">
-                    <ul class="list-group">
-                      <li class="list-group-item" ng-click="newUser.triviaLove = 'hot'"><label>
-                            <input type="radio" ng-model="newUser.triviaLove" value="hot" required>
-                            I Love Trivia!
-                        </label>
-                      </li>
-                      <li class="list-group-item" ng-click="newUser.triviaLove = 'warm'">
-                        <label>
-                            <input type="radio" ng-model="newUser.triviaLove" value="warm" required>
-                            I Play Occasionally
-                        </label>
-                      </li>
-                      <li class="list-group-item" ng-click="newUser.triviaLove = 'unanswered'">
-                        <label>
-                            <input type="radio" ng-model="newUser.triviaLove" value="unanswered" required>
-                            Choose not to answer
-                        </label>
-                      </li>
-                    </ul>
+
+            <div data-rc-bootstrap-alerts="formAlerts"></div>
+
+            <h4>Have a social media account?</h4>
+
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" ng-model="newUser.acceptTerms" ng-true-value="true" ng-true-value="false" required> Agree to our <a ui-sref="app.public.terms" target="_blank">Terms of Use</a>
+                </label>
+            </div>
+
+            <a ng-click="facebookSignup()" class="btn btn-block btn-social btn-facebook">
+                <span class="fa fa-facebook"></span>
+                Sign up with Facebook
+            </a>
+
+            <hr />
+
+            <form name="form.signup" role="form" novalidate>                
+
+                <h5>Or</h5>
+
+                <div class="form-group">
+                    <label for="nameFirst">First Name</label>
+                    <input ng-model="newUser.nameFirst" type="text" class="form-control" name="nameFirst" ng-maxlength="255" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="nameLast">Last Name</label>
+                    <input ng-model="newUser.nameLast" type="text" class="form-control" name="nameLast" ng-maxlength="255" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Best Email</label>
+                    <input ng-model="newUser.email" type="email" class="form-control" ng-maxlength="255" name="email" required>
+                </div>
+
+                <div ng-if="showPasswordRules" class="form-group">
+                    <div class="alert alert-info" role="alert">
+                        <p><strong>Passwords Must:</strong></p>
+                        <ul>
+                            <li>Be at least 8 characters in length.</li>
+                            <li>Contain at least one letter and number.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input ng-model="newUser.password" 
+                           ng-change="onChangeValidatePassword()" 
+                           type="password" class="form-control" ng-maxlength="100" name="password" required>
+                </div>
+
+                <div ng-if="showPasswordMissmatch" class="form-group">
+                    <div class="alert alert-info" role="alert">
+                        <p>Passwords must match</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="passwordB">Confirm Password</label>
+                    <input ng-model="newUser.passwordB" 
+                           ng-change="onChangeValidateConfirmPassword()" 
+                           type="password" class="form-control" ng-maxlength="100" name="passwordB" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="referer">How did you hear about us? <small>(Google, Facebook, Email...)</small></label>
+                    <input ng-model="newUser.referer" type="text" class="form-control" name="referer" ng-maxlength="255">
                 </div>
 
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox" ng-model="newUser.acceptTerms" ng-true-value="true" ng-true-value="false" required> Agree to our terms of <a href="http://www.triviajoint.com/terms-and-conditions/" target="_blank">terms of service</a>.
+                        <input type="checkbox" ng-model="newUser.acceptTerms" ng-true-value="true" ng-true-value="false" required> Agree to our <a ui-sref="app.public.terms" target="_blank">Terms of Use</a>
                     </label>
                 </div>
-                
+
+                <hr/>
+
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <p class="align-left">Already have an account? <a data-ui-sref="app.auth.login">Login</a>.</p>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group text-right">
+                            <button type="button" class="btn btn-default" data-ui-sref="app.public.landing">Cancel</button>
+                            <button type="submit" class="btn btn-primary" ng-click="signup()">Sign Up</button>
+                        </div>
+                    </div>
+
+                </div>
+
+
             </form>
-                            
-            <hr/>
 
-            <div class="form-group">
-                <a ng-click="facebookSignup()" class="btn btn-block btn-social btn-facebook">
-                    <span class="fa fa-facebook"></span>
-                    Sign up with Facebook
-                </a>
-            </div>
-
-            <hr/>
-                
-            <form name="form.signup" role="form" novalidate>
-                
-                <h3>Or...</h3>
-            
-                <uib-alert ng-repeat="alert in signupAlerts" type="{{alert.type}}" close="closeAlert(signupAlerts, $index)">{{alert.msg}}</uib-alert>
-                
-                <div class="form-group">
-                    <input ng-model="newUser.nameFirst" type="text" class="form-control" name="nameFirst" placeholder="First Name" required>
-                </div>
-                
-                <div class="form-group">
-                    <input ng-model="newUser.nameLast" type="text" class="form-control" name="nameLast" placeholder="Last Name" required>
-                </div>
-                
-                <div class="form-group">
-                   <input ng-model="newUser.email" type="email" class="form-control" name="email" placeholder="Email" required>
-                </div>
-                
-                <div ng-if="false" class="alert alert-info" role="alert">
-                    <p><strong>Passwords Must:</strong></p>
-                    <ul>
-                        <li>Be at least 8 characters in length.</li>
-                        <li>Contain at least one letter and number.</li>
-                    </ul>
-                </div>
-            
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input ng-model="newUser.password" type="password" class="form-control" name="password" placeholder="Password" required>
-                </div>
-                
-                <div class="form-group">
-                    <input ng-model="newUser.passwordB" type="password" class="form-control" name="passwordB" placeholder="Confirm Password" required>
-                </div>
-                          
-
-            <hr />
-            
-            <button type="submit" class="btn btn-block btn-danger" ng-click="signup()">Sign Up without Facebook</button>
-            
         </div>
-        <div class="col-xs-0 col-sm-2"></div>
+        <div class="col-sm-0 col-sm-3"></div>
     </div>
 
 </div>

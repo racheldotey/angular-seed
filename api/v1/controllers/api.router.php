@@ -8,6 +8,7 @@ require_once dirname(__FILE__) . '/games/games.routes.php';
 require_once dirname(__FILE__) . '/groups/groups.routes.php';
 require_once dirname(__FILE__) . '/roles/roles.routes.php';
 require_once dirname(__FILE__) . '/simple-lists/lists.routes.php';
+require_once dirname(__FILE__) . '/system/system.routes.php';
 require_once dirname(__FILE__) . '/system-variables/config.routes.php';
 require_once dirname(__FILE__) . '/teams/teams.routes.php';
 require_once dirname(__FILE__) . '/user/user.routes.php';
@@ -27,6 +28,7 @@ class ApiRouter {
         GroupRoutes::addRoutes($app, $authenticateForRole);
         RoleRoutes::addRoutes($app, $authenticateForRole);
         ListRoutes::addRoutes($app, $authenticateForRole);
+        SystemRoutes::addRoutes($app, $authenticateForRole);
         ConfigRoutes::addRoutes($app, $authenticateForRole);
         TeamRoutes::addRoutes($app, $authenticateForRole);
         UserRoutes::addRoutes($app, $authenticateForRole);
