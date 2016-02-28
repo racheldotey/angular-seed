@@ -71,6 +71,24 @@ app.config(['$stateProvider', 'USER_ROLES',
             }
         });
 
+        $stateProvider.state('app.auth.signup.iframe', {
+            bodyClass: 'auth signup iframe-compatible',
+            title: 'Sign Up',
+            url: '/iframe',
+            views: {
+                'header@app.auth': {},
+                'content@app.auth': {
+                    templateUrl: 'app/views/auth/signup/signupiFrame.html',
+                    controller: 'AuthSignupCtrl'
+                },
+                'footer@app.auth': {}
+            },
+            resolve: {
+                alreadyLoggedIn: function() {
+                    return true;
+                }
+            }
+        });
         $stateProvider.state('app.auth.signup.confirmEmail', {
             title: 'Please Confirm Your Email',
             url: '/please-confirm-email'

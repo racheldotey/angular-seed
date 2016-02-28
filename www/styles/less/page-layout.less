@@ -7,23 +7,35 @@
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  position: relative;
-  min-height: 100%;
-}
-body {
-  /* Margin bottom by footer height */
-  margin-bottom: @footer-height;
-}
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  /* Set the fixed height of the footer here */
-  height: @footer-height;
-}
+    position: relative;
+    min-height: 100%;
+    body {
+        /* Margin bottom by footer height */
+        margin-bottom: @footer-height;
+      
+        .page {
+            margin-bottom: @footer-height;
+        }
+    
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            /* Set the fixed height of the footer here */
+            height: @footer-height;
+        }
 
-.page {
-    margin-bottom: @footer-height;
+        &.iframe-compatible {
+            margin-bottom: 0;
+            .page {
+                margin-bottom: 0;
+            }
+            .footer {
+                height: 0;
+            }
+            
+        }
+    }
 }
 
 /* Custom page CSS

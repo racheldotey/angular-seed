@@ -10,16 +10,11 @@
 </style>
 
 <div class="page auth signup">
-
+        
     <div class="row">
         <div class="col-xs-0 col-sm-2"></div>
         <div class="col-xs-12 col-sm-8">
-
-            <div class="logo text-center" style="padding-bottom: 10px;">
-                <img src="/media/images/trivia-joint-logo.png" alt="Trivia Joint"  />
-                <h2 style="font-size: 200%;">Become a Founding Member!</h2>
-            </div>
-
+            
             <form name="form.terms" role="form" novalidate>
                 
                 <div data-rc-bootstrap-alerts="facebookAlerts"></div>
@@ -30,7 +25,7 @@
                     </label>
                 </div>
             </form>
-
+                            
             <hr/>
 
             <div class="form-group">
@@ -41,28 +36,28 @@
             </div>
 
             <div class="row" >
-                <div class="col-sm-12 text-center">
-                    <h3>&mdash; Or &mdash;</h3>
-                </div>
-                <div class="col-sm-12 text-center">
-                    &nbsp;
-                </div>
+              <div class="col-sm-12 text-center">
+                <h3>&mdash; Or &mdash;</h3>
+              </div>
+              <div class="col-sm-12 text-center">
+                &nbsp;
+              </div>
             </div>
 
             <form name="form.signup" role="form" novalidate>
                 
                 <div data-rc-bootstrap-alerts="signupAlerts"></div>
-
+                
                 <div class="form-group">
                     <input ng-model="newUser.nameFirst" type="text" class="form-control" name="nameFirst" placeholder="First Name" maxlength="255" required>
                 </div>
-
+                
                 <div class="form-group">
                     <input ng-model="newUser.nameLast" type="text" class="form-control" name="nameLast" placeholder="Last Name" maxlength="255" required>
                 </div>
-
+                
                 <div class="form-group">
-                    <input ng-model="newUser.email" type="email" class="form-control" name="email" placeholder="Email" maxlength="255" required>
+                   <input ng-model="newUser.email" type="email" class="form-control" name="email" placeholder="Email" maxlength="255" required>
                 </div>
                 
                 <div ng-if="showPasswordRules" class="form-group">
@@ -74,9 +69,9 @@
                         </ul>
                     </div>
                 </div>
-
+            
                 <div class="form-group">
-                    <input ng-model="newUser.password" 
+                     <input ng-model="newUser.password"
                         ng-change="onChangeValidatePassword()" 
                         type="password" class="form-control" name="password" placeholder="Password" maxlength="100" required>
                 </div>
@@ -86,15 +81,15 @@
                         <p>Passwords must match</p>
                     </div>
                 </div>
-
+                
                 <div class="form-group">
-                    <input ng-model="newUser.passwordB" 
+                    <input ng-model="newUser.passwordB"
                         ng-change="onChangeValidateConfirmPassword()" 
                         type="password" class="form-control" name="passwordB" placeholder="Confirm Password" maxlength="100" required>
                 </div>
-
-                <button type="submit" class="btn btn-block btn-danger text-left" ng-click="signup()"><span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;&nbsp;&nbsp;Sign up with Email Address</button>
-
+            
+            <button type="submit" class="btn btn-block btn-danger text-left" ng-click="signup()"><span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;&nbsp;&nbsp;Sign up with Email Address</button>
+            
         </div>
         <div class="col-xs-0 col-sm-2"></div>
     </div>

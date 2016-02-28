@@ -344,19 +344,28 @@ html {
   position: relative;
   min-height: 100%;
 }
-body {
+html body {
   /* Margin bottom by footer height */
   margin-bottom: 60px;
 }
-.footer {
+html body .page {
+  margin-bottom: 60px;
+}
+html body .footer {
   position: absolute;
   bottom: 0;
   width: 100%;
   /* Set the fixed height of the footer here */
   height: 60px;
 }
-.page {
-  margin-bottom: 60px;
+html body.iframe-compatible {
+  margin-bottom: 0;
+}
+html body.iframe-compatible .page {
+  margin-bottom: 0;
+}
+html body.iframe-compatible .footer {
+  height: 0;
 }
 /* Custom page CSS
 -------------------------------------------------- */

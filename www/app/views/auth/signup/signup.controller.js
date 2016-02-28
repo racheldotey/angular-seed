@@ -7,12 +7,13 @@
  */
 
 angular.module('app.auth.signup', [])
-        .controller('AuthSignupCtrl', ['$scope', '$state', '$log', 'AuthService', 'AlertConfirmService',
-        function ($scope, $state, $log, AuthService, AlertConfirmService) {
+        .controller('AuthSignupCtrl', ['$scope', '$state', '$log', '$window', 'AuthService', 'AlertConfirmService',
+        function ($scope, $state, $log, $window, AuthService, AlertConfirmService) {
         
         $scope.$state = $state;
         $scope.form = {};
-        $scope.formAlerts = {};
+        $scope.facebookAlerts = {};
+        $scope.signupAlerts = {};
         
         $scope.showPasswordRules = false;
         $scope.showPasswordMissmatch = false;
@@ -28,40 +29,61 @@ angular.module('app.auth.signup', [])
         };
 
         $scope.signup = function() {
-            if(!$scope.form.signup.$valid) {
+            if(!$scope.newUser.acceptTerms || !$scope.form.signup.$valid) {
                 $scope.form.signup.$setDirty();
-                $scope.formAlerts.error('Please fill in all form fields.');
+                $scope.signupAlerts.error('Please agree to our terms of service and fill in all Name, Email, and Password fields.');
             } else if($scope.newUser.password !== $scope.newUser.passwordB) {
                 $scope.form.signup.$setDirty();
-                $scope.formAlerts.error('Passwords must match.');
+                $scope.signupAlerts.error('Passwords do not match.');
             } else {
                 AuthService.signup($scope.newUser).then(function (results) {
                     $log.debug(results);
+                    
+                    $scope.signupAlerts.success("Signup successful!  Please wait for confirmation page", 'signup');
+
+                    $timeout(function () {
+                        $scope.clearAlerts();
+                        $window.location.href = 'http://www.triviajoint.com/registration-thank-you-page/';
+                    }, 3000);
                 }, function (error) {
-                    $log.debug(error);
+                    $scope.signupAlerts.error(error);
                 });
             }
         };
 
         $scope.facebookSignup = function() {
             if(!$scope.newUser.acceptTerms) {
-                AlertConfirmService.confirm('Do you agree to our <a ui-sref="app.public.terms" target="_blank">Terms of Use</a>?', 'Terms of Use Agreement').result.then(function (resp) {
+                AlertConfirmService.confirm('Do you agree to our <a href="http://www.triviajoint.com/terms-and-conditions/" target="_blank">Terms of Service</a>?', 'Terms of Service Agreement').result.then(function (resp) {
                     $scope.newUser.acceptTerms = true;
                     AuthService.facebookSignup().then(function (resp) {
                         $log.debug(resp);
                         $scope.newUser = resp;
+                        
+                        $scope.facebookAlerts.success("Facebook signup Successful!  Please wait for confirmation page", 'terms');
+
+                        $timeout(function () {
+                            $scope.clearAlerts();
+                            $window.location.href = 'http://www.triviajoint.com/registration-thank-you-page/';
+                        }, 3000);
                     }, function (err) {
-                        $scope.formAlerts.error(err);
+                        $scope.facebookAlerts.error(err);
                     });
                 }, function (err) {
-                    $scope.formAlerts.error('Please accept the Terms of Use to signup.');
+                    $scope.facebookAlerts.error('Please accept the Terms of Service to signup.');
                 });
             } else {
                 AuthService.facebookSignup().then(function (resp) {
                     $log.debug(resp);
                     $scope.newUser = resp;
+
+                    $scope.facebookAlerts.success("Facebook signup Successful!  Please wait for confirmation page", 'terms');
+
+                    $timeout(function () {
+                        $scope.clearAlerts();
+                        $window.location.href = 'http://www.triviajoint.com/registration-thank-you-page/';
+                    }, 3000);
                 }, function (err) {
-                    $scope.formAlerts.error(err);
+                    $scope.facebookAlerts.error(err);
                 });
             }
         };
