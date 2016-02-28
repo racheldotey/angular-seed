@@ -89,6 +89,55 @@ app.config(['$stateProvider', 'USER_ROLES',
                 }
             }
         });
+
+        $stateProvider.state('app.auth.signupVenue', {
+            bodyClass: 'auth signup',
+            title: 'Venue Sign Up',
+            url: '/venue/signup',
+            views: {
+                'content@app.auth': {
+                    templateUrl: 'app/views/auth/signupVenue/signupVenue.html',
+                    controller: 'AuthSignupVenueCtrl'
+                }
+            },
+            resolve: {
+                $q: '$q',
+                $rootScope: '$rootScope',
+                $state: '$state',
+                alreadyLoggedIn: function($rootScope, $state, $q, AuthService) {
+                    return $q(function(resolve, reject) {  
+                        if(AuthService.getUser()) {
+                            $rootScope.$evalAsync(function () {
+                                $state.go('app.member.dashboard');
+                            });
+                            reject(false);
+                        } else {
+                            resolve(true);
+                        }
+                    });
+                }
+            }
+        });
+
+        $stateProvider.state('app.auth.signupVenue.iframe', {
+            bodyClass: 'auth signup iframe-compatible',
+            title: 'Venue Sign Up',
+            url: '/iframe',
+            views: {
+                'header@app.auth': {},
+                'content@app.auth': {
+                    templateUrl: 'app/views/auth/signupVenue/signupVenueiFrame.html',
+                    controller: 'AuthSignupVenueCtrl'
+                },
+                'footer@app.auth': {}
+            },
+            resolve: {
+                alreadyLoggedIn: function() {
+                    return true;
+                }
+            }
+        });
+
         $stateProvider.state('app.auth.signup.confirmEmail', {
             title: 'Please Confirm Your Email',
             url: '/please-confirm-email'
