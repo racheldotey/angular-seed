@@ -39,6 +39,7 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
             }
         });
 
+        /*
         $stateProvider.state('app.public.landing', {
             bodyClass: 'public landing',
             title: 'Welcome',
@@ -50,6 +51,7 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
                 }
             }
         });
+        */
 
         $stateProvider.state('app.public.about', {
             bodyClass: 'public about',
