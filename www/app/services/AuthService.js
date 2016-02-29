@@ -84,6 +84,40 @@ angular.module('AuthService', [
             });
         };
         
+        factory.venueSignup = function(newUser) {
+            /* 
+             * Regular Signup:
+             * var newUser = {
+                    'nameFirst': '',
+                    'nameLast': '',
+                    'email': '',
+                    'password': '',
+                    'passwordB': '',
+                    'referrer': ''
+                };
+             */
+            
+            return $q(function (resolve, reject) {
+                    API.postVenueSignup(newUser)
+                    .then(function (data) {
+                        
+                        if (UserSession.create(data.user)) {
+                            //put valid login creds in a cookie
+                            CookieService.setAuthCookie(data.user.apiKey, data.user.apiToken, data.sessionLifeHours);
+                        
+                            resolve(UserSession.get());
+                            $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
+                        } else {
+                            $log.error(data);
+                            reject("Error: Could not sign up user. Please try again later.");
+                        }
+                    }, function (error) {
+                        $log.error(error);
+                        reject(error);
+                    });
+            });
+        };
+        
         factory.login = function(credentials) {
             var savedAuth = CookieService.getAuthCookie();
             if(savedAuth) { 
@@ -228,7 +262,7 @@ angular.module('AuthService', [
                         };
                         
                         //* Signup through our normal method
-                        API.postFacebookLogin(user).then(function (data) {
+                        API.postVenueFacebookLogin(user).then(function (data) {
                             
                             if (UserSession.create(data.user)) {
                                 //put valid login creds in a cookie
@@ -259,6 +293,70 @@ angular.module('AuthService', [
         };
         
         factory.facebookSignup = function(additionalPrams) {
+             /* Facebook Signup:
+             * var newUser = {
+                    'nameFirst' : data.user.first_name,
+                    'nameLast' : data.user.last_name,
+                    'email' : data.user.email,
+                    'facebookId': data.user.id,
+                    'link' : data.user.link,
+                    'locale' : data.user.locale,
+                    'timezone' : data.user.timezone,
+                    'ageRange' : angular.toJson(data.user.age_range)
+                };
+             */
+            return $q(function (resolve, reject) {
+                /* Is the user logged in with facebook?
+                 * Ask them to allow our app. */
+                FacebookAuthService.login().then(function(data) {
+                    //* Get logged in user data.
+                    FacebookAuthService.getUser(data.userID).then(function (data) {
+                        var newUser = {
+                            'accessToken' : data.authResponse.accessToken,
+                            'facebookId' : data.user.id,
+                            'nameFirst' : data.user.first_name,
+                            'nameLast' : data.user.last_name,
+                            'email' : data.user.email,
+                            'link' : data.user.link,
+                            'locale' : data.user.locale,
+                            'timezone' : data.user.timezone,
+                            'ageRange' : angular.toJson(data.user.age_range)
+                        };
+                        
+                        var user = angular.extend({}, additionalPrams, newUser);
+                        
+                        //* Signup through our normal method
+                        API.postFacebookSignup(user).then(function (data) {
+                            
+                            if (UserSession.create(data.user)) {
+                                //put valid login creds in a cookie
+                                CookieService.setAuthCookie(data.user.apiKey, data.user.apiToken, data.sessionLifeHours);
+
+                                resolve(UserSession.get());
+                                $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
+                            } else {
+                                reject(data);
+                                $log.error(data);
+                            }
+                        }, function (error) {
+                            $log.error('ERROR Signup User: ', error);
+                            reject(error);
+                        });
+
+                    }, function (error) {
+                        $log.error('ERROR facebookLogin User: ', error);
+                        reject(error);
+                    });
+
+                }, function(error) {
+                    $log.error('ERROR facebookLogin Token: ', error);
+                    $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
+                    reject(error);
+                });
+            });
+        };
+        
+        factory.venueFacebookSignup = function(additionalPrams) {
              /* Facebook Signup:
              * var newUser = {
                     'nameFirst' : data.user.first_name,

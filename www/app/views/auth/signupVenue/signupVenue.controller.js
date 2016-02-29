@@ -14,36 +14,52 @@ angular.module('app.auth.signupVenue', [])
         $scope.form = {};
         $scope.facebookAlerts = {};
         $scope.signupAlerts = {};
+        $scope.venueAlerts = {};
         
         $scope.showPasswordRules = false;
         $scope.showPasswordMissmatch = false;
-
+        
         $scope.newUser = {
+            'userGroup' : 'venue.owner',
             'nameFirst' : '',
             'nameLast' : '',
             'email' : '',
             'password' : '',
             'passwordB' : '',
             'referer' : '',
-            'acceptTerms' : false
+            'acceptTerms' : false,
+            
+            'venueName' : '',
+            'phone' : '',
+            'address' : '',
+            'addressb' : '',
+            'city' : '',
+            'state' : '',
+            'zip' : '',
+            'website' : '',
+            'facebook' : '',
+            'referralCode' : ''
         };
 
         $scope.signup = function() {
-            if(!$scope.newUser.acceptTerms || !$scope.form.signup.$valid) {
-                $scope.form.signup.$setDirty();
+            if(!$scope.form.venue.$valid) {
+                $scope.form.venue.$setDirty();
+                $scope.venueAlerts.error('Please fill in all fields for your venue.');
+            } else if(!$scope.form.user.$valid) {
+                $scope.form.user.$setDirty();
                 $scope.signupAlerts.error('Please agree to our terms of service and fill in all Name, Email, and Password fields.');
             } else if($scope.newUser.password !== $scope.newUser.passwordB) {
-                $scope.form.signup.$setDirty();
+                $scope.form.user.$setDirty();
                 $scope.signupAlerts.error('Passwords do not match.');
             } else {
-                AuthService.signup($scope.newUser).then(function (results) {
+                AuthService.venueSignup($scope.newUser).then(function (results) {
                     $log.debug(results);
                     
                     $scope.signupAlerts.success("Signup successful!  Please wait for confirmation page", 'signup');
 
                     $timeout(function () {
                         $scope.clearAlerts();
-                        $window.location.href = 'http://www.triviajoint.com/registration-thank-you-page/';
+                        $window.top.location.href = 'http://www.triviajoint.com/registration-thank-you-page/';
                     }, 3000);
                 }, function (error) {
                     $scope.signupAlerts.error(error);
@@ -52,10 +68,13 @@ angular.module('app.auth.signupVenue', [])
         };
 
         $scope.facebookSignup = function() {
-            if(!$scope.newUser.acceptTerms) {
+            if(!$scope.form.venue.$valid) {
+                $scope.form.venue.$setDirty();
+                $scope.venueAlerts.error('Please fill in all fields for your venue.');
+            } else if(!$scope.newUser.acceptTerms) {
                 AlertConfirmService.confirm('Do you agree to our <a href="http://www.triviajoint.com/terms-and-conditions/" target="_blank">Terms of Service</a>?', 'Terms of Service Agreement').result.then(function (resp) {
                     $scope.newUser.acceptTerms = true;
-                    AuthService.facebookSignup().then(function (resp) {
+                    AuthService.venueFacebookSignup().then(function (resp) {
                         $log.debug(resp);
                         $scope.newUser = resp;
 
@@ -63,7 +82,7 @@ angular.module('app.auth.signupVenue', [])
 
                         $timeout(function () {
                             $scope.clearAlerts();
-                            $window.location.href = 'http://www.triviajoint.com/registration-thank-you-page/';
+                            $window.top.location.href = 'http://www.triviajoint.com/registration-thank-you-page/';
                         }, 3000);
                     }, function (err) {
                         $scope.facebookAlerts.error(err);
@@ -72,7 +91,7 @@ angular.module('app.auth.signupVenue', [])
                     $scope.facebookAlerts.error('Please accept the Terms of Service to signup.');
                 });
             } else {
-                AuthService.facebookSignup().then(function (resp) {
+                AuthService.venueFacebookSignup().then(function (resp) {
                     $log.debug(resp);
                     $scope.newUser = resp;
 
@@ -80,7 +99,7 @@ angular.module('app.auth.signupVenue', [])
 
                     $timeout(function () {
                         $scope.clearAlerts();
-                        $window.location.href = 'http://www.triviajoint.com/registration-thank-you-page/';
+                        $window.top.location.href = 'http://www.triviajoint.com/registration-thank-you-page/';
                     }, 3000);
                 }, function (err) {
                     $scope.facebookAlerts.error(err);
@@ -97,4 +116,5 @@ angular.module('app.auth.signupVenue', [])
         $scope.onChangeValidateConfirmPassword = function() {
             $scope.showPasswordMissmatch = ($scope.newUser.password !== $scope.newUser.passwordB);
         };
+        
     }]);

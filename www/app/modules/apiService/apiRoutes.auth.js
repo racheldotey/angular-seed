@@ -61,6 +61,43 @@ angular.module('apiRoutes.auth', [])
         }
         return API.post('auth/signup/facebook/', newUser, 'System unable to register new facebook user.');
     };
+    
+    api.postVenueSignup = function(newUser) {
+        if(!newUser.password || 
+                !newUser.nameLast || 
+                !newUser.nameLast || 
+                !newUser.email) {
+            return API.reject('Invalid user please verify your information and try again.');
+        } else if(!newUser.venueName || 
+                !newUser.address || 
+                !newUser.city || 
+                !newUser.state || 
+                !newUser.zip) {
+            return API.reject('Invalid venue please verify your information and try again.');
+        }
+        return API.post('auth/venue/signup/', newUser, 'System unable to register new user user or venue.');
+    };
+    
+    api.postVenueFacebookSignup = function(newUser) {
+        if(!newUser.accessToken || 
+                !newUser.facebookId || 
+                !newUser.nameFirst || 
+                !newUser.nameLast || 
+                !newUser.email || 
+                !newUser.link || 
+                !newUser.locale || 
+                !newUser.timezone || 
+                !newUser.ageRange) {
+            return API.reject('Invalid user please verify your information and try again.');
+        } else if(!newUser.venueName || 
+                !newUser.address || 
+                !newUser.city || 
+                !newUser.state || 
+                !newUser.zip) {
+            return API.reject('Invalid venue please verify your information and try again.');
+        }
+        return API.post('auth/venue/signup/facebook/', newUser, 'System unable to register new facebook user or venue.');
+    };
 
     api.postLogout = function(logout) {
         var data = {};

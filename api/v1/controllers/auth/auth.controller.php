@@ -1,4 +1,6 @@
 <?php namespace API;
+require_once dirname(dirname(dirname(__FILE__))) . '/services/api.auth.php';
+require_once dirname(dirname(__FILE__)) . '/venues/venues.data.php';
 require_once dirname(__FILE__) . '/auth.data.php';
 require_once dirname(__FILE__) . '/auth.additionalInfo.data.php';
 require_once dirname(__FILE__) . '/auth.controller.native.php';
@@ -22,15 +24,6 @@ class AuthController {
         }  else {
             return $app->render(401, "Unauthenticated");
         }
-        
-        /*
-        $fb = AuthControllerFacebook::isAuthenticated($app);
-        if($fb) {
-            return $app->render(222, $found);
-        } else {
-            return $app->render(400, $found);
-        }
-        */
     }
             
     ///// 
@@ -56,6 +49,61 @@ class AuthController {
         } else {
             return $app->render(400, $result);
         }
+    }
+    
+    static function venueSignup($app) {
+        $venue = self::addVenue($app);
+        if(!$venue) {
+            return $app->render(400, "Could not add venue. Check your parameters and try again.");
+        }
+        $result = AuthControllerNative::signup($app);
+        if($result['registered']) {
+            return $app->render(200, $result);
+        } else {
+            return $app->render(400, $result);
+        }
+    }
+    
+    static function venueFacebookSignup($app) {
+        $venue = self::addVenue($app);
+        if(!$venue) {
+            return $app->render(400, "Could not add venue. Check your parameters and try again.");
+        }
+        $result = AuthControllerFacebook::signup($app);
+        if($result['registered']) {
+            return $app->render(200, $result);
+        } else {
+            return $app->render(400, $result);
+        }
+    }
+    
+    static function addVenue($app) {
+        $post = $app->request->post();
+        
+        if(!v::key('venueName', v::stringType())->validate($post) || 
+           !v::key('address', v::stringType())->validate($post) || 
+           !v::key('city', v::stringType())->validate($post) || 
+           !v::key('state', v::stringType())->validate($post) || 
+           !v::key('zip', v::stringType())->validate($post)) {
+            
+        }
+        
+        $venue = array(
+            ':name' => $post['venueName'], 
+            ':address' => $post['address'], 
+            ':address_b' => (v::key('addressb', v::stringType())->validate($post)) ? $post['addressb'] : '', 
+            ':city' => $post['city'], 
+            ':state' => $post['state'], 
+            ':zip' => $post['zip'], 
+            ':phone' => (v::key('phone', v::stringType())->validate($post)) ? $post['phone'] : '', 
+            ':website' => (v::key('website', v::stringType())->validate($post)) ? $post['website'] : '', 
+            ':facebook_url' => (v::key('facebook', v::stringType())->validate($post)) ? $post['facebook'] : '', 
+            ':logo' => (v::key('logo', v::stringType())->validate($post)) ? $post['logo'] : '', 
+            ':hours' => (v::key('hours', v::stringType())->validate($post)) ? $post['hours'] : '', 
+            ":created_user_id" => APIAuth::getUserId(),
+            ":last_updated_by" => APIAuth::getUserId()
+        );
+        return VenueData::insertVenue($venue);
     }
 
     ///// 

@@ -19,6 +19,7 @@ angular.module('app.auth.signup', [])
         $scope.showPasswordMissmatch = false;
 
         $scope.newUser = {
+            'userGroup' : 'player',
             'nameFirst' : '',
             'nameLast' : '',
             'email' : '',
@@ -43,7 +44,7 @@ angular.module('app.auth.signup', [])
 
                     $timeout(function () {
                         $scope.clearAlerts();
-                        $window.location.href = 'http://www.triviajoint.com/registration-thank-you-page/';
+                        $window.top.location.href = 'http://www.triviajoint.com/registration-thank-you-page/';
                     }, 3000);
                 }, function (error) {
                     $scope.signupAlerts.error(error);
@@ -63,7 +64,7 @@ angular.module('app.auth.signup', [])
 
                         $timeout(function () {
                             $scope.clearAlerts();
-                            $window.location.href = 'http://www.triviajoint.com/registration-thank-you-page/';
+                            $window.top.location.href = 'http://www.triviajoint.com/registration-thank-you-page/';
                         }, 3000);
                     }, function (err) {
                         $scope.facebookAlerts.error(err);
@@ -80,7 +81,7 @@ angular.module('app.auth.signup', [])
 
                     $timeout(function () {
                         $scope.clearAlerts();
-                        $window.location.href = 'http://www.triviajoint.com/registration-thank-you-page/';
+                        $window.top.location.href = 'http://www.triviajoint.com/registration-thank-you-page/';
                     }, 3000);
                 }, function (err) {
                     $scope.facebookAlerts.error(err);

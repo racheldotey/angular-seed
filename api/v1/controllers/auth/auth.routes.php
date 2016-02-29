@@ -47,6 +47,14 @@ class AuthRoutes {
                 AuthController::facebookSignup($app);
             });
 
+            $app->post("/venue/signup/", function () use ($app) {
+                AuthController::venueSignup($app);
+            });
+
+            $app->post("/venue/signup/facebook/", function () use ($app) {
+                AuthController::venueFacebookSignup($app);
+            });
+
             $app->post("/signup/additional/", function () use ($app) {
                 InfoController::saveAdditional($app);
             });
