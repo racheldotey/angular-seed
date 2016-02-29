@@ -138,7 +138,8 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES',
         });
 
         // For any unmatched url, redirect to /
-        $urlRouterProvider.when('', '/');
-        $urlRouterProvider.when('/#', '/');
+        $urlRouterProvider.when('', '/signup');
+        $urlRouterProvider.when('/', '/signup');
+        $urlRouterProvider.when('/#', '/signup');
         $urlRouterProvider.otherwise('/error/404');
     }]);
