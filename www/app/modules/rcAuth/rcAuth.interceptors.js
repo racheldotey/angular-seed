@@ -91,7 +91,8 @@ app.run(['$rootScope', '$state', 'AUTH_EVENTS', 'AuthService',
         $rootScope.$on(AUTH_EVENTS.logoutSuccess, function(event, args) {
             $rootScope.$evalAsync(function () {
                 // Go to the login state
-                $state.go('app.public.landing');
+                $state.go('app.public.signup');
+                //$state.go('app.public.landing');
             });
         });
 
