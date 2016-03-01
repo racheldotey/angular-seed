@@ -7,8 +7,8 @@
  */
 
 angular.module('app.auth.signupVenue', [])
-        .controller('AuthSignupVenueCtrl', ['$scope', '$state', '$log', '$window', 'AuthService', 'AlertConfirmService',
-        function ($scope, $state, $log, $window, AuthService, AlertConfirmService) {
+        .controller('AuthSignupVenueCtrl', ['$scope', '$state', '$log', '$window', '$timeout', 'AuthService', 'AlertConfirmService',
+        function ($scope, $state, $log, $window, $timeout, AuthService, AlertConfirmService) {
         
         $scope.$state = $state;
         $scope.form = {};
@@ -40,6 +40,26 @@ angular.module('app.auth.signupVenue', [])
             'facebook' : '',
             'referralCode' : ''
         };
+        $scope.newUser = {
+            'userGroup' : 'player',
+            'nameFirst' : 'Ra',
+            'nameLast' : 'Carbone',
+            'email' : 'r@gmail.com',
+            'password' : 'password1',
+            'passwordB' : 'password1',
+            'referer' : 'Google',
+            'acceptTerms' : true,
+            'venueName' : 'Bar n Grill',
+            'phone' : '12345678',
+            'address' : '1 Main Street',
+            'addressb' : 'Downstairs',
+            'city' : 'Clifton Park',
+            'state' : 'NY',
+            'zip' : '12065',
+            'website' : 'http://barngrill.com',
+            'facebook' : 'http://facebook.com',
+            'referralCode' : 'Facebook'
+        };
 
         $scope.signup = function() {
             if(!$scope.form.venue.$valid) {
@@ -58,7 +78,6 @@ angular.module('app.auth.signupVenue', [])
                     $scope.signupAlerts.success("Signup successful!  Please wait for confirmation page", 'signup');
 
                     $timeout(function () {
-                        $scope.clearAlerts();
                         $window.top.location.href = 'http://www.triviajoint.com/registration-thank-you-page/';
                     }, 3000);
                 }, function (error) {
@@ -81,9 +100,8 @@ angular.module('app.auth.signupVenue', [])
                         $scope.facebookAlerts.success("Facebook signup Successful!  Please wait for confirmation page", 'terms');
 
                         $timeout(function () {
-                            $scope.clearAlerts();
                             $window.top.location.href = 'http://www.triviajoint.com/registration-thank-you-page/';
-                        }, 3000);
+                        }, 1000);
                     }, function (err) {
                         $scope.facebookAlerts.error(err);
                     });
@@ -98,9 +116,8 @@ angular.module('app.auth.signupVenue', [])
                     $scope.facebookAlerts.success("Facebook signup Successful!  Please wait for confirmation page", 'terms');
 
                     $timeout(function () {
-                        $scope.clearAlerts();
                         $window.top.location.href = 'http://www.triviajoint.com/registration-thank-you-page/';
-                    }, 3000);
+                    }, 1000);
                 }, function (err) {
                     $scope.facebookAlerts.error(err);
                 });
