@@ -32,7 +32,7 @@ class VenueData {
     }
   
     public static function insertVenue($validVenue) {
-        return DBConn::insert("INSERT INTO `as_venues`(`name`, `address`, `address_b`, `city`, `state`, `zip`, `phone`, `website`, `facebook_url`, `logo`, `hours`, `created_user_id`, `last_updated_by`) "
+        return DBConn::insert("INSERT INTO " . DBConn::prefix() . "venues(`name`, `address`, `address_b`, `city`, `state`, `zip`, `phone`, `website`, `facebook_url`, `logo`, `hours`, `created_user_id`, `last_updated_by`) "
                 . "VALUES (:name, :address, :address_b, :city, :state, :zip, :phone, :website, :facebook_url, :logo, :hours, :created_user_id, :last_updated_by)", $validVenue);
     }
     
