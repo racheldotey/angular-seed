@@ -28,7 +28,6 @@ angular.module('app.auth.signupVenue', [])
             'passwordB' : '',
             'referer' : '',
             'acceptTerms' : false,
-            
             'venueName' : '',
             'phone' : '',
             'address' : '',
@@ -38,9 +37,11 @@ angular.module('app.auth.signupVenue', [])
             'zip' : '',
             'website' : '',
             'facebook' : '',
+            'hours' : '',
+            'logoUrl' : '',
             'referralCode' : ''
         };
-        $scope.newUser = {
+        $scope.newUserz = {
             'userGroup' : 'player',
             'nameFirst' : 'Ra',
             'nameLast' : 'Carbone',
@@ -58,6 +59,8 @@ angular.module('app.auth.signupVenue', [])
             'zip' : '12065',
             'website' : 'http://barngrill.com',
             'facebook' : 'http://facebook.com',
+            'hours' : 'Friday and Saturday at 6pm',
+            'logoUrl' : 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
             'referralCode' : 'Facebook'
         };
 

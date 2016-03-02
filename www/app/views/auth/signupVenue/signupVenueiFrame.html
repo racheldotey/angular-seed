@@ -19,16 +19,13 @@
 
                 <div data-rc-bootstrap-alerts="venueAlerts"></div>
 
-                <div class="row" >
-                    <div class="col-sm-12 text-center">
-                        <h3>&mdash; Venue Signup &mdash;</h3>
-                    </div>
-                    <div class="col-sm-12 text-center">
-                        &nbsp;
-                    </div>
-                </div>
-
                 <div class="row">
+                    
+                    <div class="col-xs-12 checkbox text-center">
+                        <label>
+                            <input type="checkbox" ng-model="newUser.acceptTerms" ng-true-value="true" ng-false-value="false"> Agree to our <a href="http://www.triviajoint.com/terms-and-conditions/" target="_blank">terms of service</a>
+                        </label>
+                    </div>
                     
                     <div class="col-xs-12 form-group">
                         <input ng-model="newUser.venueName" type="text" class="form-control" name="venueName" placeholder="Venue Name" maxlength="255" required>
@@ -46,11 +43,11 @@
                         <input ng-model="newUser.city" type="text" class="form-control" name="city" placeholder="City" maxlength="255" required>
                     </div>
 
-                    <div class="col-md-3 form-group">
+                    <div class="col-sm-6 col-md-3 form-group">
                         <input ng-model="newUser.state" type="text" class="form-control" name="state" placeholder="State" maxlength="255" required>
                     </div>
                     
-                    <div class="col-md-3 form-group">
+                    <div class="col-sm-6 col-md-3 form-group">
                         <input ng-model="newUser.zip" type="text" class="form-control" name="zip" placeholder="Zip" maxlength="255" required>
                     </div>
 
@@ -69,28 +66,20 @@
                     <div class="col-xs-12 form-group">
                         <input ng-model="newUser.referralCode" type="text" class="form-control" name="referralCode" placeholder="Referral Code" maxlength="255">
                     </div>
-                    
-                    <div class="col-xs-12 checkbox text-center">
-                        <label>
-                            <input type="checkbox" ng-model="newUser.acceptTerms" ng-true-value="true" ng-false-value="false"> Agree to our <a href="http://www.triviajoint.com/terms-and-conditions/" target="_blank">terms of service</a>
-                        </label>
+
+                    <div class="col-xs-12 form-group">
+                        <input ng-model="newUser.hours" type="text" class="form-control" name="referralCode" placeholder="Business Hours" maxlength="255">
                     </div>
-                    
+
+                    <div class="col-xs-12 form-group">
+                        <input ng-model="newUser.logoUrl" type="text" class="form-control" name="referralCode" placeholder="Logo URL" maxlength="255">
+                    </div>
                     
                 </div>
                 
             </form>
 
             <hr/>
-
-            <div class="row" >
-                <div class="col-sm-12 text-center">
-                    <h3>&mdash; User Signup &mdash;</h3>
-                </div>
-                <div class="col-sm-12 text-center">
-                    &nbsp;
-                </div>
-            </div>
 
             <div data-rc-bootstrap-alerts="facebookAlerts"></div>
 
