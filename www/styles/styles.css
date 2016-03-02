@@ -372,8 +372,8 @@ html body.iframe-compatible .page {
   margin-bottom: 0;
 }
 html body.iframe-compatible .footer {
-  height: 0
-                border: none;
+  height: 0;
+  border: none;
 }
 /* Custom page CSS
 -------------------------------------------------- */
