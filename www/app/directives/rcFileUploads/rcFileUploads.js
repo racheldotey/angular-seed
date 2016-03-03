@@ -36,12 +36,10 @@ angular.module('rc.FileUploads', [])
             
             $scope.inputTemplateUrl = DIRECTIVES_URL + 'rcFileUploads/fileInputTemplate.html';
             
-            $scope.fileInputCallback = function (file) {
-                $scope.imageUpload.file = file;
-                $scope.imageUpload.photostream = 'data:' + file.mimetype + ';' + file.encoding + ',' + file.content;
-                $scope.imageUpload.selectedFilesLabel = file.name;
+            $scope.fileSelectionCallback = function($files, $file, $newFiles, $duplicateFiles, $invalidFiles, $event) {
+                $scope.imageUpload.file = $file;
+                $scope.imageUpload.selectedFilesLabel = ($files.length > 0) ? $file.name : '';
             };
-            
         }]
     };
 });

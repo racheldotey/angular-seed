@@ -16,6 +16,7 @@ angular.module('theApp', [
     'ngCookies',
     'ngMessages',
     'angularFileInput',
+    'ngFileUpload',
     'ngImgCrop',
     'angular-md5',
     'api.v1',
