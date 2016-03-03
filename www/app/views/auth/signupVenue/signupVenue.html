@@ -54,7 +54,9 @@
                     </div>
 
                     <div class="col-sm-6 col-md-3 form-group">
-                        <input ng-model="newUser.state" type="text" class="form-control" name="state" placeholder="State" maxlength="255" required>
+                        <select rc-drop-down-states ng-model="newUser.state" ng-required="true" class="form-control">
+                            <option value="">State</option>
+                        </select>
                     </div>
 
                     <div class="col-sm-6 col-md-3 form-group">
