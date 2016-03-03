@@ -11,7 +11,7 @@ angular.module('rc.DropDowns', [])
     return {
         require: 'select',
         transclude: true,
-        template: '<option ng-repeat="(key, value) in stateList" value="{{key}}">{{value}}</option>',
+        template: '<option ng-repeat="(key, value) in stateList" value="{{key}}">{{key}}</option>',
         link: function ($scope, element, attributes, ctrl, transclude) {
             $scope.addTerritories = (attributes.territories && (attributes.territories === true || attributes.territories === "true"));
             $scope.addMilitary = (attributes.military && (attributes.military === true || attributes.military === "true"));
