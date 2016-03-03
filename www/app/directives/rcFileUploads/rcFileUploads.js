@@ -27,7 +27,7 @@ angular.module('rc.FileUploads', [])
                 file : false,
                 photostream : false,
                 imageDataUrl : false,
-                selectedFilesLabel : 'hi'
+                selectedFilesLabel : ''
             };
         },
         controller: ["$scope", 'DIRECTIVES_URL', function ($scope, DIRECTIVES_URL) {

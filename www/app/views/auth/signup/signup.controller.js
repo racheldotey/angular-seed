@@ -28,7 +28,7 @@ angular.module('app.auth.signup', [])
             'referer' : '',
             'acceptTerms' : false
         };
-        $scope.newUser = {
+        $scope.newUserB = {
             'userGroup' : 'player',
             'nameFirst' : 'Ra',
             'nameLast' : 'Carbone',

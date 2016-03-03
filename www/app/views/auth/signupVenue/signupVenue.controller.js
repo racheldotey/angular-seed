@@ -43,7 +43,7 @@ angular.module('app.auth.signupVenue', [])
             'logoUrl' : '',
             'referralCode' : ''
         };
-        $scope.newUser = {
+        $scope.newUserB = {
             'userGroup' : 'player',
             'nameFirst' : 'Ra',
             'nameLast' : 'Carbone',
