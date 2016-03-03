@@ -39,7 +39,7 @@
                         <input ng-model="newUser.addressb" type="text" class="form-control" name="addressb" placeholder="Address Continued" maxlength="255">
                     </div>
                     
-                    <div class="col-md-6 form-group">
+                    <div class="col-xs-6 form-group">
                         <input ng-model="newUser.city" type="text" class="form-control" name="city" placeholder="City" maxlength="255" required>
                     </div>
 
@@ -49,7 +49,7 @@
                         </select>
                     </div>
                     
-                    <div class="col-sm-6 col-md-3 form-group">
+                    <div class="col-xs-3 form-group">
                         <input ng-model="newUser.zip" type="text" class="form-control" name="zip" placeholder="Zip" maxlength="255" required>
                     </div>
 
@@ -73,23 +73,7 @@
                         <input ng-model="newUser.hours" type="text" class="form-control" name="referralCode" placeholder="Business Hours" maxlength="255">
                     </div>
 
-                    <div class="col-xs-12 form-group">
-                        <input ng-model="newUser.logoUrl" type="text" class="form-control" name="referralCode" placeholder="Logo URL" maxlength="255">
-                    </div>
-                    
-                    <div class="col-xs-12 form-group">
-                        <label>Upload Venue Logo</label>
-                        
-                        <ng-file-input id="logo-upload" mode="data-url" callback="venueLogo.photo = file; venueLogo.photostream = 'data:'+file.mimetype + ';' + file.encoding + ',' + file.content" tmpl="'templates/upload-button.html'"></ng-file-input>
-
-                        <div class="cropArea center-block" ng-if="venueLogo.photostream">
-                            <img-crop image="venueLogo.photostream" result-image="newUser.logoUrl" ng-if="venueLogo.photostream"></img-crop>
-                        </div>
-                    </div>
-
-                    <div class="center-block">
-                        <img class="round md-whiteframe-2dp" id="photo" ng-src="{{newUser.logoUrl}}">
-                    </div>
+                    <div rc-image-upload-with-editor="venueLogo"></div>
                     
                 </div>
                 

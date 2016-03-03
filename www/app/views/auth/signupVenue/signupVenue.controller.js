@@ -19,6 +19,8 @@ angular.module('app.auth.signupVenue', [])
         $scope.showPasswordRules = false;
         $scope.showPasswordMissmatch = false;
         
+        $scope.venueLogo = {};
+        
         $scope.newUser = {
             'userGroup' : 'venue.owner',
             'nameFirst' : '',
@@ -41,7 +43,7 @@ angular.module('app.auth.signupVenue', [])
             'logoUrl' : '',
             'referralCode' : ''
         };
-        $scope.newUserz = {
+        $scope.newUser = {
             'userGroup' : 'player',
             'nameFirst' : 'Ra',
             'nameLast' : 'Carbone',
@@ -60,13 +62,17 @@ angular.module('app.auth.signupVenue', [])
             'website' : 'http://barngrill.com',
             'facebook' : 'http://facebook.com',
             'hours' : 'Friday and Saturday at 6pm',
-            'logoUrl' : 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
+            'logoUrl' : 'xxxxxxxxxxxxxxxxxxxx',
             'referralCode' : 'Facebook'
         };
         
-        $scope.venueLogo = {};
 
         $scope.signup = function() {
+            if(angular.isDefined($scope.venueLogo.imageDataUrl) &&
+                    ($scope.venueLogo.imageDataUrl.indexOf('data:image') > -1)) {
+                $scope.newUser.logoUrl = $scope.venueLogo.imageDataUrl;
+            }            
+            
             if(!$scope.form.venue.$valid) {
                 $scope.form.venue.$setDirty();
                 $scope.venueAlerts.error('Please fill in all fields for your venue.');
@@ -92,6 +98,11 @@ angular.module('app.auth.signupVenue', [])
         };
 
         $scope.facebookSignup = function() {
+            if(angular.isDefined($scope.venueLogo.imageDataUrl) &&
+                    ($scope.venueLogo.imageDataUrl.indexOf('data:image') > -1)) {
+                $scope.newUser.logoUrl = $scope.venueLogo.imageDataUrl;
+            }
+            
             if(!$scope.form.venue.$valid) {
                 $scope.form.venue.$setDirty();
                 $scope.venueAlerts.error('Please fill in all fields for your venue.');
@@ -138,5 +149,4 @@ angular.module('app.auth.signupVenue', [])
         $scope.onChangeValidateConfirmPassword = function() {
             $scope.showPasswordMissmatch = ($scope.newUser.password !== $scope.newUser.passwordB);
         };
-        
     }]);

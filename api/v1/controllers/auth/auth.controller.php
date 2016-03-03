@@ -60,6 +60,8 @@ class AuthController {
         if (!$venue) {
             return $app->render(400, "Could not add venue. Check your parameters and try again.");
         }
+        self::addVenueGroupToUser($result['user']->id);
+        self::addVenueRole($result['user']->id, $venue, 'owner');
         return $app->render(200, $result);
     }
     
@@ -72,6 +74,8 @@ class AuthController {
         if(!$venue) {
             return $app->render(400, "Could not add venue. Check your parameters and try again.");
         }
+        self::addVenueGroupToUser($result['user']->id);
+        self::addVenueRole($result['user']->id, $venue, 'owner');
         return $app->render(200, $result);
     }
     
@@ -103,6 +107,27 @@ class AuthController {
             ":last_updated_by" => $userId
         );
         return VenueData::insertVenue($venue);
+    }
+    
+    static function addVenueGroupToUser($userId) {
+        $groupId = GroupData::selectGroupIdBySlug('venue-editor');
+        if(!$groupId) {
+            return false;
+        }
+        return UserData::insertGroupAssignment(array(
+            ':auth_group_id' => $groupId, 
+            ':user_id' => $userId,
+            ':created_user_id' => $userId
+        ));
+    }
+    
+    static function addVenueRole($userId, $venueId, $roleSlug) {
+        $role = ($roleSlug === 'owner' || $roleSlug === 'manager' || $roleSlug === 'employee' || $roleSlug === 'guest');
+        return VenueData::insertVenueRoleAssignment(array(
+            ':venue_id' => $venueId, 
+            ':user_id' => $userId,
+            ':role' => $role
+        ));
     }
 
     ///// 

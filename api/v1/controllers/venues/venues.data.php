@@ -35,6 +35,11 @@ class VenueData {
         return DBConn::insert("INSERT INTO " . DBConn::prefix() . "venues(`name`, `address`, `address_b`, `city`, `state`, `zip`, `phone`, `website`, `facebook_url`, `logo`, `hours`, `referral`, `created_user_id`, `last_updated_by`) "
                 . "VALUES (:name, :address, :address_b, :city, :state, :zip, :phone, :website, :facebook_url, :logo, :hours, :referral, :created_user_id, :last_updated_by)", $validVenue);
     }
+  
+    public static function insertVenueRoleAssignment($assignment) {
+        return DBConn::insert("INSERT INTO " . DBConn::prefix() . "venue_roles(venue_id, user_id, role) "
+                . "VALUES (:venue_id, :user_id, :role)", $assignment);
+    }
     
     public static function updateVenue($validVenue) {
         return DBConn::update("UPDATE " . DBConn::prefix() . "venues SET venue=:venue, slug=:slug, "
