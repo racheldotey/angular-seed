@@ -77,6 +77,19 @@
                         <input ng-model="newUser.logoUrl" type="text" class="form-control" name="referralCode" placeholder="Logo URL" maxlength="255">
                     </div>
                     
+                    <div class="col-xs-12 form-group">
+                        <label for="#pic-upload">Upload Venue Logo</label>
+                        <ng-file-input id="pic-upload" mode="data-url" callback="profile.photo = file; profile.photostream = 'data:'+file.mimetype + ';' + file.encoding + ',' + file.content" tmpl="'templates/upload-button.html'"></ng-file-input>
+
+                        <div class="cropArea center-block" ng-if="profile.photostream">
+                            <img-crop image="profile.photostream" result-image="newUser.logoUrl" ng-if="profile.photostream"></img-crop>
+                        </div>
+                    </div>
+
+                    <div class="center-block">
+                        <img class="round md-whiteframe-2dp" id="photo" ng-src="{{newUser.logoUrl}}">
+                    </div>
+                    
                 </div>
                 
             </form>
