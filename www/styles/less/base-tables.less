@@ -3,7 +3,10 @@
  * 
  * DataTable and standard Table style overrides.
  */
- 
+.dataTables_wrapper {
+    max-width: 100%;
+    margin: 0 auto;
+}
  table {
      &.dataTable {
         border-bottom: 1px solid #e3e3e3;
@@ -56,6 +59,12 @@
                      padding: 4px; // Thin out normal bootstrap padding
                  }
              }
+         }
+     }
+         
+     &.fixed-column {
+         th, td {
+             white-space: nowrap;
          }
      }
  }

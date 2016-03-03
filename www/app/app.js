@@ -12,6 +12,7 @@ angular.module('theApp', [
     'ui.bootstrap.showErrors',
     'datatables',
     'datatables.bootstrap',
+    'datatables.fixedcolumns',
     'ngCookies',
     'ngMessages',
     'angularFileInput',

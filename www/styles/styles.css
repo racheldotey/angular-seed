@@ -219,6 +219,10 @@ img.img-thumbnail.no-margin {
  * 
  * DataTable and standard Table style overrides.
  */
+.dataTables_wrapper {
+  max-width: 100%;
+  margin: 0 auto;
+}
 table.dataTable {
   border-bottom: 1px solid #e3e3e3;
 }
@@ -270,6 +274,10 @@ table.dataTable tbody tr.child td.child table.sub-table {
 }
 table.dataTable tbody tr td {
   padding: 4px;
+}
+table.fixed-column th,
+table.fixed-column td {
+  white-space: nowrap;
 }
 /*
  * Typography Styles
