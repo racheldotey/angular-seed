@@ -223,7 +223,9 @@ img.img-thumbnail.no-margin {
  * DataTable and standard Table style overrides.
  */
 .dataTables_wrapper {
+  width: 100%;
   max-width: 100%;
+  min-width: 300px;
   margin: 0 auto;
 }
 table.dataTable {
@@ -501,12 +503,12 @@ footer.footer .text-muted {
   margin: 20px 0 10px;
 }
 .game-scoreboard > section table td {
-  width: 200px;
+  width: 200px !important;
   padding: 0 8px;
   margin: 0;
 }
 .game-scoreboard > section table th {
-  width: 200px;
+  width: 200px !important;
   padding: 0 0 0 8px;
   margin: 0;
   background-color: #800000;
