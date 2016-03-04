@@ -222,12 +222,6 @@ img.img-thumbnail.no-margin {
  * 
  * DataTable and standard Table style overrides.
  */
-.dataTables_wrapper {
-  width: 100%;
-  max-width: 100%;
-  min-width: 300px;
-  margin: 0 auto;
-}
 table.dataTable {
   border-bottom: 1px solid #e3e3e3;
 }
@@ -279,10 +273,6 @@ table.dataTable tbody tr.child td.child table.sub-table {
 }
 table.dataTable tbody tr td {
   padding: 4px;
-}
-table.fixed-column th,
-table.fixed-column td {
-  white-space: nowrap;
 }
 /*
  * Typography Styles
@@ -477,47 +467,109 @@ footer.footer .text-muted {
   color: #dad9d8;
   font-size: .8em;
 }
-.game-scoreboard {
+body.scoreboard .game-scoreboard {
   border: 1px solid #47413a;
   clear: both;
   width: 100%;
 }
-.game-scoreboard > header {
+body.scoreboard .game-scoreboard > header {
   border-bottom: 1px solid #47413a;
   display: table-row;
 }
-.game-scoreboard > header > div {
+body.scoreboard .game-scoreboard > header > div {
   display: table-cell;
 }
-.game-scoreboard > header .game-header {
+body.scoreboard .game-scoreboard > header .game-header {
   padding: 0 8px;
 }
-.game-scoreboard > header .game-header .game-title {
+body.scoreboard .game-scoreboard > header .game-header .game-title {
   margin: 0 0 10px;
 }
-.game-scoreboard > header .game-round-navigation nav {
+body.scoreboard .game-scoreboard > header .game-round-navigation nav {
   text-align: center;
 }
-.game-scoreboard > header .game-round-navigation nav ul {
+body.scoreboard .game-scoreboard > header .game-round-navigation nav ul {
   padding: 0;
   margin: 20px 0 10px;
 }
-.game-scoreboard > section table td {
-  width: 200px !important;
-  padding: 0 8px;
-  margin: 0;
+body.scoreboard .game-scoreboard > section {
+  /* Begin ::-webkit Scrollbar CSS Color Code by http//:snapbuilder.com */
 }
-.game-scoreboard > section table th {
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper {
+  width: 100%;
+  max-width: 100%;
+  min-width: 300px;
+  margin: 0 auto;
+}
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned {
+  min-width: 200px !important;
   width: 200px !important;
-  padding: 0 0 0 8px;
-  margin: 0;
+  max-width: 200px !important;
+}
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned thead,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table tbody,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable tbody,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned tbody {
+  min-width: 200px !important;
+  width: 200px !important;
+  max-width: 200px !important;
+}
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned thead tr,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table tbody tr,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable tbody tr,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned tbody tr {
+  min-width: 200px !important;
+  width: 200px !important;
+  max-width: 200px !important;
+}
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr th,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr th,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned thead tr th,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table tbody tr th,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable tbody tr th,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned tbody tr th,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr td,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr td,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned thead tr td,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table tbody tr td,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable tbody tr td,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned tbody tr td {
+  min-width: 200px !important;
+  width: 200px !important;
+  max-width: 200px !important;
+  padding: 4px 8px;
+}
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr th,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr th,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned thead tr th,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table tbody tr th,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable tbody tr th,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned tbody tr th {
   background-color: #800000;
   color: #fff;
   border-bottom: 1px solid #cd0000;
   border-top: 1px solid #670000;
 }
-.game-scoreboard > section table .team {
-  height: 54px;
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr td,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr td,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned thead tr td,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table tbody tr td,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable tbody tr td,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned tbody tr td {
+  height: 54px !important;
+}
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr td.team,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr td.team,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned thead tr td.team,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table tbody tr td.team,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable tbody tr td.team,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned tbody tr td.team {
   background-color: #47413a;
   color: #dad9d8;
   font-size: 16px;
@@ -525,7 +577,12 @@ footer.footer .text-muted {
   border-bottom: 1px solid #71685c;
   border-top: 1px solid #39342f;
 }
-.game-scoreboard > section table .question-score {
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr td.question-score,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr td.question-score,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned thead tr td.question-score,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table tbody tr td.question-score,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable tbody tr td.question-score,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned tbody tr td.question-score {
   height: 54px;
   text-align: center;
   background-color: #dad9d8;
@@ -537,13 +594,62 @@ footer.footer .text-muted {
   border-left: 1px solid #ffffff;
   white-space: nowrap;
 }
-.game-scoreboard > section table .question-score input {
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr td.question-score input,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr td.question-score input,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned thead tr td.question-score input,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table tbody tr td.question-score input,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable tbody tr td.question-score input,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned tbody tr td.question-score input {
   width: 75px;
   margin: 0 8px;
 }
-.game-scoreboard > section table .question-score button,
-.game-scoreboard > section table .question-score input {
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr td.question-score button,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr td.question-score button,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned thead tr td.question-score button,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table tbody tr td.question-score button,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable tbody tr td.question-score button,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned tbody tr td.question-score button,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr td.question-score input,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr td.question-score input,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned thead tr td.question-score input,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table tbody tr td.question-score input,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable tbody tr td.question-score input,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned tbody tr td.question-score input {
   display: inline-block;
+}
+body.scoreboard .game-scoreboard > section div#scoreboard_wrapper.dataTables_wrapper div.DTFC_ScrollWrapper div.DTFC_LeftBodyWrapper div.DTFC_LeftBodyLiner {
+  overflow-y: hidden !important;
+}
+body.scoreboard .game-scoreboard > section ::-webkit-scrollbar {
+  width: 20px;
+  height: 20px;
+}
+body.scoreboard .game-scoreboard > section ::-webkit-scrollbar-button {
+  width: 0px;
+  height: 0px;
+}
+body.scoreboard .game-scoreboard > section ::-webkit-scrollbar-track {
+  background-color: #47413a;
+  border-radius: 20px;
+}
+body.scoreboard .game-scoreboard > section ::-webkit-scrollbar-track:active {
+  background: #39342f;
+}
+body.scoreboard .game-scoreboard > section ::-webkit-scrollbar-thumb {
+  background: #670000;
+  border: 2px solid #47413a;
+  border-radius: 20px;
+}
+body.scoreboard .game-scoreboard > section ::-webkit-scrollbar-thumb:hover {
+  background: #800000;
+  border-color: #47413a;
+}
+body.scoreboard .game-scoreboard > section ::-webkit-scrollbar-thumb:active {
+  background: #9a0000;
+  border-color: #39342f;
+}
+body.scoreboard .game-scoreboard > section ::-webkit-scrollbar-corner {
+  background: transparent;
 }
 .store.item-details .page-header {
   margin-top: 0;

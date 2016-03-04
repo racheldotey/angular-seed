@@ -3,71 +3,57 @@
  * 
  * DataTable and standard Table style overrides.
  */
- 
-.dataTables_wrapper {
-    width: 100%;
-    max-width: 100%;
-    min-width: 300px;
-    margin: 0 auto;
-}
- table {
-     &.dataTable {
-        border-bottom: 1px solid #e3e3e3;
-         thead {
-            background-color: #f5f5f5;
-            border-color: #e3e3e3;
-            
-            tr th {
-                font-size: .9em;
-                padding: 8px 4px 4px;
-                white-space: nowrap;
-                
-                 /* Sorting Icon */
-                 &.sorting,
-                 &.sorting_asc, 
-                 &.sorting_desc, 
-                 &.sorting_asc_disabled, 
-                 &.sorting_desc_disabled {
-                     padding-right: 25px;
-                     &:after {
-                        bottom: 4px;
-                        right: 8px;
-                     }
-                 }
-                 /* End: Sorting Icon */
+
+table.dataTable {
+    border-bottom: 1px solid #e3e3e3;
+    thead {
+        background-color: #f5f5f5;
+        border-color: #e3e3e3;
+
+        tr th {
+            font-size: .9em;
+            padding: 8px 4px 4px;
+            white-space: nowrap;
+
+            /* Sorting Icon */
+            &.sorting,
+            &.sorting_asc, 
+            &.sorting_desc, 
+            &.sorting_asc_disabled, 
+            &.sorting_desc_disabled {
+                padding-right: 25px;
+                &:after {
+                    bottom: 4px;
+                    right: 8px;
+                }
             }
-         }
-         tbody {
-             tr {
-                 /* Responsive Controls */
-                 td.responsive-control i.fa:before {
-                     content: "\f105";
-                 }
-                 &.parent td.responsive-control i.fa:before {
-                     content: "\f107";
-                 }
-                 
-                 /* Responsive sub table */
-                 &.child {
+            /* End: Sorting Icon */
+        }
+    }
+    tbody {
+        tr {
+            /* Responsive Controls */
+            td.responsive-control i.fa:before {
+                content: "\f105";
+            }
+            &.parent td.responsive-control i.fa:before {
+                content: "\f107";
+            }
+
+            /* Responsive sub table */
+            &.child {
+                padding: 0;
+                border-left: 2px solid #e3e3e3;
+                td.child {
                     padding: 0;
-                    border-left: 2px solid #e3e3e3;
-                    td.child {
-                        padding: 0;
-                        table.sub-table {
-                            margin: 0;
-                        }
+                    table.sub-table {
+                        margin: 0;
                     }
-                 }
-                 td {
-                     padding: 4px; // Thin out normal bootstrap padding
-                 }
-             }
-         }
-     }
-         
-     &.fixed-column {
-         th, td {
-             white-space: nowrap;
-         }
-     }
- }
+                }
+            }
+            td {
+                padding: 4px; // Thin out normal bootstrap padding
+            }
+        }
+    }
+}

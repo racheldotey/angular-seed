@@ -1,7 +1,8 @@
 @scoreboardWidth: 200px;
 @scoreboardRowHeight: 54px;
 @scoreboardHeaderHeight: @scoreboardRowHeight * 2;
-.game-scoreboard {
+
+body.scoreboard .game-scoreboard {
     border: 1px solid @medium-brown;
     clear: both;
     width: 100%;
@@ -34,56 +35,115 @@
     }
     
     >section {
-        table {
-            td {
-                width: @scoreboardWidth !important;
-                padding: 0 8px;
-                margin: 0;
-            }
-            th {
-                width: @scoreboardWidth !important;
-                padding: 0 0 0 8px;
-                margin: 0;
-                background-color: @brick-red;
-                color: #fff;
-                border-bottom: 1px solid lighten(@brick-red, 15%);
-                border-top: 1px solid darken(@brick-red, 5%);
-            }
-            .team {
-                height: @scoreboardRowHeight;
-                background-color: @medium-brown;
-                color: @pale-brown;
-                font-size: 16px;
-                padding-top: (@scoreboardRowHeight / 2) - (@scoreboardRowHeight / 2);
-                border-bottom: 1px solid lighten(@medium-brown, 15%);
-                border-top: 1px solid darken(@medium-brown, 5%);
-            }
+        #scoreboard_wrapper.dataTables_wrapper {
+            width: 100%;
+            max-width: 100%;
+            min-width: 300px;
+            margin: 0 auto;
             
-            .question-score {
-                height: @scoreboardRowHeight;
-                text-align: center;
-                background-color: @pale-brown;
-                color: @medium-brown;
-                padding-top: (@scoreboardRowHeight / 2) - (@scoreboardRowHeight / 2);
-                border-top: 1px solid darken(@pale-brown, 5%);
-                border-right: 1px solid darken(@pale-brown, 5%);
-                border-bottom: 1px solid lighten(@pale-brown, 15%);
-                border-left: 1px solid lighten(@pale-brown, 15%);
-                white-space: nowrap;
-                
-                input {
-                    width: 75px;
-                    margin: 0 8px;
-                }
-                button, input {
-                    display: inline-block;
+            table, table.dataTable, table.DTFC_Cloned {
+                min-width: @scoreboardWidth !important;
+                width: @scoreboardWidth !important;
+                max-width: @scoreboardWidth !important;
+                thead, tbody {
+                    min-width: @scoreboardWidth !important;
+                    width: @scoreboardWidth !important;
+                    max-width: @scoreboardWidth !important;
+                    tr {
+                        min-width: @scoreboardWidth !important;
+                        width: @scoreboardWidth !important;
+                        max-width: @scoreboardWidth !important;
+                        th, td {
+                            min-width: @scoreboardWidth !important;
+                            width: @scoreboardWidth !important;
+                            max-width: @scoreboardWidth !important;
+                            padding: 4px 8px;
+                        }
+                        th {
+                            background-color: @brick-red;
+                            color: #fff;
+                            border-bottom: 1px solid lighten(@brick-red, 15%);
+                            border-top: 1px solid darken(@brick-red, 5%);
+                        }
+                        td {
+                            height: @scoreboardRowHeight !important;
+                            &.team {
+                                background-color: @medium-brown;
+                                color: @pale-brown;
+                                font-size: 16px;
+                                padding-top: (@scoreboardRowHeight / 2) - (@scoreboardRowHeight / 2);
+                                border-bottom: 1px solid lighten(@medium-brown, 15%);
+                                border-top: 1px solid darken(@medium-brown, 5%);
+                            }
+                            &.question-score {
+                                height: @scoreboardRowHeight;
+                                text-align: center;
+                                background-color: @pale-brown;
+                                color: @medium-brown;
+                                padding-top: (@scoreboardRowHeight / 2) - (@scoreboardRowHeight / 2);
+                                border-top: 1px solid darken(@pale-brown, 5%);
+                                border-right: 1px solid darken(@pale-brown, 5%);
+                                border-bottom: 1px solid lighten(@pale-brown, 15%);
+                                border-left: 1px solid lighten(@pale-brown, 15%);
+                                white-space: nowrap;
+            
+                                input {
+                                    width: 75px;
+                                    margin: 0 8px;
+                                }
+                                button, input {
+                                    display: inline-block;
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
+        
+        div#scoreboard_wrapper.dataTables_wrapper div.DTFC_ScrollWrapper div.DTFC_LeftBodyWrapper div.DTFC_LeftBodyLiner {
+            overflow-y: hidden !important;
+        }
+        
+        // Custom Scrollbar
+        /* Begin ::-webkit Scrollbar CSS Color Code by http//:snapbuilder.com */
+        ::-webkit-scrollbar {
+            width:20px;
+            height:20px;
+        }
+        ::-webkit-scrollbar-button {
+            width: 0px;
+            height: 0px;
+        }
+        ::-webkit-scrollbar-track {
+            background-color: @medium-brown;
+            border-radius:20px;
+            &:active {
+                background: darken(@medium-brown, 5%);
+            }
+        }
+        ::-webkit-scrollbar-thumb {
+            background: darken(@brick-red, 5%);
+            border: 2px solid @medium-brown;
+            border-radius:20px;
+            &:hover {
+                background: @brick-red;
+                border-color: @medium-brown;
+            }
+            &:active {
+                background: lighten(@brick-red, 5%);
+                border-color: darken(@medium-brown, 5%);
+            }
+        }
+        ::-webkit-scrollbar-corner {
+            background: transparent;
+        }    
     }
     
     >footer {
         >div {
         }
     }
+    
+    
 }
