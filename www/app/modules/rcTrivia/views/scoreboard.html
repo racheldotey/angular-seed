@@ -1,65 +1,65 @@
 <div class="game-scoreboard">
-    
-    <header>
-        <div class="game-header">
-            <h1 class="game-title">{{game.name}}</h1>
-            <p class="game-host">Hosted by: {{game.host.displayName}}</p>
-            <p class="game-host">Started: {{game.started | formatMySQLDate}}</p>
-            <p class="game-host">Ended: {{game.ended | formatMySQLDate}}</p>
-            
-            
+
+        <header>
+            <div class="game-header">
+                <h1 class="game-title">{{game.name}}</h1>
+                <p class="game-host">Hosted by: {{game.host.displayName}}</p>
+                <p class="game-host">Started: {{game.started| formatMySQLDate}}</p>
+                <p class="game-host">Ended: {{game.ended| formatMySQLDate}}</p>
+
+
                 <button ng-click="buttonStartGame()" ng-if="true || game.started" type="button" class="btn btn-round btn-success btn-sm" title="Start Game"><i class="fa fa-play"></i></button>
                 <button ng-click="buttonEndGame()" ng-if="true || game.started && !game.ended" type="button" class="btn btn-round btn-danger btn-sm" title="Stop Game"><i class="fa fa-stop"></i></button>
-                
+
                 <button ng-click="buttonAddTeam()" type="button" class="btn btn-primary btn-sm"><i class="fa fa-user"></i> Add Team</button>
                 <button ng-click="buttonAddPlayer()" type="button" class="btn btn-info btn-sm"><i class="fa fa-users"></i> Add Player</button>
                 <button ng-click="buttonAddRound()" type="button" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> Add Round</button>
                 <button ng-click="buttonAddQuestion()" type="button" class="btn btn-success btn-sm"><i class="fa fa-question"></i> Add Question</button>
 
-        </div>
-        <div class="game-round-navigation" data-rc-trivia-scoreboard-round-navigation></div>
-    </header>
-    
-    <section>
-        <table datatable="" dt-options="dtScoreboard.options" dt-column-defs="dtScoreboard.columns" class="scoreboard">
-            <thead>
-                <tr>
-                    <th>Teams:</th>
-                    <th ng-repeat="question in game.round.questions" data-team-id="{{question.questionId}}">
-                        #{{question.questionId}} — {{question.question}}
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="team in game.round.teams" data-team-id="{{team.teamId}}">
-                    <td class="team">{{team.team}}</td>
-                    <td class="question-score" ng-repeat="teamScore in team.scores" data-question-id="{{teamScore.questionId}}">
-                        <button 
-                            ng-click="buttonQuestionWrong(team.teamId, teamScore.questionId)" 
-                            type="button" 
-                            class="btn btn-danger btn-sm btn-round">
-                            <i class="fa fa-ban"></i>
-                        </button>
-                        <input 
-                            type="number" 
-                            class="form-control input-sm" 
-                            data-string-to-number 
-                            ng-model="teamScore.questionScore" 
-                            min="0">
-                        <button 
-                            ng-click="buttonQuestionCorrect(team.teamId, teamScore.questionId)" 
-                            type="button" 
-                            class="btn btn-success btn-sm btn-round">
-                            <i class="fa fa-check"></i>
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </section>
-    
-    <footer>
-        <div></div>
-        <div></div>
-    </footer>
-</div>
+            </div>
+            <div class="game-round-navigation" data-rc-trivia-scoreboard-round-navigation></div>
+        </header>
+
+        <section>
+            <table id="scoreboard" datatable="ng" dt-options="dtScoreboard.options">
+                <thead>
+                    <tr>
+                        <th>Teams:</th>
+                        <th ng-repeat="question in game.round.questions" data-team-id="{{question.questionId}}">
+                            #{{question.questionId}} — {{question.question}}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="team in game.round.teams" data-team-id="{{team.teamId}}">
+                        <td class="team">{{team.team}}</td>
+                        <td class="question-score" ng-repeat="teamScore in team.scores" data-question-id="{{teamScore.questionId}}">
+                            <button 
+                                ng-click="buttonQuestionWrong(team.teamId, teamScore.questionId)" 
+                                type="button" 
+                                class="btn btn-danger btn-sm btn-round">
+                                <i class="fa fa-ban"></i>
+                            </button>
+                            <input 
+                                type="number" 
+                                class="form-control input-sm" 
+                                data-string-to-number 
+                                ng-model="teamScore.questionScore" 
+                                min="0">
+                            <button 
+                                ng-click="buttonQuestionCorrect(team.teamId, teamScore.questionId)" 
+                                type="button" 
+                                class="btn btn-success btn-sm btn-round">
+                                <i class="fa fa-check"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <footer>
+            <div></div>
+            <div></div>
+        </footer>
+    </div>

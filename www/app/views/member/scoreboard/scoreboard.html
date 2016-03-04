@@ -2,43 +2,6 @@
         
     <p class="lead">Welcome to the game!</p>
     
-    <div class="game-scoreboard">
-
-        <header>
-            <div class="game-header">
-                <h1 class="game-title">{{game.name}}</h1>
-                <p class="game-host">Hosted by: {{game.host.displayName}}</p>
-                <p class="game-host">Started: {{game.started | formatMySQLDate}}</p>
-                <p class="game-host">Ended: {{game.ended | formatMySQLDate}}</p>
-            </div>
-            <div class="game-round-navigation" data-rc-trivia-scoreboard-round-navigation></div>
-        </header>
-        
-        <section>
-            <table id="scoreboard" datatable="ng" dt-options="dtScoreboard.options">
-                <thead>
-                    <tr>
-                        <th>Teams:</th>
-                        <th ng-repeat="question in game.round.questions" data-team-id="{{question.questionId}}">
-                            #{{question.questionId}} — {{question.question}}
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="team in game.round.teams" data-team-id="{{team.teamId}}">
-                        <td class="team">{{team.team}}</td>
-                        <td class="question-score" ng-repeat="teamScore in team.scores" data-question-id="{{teamScore.questionId}}">
-                            <strong>{{teamScore.questionScore}} / {{game.round.maxPoints}}</strong>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-
-        <footer>
-            <div></div>
-            <div></div>
-        </footer>
-    </div>
+    <div rc-trivia-scoreboard-readonly="game"></div>
     
 </div>

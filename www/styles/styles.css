@@ -279,6 +279,9 @@ table.dataTable tbody tr td {
  * 
  * General typography and text elements style overrides.
  */
+.ng-cloak {
+  display: none !important;
+}
 body {
   background-color: #800000;
   background-image: url('/media/images/trivia-background.png');
@@ -474,10 +477,6 @@ body.scoreboard .game-scoreboard {
 }
 body.scoreboard .game-scoreboard > header {
   border-bottom: 1px solid #47413a;
-  display: table-row;
-}
-body.scoreboard .game-scoreboard > header > div {
-  display: table-cell;
 }
 body.scoreboard .game-scoreboard > header .game-header {
   padding: 0 8px;
@@ -486,11 +485,11 @@ body.scoreboard .game-scoreboard > header .game-header .game-title {
   margin: 0 0 10px;
 }
 body.scoreboard .game-scoreboard > header .game-round-navigation nav {
-  text-align: center;
+  float: right;
 }
-body.scoreboard .game-scoreboard > header .game-round-navigation nav ul {
+body.scoreboard .game-scoreboard > header .game-round-navigation nav nav ul {
   padding: 0;
-  margin: 20px 0 10px;
+  margin: 20px 0 10px 10px;
 }
 body.scoreboard .game-scoreboard > section {
   /* Begin ::-webkit Scrollbar CSS Color Code by http//:snapbuilder.com */

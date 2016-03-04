@@ -8,12 +8,7 @@ body.scoreboard .game-scoreboard {
     width: 100%;
     
     >header {
-        border-bottom: 1px solid @medium-brown;
-        display: table-row;
-        >div {
-            display: table-cell;
-        }
-        
+        border-bottom: 1px solid @medium-brown;       
         
         .game-header {
             padding: 0 8px;
@@ -26,11 +21,13 @@ body.scoreboard .game-scoreboard {
         }
         
         .game-round-navigation nav {
-            text-align: center;
-            ul {
-                padding: 0;
-                margin: 20px 0 10px;
-            }
+            float: right;
+             nav {
+                ul {
+                    padding: 0;
+                    margin: 20px 0 10px 10px;
+                }
+             }
         }
     }
     
