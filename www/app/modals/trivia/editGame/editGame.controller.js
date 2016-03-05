@@ -58,15 +58,15 @@ angular.module('app.modal.trivia.editGame', [])
     } else {
         $scope.setMode('new');
         $scope.saved = {
-            'scheduled' : moment(),
+            'scheduled' : new Date(),
             'maxPoints' : false
         };
         
         // If its more than 5 min past the hour, set it to the next half hour
         // Set time to the next half hour
-        var remainder = (30 - $scope.saved.scheduled.minute()) % 30;
-        remainder = (remainder < -5) ? remainder + 30 : remainder;
-        $scope.saved.scheduled = moment($scope.saved.scheduled).add(remainder, "minutes");
+        //var remainder = (30 - $scope.saved.scheduled.minute()) % 30;
+        //remainder = (remainder < -5) ? remainder + 30 : remainder;
+        //$scope.saved.scheduled = moment($scope.saved.scheduled).add(remainder, "minutes");
     }
     
     
@@ -122,8 +122,8 @@ angular.module('app.modal.trivia.editGame', [])
             opened: true,
             options: {
                 formatYear: 'yy',
-                maxDate: moment().add(1, 'year'),
-                minDate: moment(),
+                maxDate: new Date(2020, 5, 22),
+                minDate: new Date(),
                 startingDay: 1
             }
         },

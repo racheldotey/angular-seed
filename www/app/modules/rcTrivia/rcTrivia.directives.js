@@ -21,7 +21,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 
             $scope.dtScoreboard = {};
             $scope.dtScoreboard.options = DTOptionsBuilder.newOptions()
-                .withDOM('lfrtip')
+                .withDOM('t')
                 .withOption('scrollY', '300px')
                 .withOption('scrollX', '100%')
                 .withOption('scrollCollapse', true)

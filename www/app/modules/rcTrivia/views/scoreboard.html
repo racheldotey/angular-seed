@@ -2,20 +2,32 @@
 
         <header>
             <div class="game-header">
-                <h1 class="game-title">{{game.name}}</h1>
+
+                <div class="pull-right">
+                    <button ng-click="buttonStartGame()" ng-if="true || game.started" type="button" class="btn btn-round btn-success btn-sm" title="Start Game"><i class="fa fa-play"></i></button>
+                    <button ng-click="buttonEndGame()" ng-if="true || game.started && !game.ended" type="button" class="btn btn-round btn-danger btn-sm" title="Stop Game"><i class="fa fa-stop"></i></button>
+
+                    <div class="btn-group btn-group-sm" uib-dropdown>
+                        <button id="split-button" type="button" class="btn btn-default" ng-click="buttonAddTeam()">Add Team</button>
+                        <button type="button" class="btn btn-default" uib-dropdown-toggle>
+                            <span class="caret"></span>
+                            <span class="sr-only">Split button!</span>
+                        </button>
+                        <ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
+                            <li role="menuitem"><a ng-click="buttonAddPlayer()">Add Player</a></li>
+                            <li role="menuitem"><a ng-click="buttonAddTeam()">Add Team</a></li>
+                        </ul>
+                    </div>
+
+                    <button ng-click="buttonAddRound()" type="button" class="btn btn-warning btn-sm"><i class="fa fa-plus"></i> Add Round</button>
+                    <button ng-click="buttonAddQuestion()" type="button" class="btn btn-warning btn-sm"><i class="fa fa-question"></i> Add Question</button>
+                </div>
+                
+                <h1 class="game-title">{{game.name}}</h1><!--
                 <p class="game-host">Hosted by: {{game.host.displayName}}</p>
                 <p class="game-host">Started: {{game.started| formatMySQLDate}}</p>
-                <p class="game-host">Ended: {{game.ended| formatMySQLDate}}</p>
-
-
-                <button ng-click="buttonStartGame()" ng-if="true || game.started" type="button" class="btn btn-round btn-success btn-sm" title="Start Game"><i class="fa fa-play"></i></button>
-                <button ng-click="buttonEndGame()" ng-if="true || game.started && !game.ended" type="button" class="btn btn-round btn-danger btn-sm" title="Stop Game"><i class="fa fa-stop"></i></button>
-
-                <button ng-click="buttonAddTeam()" type="button" class="btn btn-primary btn-sm"><i class="fa fa-user"></i> Add Team</button>
-                <button ng-click="buttonAddPlayer()" type="button" class="btn btn-info btn-sm"><i class="fa fa-users"></i> Add Player</button>
-                <button ng-click="buttonAddRound()" type="button" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> Add Round</button>
-                <button ng-click="buttonAddQuestion()" type="button" class="btn btn-success btn-sm"><i class="fa fa-question"></i> Add Question</button>
-
+                <p class="game-host">Ended: {{game.ended| formatMySQLDate}}</p>-->
+                
             </div>
             <div class="game-round-navigation" data-rc-trivia-scoreboard-round-navigation></div>
         </header>
