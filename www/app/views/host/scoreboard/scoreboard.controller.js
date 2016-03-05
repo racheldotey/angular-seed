@@ -1,13 +1,13 @@
 'use strict';
 
 /* 
- * Player Scoreboard Page
+ * Host Scoreboard Page
  * 
- * Controller the game for the player.
+ * Controller for the game scorboard, host view.
  */
 
 angular.module('app.host.scoreboard', [])
-    .controller('HostScoreboardDashboardCtrl', ['$scope', 'currentGame', 'TriviaGame', 'AlertConfirmService', 'TriviaModalService', 'DTOptionsBuilder', 'DTColumnDefBuilder',
-        function($scope, currentGame, TriviaGame, AlertConfirmService, TriviaModalService, DTOptionsBuilder, DTColumnDefBuilder) {
+    .controller('HostScoreboardDashboardCtrl', ['$scope', 'currentGame',
+        function($scope, currentGame) {
             $scope.game = currentGame;
     }]);

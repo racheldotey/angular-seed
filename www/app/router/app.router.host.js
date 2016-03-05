@@ -25,16 +25,16 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
             data: {authorizedRoles: USER_ROLES.user},
             views: {
                 'header@app.host': {
-                    templateUrl: 'app/views/member/memberHeader/memberHeader.html',
-                    controller: 'MemberHeaderCtrl'
+                    templateUrl: 'app/views/host/hostHeader/hostHeader.html',
+                    controller: 'HostHeaderCtrl'
                 },
                 'layout@': {
-                    templateUrl: 'app/views/member/memberLayout/memberLayout.html',
-                    controller: 'MemberLayoutCtrl'
+                    templateUrl: 'app/views/host/hostLayout/hostLayout.html',
+                    controller: 'HostLayoutCtrl'
                 },
                 'footer@app.host': {
-                    templateUrl: 'app/views/member/memberFooter/memberFooter.html',
-                    controller: 'MemberFooterCtrl'
+                    templateUrl: 'app/views/host/hostFooter/hostFooter.html',
+                    controller: 'HostFooterCtrl'
                 }
             }
         });
@@ -45,8 +45,20 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
             url: '/dashboard',
             views: {
                 'content@app.host': {
-                    templateUrl: 'app/views/member/dashboard/dashboard.html',
-                    controller: 'MemberDashboardCtrl'
+                    templateUrl: 'app/views/host/dashboard/dashboard.html',
+                    controller: 'HostDashboardCtrl'
+                }
+            }
+        });
+
+        $stateProvider.state('app.host.profile', {
+            bodyClass: 'host profile',
+            title: 'User Profile',
+            url: '/profile',
+            views: {
+                'content@app.host': {
+                    templateUrl: 'app/views/member/profile/profile.html',
+                    controller: 'MemberProfileCtrl'
                 }
             }
         });

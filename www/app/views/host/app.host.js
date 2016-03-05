@@ -7,5 +7,9 @@
  */
 
 angular.module('app.host', [
+    'app.host.layout',
+    'app.host.header',
+    'app.host.footer',
+    'app.host.dashboard',
     'app.host.scoreboard'
 ]);
