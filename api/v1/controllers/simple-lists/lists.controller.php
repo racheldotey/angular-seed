@@ -30,6 +30,12 @@ class ListsController {
     
     
     
+    static function getVenuesList($app) {
+        $data = ListsData::selectVenues();
+        $list = ($data) ? $data : array();
+        return $app->render(200, array('list' => $list));
+    }
+    
     static function getTeamsList($app) {
         $data = ListsData::selectTeams();
         $list = ($data) ? $data : array();

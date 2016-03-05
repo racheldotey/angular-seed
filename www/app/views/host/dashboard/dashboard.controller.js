@@ -7,7 +7,13 @@
  */
 
 angular.module('app.host.dashboard', [])
-    .controller('HostDashboardCtrl', ['$scope', function($scope) {
+    .controller('HostDashboardCtrl', ['$scope', 'TriviaModalService', function($scope, TriviaModalService) {
 
-        
+        $scope.buttonNewGame = function() {
+            var modalInstance = TriviaModalService.openEditGame(false);
+            modalInstance.result.then(function(result) {
+                console.log(result);
+            });
+        };
+
     }]);

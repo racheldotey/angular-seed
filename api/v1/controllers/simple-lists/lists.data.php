@@ -25,6 +25,11 @@ class ListsData {
     
     
     
+    static function selectVenues() {
+        return DBConn::selectAll("SELECT `id`, CONCAT(`state`, ', ', `city`, ' - ', `name`) AS label "
+                . "FROM " . DBConn::prefix() . "venues ORDER BY label;");
+    }
+    
     static function selectTeams() {
         return DBConn::selectAll("SELECT t.id, t.name AS label "
                 . "FROM " . DBConn::prefix() . "teams AS t ORDER BY t.name;");

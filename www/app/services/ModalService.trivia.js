@@ -9,6 +9,7 @@
  */
 
 angular.module('TriviaModalService', [
+    'app.modal.trivia.editGame',
     'app.modal.trivia.editQuestion',
     'app.modal.trivia.editRound',
     'app.modal.trivia.editTeam'
@@ -39,6 +40,28 @@ angular.module('TriviaModalService', [
         
         /* Return the uibModalInstance */
         return $uibModal.open(config);
+    };
+    
+    /*
+     * Open Edit Trivia Game Modal
+     * 
+     * @return uibModalInstance
+     */
+    api.openEditGame = function(gameId) {
+        return api.openModal({
+            templateUrl: templatePath + 'editGame/editGame.html',
+            controller: 'TriviaEditGameModalCtrl',
+            resolve: {
+                ApiRoutesGames: 'ApiRoutesGames',
+                ApiRoutesSimpleLists: 'ApiRoutesSimpleLists',
+                editing: function(ApiRoutesGames) {
+                    return { 'gameId' : gameId };
+                },
+                venueList: function(ApiRoutesSimpleLists) {
+                    return ApiRoutesSimpleLists.simpleVenuesList();
+                }
+            }
+        });
     };
     
     /*

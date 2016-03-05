@@ -40,6 +40,10 @@ angular.module('apiRoutes.lists', [])
     };
     
     
+    api.simpleVenuesList = function() { 
+        return getList('/simple-list/venues');
+    };
+    
     api.simpleTeamsList = function() { 
         return getList('/simple-list/teams');
     };

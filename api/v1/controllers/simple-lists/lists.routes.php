@@ -26,6 +26,9 @@ class ListRoutes {
             })->via('GET', 'POST');
             
             
+            $app->map("/venues", function () use ($app) {
+                ListsController::getVenuesList($app);
+            })->via('GET', 'POST');
             
             $app->map("/teams", function () use ($app) {
                 ListsController::getTeamsList($app);
