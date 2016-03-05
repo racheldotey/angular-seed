@@ -14,17 +14,23 @@
         <table id="scoreboard" datatable="ng" dt-options="dtScoreboard.options">
             <thead>
                 <tr>
-                    <th>Teams:</th>
-                    <th ng-repeat="question in game.round.questions" data-team-id="{{question.questionId}}">
-                        #{{question.questionId}} — {{question.question}}
+                    <th class="team"><span>Teams:</span></th>
+                    <th ng-repeat="question in game.round.questions" data-team-id="{{question.questionId}}" title="Question #{{question.questionId}} - {{question.question}}">
+                        <p><strong>Question #{{question.questionId}}</strong></p>
+                        <p>{{question.question}}</p>
                     </th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="team in game.round.teams" data-team-id="{{team.teamId}}">
-                    <td class="team">{{team.team}}</td>
+                    <td class="team"> <span class="team-score badge">{{team.roundScore | numberEx}}</span>
+                        <span class="team-name">
+                           
+                            {{team.team}}
+                        </span>
+                    </td>
                     <td class="question-score" ng-repeat="teamScore in team.scores" data-question-id="{{teamScore.questionId}}">
-                        <strong>{{teamScore.questionScore}} / {{game.round.maxPoints}}</strong>
+                        <strong>{{teamScore.questionScore | numberEx}} / {{game.round.maxPoints | numberEx}}</strong>
                     </td>
                 </tr>
             </tbody>

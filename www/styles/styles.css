@@ -471,12 +471,8 @@ footer.footer .text-muted {
   font-size: .8em;
 }
 body.scoreboard .game-scoreboard {
-  border: 1px solid #47413a;
   clear: both;
   width: 100%;
-}
-body.scoreboard .game-scoreboard > header {
-  border-bottom: 1px solid #47413a;
 }
 body.scoreboard .game-scoreboard > header .game-header {
   padding: 0 8px;
@@ -485,11 +481,11 @@ body.scoreboard .game-scoreboard > header .game-header .game-title {
   margin: 0 0 10px;
 }
 body.scoreboard .game-scoreboard > header .game-round-navigation nav {
-  float: right;
+  text-align: center;
 }
-body.scoreboard .game-scoreboard > header .game-round-navigation nav nav ul {
+body.scoreboard .game-scoreboard > header .game-round-navigation nav ul.pagination {
   padding: 0;
-  margin: 20px 0 10px 10px;
+  margin: 20px 0 0 0;
 }
 body.scoreboard .game-scoreboard > section {
   /* Begin ::-webkit Scrollbar CSS Color Code by http//:snapbuilder.com */
@@ -543,6 +539,7 @@ body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrappe
   width: 200px !important;
   max-width: 200px !important;
   padding: 4px 8px;
+  border: 1px solid #fff;
 }
 body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr th,
 body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr th,
@@ -552,8 +549,27 @@ body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrappe
 body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned tbody tr th {
   background-color: #800000;
   color: #fff;
-  border-bottom: 1px solid #cd0000;
-  border-top: 1px solid #670000;
+  border-bottom-color: #cd0000;
+  border-top-color: #670000;
+  border-left-color: #670000;
+  border-right-color: #670000;
+}
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr th.team,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr th.team,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned thead tr th.team,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table tbody tr th.team,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable tbody tr th.team,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned tbody tr th.team {
+  border-bottom-color: #554e45;
+}
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr th.team span,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr th.team span,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned thead tr th.team span,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table tbody tr th.team span,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable tbody tr th.team span,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned tbody tr th.team span {
+  font-size: 200%;
+  font-weight: bold;
 }
 body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr td,
 body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr td,
@@ -572,9 +588,11 @@ body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrappe
   background-color: #47413a;
   color: #dad9d8;
   font-size: 16px;
-  padding-top: 0px;
-  border-bottom: 1px solid #71685c;
-  border-top: 1px solid #39342f;
+  padding-top: 6px;
+  border-bottom-color: #71685c;
+  border-top-color: #39342f;
+  border-left-color: #39342f;
+  border-right-color: #71685c;
 }
 body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr td.question-score,
 body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr td.question-score,
@@ -584,13 +602,13 @@ body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrappe
 body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned tbody tr td.question-score {
   height: 54px;
   text-align: center;
-  background-color: #dad9d8;
+  background-color: #fff;
   color: #47413a;
   padding-top: 0px;
   border-top: 1px solid #cecccb;
   border-right: 1px solid #cecccb;
-  border-bottom: 1px solid #ffffff;
-  border-left: 1px solid #ffffff;
+  border-bottom: 1px solid #dad9d8;
+  border-left: 1px solid #dad9d8;
   white-space: nowrap;
 }
 body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr td.question-score input,
@@ -622,6 +640,7 @@ body.scoreboard .game-scoreboard > section div#scoreboard_wrapper.dataTables_wra
 body.scoreboard .game-scoreboard > section ::-webkit-scrollbar {
   width: 20px;
   height: 20px;
+  margin-top: 10px;
 }
 body.scoreboard .game-scoreboard > section ::-webkit-scrollbar-button {
   width: 0px;
@@ -629,7 +648,6 @@ body.scoreboard .game-scoreboard > section ::-webkit-scrollbar-button {
 }
 body.scoreboard .game-scoreboard > section ::-webkit-scrollbar-track {
   background-color: #47413a;
-  border-radius: 20px;
 }
 body.scoreboard .game-scoreboard > section ::-webkit-scrollbar-track:active {
   background: #39342f;

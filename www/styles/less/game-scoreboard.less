@@ -3,13 +3,10 @@
 @scoreboardHeaderHeight: @scoreboardRowHeight * 2;
 
 body.scoreboard .game-scoreboard {
-    border: 1px solid @medium-brown;
     clear: both;
     width: 100%;
     
     >header {
-        border-bottom: 1px solid @medium-brown;       
-        
         .game-header {
             padding: 0 8px;
             .game-title {
@@ -20,12 +17,12 @@ body.scoreboard .game-scoreboard {
             }
         }
         
-        .game-round-navigation nav {
-            float: right;
+        .game-round-navigation {
              nav {
-                ul {
+                text-align:center;
+                ul.pagination {
                     padding: 0;
-                    margin: 20px 0 10px 10px;
+                    margin: 20px 0 0 0;
                 }
              }
         }
@@ -55,12 +52,22 @@ body.scoreboard .game-scoreboard {
                             width: @scoreboardWidth !important;
                             max-width: @scoreboardWidth !important;
                             padding: 4px 8px;
+                            border: 1px solid #fff;
                         }
                         th {
                             background-color: @brick-red;
                             color: #fff;
-                            border-bottom: 1px solid lighten(@brick-red, 15%);
-                            border-top: 1px solid darken(@brick-red, 5%);
+                            border-bottom-color: lighten(@brick-red, 15%);
+                            border-top-color: darken(@brick-red, 5%);
+                            border-left-color: darken(@brick-red, 5%);
+                            border-right-color: darken(@brick-red, 5%);
+                            &.team {
+                                border-bottom-color: lighten(@medium-brown, 5%);
+                                span {
+                                    font-size: 200%;
+                                    font-weight: bold;
+                                }
+                            }
                         }
                         td {
                             height: @scoreboardRowHeight !important;
@@ -68,20 +75,22 @@ body.scoreboard .game-scoreboard {
                                 background-color: @medium-brown;
                                 color: @pale-brown;
                                 font-size: 16px;
-                                padding-top: (@scoreboardRowHeight / 2) - (@scoreboardRowHeight / 2);
-                                border-bottom: 1px solid lighten(@medium-brown, 15%);
-                                border-top: 1px solid darken(@medium-brown, 5%);
+                                padding-top: (@scoreboardRowHeight / 2) - 5px - 16px;
+                                border-bottom-color: lighten(@medium-brown, 15%);
+                                border-top-color: darken(@medium-brown, 5%);
+                                border-left-color: darken(@medium-brown, 5%);
+                                border-right-color: lighten(@medium-brown, 15%);
                             }
                             &.question-score {
                                 height: @scoreboardRowHeight;
                                 text-align: center;
-                                background-color: @pale-brown;
+                                background-color: #fff;
                                 color: @medium-brown;
                                 padding-top: (@scoreboardRowHeight / 2) - (@scoreboardRowHeight / 2);
                                 border-top: 1px solid darken(@pale-brown, 5%);
                                 border-right: 1px solid darken(@pale-brown, 5%);
-                                border-bottom: 1px solid lighten(@pale-brown, 15%);
-                                border-left: 1px solid lighten(@pale-brown, 15%);
+                                border-bottom: 1px solid @pale-brown;
+                                border-left: 1px solid @pale-brown;
                                 white-space: nowrap;
             
                                 input {
@@ -107,6 +116,7 @@ body.scoreboard .game-scoreboard {
         ::-webkit-scrollbar {
             width:20px;
             height:20px;
+            margin-top: 10px;
         }
         ::-webkit-scrollbar-button {
             width: 0px;
@@ -114,7 +124,6 @@ body.scoreboard .game-scoreboard {
         }
         ::-webkit-scrollbar-track {
             background-color: @medium-brown;
-            border-radius:20px;
             &:active {
                 background: darken(@medium-brown, 5%);
             }
