@@ -13,20 +13,20 @@
 
     <div class="row">
         <div class="col-xs-0 col-sm-2"></div>
-        <div class="col-xs-12 col-sm-8">           
+        <div class="col-xs-12 col-sm-8">   
 
             <form name="form.venue" role="form" novalidate>
 
                 <div data-rc-bootstrap-alerts="venueAlerts"></div>
 
                 <div class="row">
-                    
+
                     <div class="col-xs-12 checkbox text-center">
                         <label>
                             <input type="checkbox" ng-model="newUser.acceptTerms" ng-true-value="true" ng-false-value="false"> Agree to our <a href="http://www.triviajoint.com/terms-and-conditions/" target="_blank">terms of service</a>
                         </label>
                     </div>
-                    
+
                     <div class="col-xs-12 form-group">
                         <input ng-model="newUser.venueName" type="text" class="form-control" name="venueName" placeholder="Venue Name" maxlength="255" required>
                     </div>
@@ -34,7 +34,7 @@
                     <div class="col-md-6 form-group">
                         <input ng-model="newUser.address" type="text" class="form-control" name="address" placeholder="Venue Address" maxlength="255" required>
                     </div>
-                    
+
                     <div class="col-md-6 form-group">
                         <input ng-model="newUser.addressb" type="text" class="form-control" name="addressb" placeholder="Venue Address Con't" maxlength="255">
                     </div>
@@ -56,11 +56,11 @@
                     <div class="col-xs-12 form-group">
                         <input ng-model="newUser.phone" type="text" class="form-control" name="phone" placeholder="Venue Phone" maxlength="16">
                     </div>
-                    
+
                     <div class="col-xs-12 form-group">
                         <input ng-model="newUser.website" type="text" class="form-control" name="website" placeholder="Venue Website (http://...)" maxlength="255">
                     </div>
-                    
+
                     <div class="col-xs-12 form-group">
                         <input ng-model="newUser.facebook" type="text" class="form-control" name="facebook" placeholder="Venue Facebook Page (http://...)" maxlength="255">
                     </div>
@@ -74,9 +74,9 @@
                     </div>
 
                     <div rc-image-upload-with-editor="venueLogo"></div>
-                    
+
                 </div>
-                
+
             </form>
 
             <hr/>
@@ -85,11 +85,11 @@
                 <div class="row" >
                     <div class="col-xs-12" data-rc-bootstrap-alerts="signupAlerts"></div>
 
-                    <div class="col-xs-6 form-group">
+                    <div class="col-md-6 form-group">
                         <input ng-model="newUser.nameFirst" type="text" class="form-control" name="nameFirst" placeholder="Contact First Name" maxlength="255" required>
                     </div>
 
-                    <div class="col-xs-6 form-group">
+                    <div class="col-md-6 form-group">
                         <input ng-model="newUser.nameLast" type="text" class="form-control" name="nameLast" placeholder="Contact Last Name" maxlength="255" required>
                     </div>
 
@@ -107,13 +107,13 @@
                         </div>
                     </div>
 
-                    <div class="col-xs-6 form-group">
+                    <div class="col-md-6 form-group">
                         <input ng-model="newUser.password"
                                ng-change="onChangeValidatePassword()" 
                                type="password" class="form-control" name="password" placeholder="Contact Password" maxlength="100" required>
                     </div>
 
-                    <div class="col-xs-6 form-group">
+                    <div class="col-md-6 form-group">
                         <input ng-model="newUser.passwordB"
                                ng-change="onChangeValidateConfirmPassword()" 
                                type="password" class="form-control" name="passwordB" placeholder="Confirm Contact Password" maxlength="100" required>
