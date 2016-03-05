@@ -66,7 +66,8 @@ angular.module('app.auth.signupVenue', [])
             'referralCode' : 'Facebook'
         };
         
-
+        
+        
         $scope.signup = function() {
             if(angular.isDefined($scope.venueLogo.imageDataUrl) &&
                     ($scope.venueLogo.imageDataUrl.indexOf('data:image') > -1)) {
