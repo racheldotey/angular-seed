@@ -98,6 +98,9 @@ app.config(['$stateProvider', 'USER_ROLES',
                 'content@app.auth': {
                     templateUrl: 'app/views/auth/signupVenue/signupVenue.html',
                     controller: 'AuthSignupVenueCtrl'
+                },
+                'signupform@app.auth.signupVenue': {
+                    templateUrl: 'app/views/auth/signupVenue/signupVenueForm.html'
                 }
             },
             resolve: {
@@ -128,6 +131,30 @@ app.config(['$stateProvider', 'USER_ROLES',
                 'content@app.auth': {
                     templateUrl: 'app/views/auth/signupVenue/signupVenueiFrame.html',
                     controller: 'AuthSignupVenueCtrl'
+                },
+                'signupform@app.auth.signupVenue.iframe': {
+                    templateUrl: 'app/views/auth/signupVenue/signupVenueForm.html'
+                },
+                'footer@app.auth': {}
+            },
+            resolve: {
+                alreadyLoggedIn: function() {
+                    return true;
+                }
+            }
+        });
+
+        $stateProvider.state('app.auth.signupVenue.plain', {
+            bodyClass: 'auth signup iframe-compatible',
+            title: 'Venue Sign Up',
+            url: '/plain',
+            views: {
+                'header@app.auth': {},
+                'content@app.auth': {
+                    templateUrl: 'app/views/auth/signupVenue/signupVenueiFrame.html'
+                },
+                'signupform@app.auth.signupVenue.iframe': {
+                    templateUrl: 'app/views/auth/signupVenue/signupVenueFormPlain.html'
                 },
                 'footer@app.auth': {}
             },
