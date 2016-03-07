@@ -77,11 +77,11 @@ angular.module('app.auth.signupVenue', [])
             if(!$scope.form.venue.$valid) {
                 $scope.form.venue.$setDirty();
                 $scope.venueAlerts.error('Please fill in all fields for your venue.');
-            } else if(!$scope.form.user.$valid) {
-                $scope.form.user.$setDirty();
+            } else if(!$scope.form.signup.$valid) {
+                $scope.form.signup.$setDirty();
                 $scope.signupAlerts.error('Please agree to our terms of service and fill in all Name, Email, and Password fields.');
             } else if($scope.newUser.password !== $scope.newUser.passwordB) {
-                $scope.form.user.$setDirty();
+                $scope.form.signup.$setDirty();
                 $scope.signupAlerts.error('Passwords do not match.');
             } else {
                 AuthService.venueSignup($scope.newUser).then(function (results) {
