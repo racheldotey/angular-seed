@@ -69,7 +69,7 @@ angular.module('app.auth.signupVenue', [])
         
         
         $scope.signup = function() {
-            if(angular.isDefined($scope.venueLogo.imageDataUrl) &&
+            if(angular.isString($scope.venueLogo.imageDataUrl) &&
                     ($scope.venueLogo.imageDataUrl.indexOf('data:image') > -1)) {
                 $scope.newUser.logoUrl = $scope.venueLogo.imageDataUrl;
             }            
@@ -99,7 +99,7 @@ angular.module('app.auth.signupVenue', [])
         };
 
         $scope.facebookSignup = function() {
-            if(angular.isDefined($scope.venueLogo.imageDataUrl) &&
+            if(angular.isString($scope.venueLogo.imageDataUrl)
                     ($scope.venueLogo.imageDataUrl.indexOf('data:image') > -1)) {
                 $scope.newUser.logoUrl = $scope.venueLogo.imageDataUrl;
             }

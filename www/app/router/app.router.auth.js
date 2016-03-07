@@ -50,6 +50,9 @@ app.config(['$stateProvider', 'USER_ROLES',
                 'content@app.auth': {
                     templateUrl: 'app/views/auth/signup/signup.html',
                     controller: 'AuthSignupCtrl'
+                },
+                'signupform@app.auth.signup': {
+                    templateUrl: 'app/views/auth/signup/signupForm.html'
                 }
             },
             resolve: {
@@ -80,6 +83,9 @@ app.config(['$stateProvider', 'USER_ROLES',
                 'content@app.auth': {
                     templateUrl: 'app/views/auth/signup/signupiFrame.html',
                     controller: 'AuthSignupCtrl'
+                },
+                'signupform@app.auth.signup.iframe': {
+                    templateUrl: 'app/views/auth/signup/signupForm.html'
                 },
                 'footer@app.auth': {}
             },
@@ -153,7 +159,7 @@ app.config(['$stateProvider', 'USER_ROLES',
                 'content@app.auth': {
                     templateUrl: 'app/views/auth/signupVenue/signupVenueiFrame.html'
                 },
-                'signupform@app.auth.signupVenue.iframe': {
+                'signupform@app.auth.signupVenue.plain': {
                     templateUrl: 'app/views/auth/signupVenue/signupVenueFormPlain.html'
                 },
                 'footer@app.auth': {}
