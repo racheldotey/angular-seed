@@ -46,6 +46,23 @@ angular.module('app.auth.signup', [])
             } else if($scope.newUser.password !== $scope.newUser.passwordB) {
                 $scope.form.signup.$setDirty();
                 $scope.signupAlerts.error('Passwords do not match.');
+            } else if(!$scope.newUser.acceptTerms) {
+                AlertConfirmService.confirm('Do you agree to our <a href="http://www.triviajoint.com/terms-and-conditions/" target="_blank">Terms of Service</a>?', 'Terms of Service Agreement').result.then(function (resp) {
+                    $scope.newUser.acceptTerms = true;
+                    AuthService.signup($scope.newUser).then(function (results) {
+                        $log.debug(results);
+
+                        $scope.signupAlerts.success("Signup successful!  Please wait for confirmation page", 'signup');
+
+                        $timeout(function () {
+                            $window.top.location.href = 'http://www.triviajoint.com/registration-thank-you-page/';
+                        }, 1000);
+                    }, function (error) {
+                        $scope.signupAlerts.error(error);
+                    });
+                }, function (err) {
+                    $scope.facebookAlerts.error('Please accept the Terms of Service to signup.');
+                });
             } else {
                 AuthService.signup($scope.newUser).then(function (results) {
                     $log.debug(results);
