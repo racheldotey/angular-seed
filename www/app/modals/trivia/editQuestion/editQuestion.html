@@ -68,13 +68,13 @@
 
 <div ng-if="!editMode" class="modal-footer">
     <button class="btn btn-default pull-left" ng-click="buttonEdit()">Edit</button>
-    <button class="btn btn-warning" ng-click="buttonCancel()">Done</button>
+    <button class="btn btn-primary" ng-click="buttonCancel()">Done</button>
 </div>
 
 <div ng-if="editMode" class="modal-footer">
-    <button class="btn btn-danger pull-left" ng-if="!newMode" ng-click="buttonDelete()">Delete</button>
+    <button class="btn btn-warning pull-left" ng-if="!newMode" ng-click="buttonDelete()">Delete</button>
     
     <button class="btn btn-default" ng-click="buttonCancel()">Cancel</button>
-    <button class="btn btn-warning" ng-if="newMode" ng-click="buttonNew()">Add</button>
-    <button class="btn btn-warning" ng-if="!newMode" ng-click="buttonSave()">Save</button>
+    <button class="btn btn-primary" ng-if="newMode" ng-click="buttonNew()">Add</button>
+    <button class="btn btn-primary" ng-if="!newMode" ng-click="buttonSave()">Save</button>
 </div>

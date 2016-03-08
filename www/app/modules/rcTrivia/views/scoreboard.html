@@ -5,7 +5,7 @@
 
                 <div class="pull-right">
                     <button ng-click="buttonStartGame()" ng-if="true || game.started" type="button" class="btn btn-round btn-success btn-sm" title="Start Game"><i class="fa fa-play"></i></button>
-                    <button ng-click="buttonEndGame()" ng-if="true || game.started && !game.ended" type="button" class="btn btn-round btn-danger btn-sm" title="Stop Game"><i class="fa fa-stop"></i></button>
+                    <button ng-click="buttonEndGame()" ng-if="true || game.started && !game.ended" type="button" class="btn btn-round btn-primary btn-sm" title="Stop Game"><i class="fa fa-stop"></i></button>
 
                     <div class="btn-group btn-group-sm" uib-dropdown>
                         <button id="split-button" type="button" class="btn btn-default" ng-click="buttonAddTeam()">Add Team</button>
@@ -19,8 +19,8 @@
                         </ul>
                     </div>
 
-                    <button ng-click="buttonAddRound()" type="button" class="btn btn-warning btn-sm"><i class="fa fa-plus"></i> Add Round</button>
-                    <button ng-click="buttonAddQuestion()" type="button" class="btn btn-warning btn-sm"><i class="fa fa-question"></i> Add Question</button>
+                    <button ng-click="buttonAddRound()" type="button" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> Add Round</button>
+                    <button ng-click="buttonAddQuestion()" type="button" class="btn btn-primary btn-sm"><i class="fa fa-question"></i> Add Question</button>
                 </div>
                 
                 <h1 class="game-title">{{game.name}}</h1><!--
@@ -49,7 +49,7 @@
                             <button 
                                 ng-click="buttonQuestionWrong(team.teamId, teamScore.questionId)" 
                                 type="button" 
-                                class="btn btn-danger btn-sm btn-round">
+                                class="btn btn-warning btn-sm btn-round">
                                 <i class="fa fa-ban"></i>
                             </button>
                             <input 

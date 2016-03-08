@@ -286,7 +286,7 @@ table.dataTable tbody tr td {
   display: none !important;
 }
 body {
-  background-color: #800000;
+  background-color: #880000;
   background-image: url('/media/images/trivia-background.png');
   background-repeat: no-repeat;
   background-position: 0 0;
@@ -318,14 +318,6 @@ body.admin .layout.admin .container {
 }
 .auth .container .list-group-item label {
   color: #000;
-}
-.auth .container .btn-danger {
-  background-color: #bb0000;
-  border-color: #d40000;
-}
-.auth .container .btn-danger:hover {
-  background-color: #a20000;
-  border-color: #bb0000;
 }
 .align-right,
 .alignRight,
@@ -396,6 +388,35 @@ body.admin .layout.admin .container {
 .btn-link:focus,
 .btn-link:hover {
   color: #ec971f;
+}
+.btn-danger,
+.btn-primary {
+  color: #fff;
+  background-color: #bb0000;
+  border-color: #d40000;
+}
+.btn-danger:hover,
+.btn-primary:hover {
+  color: #fff;
+  background-color: #a20000;
+  border-color: #bb0000;
+}
+.pagination > li a {
+  color: #3c0000;
+}
+.pagination > li.active > a,
+.pagination > li.active > span {
+  color: #fff;
+  background-color: #bb0000;
+  border-color: #d40000;
+}
+.pagination > li.active > a:hover,
+.pagination > li.active > span:hover,
+.pagination > li.active > a:focus,
+.pagination > li.active > span:focus {
+  color: #fff;
+  background-color: #a20000;
+  border-color: #bb0000;
 }
 /*
  * Layout(s) Styles
@@ -558,12 +579,12 @@ body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrappe
 body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table tbody tr th,
 body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable tbody tr th,
 body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned tbody tr th {
-  background-color: #800000;
+  background-color: #880000;
   color: #fff;
-  border-bottom-color: #cd0000;
-  border-top-color: #670000;
-  border-left-color: #670000;
-  border-right-color: #670000;
+  border-bottom-color: #d40000;
+  border-top-color: #6f0000;
+  border-left-color: #6f0000;
+  border-right-color: #6f0000;
 }
 body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr th.team,
 body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr th.team,
@@ -664,16 +685,16 @@ body.scoreboard .game-scoreboard > section ::-webkit-scrollbar-track:active {
   background: #39342f;
 }
 body.scoreboard .game-scoreboard > section ::-webkit-scrollbar-thumb {
-  background: #670000;
+  background: #6f0000;
   border: 2px solid #47413a;
   border-radius: 20px;
 }
 body.scoreboard .game-scoreboard > section ::-webkit-scrollbar-thumb:hover {
-  background: #800000;
+  background: #880000;
   border-color: #47413a;
 }
 body.scoreboard .game-scoreboard > section ::-webkit-scrollbar-thumb:active {
-  background: #9a0000;
+  background: #a20000;
   border-color: #39342f;
 }
 body.scoreboard .game-scoreboard > section ::-webkit-scrollbar-corner {
