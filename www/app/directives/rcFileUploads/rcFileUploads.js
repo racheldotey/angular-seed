@@ -19,7 +19,8 @@ angular.module('rc.FileUploads', [])
             // Link - Programmatically modify resulting DOM element instances, 
             // add event listeners, and set up data binding. 
             
-            $scope.inputLabel = attributes.inputLabel || 'Upload Venue Logo';
+            $scope.inputLabel = attributes.inputLabel || 'Image Upload';
+            $scope.browseButtonLabel = attributes.browseButtonLabel || 'Browse';
             $scope.cropAreaLabel = attributes.cropAreaLabel || 'Crop Your Image';
             $scope.cropPreviewLabel = attributes.cropPreviewLabel || 'Preview';
             
@@ -32,10 +33,7 @@ angular.module('rc.FileUploads', [])
         },
         controller: ["$scope", 'DIRECTIVES_URL', function ($scope, DIRECTIVES_URL) {
             // Controller - Create a controller which publishes an API for 
-            // communicating across directives.
-            
-            $scope.inputTemplateUrl = DIRECTIVES_URL + 'rcFileUploads/fileInputTemplate.html';
-            
+            // communicating across directives.            
             $scope.fileSelectionCallback = function($files, $file, $newFiles, $duplicateFiles, $invalidFiles, $event) {
                 $scope.imageUpload.file = $file;
                 $scope.imageUpload.selectedFilesLabel = ($files.length > 0) ? $file.name : '';

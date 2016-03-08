@@ -1,5 +1,4 @@
-<div class="image-editior">
-    <div class="col-xs-12 form-group">
+<div class="image-editior form-group">
         <label class="for">{{inputLabel}}</label><br/>
         
         <div class="input-group">
@@ -8,17 +7,14 @@
                     ngf-select 
                     ng-model="imageUpload.file" 
                     ngf-change="fileSelectionCallback($files, $file, $newFiles, $duplicateFiles, $invalidFiles, $event)"
-                    ngf-capture="'camera'"
                     ngf-accept="'image/*'"
                     ngf-pattern="'image/*'"
-                    class="btn btn-primary btn-file" > Select Picture</button>
+                    class="btn btn-warning btn-file" >{{browseButtonLabel}}</button>
             </span>
             <input type="text" class="form-control" value="{{imageUpload.selectedFilesLabel}}" readonly>
         </div>
-        
-    </div>
     
-    <div class="col-md-6" ng-if="imageUpload.file">
+    <div class="col-md-6" ng-if="imageUpload.file" style="margin: 2em 0;">
         <label>{{cropAreaLabel}}</label>
         <div class="cropArea center-block">
             <img-crop 
@@ -31,7 +27,7 @@
         </div>
     </div>
 
-    <div class="col-md-6" ng-if="imageUpload.file">
+    <div class="col-md-6" ng-if="imageUpload.file" style="margin: 2em 0;">
         <label>{{cropPreviewLabel}}</label>
         <div class="preview-image center-block">
             <img ng-src="{{imageUpload.imageDataUrl}}" class="img-responsive" />
