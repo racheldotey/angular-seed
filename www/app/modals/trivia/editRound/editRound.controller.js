@@ -58,6 +58,10 @@ angular.module('app.modal.trivia.editRound', [])
     /* Item to display and edit */
     $scope.editing = angular.copy($scope.saved);
     
+    if($scope.getMode('new') === 'new') {
+        $scope.editing.name = "Round #" + ($scope.game.rounds.length + 1);
+    }
+    
     /* Click event for the Add / New button */
     $scope.buttonNew = function() {
         ApiRoutesGames.addGameRound({ 

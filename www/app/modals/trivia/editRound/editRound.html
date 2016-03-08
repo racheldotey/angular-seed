@@ -8,32 +8,24 @@
     
     <div data-rc-bootstrap-alerts="alertProxy"></div>
     
-    
     <div ng-if="!editMode && !manageRolesMode">
         
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="form-group">
-                    <label>Game</label>
-                    <p class="form-control-static">#{{game.id}} - {{game.name}}</p>
-                </div>
-            </div>
-            <div class="col-xs-12">
-                <div class="form-group">
-                    <label>Round Name</label>
-                    <p class="form-control-static">{{saved.name}}</p>
-                </div>
-            </div>
-            <div class="col-xs-12">
-                <div class="form-group">
-                    <label>Questions:</label>
-                    <ol>
-                        <li ng-repeat="question in saved.questions">{{question.question}}</li>
-                    </ol>
-                </div>
-            </div>
+        <div class="form-group">
+            <label>Game #{{game.id}} - {{game.name}}</label>
         </div>
-
+        
+        <div class="form-group">
+            <label>Round Name</label>
+            <p class="form-control-static">{{saved.name}}</p>
+        </div>
+        
+        <div class="form-group">
+            <label>Questions:</label>
+            <ol>
+                <li ng-repeat="question in saved.questions">{{question.question}}</li>
+            </ol>
+        </div>
+        
         <div class="meta" ng-if="!newMode">
             <hr/>
             <p class="text-muted"><strong>Created:</strong> {{saved.created | formatMySQLDate}} by {{saved.createdBy}}</p>
@@ -44,22 +36,13 @@
     
     <form ng-if="editMode" name="form.modalForm" role="form" novalidate>
         
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="form-group">
-                    <label>Game</label>
-                    <p class="form-control-static">#{{game.id}} - {{game.name}}</p>
-                </div>
-            </div>
+        <div class="form-group">
+            <label>Game #{{game.id}} - {{game.name}}</label>
         </div>
         
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="form-group">
-                    <label>Round Name</label>
-                    <input class="form-control" name="group" ng-model="editing.name" type="text" maxlength="255" required />
-                </div>
-            </div>
+        <div class="form-group">
+            <label>Round Name</label>
+            <input class="form-control" name="group" ng-model="editing.name" type="text" maxlength="255" required />
         </div>
     </form>
 
