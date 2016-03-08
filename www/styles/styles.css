@@ -389,14 +389,18 @@ body.admin .layout.admin .container {
 .btn-link:hover {
   color: #ec971f;
 }
-.btn-danger,
-.btn-primary {
+.btn.btn-danger,
+.btn.btn-primary {
   color: #fff;
   background-color: #bb0000;
   border-color: #d40000;
 }
-.btn-danger:hover,
-.btn-primary:hover {
+.btn.btn-danger:hover,
+.btn.btn-primary:hover,
+.btn.btn-danger:focus,
+.btn.btn-primary:focus,
+.btn.btn-danger:active,
+.btn.btn-primary:active {
   color: #fff;
   background-color: #a20000;
   border-color: #bb0000;
@@ -413,7 +417,9 @@ body.admin .layout.admin .container {
 .pagination > li.active > a:hover,
 .pagination > li.active > span:hover,
 .pagination > li.active > a:focus,
-.pagination > li.active > span:focus {
+.pagination > li.active > span:focus,
+.pagination > li.active > a:active,
+.pagination > li.active > span:active {
   color: #fff;
   background-color: #a20000;
   border-color: #bb0000;
