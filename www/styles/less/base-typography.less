@@ -42,6 +42,17 @@ body {
         border-color: darken(@medium-brown, 5%);
     }
 }
+.dropdown-menu {
+    color: #fff;
+    background-color: @medium-brown;
+    >li>a {
+        color: #fff;
+        &:hover, &:focus, &:hover {
+            color: #fff;
+            background-color:darken(@medium-brown, 5%);
+        }
+    }
+}
 
 .auth .container {
     .logo {
@@ -120,14 +131,22 @@ body {
         color: @medium-yellow;
     }
 }
-.btn.btn-danger, .btn.btn-primary {
+.btn.btn-danger, 
+.btn.btn-primary, 
+.dropdown-toggle.btn-danger,
+.dropdown-toggle.btn-primary {
     color: #fff;
     background-color: lighten(@brick-red, 10%);
     border-color: lighten(@brick-red, 15%);
-    &:hover, &:focus, &:active {
+    &:hover, &.focus, &:focus, &:active {
         color: #fff;
         background-color: lighten(@brick-red, 5%);
         border-color: lighten(@brick-red, 10%);
+        &:hover, &.focus, &:focus, &:active {
+            color: #fff;
+            background-color: lighten(@brick-red, 5%);
+            border-color: lighten(@brick-red, 10%);
+        }
     }
 }
 .pagination {

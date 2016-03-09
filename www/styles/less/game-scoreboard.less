@@ -16,19 +16,28 @@ body.scoreboard .game-scoreboard {
                 
             }
         }
-        
-        .game-round-navigation {
-             nav {
-                text-align:center;
-                ul.pagination {
-                    padding: 0;
-                    margin: 20px 0 0 0;
-                }
-             }
-        }
     }
     
     >section {
+        #scoreboard-navigation {
+                
+            .game-round-navigation {
+                display: block;
+                 nav {
+                    ul.pagination {
+                        display: block;
+                        padding: 0;
+                        margin: 0;
+                    }
+                 }
+            }
+            .host-actions {
+                text-align: right;
+                display: block;
+            }
+        }
+        
+        
         #scoreboard_wrapper.dataTables_wrapper {
             width: 100%;
             max-width: 100%;

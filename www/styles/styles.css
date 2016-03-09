@@ -313,6 +313,19 @@ body.admin .layout.admin .container {
 .modal-content .modal-footer {
   border-color: #39342f;
 }
+.dropdown-menu {
+  color: #fff;
+  background-color: #47413a;
+}
+.dropdown-menu > li > a {
+  color: #fff;
+}
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus,
+.dropdown-menu > li > a:hover {
+  color: #fff;
+  background-color: #39342f;
+}
 .auth .container .logo {
   padding: 30px 0 50px;
 }
@@ -390,17 +403,97 @@ body.admin .layout.admin .container {
   color: #ec971f;
 }
 .btn.btn-danger,
-.btn.btn-primary {
+.btn.btn-primary,
+.dropdown-toggle.btn-danger,
+.dropdown-toggle.btn-primary {
   color: #fff;
   background-color: #bb0000;
   border-color: #d40000;
 }
 .btn.btn-danger:hover,
 .btn.btn-primary:hover,
+.dropdown-toggle.btn-danger:hover,
+.dropdown-toggle.btn-primary:hover,
+.btn.btn-danger.focus,
+.btn.btn-primary.focus,
+.dropdown-toggle.btn-danger.focus,
+.dropdown-toggle.btn-primary.focus,
 .btn.btn-danger:focus,
 .btn.btn-primary:focus,
+.dropdown-toggle.btn-danger:focus,
+.dropdown-toggle.btn-primary:focus,
 .btn.btn-danger:active,
-.btn.btn-primary:active {
+.btn.btn-primary:active,
+.dropdown-toggle.btn-danger:active,
+.dropdown-toggle.btn-primary:active {
+  color: #fff;
+  background-color: #a20000;
+  border-color: #bb0000;
+}
+.btn.btn-danger:hover:hover,
+.btn.btn-primary:hover:hover,
+.dropdown-toggle.btn-danger:hover:hover,
+.dropdown-toggle.btn-primary:hover:hover,
+.btn.btn-danger.focus:hover,
+.btn.btn-primary.focus:hover,
+.dropdown-toggle.btn-danger.focus:hover,
+.dropdown-toggle.btn-primary.focus:hover,
+.btn.btn-danger:focus:hover,
+.btn.btn-primary:focus:hover,
+.dropdown-toggle.btn-danger:focus:hover,
+.dropdown-toggle.btn-primary:focus:hover,
+.btn.btn-danger:active:hover,
+.btn.btn-primary:active:hover,
+.dropdown-toggle.btn-danger:active:hover,
+.dropdown-toggle.btn-primary:active:hover,
+.btn.btn-danger:hover.focus,
+.btn.btn-primary:hover.focus,
+.dropdown-toggle.btn-danger:hover.focus,
+.dropdown-toggle.btn-primary:hover.focus,
+.btn.btn-danger.focus.focus,
+.btn.btn-primary.focus.focus,
+.dropdown-toggle.btn-danger.focus.focus,
+.dropdown-toggle.btn-primary.focus.focus,
+.btn.btn-danger:focus.focus,
+.btn.btn-primary:focus.focus,
+.dropdown-toggle.btn-danger:focus.focus,
+.dropdown-toggle.btn-primary:focus.focus,
+.btn.btn-danger:active.focus,
+.btn.btn-primary:active.focus,
+.dropdown-toggle.btn-danger:active.focus,
+.dropdown-toggle.btn-primary:active.focus,
+.btn.btn-danger:hover:focus,
+.btn.btn-primary:hover:focus,
+.dropdown-toggle.btn-danger:hover:focus,
+.dropdown-toggle.btn-primary:hover:focus,
+.btn.btn-danger.focus:focus,
+.btn.btn-primary.focus:focus,
+.dropdown-toggle.btn-danger.focus:focus,
+.dropdown-toggle.btn-primary.focus:focus,
+.btn.btn-danger:focus:focus,
+.btn.btn-primary:focus:focus,
+.dropdown-toggle.btn-danger:focus:focus,
+.dropdown-toggle.btn-primary:focus:focus,
+.btn.btn-danger:active:focus,
+.btn.btn-primary:active:focus,
+.dropdown-toggle.btn-danger:active:focus,
+.dropdown-toggle.btn-primary:active:focus,
+.btn.btn-danger:hover:active,
+.btn.btn-primary:hover:active,
+.dropdown-toggle.btn-danger:hover:active,
+.dropdown-toggle.btn-primary:hover:active,
+.btn.btn-danger.focus:active,
+.btn.btn-primary.focus:active,
+.dropdown-toggle.btn-danger.focus:active,
+.dropdown-toggle.btn-primary.focus:active,
+.btn.btn-danger:focus:active,
+.btn.btn-primary:focus:active,
+.dropdown-toggle.btn-danger:focus:active,
+.dropdown-toggle.btn-primary:focus:active,
+.btn.btn-danger:active:active,
+.btn.btn-primary:active:active,
+.dropdown-toggle.btn-danger:active:active,
+.dropdown-toggle.btn-primary:active:active {
   color: #fff;
   background-color: #a20000;
   border-color: #bb0000;
@@ -518,15 +611,20 @@ body.scoreboard .game-scoreboard > header .game-header {
 body.scoreboard .game-scoreboard > header .game-header .game-title {
   margin: 0 0 10px;
 }
-body.scoreboard .game-scoreboard > header .game-round-navigation nav {
-  text-align: center;
-}
-body.scoreboard .game-scoreboard > header .game-round-navigation nav ul.pagination {
-  padding: 0;
-  margin: 20px 0 0 0;
-}
 body.scoreboard .game-scoreboard > section {
   /* Begin ::-webkit Scrollbar CSS Color Code by http//:snapbuilder.com */
+}
+body.scoreboard .game-scoreboard > section #scoreboard-navigation .game-round-navigation {
+  display: block;
+}
+body.scoreboard .game-scoreboard > section #scoreboard-navigation .game-round-navigation nav ul.pagination {
+  display: block;
+  padding: 0;
+  margin: 0;
+}
+body.scoreboard .game-scoreboard > section #scoreboard-navigation .host-actions {
+  text-align: right;
+  display: block;
 }
 body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper {
   width: 100%;

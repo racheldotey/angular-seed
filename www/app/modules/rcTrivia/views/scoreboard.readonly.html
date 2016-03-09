@@ -33,18 +33,19 @@
             </thead>
             <tbody>
                 <tr ng-repeat="team in game.round.teams" data-team-id="{{team.teamId}}">
-                    <td class="team"> <span class="team-score badge">{{team.roundScore | numberEx}}</span>
+                    <td class="team"> <span class="team-score badge">{{team.roundScore| numberEx}}</span>
                         <span class="team-name">
-                           
+
                             {{team.team}}
                         </span>
                     </td>
                     <td class="question-score" ng-repeat="teamScore in team.scores" data-question-id="{{teamScore.questionId}}">
-                        <strong>{{teamScore.questionScore | numberEx}} / {{game.round.maxPoints | numberEx}}</strong>
+                        <strong>{{teamScore.questionScore| numberEx}} / {{game.round.maxPoints| numberEx}}</strong>
                     </td>
                 </tr>
             </tbody>
         </table>
+
     </section>
 
     <footer>
