@@ -86,10 +86,23 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
                 }
             },
             resolve: {
+                $q: '$q',
+                $rootScope: '$rootScope', 
+                $state: '$state',
                 TriviaGame: 'TriviaGame',
-                currentGame: function(initUser, TriviaGame, $stateParams) {
+                currentGame: function(initUser, TriviaGame, $stateParams, $rootScope, $state, $q) {
                     $stateParams.roundNumber = (parseInt($stateParams.roundNumber)) ? $stateParams.roundNumber : 1;
-                    return TriviaGame.loadGame($stateParams.gameId, $stateParams.roundNumber);
+                    return $q(function (resolve, reject) {
+                        TriviaGame.loadGame($stateParams.gameId, $stateParams.roundNumber).then(function (result) {
+                            resolve(result);
+                        }, function (error) {
+                            $rootScope.$evalAsync(function () {
+                                $state.go('app.host.dashboard');
+                            });
+                            console.log(error);
+                            reject(false);
+                        });
+                    }); 
                 }
             }
         });
