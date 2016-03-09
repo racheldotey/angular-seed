@@ -58,12 +58,23 @@ angular.module('app.modal.trivia.editQuestion', [])
     /* Item to display and edit */
     $scope.editing = angular.copy($scope.saved);
     
+    if($scope.getMode('new') === 'new') {
+        $scope.editing.roundNumber = ($scope.game.round.questions.length + 1);
+        $scope.editing.question = "Question #" + $scope.editing.roundNumber;
+        $scope.editing.maxPoints = (angular.isDefined($scope.game.round.defaultQuestionPoints)) ? 
+            parseInt($scope.game.round.defaultQuestionPoints) : 2;
+    }
+    
     /* Click event for the Add / New button */
     $scope.buttonNew = function() {
-        ApiRoutesGames.addGameRoundQuestion({ 
-            'gameId' : $scope.game.id, 
-            'roundId' : $scope.game.round.roundId, 
-            'question' : $scope.editing.question }).then(
+        var newQuestion = {
+            'gameId': $scope.game.id,
+            'roundId': $scope.game.round.roundId,
+            'maxPoints': $scope.editing.maxPoints,
+            'roundNumber' : $scope.editing.roundNumber,
+            'question': $scope.editing.question
+        };
+        ApiRoutesGames.addGameRoundQuestion(newQuestion).then(
             function (result) {
                 $uibModalInstance.close(result.game);
             }, function (error) {

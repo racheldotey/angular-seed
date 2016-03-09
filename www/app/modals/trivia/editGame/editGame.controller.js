@@ -3,13 +3,13 @@
 /* @author  Rachel Carbone */
 
 angular.module('app.modal.trivia.editGame', [])        
-    .controller('TriviaEditGameModalCtrl', ['$scope', '$uibModalInstance', '$filter', 'AlertConfirmService', 'editing', 'venueList', 'TriviaGame', 'ApiRoutesGames',
-    function($scope, $uibModalInstance, $filter, AlertConfirmService, editing, venueList, TriviaGame, ApiRoutesGames) {
+    .controller('TriviaEditGameModalCtrl', ['$scope', '$uibModalInstance', 'AlertConfirmService', 'editing', 'venueList', 'ApiRoutesGames', 'UserSession',
+    function($scope, $uibModalInstance, AlertConfirmService, editing, venueList, ApiRoutesGames, UserSession) {
     
     $scope.venueList = venueList;
     
     /* Used to restrict alert bars */
-    $scope.alertProxy = {};
+    $scope.gameAlerts = {};
     
     /* Holds the add / edit form on the modal */
     $scope.form = {};
@@ -58,16 +58,28 @@ angular.module('app.modal.trivia.editGame', [])
     } else {
         $scope.setMode('new');
         $scope.saved = {
-            'scheduled' : new Date(),
-            'maxPoints' : false
+            'scheduledDate' : new Date(),
+            'defaultQuestionPoints' : 5
         };
         
         // If its more than 5 min past the hour, set it to the next half hour
         // Set time to the next half hour
-        //var remainder = (30 - $scope.saved.scheduled.minute()) % 30;
-        //remainder = (remainder < -5) ? remainder + 30 : remainder;
-        //$scope.saved.scheduled = moment($scope.saved.scheduled).add(remainder, "minutes");
+        var now = moment();
+        var remainder = (30 - now.minute()) % 30;
+        remainder = (remainder < -5) ? remainder + 30 : remainder;
+        $scope.saved.scheduledTime = moment(now).add(remainder, "minutes");
     }
+    
+    $scope.updateGameName = function() {
+        // Brickhouse - 2016-03-08 5:00pm
+        var date = moment($scope.editing.scheduledDate).format('YYYY-MM-DD');
+        var time = moment($scope.editing.scheduledTime).format('h:mm a');
+        var venue = (angular.isDefined($scope.editing.venue) && angular.isDefined($scope.editing.venue.name)) ? $scope.editing.venue.name : '';
+        $scope.editing.gameName = venue + ' - ' + date + ' ' + time ;
+    };
+    $scope.$watch("editing.scheduledDate", function(newValue, oldValue) {
+        $scope.updateGameName();
+    });
     
     
     /* Item to display and edit */
@@ -75,15 +87,28 @@ angular.module('app.modal.trivia.editGame', [])
     
     /* Click event for the Add / New button */
     $scope.buttonNew = function() {
-        ApiRoutesGames.addGameRoundQuestion({ 
-            'gameId' : $scope.game.id, 
-            'roundId' : $scope.game.round.roundId, 
-            'question' : $scope.editing.question }).then(
+        if(!$scope.form.game.$valid) {
+            $scope.form.game.$setDirty();
+            $scope.gameAlerts.error('Please fill in all fields for your game.');
+        } else {
+            // Combine the date and time
+            var scheduled = moment($scope.editing.scheduledDate);
+            scheduled.hour(moment($scope.editing.scheduledTime).hour());
+            scheduled.minute(moment($scope.editing.scheduledTime).minute());
+            scheduled.second(0);
+
+            ApiRoutesGames.addGame({ 
+                'scheduled' : scheduled.format("YYYY-MM-DD HH:mm:ss"), 
+                'venueId' : $scope.editing.venue.id , 
+                'hostId' : UserSession.id(),
+                'name' : $scope.editing.gameName,
+                'defaultQuestionPoints' : $scope.editing.defaultQuestionPoints}).then(
             function (result) {
                 $uibModalInstance.close(result.game);
             }, function (error) {
-                $scope.alertProxy.error(error);
+                $scope.gameAlerts.error(error);
             });
+        }
     };
     
     /* Click event for the Save button */
@@ -119,19 +144,20 @@ angular.module('app.modal.trivia.editGame', [])
     // Time Picker
     $scope.scheduler = {
         date : {
-            opened: true,
+            opened: false,
             options: {
                 formatYear: 'yy',
-                maxDate: new Date(2020, 5, 22),
+                maxDate: moment().add(6, "months"),
                 minDate: new Date(),
-                startingDay: 1
+                startingDay: 1,
+                showWeeks: false
             }
         },
         time : {
             hstep: 1,
             mstep: 30,
             changed: function () {
-                console.log('Time changed to: ' + $scope.editing.scheduled);
+                $scope.updateGameName();
             }
         }
     };    

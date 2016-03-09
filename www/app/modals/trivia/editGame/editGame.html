@@ -4,10 +4,9 @@
     <h3 ng-if="!newMode && !editMode" class="modal-title">Game #{{saved.id}}</h3>
 </div>
 
-<div class="modal-body">
+<div class="modal-body">   
     
-    <div data-rc-bootstrap-alerts="alertProxy"></div>
-    
+        <div data-rc-bootstrap-alerts="gameAlerts"></div> 
     
     <div ng-if="!editMode">
         
@@ -40,9 +39,22 @@
 
     </div>
     
-    <form ng-if="editMode" name="form.modalForm" role="form" novalidate>
+    <form ng-if="editMode" name="form.game" role="form" novalidate>
+        <p>Select a Trivia Joint to begin.</p>
         
         <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <label>Choose a Trivia Joint</label>
+                    <select 
+                        ng-options="venue.label for venue in venueList" 
+                        ng-model="editing.venue"
+                        ng-change="updateGameName()"
+                        class="form-control" required>
+                        <option value="">Select a Venue</option>
+                    </select>
+                </div>
+            </div>
             <div class="col-xs-6">
                 <label>Event Date</label>
                 <p class="input-group">
@@ -50,37 +62,32 @@
                         type="text" 
                         class="form-control" 
                         uib-datepicker-popup
-                        ng-model="editing.scheduled" 
+                        ng-model="editing.scheduledDate" 
                         is-open="scheduler.date.opened"
                         datepicker-options="scheduler.date.options" 
                         ng-required="true"  />
                     <span class="input-group-btn">
-                        <button type="button" class="btn btn-primary" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+                        <button type="button" class="btn btn-primary" ng-click="scheduler.date.opened = true"><i class="glyphicon glyphicon-calendar"></i></button>
                     </span>
                 </p>
             </div>
             <div class="col-xs-6">
                 <uib-timepicker
-                    ng-model="editing.scheduled" 
+                    ng-model="editing.scheduledTime" 
                     ng-change="scheduler.time.changed()" 
                     hour-step="scheduler.time.hstep" 
                     minute-step="scheduler.time.mstep"></uib-timepicker>
             </div>
             <div class="col-xs-12">
                 <div class="form-group">
-                    <label>Choose a Venue</label>
-                    <select 
-                        ng-options="venue.label for venue in venueList track by venue.id" 
-                        ng-model="editing.venueId"
-                        class="form-control">
-                        <option value="">Select a Venue</option>
-                    </select>
+                    <label>Name the Game (auto generated)</label>
+                    <input class="form-control" name="gameName" ng-model="editing.gameName" type="text" maxlength="255" required />
                 </div>
             </div>
             <div class="col-xs-12">
                 <div class="form-group">
-                    <label>Name the Game</label>
-                    <input class="form-control" name="question" ng-model="editing.question" type="text" maxlength="255" required />
+                    <label>Default point value for questions in Round #1</label>
+                    <input class="form-control" name="defaultQuestionPoints" ng-model="editing.defaultQuestionPoints" type="number" maxlength="7" required />
                 </div>
             </div>
         </div>

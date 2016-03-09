@@ -29,6 +29,16 @@ angular.module('apiRoutes.games', [])
 
 
 
+    api.addGame = function(game) {
+        if(angular.isUndefined(game.venueId) || 
+            angular.isUndefined(game.hostId) ||
+            angular.isUndefined(game.scheduled) || 
+            angular.isUndefined(game.name)) {
+            return API.reject('Invalid game please check your parameters and try again.');
+        }
+        return API.post('trivia/insert/game', game, 'Could not insert game.');
+    };
+
     api.addGameRound = function(round) {
         if(angular.isUndefined(round.gameId) || angular.isUndefined(round.name)) {
             return API.reject('Invalid game round please check your parameters and try again.');

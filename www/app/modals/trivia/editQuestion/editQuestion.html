@@ -1,65 +1,59 @@
 <div class="modal-header">
-    <h3 ng-if="newMode" class="modal-title">New Question</h3>
+    <h3 ng-if="newMode" class="modal-title">Add Question</h3>
     <h3 ng-if="!newMode && editMode" class="modal-title">Edit Question #{{saved.id}}</h3>
     <h3 ng-if="!newMode && !editMode" class="modal-title">Question #{{saved.id}}</h3>
 </div>
 
 <div class="modal-body">
-    
+
     <div data-rc-bootstrap-alerts="alertProxy"></div>
-    
-    
+
+
     <div ng-if="!editMode">
-        
+
         <div class="row">
-            <div class="col-xs-6">
-                <div class="form-group">
-                    <label>Game</label>
-                    <p class="form-control-static">#{{game.id}} - {{game.name}}</p>
-                </div>
-            </div>
-            <div class="col-xs-6">
-                <div class="form-group">
-                    <label>Round</label>
-                    <p class="form-control-static">#{{game.round.roundNumber}} - {{game.round.name}}</p>
-                </div>
-            </div>
             <div class="col-xs-12">
-                <div class="form-group">
-                    <label>Question # {{saved.questionNumber}}</label>
-                    <p class="form-control-static">{{saved.question}}</p>
-                </div>
+                <label>Game #{{game.id}} - {{game.name}}</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <label>Round #{{game.round.roundNumber}} - {{game.round.name}}</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <label>Question # {{saved.questionNumber}}</label>
+                <p class="form-control-static">{{saved.question}}</p>
             </div>
         </div>
 
         <div class="meta" ng-if="!newMode">
             <hr/>
-            <p class="text-muted"><strong>Created:</strong> {{saved.created | formatMySQLDate}} by {{saved.createdBy}}</p>
-            <p class="text-muted"><strong>Updated:</strong> {{saved.lastUpdated | formatMySQLDate}} by {{saved.updatedBy}}</p>
+            <p class="text-muted"><strong>Created:</strong> {{saved.created| formatMySQLDate}} by {{saved.createdBy}}</p>
+            <p class="text-muted"><strong>Updated:</strong> {{saved.lastUpdated| formatMySQLDate}} by {{saved.updatedBy}}</p>
         </div>
 
     </div>
-    
+
     <form ng-if="editMode" name="form.modalForm" role="form" novalidate>
-        
+
         <div class="row">
-            <div class="col-xs-6">
-                <div class="form-group">
-                    <label>Game</label>
-                    <p class="form-control-static">#{{game.id}} - {{game.name}}</p>
-                </div>
-            </div>
-            <div class="col-xs-6">
-                <div class="form-group">
-                    <label>Round</label>
-                    <p class="form-control-static">#{{game.round.roundNumber}} - {{game.round.name}}</p>
-                </div>
-            </div>
             <div class="col-xs-12">
-                <div class="form-group">
-                    <label>Question # {{saved.questionNumber}}</label>
-                    <input class="form-control" name="question" ng-model="editing.question" type="text" maxlength="255" required />
-                </div>
+                <label ng-if="newMode">Adding a new question to Game #{{game.id}} - Round #{{game.round.roundNumber}}</label>
+                <label ng-if="!newMode">Editing question #{{saved.questionNumber}} in Game #{{game.id}} - Round #{{game.round.roundNumber}}</label>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-8">
+                <label>Question # {{saved.questionNumber}}</label>
+                <input class="form-control" name="question" ng-model="editing.question" type="text" maxlength="255" required />
+            </div>
+            
+            <div class="col-xs-4">
+                <label>Default Points</label>
+                <input class="form-control" name="maxPoints" ng-model="editing.maxPoints" type="number" maxlength="9" required />
             </div>
         </div>
     </form>
@@ -73,7 +67,7 @@
 
 <div ng-if="editMode" class="modal-footer">
     <button class="btn btn-warning pull-left" ng-if="!newMode" ng-click="buttonDelete()">Delete</button>
-    
+
     <button class="btn btn-default" ng-click="buttonCancel()">Cancel</button>
     <button class="btn btn-primary" ng-if="newMode" ng-click="buttonNew()">Add</button>
     <button class="btn btn-primary" ng-if="!newMode" ng-click="buttonSave()">Save</button>
