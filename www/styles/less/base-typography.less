@@ -18,7 +18,7 @@ body {
     color: white;
     
     panel, .well {
-            color: #333;
+       color: #333;
     }
     
     &.admin {
@@ -30,6 +30,10 @@ body {
             }
         }
     }
+}
+
+.page-header, hr {
+    border-color: darken(@brick-red, 5%);
 }
 
 .modal-content {
@@ -45,11 +49,17 @@ body {
 .dropdown-menu {
     color: #fff;
     background-color: @medium-brown;
-    >li>a {
-        color: #fff;
-        &:hover, &:focus, &:hover {
-            color: #fff;
+    >li {
+        &.divider {
             background-color:darken(@medium-brown, 5%);
+        }
+        
+        &>a {
+            color: #fff;
+            &:hover, &:focus, &:hover {
+                color: #fff;
+                background-color:darken(@medium-brown, 5%);
+            }
         }
     }
 }

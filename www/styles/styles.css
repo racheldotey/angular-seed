@@ -304,6 +304,10 @@ body.admin {
 body.admin .layout.admin .container {
   color: #333;
 }
+.page-header,
+hr {
+  border-color: #6f0000;
+}
 .modal-content {
   background-color: #47413a;
 }
@@ -316,6 +320,9 @@ body.admin .layout.admin .container {
 .dropdown-menu {
   color: #fff;
   background-color: #47413a;
+}
+.dropdown-menu > li.divider {
+  background-color: #39342f;
 }
 .dropdown-menu > li > a {
   color: #fff;
@@ -583,8 +590,13 @@ code {
   color: #b5b3b1;
 }
 .navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .open > a,
 .navbar-default .navbar-nav > .active > a:focus,
-.navbar-default .navbar-nav > .active > a:hover {
+.navbar-default .navbar-nav > .open > a:focus,
+.navbar-default .navbar-nav > .active > a:hover,
+.navbar-default .navbar-nav > .open > a:hover,
+.navbar-default .navbar-nav > .active > a:active,
+.navbar-default .navbar-nav > .open > a:active {
   color: #b5b3b1;
   background-color: #39342f;
 }
