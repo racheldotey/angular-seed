@@ -7,6 +7,13 @@
                     <button ng-click="buttonStartGame()" ng-if="true || game.started" type="button" class="btn btn-round btn-success btn-sm" title="Start Game"><i class="fa fa-play"></i></button>
                     <button ng-click="buttonEndGame()" ng-if="true || game.started && !game.ended" type="button" class="btn btn-round btn-primary btn-sm" title="Stop Game"><i class="fa fa-stop"></i></button>
 
+                <div data-rc-trivia-scoreboard-round-navigation
+                     data-total-rounds="game.rounds.length" 
+                     data-current-round-number="game.round.roundNumber"
+                     data-view-round-event="buttonViewRound"
+                     class="game-round-navigation"></div>
+                    
+                
                     <div class="btn-group btn-group-sm" uib-dropdown>
                         <button id="split-button" type="button" class="btn btn-default" ng-click="buttonAddTeam()">Add Team</button>
                         <button type="button" class="btn btn-default" uib-dropdown-toggle>
@@ -29,7 +36,6 @@
                 <p class="game-host">Ended: {{game.ended| formatMySQLDate}}</p>-->
                 
             </div>
-            <div class="game-round-navigation" data-rc-trivia-scoreboard-round-navigation></div>
         </header>
 
         <section>

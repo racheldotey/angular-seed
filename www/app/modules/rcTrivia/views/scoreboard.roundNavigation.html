@@ -1,20 +1,14 @@
-<nav>
-    <ul class="pagination">
-        <li>
-            <a href="#" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-            </a>
-        </li>
-        <li 
-            ng-repeat="round in game.rounds" 
-            ng-class="{'active' : game.round.roundNumber == round.roundNumber}" 
-            class="paginate_button">
-            <a ng-click="buttonViewRound(round.roundNumber)">{{round.roundNumber}}</a>
-        </li>
-        <li>
-            <a href="#" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-            </a>
-        </li>
-    </ul>
-</nav>
+<uib-pagination 
+    boundary-links="true" 
+    total-items="totalRounds" 
+    ng-model="currentRoundNumber" 
+    ng-change="paginationChange()"
+    max-size="5"
+    items-per-page="1"
+    rotate="true"
+    force-ellipses="true"
+    class="game-round-navigation" 
+    previous-text="&lsaquo;" 
+    next-text="&rsaquo;" 
+    first-text="&laquo;" 
+    last-text="&raquo;"></uib-pagination>

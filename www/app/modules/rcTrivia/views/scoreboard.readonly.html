@@ -7,10 +7,20 @@
             <p class="game-host">Started: {{game.started| formatMySQLDate}}</p>
             <p class="game-host">Ended: {{game.ended| formatMySQLDate}}</p>-->
         </div>
-        <div class="game-round-navigation" data-rc-trivia-scoreboard-round-navigation></div>
     </header>
 
     <section>
+
+        <div id="scoreboard-navigation">
+
+            <div data-rc-trivia-scoreboard-round-navigation
+                 data-total-rounds="game.rounds.length" 
+                 data-current-round-number="game.round.roundNumber"
+                 data-view-round-event="buttonViewRound"
+                 class="game-round-navigation"></div>
+                 
+        </div>
+        
         <table id="scoreboard" datatable="ng" dt-options="dtScoreboard.options">
             <thead>
                 <tr>

@@ -16,8 +16,8 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
         scope: {
             game: '=rcTriviaScoreboard'
         },
-        controller: ['$scope', 'TriviaGame', 'AlertConfirmService', 'TriviaModalService', 'DTOptionsBuilder', 'DTColumnDefBuilder',
-            function($scope, TriviaGame, AlertConfirmService, TriviaModalService, DTOptionsBuilder, DTColumnDefBuilder) {
+        controller: ['$scope', '$state', 'TriviaGame', 'AlertConfirmService', 'TriviaModalService', 'DTOptionsBuilder', 'DTColumnDefBuilder',
+            function($scope, $state, TriviaGame, AlertConfirmService, TriviaModalService, DTOptionsBuilder, DTColumnDefBuilder) {
                 
             $scope.dtScoreboard = {};
             $scope.dtScoreboard.options = DTOptionsBuilder.newOptions()
@@ -29,8 +29,12 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 .withFixedColumns({ leftColumns: 1 })
                 .withOption('responsive', false);
                 
+                
             $scope.buttonViewRound = function(roundNumber) {
                 TriviaGame.loadRound(roundNumber).then(function (result) {
+                        // Change the State (URL) parameters without reloading the page
+                        // Used for deep linking
+                        $state.go($state.$current, {gameId: $scope.game.id, roundNumber: roundNumber}, {notify: false});
                         $scope.game = result;
                         console.log($scope.game);
                     }, function (error) {
@@ -124,7 +128,28 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
 app.directive('rcTriviaScoreboardRoundNavigation', function(THIS_DIRECTORY) {
     return {
         restrict: 'A',          // Must be a element attribute
-        templateUrl: THIS_DIRECTORY + 'views/scoreboard.roundNavigation.html'
+        templateUrl: THIS_DIRECTORY + 'views/scoreboard.roundNavigation.html',
+        scope: {
+            totalRounds: '=totalRounds',
+            currentRoundNumber: '=currentRoundNumber',
+            buttonViewRound: '=viewRoundEvent'
+        },
+        link: function ($scope, element, attributes) {
+            // Link - Programmatically modify resulting DOM element instances, 
+            // add event listeners, and set up data binding. 
+            
+            $scope.currentRoundNumber = (angular.isDefined($scope.currentRoundNumber)) ? parseInt($scope.currentRoundNumber) : 1;
+            $scope.totalRounds = (angular.isDefined($scope.totalRounds)) ? parseInt($scope.totalRounds) : 1;
+        },
+        controller: ["$scope", function ($scope) {
+            // Controller - Create a controller which publishes an API for 
+            // communicating across directives.
+            $scope.paginationChange = function() {
+                if(angular.isFunction($scope.buttonViewRound)) {
+                    $scope.buttonViewRound($scope.currentRoundNumber);
+                }
+            };
+        }]
     };
 });
 
