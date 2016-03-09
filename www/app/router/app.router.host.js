@@ -16,7 +16,7 @@ var app = angular.module('app.router.host', [
     'rcAuth.constants',
     'app.host'
 ]);
-app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES) {
+app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($stateProvider, $urlRouterProvider, USER_ROLES) {
 
         /*  Abstract Member (Authenticated) Route */
         $stateProvider.state('app.host', {
@@ -50,6 +50,10 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
                 }
             }
         });
+        
+        // Redirect /host to the dashboard
+        $urlRouterProvider.when('/host', '/host/dashboard');
+        $urlRouterProvider.when('/host/', '/host/dashboard');
 
         $stateProvider.state('app.host.profile', {
             bodyClass: 'host profile',
