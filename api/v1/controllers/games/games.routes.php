@@ -25,9 +25,9 @@ class GameRoutes {
             })->via('GET', 'POST');
                         
             /*
-             * name, venueId, hostId, scheduled
+             * name, venueId, hostId, scheduled, defaultQuestionPoints
              */
-            $app->post("/insert/", function () use ($app) {
+            $app->post("/insert/game", function () use ($app) {
                 GameController::addGame($app);
             });
 
@@ -61,7 +61,7 @@ class GameRoutes {
             
                         
             /*
-             * gameId, name
+             * gameId, name, defaultQuestionPoints
              */
             $app->post("/insert/round", function () use ($app) {
                 GameController::addRound($app);

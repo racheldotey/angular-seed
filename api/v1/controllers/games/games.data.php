@@ -38,7 +38,7 @@ class GameData {
     static function selectGameRound($gameId, $roundNumber) {
             
             // Game Rounds
-            $round = DBConn::selectOne("SELECT r.id AS roundId, r.order AS roundNumber, r.name, r.max_points AS maxPoints "
+            $round = DBConn::selectOne("SELECT r.id AS roundId, r.order AS roundNumber, r.name, r.max_points AS maxPoints, r.default_question_points AS defaultQuestionPoints "
                     . "FROM " . DBConn::prefix() . "game_rounds AS r WHERE r.game_id = :game_id AND r.order = :order;", 
                     array(':game_id' => $gameId, ':order' => $roundNumber));
             
@@ -170,8 +170,8 @@ ORDER BY q.order;");
     }
     
     static function insertRound($validRound) {
-        return DBConn::insert("INSERT INTO " . DBConn::prefix() . "game_rounds(`name`, `order`, `game_id`, `max_points`, `created_user_id`, `last_updated_by`) "
-                . "VALUES (:name, :order, :game_id, :max_points, :created_user_id, :last_updated_by);", $validRound);
+        return DBConn::insert("INSERT INTO " . DBConn::prefix() . "game_rounds(`name`, `order`, `game_id`, `default_question_points`, `created_user_id`, `last_updated_by`) "
+                . "VALUES (:name, :order, :game_id, :default_question_points, :created_user_id, :last_updated_by);", $validRound);
     }
     
     static function insertQuestion($validQuestion) {

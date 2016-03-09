@@ -42,12 +42,34 @@ class GameController {
         );
         
         $gameId = GameData::insertGame($validGame);
+        
+        $defaultPoints = (v::key('defaultQuestionPoints')->validate($app->request->post())) ? 
+                $app->request->post('defaultQuestionPoints') : 5;
+        $result = self::addRoundsToGame(1, $gameId, $defaultPoints);
         if($gameId) {
-            $game = GameData::getGame($gameId);
+            $game = GameData::selectGame($gameId);
             return $app->render(200, array('game' => $game));
         } else {
             return $app->render(400,  array('msg' => 'Could not add game.'));
         }
+    }
+    
+    private static function addRoundsToGame($count, $gameId, $defaultPoints = 5) {
+        for($i = 1; $i <= $count; $i++) {
+            $validRound = array(
+                ":name" => "Round #" + $i,
+                ":order" => $i,
+                ":game_id" => $gameId,
+                ":default_question_points" => $defaultPoints,
+                ":created_user_id" => APIAuth::getUserId(),
+                ":last_updated_by" => APIAuth::getUserId()
+            );
+            $result = GameData::insertRound($validRound);
+            if(!$result) {
+                return false;
+            }
+        }
+        return true;
     }
     
     static function saveGame($app, $gameId) {
@@ -131,12 +153,13 @@ class GameController {
             return $app->render(400,  array('msg' => 'Invalid round. Check your parameters and try again.'));
         }
         $count = GameData::getRoundCount($app->request->post('gameId'));
-        $points = (v::key('maxPoints', v::intVal())->validate($app->request->post())) ? $app->request->post('maxPoints') : '10.00';
+        $defaultPoints = (v::key('defaultQuestionPoints')->validate($app->request->post())) ? 
+                $app->request->post('defaultQuestionPoints') : 5;
         $validRound = array(
             ":name" => $app->request->post('name'),
             ":order" => ($count <= 0) ? 1 : $count + 1,
             ":game_id" => $app->request->post('gameId'),
-            ":max_points" => $points,
+            ":default_question_points" => $defaultPoints,
             ":created_user_id" => APIAuth::getUserId(),
             ":last_updated_by" => APIAuth::getUserId()
         );
@@ -156,7 +179,10 @@ class GameController {
             !v::key('roundId', v::intVal())->validate($app->request->post())) {
             return $app->render(400,  array('msg' => 'Invalid question. Check your parameters and try again.'));
         }
-        $count = GameData::getQuestionCount($app->request->post('roundId'));
+        $count = (!v::key('roundNumber', v::intVal())->validate($app->request->post())) ?
+                GameData::getQuestionCount($app->request->post('roundId')) :
+                $app->request->post('roundNumber');
+        
         $points = (v::key('maxPoints', v::intVal())->validate($app->request->post())) ? $app->request->post('maxPoints') : '5.00';
         $validQuestion = array(
             ":question" => $app->request->post('question'),
