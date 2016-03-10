@@ -2,7 +2,9 @@
 
         <header>
             <div class="game-header">                
-                <h1 class="game-title">{{game.name}}</h1>
+                <h2 class="game-title hidden-xs hidden-sm">{{game.name}}</h2>
+                <h4 class="game-title visible-sm-inline-block">{{game.name}}</h4>
+                <p class="game-title visible-xs-inline-block"><strong>{{game.name}}</strong></p>
                 
                 <!--
                 <p class="game-host">Hosted by: {{game.host.displayName}}</p>
@@ -57,7 +59,7 @@
             <table id="scoreboard" datatable="ng" dt-options="dtScoreboard.options">
                 <thead>
                     <tr>
-                        <th class="team"><span>Teams:</span></th>
+                        <th><p>Team Name</p></th>
                         <th ng-repeat="question in game.round.questions" data-team-id="{{question.questionId}}" title="Question #{{question.questionNumber}} - {{question.question}}">
                             <p class="text-center"><strong>#{{question.questionNumber}} - {{question.maxPoints | numberEx}} Points</strong></p>
                             <p ng-if="question.question">{{question.question}}</p>

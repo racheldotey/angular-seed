@@ -48,7 +48,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                     var scoreboardTable = $('table#scoreboard').height();
                     tableHeight = (tableHeight < scoreboardTable) ? tableHeight : scoreboardTable;
                     // Min Height on table
-                    tableHeight = (tableHeight >= 200) ? tableHeight : 200;
+                    tableHeight = (tableHeight >= 300) ? tableHeight : 300;
                     
                     // Set the datatables wrapper to that height
                     $('.dataTables_scrollBody').css('height', tableHeight + 'px');
