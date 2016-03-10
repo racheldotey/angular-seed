@@ -1,4 +1,4 @@
-@scoreboardWidth: 200px;
+@scoreboardWidth: 150px;
 @scoreboardRowHeight: 54px;
 @scoreboardHeaderHeight: @scoreboardRowHeight * 2;
 
@@ -72,7 +72,7 @@ body.scoreboard .game-scoreboard {
                             min-width: @scoreboardWidth !important;
                             width: @scoreboardWidth !important;
                             max-width: @scoreboardWidth !important;
-                            padding: 4px 8px;
+                            padding: 5px 8px;
                             border: 1px solid #fff;
                         }
                         th {
@@ -93,14 +93,13 @@ body.scoreboard .game-scoreboard {
                         td {
                             height: @scoreboardRowHeight !important;
                             &.team {
-                                background-color: @medium-brown;
-                                color: @pale-brown;
-                                font-size: 16px;
+                                background-color: @brick-red;
+                                color: #fff;
                                 padding-top: (@scoreboardRowHeight / 2) - 5px - 16px;
-                                border-bottom-color: lighten(@medium-brown, 15%);
-                                border-top-color: darken(@medium-brown, 5%);
-                                border-left-color: darken(@medium-brown, 5%);
-                                border-right-color: lighten(@medium-brown, 15%);
+                                border-bottom-color: lighten(@brick-red, 15%);
+                                border-top-color: darken(@brick-red, 5%);
+                                border-left-color: darken(@brick-red, 5%);
+                                border-right-color: lighten(@brick-red, 15%);
                             }
                             &.question-score {
                                 height: @scoreboardRowHeight;
@@ -114,13 +113,6 @@ body.scoreboard .game-scoreboard {
                                 border-left: 1px solid @pale-brown;
                                 white-space: nowrap;
             
-                                input {
-                                    width: 75px;
-                                    margin: 0 8px;
-                                }
-                                button, input {
-                                    display: inline-block;
-                                }
                             }
                         }
                     }
@@ -136,7 +128,7 @@ body.scoreboard .game-scoreboard {
         /* Begin ::-webkit Scrollbar CSS Color Code by http//:snapbuilder.com */
         ::-webkit-scrollbar {
             width:20px;
-            height:20px;
+            height:16px;
             margin-top: 10px;
         }
         ::-webkit-scrollbar-button {
@@ -151,7 +143,7 @@ body.scoreboard .game-scoreboard {
         }
         ::-webkit-scrollbar-thumb {
             background: darken(@brick-red, 5%);
-            //border: 2px solid @medium-brown;
+            border: 2px solid @medium-brown;
             border-radius:20px;
             &:hover {
                 background: @brick-red;

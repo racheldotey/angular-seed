@@ -68,12 +68,35 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat="team in game.round.teams" data-team-id="{{team.teamId}}">
-                        <td class="team">{{team.team}}</td>
+                        <td class="team"><p>{{team.team}}</p></td>
                         <td class="question-score" ng-repeat="teamScore in team.scores" data-question-id="{{teamScore.questionId}}">
+                            
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-btn">
+                                    <button 
+                                        ng-click="buttonQuestionWrong(team.teamId, teamScore.questionId)"
+                                        class="btn btn-warning" 
+                                        type="button"><i class="fa fa-ban"></i></button>
+                                </span>
+                                <input 
+                                    ng-model="teamScore.questionScore" 
+                                    data-string-to-number 
+                                    type="number" 
+                                    class="form-control" 
+                                    min="0">
+                                <span class="input-group-btn">
+                                    <button 
+                                        ng-click="buttonQuestionCorrect(team.teamId, teamScore.questionId)" 
+                                        class="btn btn-success" 
+                                        type="button"><i class="fa fa-check"></i></button>
+                                </span>
+                            </div><!-- /input-group -->
+                            
+                            <!--
                             <button 
                                 ng-click="buttonQuestionWrong(team.teamId, teamScore.questionId)" 
                                 type="button" 
-                                class="btn btn-warning btn-sm btn-round">
+                                class="btn btn-warning btn-sm">
                                 <i class="fa fa-ban"></i>
                             </button>
                             <input 
@@ -85,9 +108,10 @@
                             <button 
                                 ng-click="buttonQuestionCorrect(team.teamId, teamScore.questionId)" 
                                 type="button" 
-                                class="btn btn-success btn-sm btn-round">
+                                class="btn btn-success btn-sm">
                                 <i class="fa fa-check"></i>
                             </button>
+                            -->
                         </td>
                     </tr>
                 </tbody>
