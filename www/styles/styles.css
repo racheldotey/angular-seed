@@ -844,14 +844,13 @@ body.scoreboard .game-scoreboard > section ::-webkit-scrollbar-button {
   height: 0px;
 }
 body.scoreboard .game-scoreboard > section ::-webkit-scrollbar-track {
-  background-color: #47413a;
+  background-color: fuchsia;
 }
 body.scoreboard .game-scoreboard > section ::-webkit-scrollbar-track:active {
-  background: #39342f;
+  background: lime;
 }
 body.scoreboard .game-scoreboard > section ::-webkit-scrollbar-thumb {
   background: #6f0000;
-  border: 2px solid #47413a;
   border-radius: 20px;
 }
 body.scoreboard .game-scoreboard > section ::-webkit-scrollbar-thumb:hover {
