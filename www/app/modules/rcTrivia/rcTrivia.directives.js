@@ -19,6 +19,8 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
         controller: ['$scope', '$state', 'TriviaGame', 'AlertConfirmService', 'TriviaModalService', 'DTOptionsBuilder', 'DTColumnDefBuilder',
             function($scope, $state, TriviaGame, AlertConfirmService, TriviaModalService, DTOptionsBuilder, DTColumnDefBuilder) {
                 
+            $scope.scoreboardNavHamburger = { isopen: false };
+            
             $scope.dtScoreboard = {};
             $scope.dtScoreboard.options = DTOptionsBuilder.newOptions()
                 .withDOM('t')

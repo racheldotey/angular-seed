@@ -411,6 +411,8 @@ hr {
 }
 .btn.btn-danger,
 .btn.btn-primary,
+.open > .dropdown-toggle.btn-danger,
+.open > .dropdown-toggle.btn-primary,
 .dropdown-toggle.btn-danger,
 .dropdown-toggle.btn-primary {
   color: #fff;
@@ -419,18 +421,26 @@ hr {
 }
 .btn.btn-danger:hover,
 .btn.btn-primary:hover,
+.open > .dropdown-toggle.btn-danger:hover,
+.open > .dropdown-toggle.btn-primary:hover,
 .dropdown-toggle.btn-danger:hover,
 .dropdown-toggle.btn-primary:hover,
 .btn.btn-danger.focus,
 .btn.btn-primary.focus,
+.open > .dropdown-toggle.btn-danger.focus,
+.open > .dropdown-toggle.btn-primary.focus,
 .dropdown-toggle.btn-danger.focus,
 .dropdown-toggle.btn-primary.focus,
 .btn.btn-danger:focus,
 .btn.btn-primary:focus,
+.open > .dropdown-toggle.btn-danger:focus,
+.open > .dropdown-toggle.btn-primary:focus,
 .dropdown-toggle.btn-danger:focus,
 .dropdown-toggle.btn-primary:focus,
 .btn.btn-danger:active,
 .btn.btn-primary:active,
+.open > .dropdown-toggle.btn-danger:active,
+.open > .dropdown-toggle.btn-primary:active,
 .dropdown-toggle.btn-danger:active,
 .dropdown-toggle.btn-primary:active {
   color: #fff;
@@ -439,66 +449,98 @@ hr {
 }
 .btn.btn-danger:hover:hover,
 .btn.btn-primary:hover:hover,
+.open > .dropdown-toggle.btn-danger:hover:hover,
+.open > .dropdown-toggle.btn-primary:hover:hover,
 .dropdown-toggle.btn-danger:hover:hover,
 .dropdown-toggle.btn-primary:hover:hover,
 .btn.btn-danger.focus:hover,
 .btn.btn-primary.focus:hover,
+.open > .dropdown-toggle.btn-danger.focus:hover,
+.open > .dropdown-toggle.btn-primary.focus:hover,
 .dropdown-toggle.btn-danger.focus:hover,
 .dropdown-toggle.btn-primary.focus:hover,
 .btn.btn-danger:focus:hover,
 .btn.btn-primary:focus:hover,
+.open > .dropdown-toggle.btn-danger:focus:hover,
+.open > .dropdown-toggle.btn-primary:focus:hover,
 .dropdown-toggle.btn-danger:focus:hover,
 .dropdown-toggle.btn-primary:focus:hover,
 .btn.btn-danger:active:hover,
 .btn.btn-primary:active:hover,
+.open > .dropdown-toggle.btn-danger:active:hover,
+.open > .dropdown-toggle.btn-primary:active:hover,
 .dropdown-toggle.btn-danger:active:hover,
 .dropdown-toggle.btn-primary:active:hover,
 .btn.btn-danger:hover.focus,
 .btn.btn-primary:hover.focus,
+.open > .dropdown-toggle.btn-danger:hover.focus,
+.open > .dropdown-toggle.btn-primary:hover.focus,
 .dropdown-toggle.btn-danger:hover.focus,
 .dropdown-toggle.btn-primary:hover.focus,
 .btn.btn-danger.focus.focus,
 .btn.btn-primary.focus.focus,
+.open > .dropdown-toggle.btn-danger.focus.focus,
+.open > .dropdown-toggle.btn-primary.focus.focus,
 .dropdown-toggle.btn-danger.focus.focus,
 .dropdown-toggle.btn-primary.focus.focus,
 .btn.btn-danger:focus.focus,
 .btn.btn-primary:focus.focus,
+.open > .dropdown-toggle.btn-danger:focus.focus,
+.open > .dropdown-toggle.btn-primary:focus.focus,
 .dropdown-toggle.btn-danger:focus.focus,
 .dropdown-toggle.btn-primary:focus.focus,
 .btn.btn-danger:active.focus,
 .btn.btn-primary:active.focus,
+.open > .dropdown-toggle.btn-danger:active.focus,
+.open > .dropdown-toggle.btn-primary:active.focus,
 .dropdown-toggle.btn-danger:active.focus,
 .dropdown-toggle.btn-primary:active.focus,
 .btn.btn-danger:hover:focus,
 .btn.btn-primary:hover:focus,
+.open > .dropdown-toggle.btn-danger:hover:focus,
+.open > .dropdown-toggle.btn-primary:hover:focus,
 .dropdown-toggle.btn-danger:hover:focus,
 .dropdown-toggle.btn-primary:hover:focus,
 .btn.btn-danger.focus:focus,
 .btn.btn-primary.focus:focus,
+.open > .dropdown-toggle.btn-danger.focus:focus,
+.open > .dropdown-toggle.btn-primary.focus:focus,
 .dropdown-toggle.btn-danger.focus:focus,
 .dropdown-toggle.btn-primary.focus:focus,
 .btn.btn-danger:focus:focus,
 .btn.btn-primary:focus:focus,
+.open > .dropdown-toggle.btn-danger:focus:focus,
+.open > .dropdown-toggle.btn-primary:focus:focus,
 .dropdown-toggle.btn-danger:focus:focus,
 .dropdown-toggle.btn-primary:focus:focus,
 .btn.btn-danger:active:focus,
 .btn.btn-primary:active:focus,
+.open > .dropdown-toggle.btn-danger:active:focus,
+.open > .dropdown-toggle.btn-primary:active:focus,
 .dropdown-toggle.btn-danger:active:focus,
 .dropdown-toggle.btn-primary:active:focus,
 .btn.btn-danger:hover:active,
 .btn.btn-primary:hover:active,
+.open > .dropdown-toggle.btn-danger:hover:active,
+.open > .dropdown-toggle.btn-primary:hover:active,
 .dropdown-toggle.btn-danger:hover:active,
 .dropdown-toggle.btn-primary:hover:active,
 .btn.btn-danger.focus:active,
 .btn.btn-primary.focus:active,
+.open > .dropdown-toggle.btn-danger.focus:active,
+.open > .dropdown-toggle.btn-primary.focus:active,
 .dropdown-toggle.btn-danger.focus:active,
 .dropdown-toggle.btn-primary.focus:active,
 .btn.btn-danger:focus:active,
 .btn.btn-primary:focus:active,
+.open > .dropdown-toggle.btn-danger:focus:active,
+.open > .dropdown-toggle.btn-primary:focus:active,
 .dropdown-toggle.btn-danger:focus:active,
 .dropdown-toggle.btn-primary:focus:active,
 .btn.btn-danger:active:active,
 .btn.btn-primary:active:active,
+.open > .dropdown-toggle.btn-danger:active:active,
+.open > .dropdown-toggle.btn-primary:active:active,
 .dropdown-toggle.btn-danger:active:active,
 .dropdown-toggle.btn-primary:active:active {
   color: #fff;
@@ -626,6 +668,9 @@ body.scoreboard .game-scoreboard > header .game-header .game-title {
 body.scoreboard .game-scoreboard > section {
   /* Begin ::-webkit Scrollbar CSS Color Code by http//:snapbuilder.com */
 }
+body.scoreboard .game-scoreboard > section #scoreboard-navigation {
+  min-width: 370px;
+}
 body.scoreboard .game-scoreboard > section #scoreboard-navigation .game-round-navigation {
   display: block;
 }
@@ -637,6 +682,10 @@ body.scoreboard .game-scoreboard > section #scoreboard-navigation .game-round-na
 body.scoreboard .game-scoreboard > section #scoreboard-navigation .host-actions {
   text-align: right;
   display: block;
+}
+body.scoreboard .game-scoreboard > section #scoreboard-navigation .host-actions #mobile-menu .dropdown-menu {
+  right: 0;
+  left: auto;
 }
 body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper {
   width: 100%;

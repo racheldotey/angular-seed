@@ -20,6 +20,7 @@ body.scoreboard .game-scoreboard {
     
     >section {
         #scoreboard-navigation {
+            min-width: 370px;
                 
             .game-round-navigation {
                 display: block;
@@ -31,9 +32,20 @@ body.scoreboard .game-scoreboard {
                     }
                  }
             }
+            
             .host-actions {
                 text-align: right;
                 display: block;
+                
+                #wide-menu {
+                }
+                
+                #mobile-menu {                    
+                    .dropdown-menu {
+                        right: 0;
+                        left: auto;
+                    }
+                }
             }
         }
         
