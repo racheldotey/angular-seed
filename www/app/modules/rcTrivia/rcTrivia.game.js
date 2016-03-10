@@ -90,13 +90,13 @@ angular.module('rcTrivia.game', [])
     
         api.loadGame = function(gameId, roundNumber) {
             return $q(function (resolve, reject) {
-                ApiRoutesGames.getGame(gameId, roundNumber).then(function (result) {
-                        self.game = new Game(result.game);
-                        resolve(self.game.getGame());
-                    }, function (error) {
-                        reject(error);
-                    });
-            });          
+                    ApiRoutesGames.getGame(gameId, roundNumber).then(function (result) {
+                            self.game = new Game(result.game);
+                            resolve(self.game.getGame());
+                        }, function (error) {
+                            reject(error);
+                        });
+                });          
         };
         
         api.loadRound = function(roundNumber) {

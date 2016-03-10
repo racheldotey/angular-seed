@@ -669,7 +669,7 @@ body.scoreboard .game-scoreboard > section {
   /* Begin ::-webkit Scrollbar CSS Color Code by http//:snapbuilder.com */
 }
 body.scoreboard .game-scoreboard > section #scoreboard-navigation {
-  min-width: 370px;
+  min-width: 300px;
 }
 body.scoreboard .game-scoreboard > section #scoreboard-navigation .game-round-navigation {
   display: block;

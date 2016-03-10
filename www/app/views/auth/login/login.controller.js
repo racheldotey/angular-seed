@@ -24,6 +24,12 @@ angular.module('app.auth.login', [])
         'remember' : false
     };
 
+    $scope.credentials = {
+        'email' : '',
+        'password' : '',
+        'remember' : false
+    };
+
     $scope.buttonLogin = function() {
         $scope.$broadcast('show-errors-check-validity');
 
