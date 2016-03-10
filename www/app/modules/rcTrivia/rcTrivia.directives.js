@@ -16,21 +16,39 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
         scope: {
             game: '=rcTriviaScoreboard'
         },
-        controller: ['$scope', '$state', 'TriviaGame', 'AlertConfirmService', 'TriviaModalService', 'DTOptionsBuilder', 'DTColumnDefBuilder',
-            function($scope, $state, TriviaGame, AlertConfirmService, TriviaModalService, DTOptionsBuilder, DTColumnDefBuilder) {
+        controller: ['$scope', '$state', '$window', 'TriviaGame', 'AlertConfirmService', 'TriviaModalService', 'DTOptionsBuilder', 'DTColumnDefBuilder',
+            function($scope, $state, $window, TriviaGame, AlertConfirmService, TriviaModalService, DTOptionsBuilder, DTColumnDefBuilder) {
+                
                 
             $scope.scoreboardNavHamburger = { isopen: false };
             
             $scope.dtScoreboard = {};
             $scope.dtScoreboard.options = DTOptionsBuilder.newOptions()
                 .withDOM('t')
-                .withOption('scrollY', '300px')
+                .withOption('scrollY', '1000')
                 .withOption('scrollX', '100%')
                 .withOption('scrollCollapse', true)
+                .withOption('deferRender', true)
                 .withOption('paging', false)
                 .withFixedColumns({ leftColumns: 1 })
                 .withOption('responsive', false);
                 
+                // Responsive table height
+                angular.element($window).on('resize', function () {
+                    $scope.setScoreboardHeight($window.innerHeight);
+                });
+                
+                $scope.setScoreboardHeight = function(height) {
+                    var newHeight = height - 200;
+                    console.log(newHeight);
+                    console.log($scope.dtScoreboard);
+                    //$('.dataTables_scrollBody').css('height', newHeight);
+                    //$('div.dataTables_scrollBody').height(newHeight);
+                    
+                    var otherHeight = $('body').height() - $('.dataTables_scrollBody').height();
+                    var tableHeight = $(window).height() - otherHeight - 1;
+                    $('.dataTables_scrollBody').css('height', tableHeight + 'px');
+                };
                 
             $scope.buttonViewRound = function(roundNumber) {
                 TriviaGame.loadRound(roundNumber).then(function (result) {
@@ -168,7 +186,7 @@ app.directive('rcTriviaScoreboardReadonly', function(THIS_DIRECTORY) {
             $scope.dtScoreboard = {};
             $scope.dtScoreboard.options = DTOptionsBuilder.newOptions()
                 .withDOM('t')
-                .withOption('scrollY', '300px')
+                .withOption('scrollY', '100%')
                 .withOption('scrollX', '100%')
                 .withOption('scrollCollapse', true)
                 .withOption('paging', false)

@@ -107,5 +107,14 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
             }
         });
         
+        $stateProvider.state('app.member.gameRedirect', {
+            url: '/game-scoreboard/:gameId',
+            resolve: {
+                $state: '$state',
+                currentGame: function($stateParams, $state) {
+                    $state.go('app.member.game', {gameId: $stateParams.gameId, roundNumber: 1 });
+                }
+            }
+        });
         
     }]);

@@ -53,43 +53,14 @@
                 </div>
 
             </div>
-
-            <!--<nav id="scoreboard-navigation" class="navbar navbar-default">
-
-                <form class="navbar-form navbar-left">
-                    <div data-rc-trivia-scoreboard-round-navigation
-                         data-total-rounds="game.rounds.length" 
-                         data-current-round-number="game.round.roundNumber"
-                         data-view-round-event="buttonViewRound"
-                         class="game-round-navigation navbar-btn"></div>
-                </form>
-
-                <form class="navbar-form navbar-right">
-                    <button ng-click="buttonAddTeam()" type="button" class="btn btn-primary navbar-btn btn-sm">Add Team</button>
-                    <button ng-click="buttonAddPlayer()" type="button" class="btn btn-primary navbar-btn btn-sm">Add Player</button>
-
-                    <button ng-click="buttonAddRound()" type="button" class="btn btn-primary navbar-btn btn-sm">Add Round</button>
-                    <button ng-click="buttonAddQuestion()" type="button" class="btn btn-primary navbar-btn btn-sm">Add Question</button>
-
-                    <button ng-click="buttonAddTeam()" type="button" class="btn btn-primary navbar-btn btn-sm">Save and Publish</button>
-                    <button ng-click="buttonEndGame()" type="button" class="btn btn-primary navbar-btn btn-sm">Save and End Game</button>
-
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                </form>-->
-
-            </nav>
             
             <table id="scoreboard" datatable="ng" dt-options="dtScoreboard.options">
                 <thead>
                     <tr>
-                        <th>Teams:</th>
-                        <th ng-repeat="question in game.round.questions" data-team-id="{{question.questionId}}">
-                            #{{question.questionId}} — {{question.question}}
+                        <th class="team"><span>Teams:</span></th>
+                        <th ng-repeat="question in game.round.questions" data-team-id="{{question.questionId}}" title="Question #{{question.questionNumber}} - {{question.question}}">
+                            <p><strong>Question #{{question.questionNumber}} - {{question.maxPoints}} Points</strong></p>
+                            <p>{{question.question}}</p>
                         </th>
                     </tr>
                 </thead>

@@ -99,5 +99,15 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
             }
         });
         
+        $stateProvider.state('app.host.gameRedirect', {
+            url: '/game-scoreboard/:gameId',
+            resolve: {
+                $state: '$state',
+                currentGame: function($stateParams, $state) {
+                    $state.go('app.host.game', {gameId: $stateParams.gameId, roundNumber: 1 });
+                }
+            }
+        });
+        
         
     }]);
