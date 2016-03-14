@@ -29,8 +29,8 @@
                     <tr>
                         <th><p>Team Name</p></th>
                         <th ng-repeat="question in game.round.questions" data-team-id="{{question.questionId}}" title="Question #{{question.questionNumber}} - {{question.question}}">
-                            <p class="text-center"><strong>#{{question.questionNumber}} - {{question.maxPoints | numberEx}} Points</strong></p>
-                            <p ng-if="question.question">{{question.question}}</p>
+                            <p class="text-center"><strong>#{{question.questionNumber}} - {{question.maxPoints | numberEx}} pts</strong></p>
+                            <!--<p ng-if="question.question">{{question.question}}</p>-->
                         </th>
                     </tr>
             </thead>

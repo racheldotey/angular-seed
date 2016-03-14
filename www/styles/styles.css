@@ -693,32 +693,13 @@ body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrappe
   min-width: 300px;
   margin: 0 auto;
 }
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned {
-  min-width: 150px !important;
-  width: 150px !important;
-  max-width: 150px !important;
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper .DTFC_LeftWrapper {
+  z-index: 3;
 }
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned thead,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table tbody,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable tbody,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned tbody {
-  min-width: 150px !important;
-  width: 150px !important;
-  max-width: 150px !important;
-}
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned thead tr,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table tbody tr,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable tbody tr,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned tbody tr {
-  min-width: 150px !important;
-  width: 150px !important;
-  max-width: 150px !important;
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable.DTFC_Cloned,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned.DTFC_Cloned {
+  width: auto !important;
 }
 body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr th,
 body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr th,
@@ -737,6 +718,7 @@ body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrappe
   max-width: 150px !important;
   padding: 5px 8px;
   border: 1px solid #fff;
+  box-sizing: border-box;
 }
 body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr th,
 body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr th,
@@ -750,23 +732,6 @@ body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrappe
   border-top-color: #6f0000;
   border-left-color: #6f0000;
   border-right-color: #6f0000;
-}
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr th.team,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr th.team,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned thead tr th.team,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table tbody tr th.team,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable tbody tr th.team,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned tbody tr th.team {
-  border-bottom-color: #554e45;
-}
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr th.team span,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr th.team span,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned thead tr th.team span,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table tbody tr th.team span,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable tbody tr th.team span,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned tbody tr th.team span {
-  font-size: 200%;
-  font-weight: bold;
 }
 body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr td,
 body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr td,
@@ -790,6 +755,14 @@ body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrappe
   border-left-color: #6f0000;
   border-right-color: #d40000;
 }
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr td.team p,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr td.team p,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned thead tr td.team p,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table tbody tr td.team p,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable tbody tr td.team p,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned tbody tr td.team p {
+  word-break: break-all;
+}
 body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr td.question-score,
 body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr td.question-score,
 body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned thead tr td.question-score,
@@ -801,6 +774,8 @@ body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrappe
   background-color: #fff;
   color: #47413a;
   padding-top: 0px;
+  padding-left: 12px;
+  padding-right: 12px;
   border-top: 1px solid #cecccb;
   border-right: 1px solid #cecccb;
   border-bottom: 1px solid #dad9d8;
@@ -812,7 +787,7 @@ body.scoreboard .game-scoreboard > section div#scoreboard_wrapper.dataTables_wra
 }
 body.scoreboard .game-scoreboard > section ::-webkit-scrollbar {
   width: 20px;
-  height: 16px;
+  height: 17px;
   margin-top: 10px;
 }
 body.scoreboard .game-scoreboard > section ::-webkit-scrollbar-button {
@@ -820,10 +795,10 @@ body.scoreboard .game-scoreboard > section ::-webkit-scrollbar-button {
   height: 0px;
 }
 body.scoreboard .game-scoreboard > section ::-webkit-scrollbar-track {
-  background-color: fuchsia;
+  background-color: #47413a;
 }
 body.scoreboard .game-scoreboard > section ::-webkit-scrollbar-track:active {
-  background: lime;
+  background: #39342f;
 }
 body.scoreboard .game-scoreboard > section ::-webkit-scrollbar-thumb {
   background: #6f0000;

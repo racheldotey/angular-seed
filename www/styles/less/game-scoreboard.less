@@ -56,24 +56,23 @@ body.scoreboard .game-scoreboard {
             min-width: 300px;
             margin: 0 auto;
             
+            .DTFC_LeftWrapper {
+                z-index: 3;    
+            }
+            
             table, table.dataTable, table.DTFC_Cloned {
-                min-width: @scoreboardWidth !important;
-                width: @scoreboardWidth !important;
-                max-width: @scoreboardWidth !important;
+                &.DTFC_Cloned {
+                    width: auto !important;
+                }
                 thead, tbody {
-                    min-width: @scoreboardWidth !important;
-                    width: @scoreboardWidth !important;
-                    max-width: @scoreboardWidth !important;
                     tr {
-                        min-width: @scoreboardWidth !important;
-                        width: @scoreboardWidth !important;
-                        max-width: @scoreboardWidth !important;
                         th, td {
                             min-width: @scoreboardWidth !important;
                             width: @scoreboardWidth !important;
                             max-width: @scoreboardWidth !important;
                             padding: 5px 8px;
                             border: 1px solid #fff;
+                            box-sizing: border-box;
                         }
                         th {
                             background-color: @brick-red;
@@ -82,14 +81,8 @@ body.scoreboard .game-scoreboard {
                             border-top-color: darken(@brick-red, 5%);
                             border-left-color: darken(@brick-red, 5%);
                             border-right-color: darken(@brick-red, 5%);
-                            &.team {
-                                border-bottom-color: lighten(@medium-brown, 5%);
-                                span {
-                                    font-size: 200%;
-                                    font-weight: bold;
-                                }
-                            }
                         }
+                                
                         td {
                             height: @scoreboardRowHeight !important;
                             &.team {
@@ -100,6 +93,10 @@ body.scoreboard .game-scoreboard {
                                 border-top-color: darken(@brick-red, 5%);
                                 border-left-color: darken(@brick-red, 5%);
                                 border-right-color: lighten(@brick-red, 15%);
+                                
+                                p {
+                                    word-break: break-all;
+                                }
                             }
                             &.question-score {
                                 height: @scoreboardRowHeight;
@@ -107,12 +104,13 @@ body.scoreboard .game-scoreboard {
                                 background-color: #fff;
                                 color: @medium-brown;
                                 padding-top: (@scoreboardRowHeight / 2) - (@scoreboardRowHeight / 2);
+                                padding-left: 12px;
+                                padding-right: 12px;
                                 border-top: 1px solid darken(@pale-brown, 5%);
                                 border-right: 1px solid darken(@pale-brown, 5%);
                                 border-bottom: 1px solid @pale-brown;
                                 border-left: 1px solid @pale-brown;
                                 white-space: nowrap;
-            
                             }
                         }
                     }
@@ -128,7 +126,7 @@ body.scoreboard .game-scoreboard {
         /* Begin ::-webkit Scrollbar CSS Color Code by http//:snapbuilder.com */
         ::-webkit-scrollbar {
             width:20px;
-            height:16px;
+            height:17px;
             margin-top: 10px;
         }
         ::-webkit-scrollbar-button {
@@ -136,9 +134,9 @@ body.scoreboard .game-scoreboard {
             height: 0px;
         }
         ::-webkit-scrollbar-track {
-            background-color: fuchsia;// @medium-brown;
+            background-color: @medium-brown;
             &:active {
-                background: lime;//darken(@medium-brown, 5%);
+                background: darken(@medium-brown, 5%);
             }
         }
         ::-webkit-scrollbar-thumb {
