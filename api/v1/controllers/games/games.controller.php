@@ -166,7 +166,7 @@ class GameController {
         
         $roundId = GameData::insertRound($validRound);
         if($roundId) {
-            $saved = GameData::selectGameRound($app->request->post('gameId'), $roundId);
+            $saved = GameData::selectGameRound($app->request->post('gameId'), $count);
             return $app->render(200, array('round' => $saved));
         } else {
             return $app->render(400,  array('msg' => 'Could not add game round.'));

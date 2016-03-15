@@ -2,8 +2,8 @@
 
 /* @author  Rachel Carbone */
 
-angular.module('app.modal.trivia.editTeam', [])        
-    .controller('TriviaEditTeamModalCtrl', ['$scope', '$uibModalInstance', '$filter', 'AlertConfirmService', 'editing', 'ApiRoutesGroups',
+angular.module('app.modal.trivia.addTeam', [])        
+    .controller('TriviaAddTeamToGameModalCtrl', ['$scope', '$uibModalInstance', '$filter', 'AlertConfirmService', 'editing', 'ApiRoutesGroups',
     function($scope, $uibModalInstance, $filter, AlertConfirmService, editing, ApiRoutesGroups) {        
     /* Used to restrict alert bars */
     $scope.alertProxy = {};
