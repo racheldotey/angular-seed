@@ -63,7 +63,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                         // Change the State (URL) parameters without reloading the page
                         // Used for deep linking
                         $scope.game = result;
-                        //$state.go($state.$current, {gameId: $scope.game.id, roundNumber: roundNumber}, {notify: false});
+                        $state.go($state.$current, {gameId: $scope.game.id, roundNumber: roundNumber}, {notify: false});
                     }, function (error) {
                         console.log(error);
                     });
