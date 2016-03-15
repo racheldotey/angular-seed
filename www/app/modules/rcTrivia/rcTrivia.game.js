@@ -39,6 +39,14 @@ angular.module('rcTrivia.game', [])
                     return false;
                 }
             };
+            
+            me.updateTeamScores = function(round) {
+                _game.round = round;
+                var found = me.findRoundIndexByNumber(round.roundNumber);
+                if(found !== false) {
+                    _game.rounds[found] = round;
+                }
+            };
 
             me.findRoundIndexByNumber = function(roundNumber) {
                 var found = false;
@@ -46,7 +54,6 @@ angular.module('rcTrivia.game', [])
                     if(found === false && 
                             parseInt(_game.rounds[i].roundNumber) === parseInt(roundNumber)) {
                         found = i;
-                        console.log(">>>Found, ", _game.rounds[i]);
                         break;
                     }
                 }
@@ -72,7 +79,6 @@ angular.module('rcTrivia.game', [])
                     return true;
                 } else {
                     _game.round = {};
-                    console.log("Error, could not find round #" + roundNumber + " to display.");
                     return false;
                 }
             };
@@ -223,52 +229,9 @@ angular.module('rcTrivia.game', [])
             });    
         };
         
-        api.teamAnsweredIncorrectly = function(teamId, questionId) {
-            var loadedGame = api.getGame();
-            if(loadedGame) {/*
-                for(var i = 0; i < loadedGame.round.teams.length; i++) {
-                    if(parseInt(loadedGame.round.teams[i].teamId) === parseInt(teamId)) {
-                        for (var q = 0; q <loadedGame.round.teams[i].scores.length; q++) {
-                            if (loadedGame.round.teams[i].scores[q].questionId == questionId) {
-                                self.game.round.teams[i].scores[q].questionScore = 0;
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                }*/
-                return api.getGame();
-            } else {
-                reject("No game is loaded.");
-            }
-        };
-        
-        api.teamAnsweredCorrectly = function(teamId, questionId) {
-            var loadedGame = api.getGame();
-            if(loadedGame) {/*
-                var maxPoints = 1;
-                for(var i = 0; i < self.game.round.questions.length; i++) {
-                    if(parseInt(self.game.round.questions[i].questionId) === parseInt(questionId)) {
-                        maxPoints = self.game.round.questions[i].maxPoints;
-                        break;
-                    }
-                }
-
-                for(var i = 0; i < self.game.round.teams.length; i++) {
-                    if(self.game.round.teams[i].teamId == teamId) {
-                        for (var q = 0; q < self.game.round.teams[i].scores.length; q++) {
-                            if (self.game.round.teams[i].scores[q].questionId == questionId) {
-                                self.game.round.teams[i].scores[q].questionScore = maxPoints;
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                }*/
-                return api.getGame();
-            } else {
-                reject("No game is loaded.");
-            }
+        api.updateRoundScores = function(round) {
+            console.log("Update team scores, ", round);
+            self.game.updateTeamScores(round);
         };
         
         return api;

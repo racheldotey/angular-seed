@@ -58,7 +58,6 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 });
                 
             $scope.buttonViewRound = function(roundNumber) {
-                console.log("buttonViewRound");
                 TriviaGame.loadRound(roundNumber).then(function (result) {
                         // Change the State (URL) parameters without reloading the page
                         // Used for deep linking
@@ -135,12 +134,49 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
             };
             
             $scope.buttonQuestionWrong = function(teamId, questionId) {
-                $scope.game = TriviaGame.teamAnsweredIncorrectly(teamId, questionId);      
+                $scope.unsavedState = true;
+                var teams = $scope.game.round.teams;
+                
+                for(var i = 0; i < teams.length; i++) {
+                    if(parseInt(teams[i].teamId) === parseInt(teamId)) {
+                        for (var q = 0; q <teams[i].scores.length; q++) {
+                            if (parseInt(teams[i].scores[q].questionId) === parseInt(questionId)) {
+                                $scope.game.round.teams[i].scores[q].questionScore = 0;
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+                TriviaGame.updateRoundScores($scope.game.round);
             };
-            
+        
             $scope.buttonQuestionCorrect = function(teamId, questionId) {
-                $scope.game = TriviaGame.teamAnsweredCorrectly(teamId, questionId);                
-            };
+                $scope.unsavedState = true;
+                var maxPoints = 1;
+                var questions = $scope.game.round.questions;
+                var teams = $scope.game.round.teams;
+                
+                for(var i = 0; i < questions.length; i++) {
+                    if(parseInt(questions[i].questionId) === parseInt(questionId)) {
+                        maxPoints = questions[i].maxPoints;
+                        break;
+                    }
+                }
+
+                for(var i = 0; i < teams.length; i++) {
+                    if(parseInt(teams[i].teamId) === parseInt(teamId)) {
+                        for (var q = 0; q < teams[i].scores.length; q++) {
+                            if (parseInt(teams[i].scores[q].questionId) === parseInt(questionId)) {
+                                $scope.game.round.teams[i].scores[q].questionScore = maxPoints;
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+                TriviaGame.updateRoundScores($scope.game.round);
+            }; 
             
         }],
         link: function(scope, element, attrs) {
@@ -185,8 +221,8 @@ app.directive('rcTriviaScoreboardReadonly', function(THIS_DIRECTORY) {
         scope: {
             game: '=rcTriviaScoreboardReadonly'
         },
-        controller: ['$scope', 'DTOptionsBuilder', 'DTColumnDefBuilder', 
-            function($scope, DTOptionsBuilder, DTColumnDefBuilder) {
+        controller: ['$scope', 'DTOptionsBuilder', '$window', 
+            function($scope, DTOptionsBuilder, $window) {
                 console.log($scope.game);
             $scope.dtScoreboard = {};
             $scope.dtScoreboard.options = DTOptionsBuilder.newOptions()

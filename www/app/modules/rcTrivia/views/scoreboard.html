@@ -32,8 +32,8 @@
                         <button ng-click="buttonAddRound()" type="button" class="btn btn-primary btn-sm">Add Round</button>
                         <button ng-click="buttonAddQuestion()" type="button" class="btn btn-primary btn-sm">Add Question</button>
 
-                        <button ng-click="buttonSaveGame()" type="button" class="btn btn-primary btn-sm">Save and Publish</button>
-                        <button ng-click="buttonEndGame()" type="button" class="btn btn-primary btn-sm">Save and End Game</button>
+                        <button ng-click="buttonSaveGame()" type="button" class="btn btn-primary btn-sm"><i ng-show="unsavedState" class="fa fa-star"></i> Save and Publish</button>
+                        <button ng-click="buttonEndGame()" type="button" class="btn btn-primary btn-sm"><i ng-show="unsavedState" class="fa fa-star"></i> Save and End Game</button>
                     </div>
                     
                     <div id="mobile-menu" class="btn-group hidden-lg" 

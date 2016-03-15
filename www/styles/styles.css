@@ -4,6 +4,14 @@
  * Contains imports for all other less files and 
  * guarantees that they are imported in a set order.
  */
+[ng\:cloak],
+[ng-cloak],
+[data-ng-cloak],
+[x-ng-cloak],
+.ng-cloak,
+.x-ng-cloak {
+  display: none !important;
+}
 /*
   * Less Named Colors
   * 
