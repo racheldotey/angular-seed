@@ -5,7 +5,7 @@
  */
 
 angular.module('rcTrivia.scoreboard', [])
-    .factory('TriviaScoreboard', ['$log', function($log) {
+    .factory('TriviaScoreboard', ['ApiRoutesGames', function(ApiRoutesGames) {
         var self = this;
         var api = {};
         
