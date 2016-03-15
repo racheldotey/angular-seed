@@ -59,7 +59,7 @@ angular.module('app.modal.trivia.editGame', [])
         $scope.setMode('new');
         $scope.saved = {
             'scheduledDate' : new Date(),
-            'defaultQuestionPoints' : 5
+            'defaultQuestionPoints' : 10
         };
         
         // If its more than 5 min past the hour, set it to the next half hour

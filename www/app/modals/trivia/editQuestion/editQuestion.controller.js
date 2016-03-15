@@ -61,8 +61,8 @@ angular.module('app.modal.trivia.editQuestion', [])
     if($scope.getMode('new') === 'new') {
         $scope.editing.questionNumber = ($scope.game.round.questions.length + 1);
         $scope.editing.question = "";
-        $scope.editing.maxPoints = (angular.isDefined($scope.game.round.defaultQuestionPoints)) ? 
-            parseInt($scope.game.round.defaultQuestionPoints) : 2;
+        $scope.editing.maxPoints = (angular.isDefined($scope.game.round.defaultQuestionPoints) && $scope.game.round.defaultQuestionPoints > 0) ? 
+            parseFloat($scope.game.round.defaultQuestionPoints) : 5;
     }
     
     /* Click event for the Add / New button */

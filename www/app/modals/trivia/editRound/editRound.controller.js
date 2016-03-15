@@ -60,7 +60,8 @@ angular.module('app.modal.trivia.editRound', [])
     
     if($scope.getMode('new') === 'new') {
         $scope.editing.name = "";
-        $scope.editing.defaultQuestionPoints = 5;
+        $scope.editing.defaultQuestionPoints = (angular.isDefined($scope.game.round.defaultQuestionPoints) && $scope.game.round.defaultQuestionPoints > 0) ? 
+            parseFloat($scope.game.round.defaultQuestionPoints) : 10;
     }
     
     /* Click event for the Add / New button */
