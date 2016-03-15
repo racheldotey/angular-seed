@@ -148,7 +148,7 @@ class GameController {
     
     
     static function addRound($app) {
-        if(!v::key('name', v::stringType()->length(1,255))->validate($app->request->post()) ||
+        if(!v::key('name', v::stringType()->length(0,255))->validate($app->request->post()) ||
             !v::key('gameId', v::intVal())->validate($app->request->post())) {
             return $app->render(400,  array('msg' => 'Invalid round. Check your parameters and try again.'));
         }
@@ -166,27 +166,27 @@ class GameController {
         
         $roundId = GameData::insertRound($validRound);
         if($roundId) {
-            $game = GameData::selectGame($app->request->post('gameId'), $roundId);
-            return $app->render(200, array('game' => $game));
+            $saved = GameData::selectGameRound($app->request->post('gameId'), $roundId);
+            return $app->render(200, array('round' => $saved));
         } else {
             return $app->render(400,  array('msg' => 'Could not add game round.'));
         }
     }
     
     static function addQuestion($app) {
-        if(!v::key('question', v::stringType()->length(1,255))->validate($app->request->post()) ||
+        if(!v::key('question', v::stringType()->length(0,255))->validate($app->request->post()) ||
             !v::key('gameId', v::intVal())->validate($app->request->post()) || 
             !v::key('roundId', v::intVal())->validate($app->request->post())) {
             return $app->render(400,  array('msg' => 'Invalid question. Check your parameters and try again.'));
         }
-        $count = (!v::key('roundNumber', v::intVal())->validate($app->request->post())) ?
+        $count = (!v::key('questionNumber', v::intVal())->validate($app->request->post())) ?
                 GameData::getQuestionCount($app->request->post('roundId')) :
-                $app->request->post('roundNumber');
+                $app->request->post('questionNumber');
         
         $points = (v::key('maxPoints', v::intVal())->validate($app->request->post())) ? $app->request->post('maxPoints') : '5.00';
         $validQuestion = array(
             ":question" => $app->request->post('question'),
-            ":order" => ($count <= 0) ? 1 : $count + 1,
+            ":order" => ($count <= 0) ? 1 : $count,
             ":game_id" => $app->request->post('gameId'),
             ":round_id" => $app->request->post('roundId'),
             ":max_points" => $points,
@@ -196,8 +196,8 @@ class GameController {
         
         $questionId = GameData::insertQuestion($validQuestion);
         if($questionId) {
-            $game = GameData::selectGame($app->request->post('gameId'), $app->request->post('roundId'));
-            return $app->render(200, array('game' => $game));
+            $saved = GameData::selectGameRound($app->request->post('gameId'), $app->request->post('roundId'));
+            return $app->render(200, array('round' => $saved));
         } else {
             return $app->render(400,  array('msg' => 'Could not add question.'));
         }

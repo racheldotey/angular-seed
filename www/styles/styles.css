@@ -149,6 +149,12 @@ form .form-control.ng-dirty.ng-invalid {
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 }
+form .form-control[disabled],
+form .form-control[readonly],
+form fieldset[disabled] .form-control {
+  background-color: #ccc;
+  opacity: .5;
+}
 .uib-timepicker .btn-link {
   padding: 1px 12px;
 }
@@ -720,6 +726,22 @@ body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrappe
   border: 1px solid #fff;
   box-sizing: border-box;
 }
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr th p,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr th p,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned thead tr th p,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table tbody tr th p,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable tbody tr th p,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned tbody tr th p,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr td p,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr td p,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned thead tr td p,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table tbody tr td p,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable tbody tr td p,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned tbody tr td p {
+  word-wrap: break-word;
+  word-break: break-all;
+  white-space: normal;
+}
 body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr th,
 body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr th,
 body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned thead tr th,
@@ -754,14 +776,6 @@ body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrappe
   border-top-color: #6f0000;
   border-left-color: #6f0000;
   border-right-color: #d40000;
-}
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr td.team p,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr td.team p,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned thead tr td.team p,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table tbody tr td.team p,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable tbody tr td.team p,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned tbody tr td.team p {
-  word-break: break-all;
 }
 body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr td.question-score,
 body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr td.question-score,

@@ -47,12 +47,12 @@
 
         <div class="row">
             <div class="col-xs-8">
-                <label>Question # {{saved.questionNumber}}</label>
-                <input class="form-control" name="question" ng-model="editing.question" type="text" maxlength="255" required />
+                <label>Question # {{editing.questionNumber}} Text <small>(optional)</small></label>
+                <input class="form-control" name="question" ng-model="editing.question" type="text" maxlength="255" />
             </div>
             
             <div class="col-xs-4">
-                <label>Default Points</label>
+                <label>Points</label>
                 <input class="form-control" name="maxPoints" ng-model="editing.maxPoints" type="number" maxlength="9" required />
             </div>
         </div>

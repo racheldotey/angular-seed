@@ -40,7 +40,7 @@ angular.module('apiRoutes.games', [])
     };
 
     api.addGameRound = function(round) {
-        if(angular.isUndefined(round.gameId) || angular.isUndefined(round.name)) {
+        if(angular.isUndefined(round.gameId) || angular.isUndefined(round.name) || angular.isUndefined(round.defaultQuestionPoints)) {
             return API.reject('Invalid game round please check your parameters and try again.');
         }
         return API.post('trivia/insert/round', round, 'Could not insert game round.');

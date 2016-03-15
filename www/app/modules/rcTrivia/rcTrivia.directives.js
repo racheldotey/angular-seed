@@ -58,12 +58,12 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 });
                 
             $scope.buttonViewRound = function(roundNumber) {
+                console.log("buttonViewRound");
                 TriviaGame.loadRound(roundNumber).then(function (result) {
                         // Change the State (URL) parameters without reloading the page
                         // Used for deep linking
-                        $state.go($state.$current, {gameId: $scope.game.id, roundNumber: roundNumber}, {notify: false});
                         $scope.game = result;
-                        console.log($scope.game);
+                        //$state.go($state.$current, {gameId: $scope.game.id, roundNumber: roundNumber}, {notify: false});
                     }, function (error) {
                         console.log(error);
                     });
@@ -135,12 +135,10 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
             };
             
             $scope.buttonQuestionWrong = function(teamId, questionId) {
-                console.log('buttonQuestionWrong');
                 $scope.game = TriviaGame.teamAnsweredIncorrectly(teamId, questionId);      
             };
             
             $scope.buttonQuestionCorrect = function(teamId, questionId) {
-                console.log('buttonQuestionCorrect');
                 $scope.game = TriviaGame.teamAnsweredCorrectly(teamId, questionId);                
             };
             

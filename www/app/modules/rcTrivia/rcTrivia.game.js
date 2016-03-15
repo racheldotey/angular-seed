@@ -9,61 +9,73 @@ angular.module('rcTrivia.game', [])
         function($q, $filter, ApiRoutesGames) {
             
         var self = this;
+        self.game = false;
         var api = {};
         
             function Game(newGame) {
                 var game = this;
                 
                 game.getGame = function() {
-                    var ga = {
-                        'id' : game.id,
-                        'name' : game.name,
-                        'scheduled' : game.scheduled,
-                        'started' : game.started,
-                        'ended' : game.ended,
-                        'totalRounds' : game.totalRounds,
-                        'maxPoints' : game.maxPoints,
+                    if(angular.isDefined(game.id)) {
+                        var ga = {
+                            'id' : game.id,
+                            'name' : game.name,
+                            'scheduled' : game.scheduled,
+                            'started' : game.started,
+                            'ended' : game.ended,
+                            'totalRounds' : game.totalRounds,
+                            'maxPoints' : game.maxPoints,
 
-                        'host' : game.host,
-                        'venue' : game.venue,
-                        'teams' : game.teams,
-                        'round' : game.round,
-                        'rounds' : game.rounds
-                    };
-                    return ga;
+                            'host' : game.host,
+                            'venue' : game.venue,
+                            'teams' : game.teams,
+                            'round' : game.round,
+                            'rounds' : game.rounds
+                        };
+                        return angular.copy(ga);
+                    } else {
+                        return false;
+                    }
                 };
                 
-                game.getRound = function(roundNumber) {
-                    var found = $filter('filter')(game.rounds, {'roundNumber': roundNumber}, true);
-                    return (angular.isDefined(found[0]) && angular.isDefined(found[0].questions)) ? found[0] : false;
-                };
-                
-                game.addRound = function(round) {
-                    var cont = true;
+                game.findRoundIndexByNumber = function(roundNumber) {
+                    var found = false;
                     for(var i = 0; i < game.rounds.length; i++) {
-                        if(cont && game.rounds[i].roundNumber == round.roundNumber) {
-                            game.rounds[i] = round;
-                            cont = false;
+                        if(found === false && game.rounds[i].roundNumber == roundNumber) {
+                            found = i;
+                            console.log(">>>Found, ", game.rounds[i]);
                             break;
                         }
                     }
-                    
-                    if(cont) {
+                    return found;
+                };
+                
+                game.addRound = function(round) {
+                    var found = game.findRoundIndexByNumber(round.roundNumber);
+                    if(found === false) {
                         game.rounds.push(round);
+                    } else {
+                        game.rounds[found] = round;
                     }
                 };
                 
                 game.viewRound = function(roundNumber, newRound) {
                     if(newRound) {
                         game.addRound(newRound);
+                    }                    
+                    var found = game.findRoundIndexByNumber(roundNumber);                    
+                    if(angular.isNumber(found) && angular.isDefined(game.rounds[found].questions)) {
+                        game.round = game.rounds[found];
+                        return true;
+                    } else {
+                        game.round = {};
+                        console.log("Error, could not find round #" + roundNumber + " to display.");
+                        return false;
                     }
-                    var found = game.getRound(roundNumber);
-                    game.round = (found) ? found : {};
-                    
                 };
                 
                 /* Init */
-                game.id = parseInt(newGame.id) || 0;
+                game.id = newGame.id || 0;
                 game.name = newGame.name || 0;
                 game.scheduled = newGame.scheduled || 0;
                 game.started = newGame.started || 0;
@@ -78,36 +90,38 @@ angular.module('rcTrivia.game', [])
                 
                 // Current Round - If one was sent set it as current round
                 if (angular.isDefined(newGame.round)) {
-                    game.viewRound(newGame.round.roundNumber, newGame.round);
+                    game.round = newGame.round;
+                    var roundIndex = game.findRoundIndexByNumber(newGame.round.roundNumber);
+                    if (angular.isNumber(roundIndex)) {
+                        game.rounds[roundIndex] = newGame.round;
+                    }
                 } else {
                     game.round = {};
                 }
             }
         
         api.getGame = function() {
-            return self.game.getGame();
+            // Safely return the game
+            return (self.game) ? self.game.getGame() : false;
         };
     
         api.loadGame = function(gameId, roundNumber) {
             return $q(function (resolve, reject) {
-                    ApiRoutesGames.getGame(gameId, roundNumber).then(function (result) {
-                            self.game = new Game(result.game);
-                            resolve(self.game.getGame());
-                        }, function (error) {
-                            reject(error);
-                        });
-                });          
-        };
-        
-        api.loadRound = function(roundNumber) {
-            return $q(function (resolve, reject) {
-                var round = self.game.viewRound(roundNumber);
-                
-                if(round) {
-                    resolve(round);
+                // Has the game been loaded
+                var loaded = api.getGame();
+                if(loaded && angular.equals(gameId, loaded.id)) {
+                    // If the game has already been loaded
+                    // Just load the requested round
+                    api.loadRound(roundNumber).then(function (result) {
+                        resolve(result);
+                    }, function (error) {
+                        reject(error);
+                    });
                 } else {
-                    ApiRoutesGames.getRound(self.game.id, roundNumber).then(function (result) {
-                        self.game.viewRound(result.round.roundNumber, result.round);
+                    // If no game (or a different game) is loaded
+                    // Then reload the whole game
+                    ApiRoutesGames.getGame(gameId, roundNumber).then(function (result) {
+                        self.game = new Game(result.game);
                         resolve(self.game.getGame());
                     }, function (error) {
                         reject(error);
@@ -116,25 +130,92 @@ angular.module('rcTrivia.game', [])
             });          
         };
         
+        api.loadRound = function(roundNumber) {
+            return $q(function (resolve, reject) {
+                var loaded = api.getGame();
+                if(loaded) {
+                    var round = self.game.viewRound(roundNumber);
+                    if(round) {
+                        resolve(round);
+                    } else {
+                        ApiRoutesGames.getRound(self.game.id, roundNumber).then(function (result) {
+                            self.game.viewRound(result.round.roundNumber, result.round);
+                            resolve(self.game.getGame());
+                        }, function (error) {
+                            reject(error);
+                        });
+                    }
+                } else {
+                    reject("No game is loaded.");
+                }
+            });          
+        };
+        
+        api.newRound = function(round) {
+            return $q(function (resolve, reject) {
+                var loaded = api.getGame();
+                if(loaded) {
+                    ApiRoutesGames.addGameRound(round).then(
+                        function (result) {
+                            self.game.viewRound(result.round.roundNumber, result.round);
+                            resolve(self.game.getGame());
+                        }, function (error) {
+                            reject(error);
+                        });
+                } else {
+                    reject("No game is loaded.");
+                }
+                
+            });          
+        };
+        
+        api.newQuestion = function(question) {
+            return $q(function (resolve, reject) {
+                var loaded = api.getGame();
+                if(loaded) {
+                    ApiRoutesGames.addGameRoundQuestion(question).then(
+                        function (result) {
+                            self.game.viewRound(result.round.roundNumber, result.round);
+                            resolve(self.game.getGame());
+                        }, function (error) {
+                            reject(error);
+                        });
+                } else {
+                    reject("No game is loaded.");
+                }
+                
+            });          
+        };
+        
         api.startGame = function() {
             return $q(function (resolve, reject) {
-                ApiRoutesGames.startGame(self.game.id).then(function (result) {
-                    self.game.started = result.started;
-                    resolve(self.game.getGame());
-                }, function (error) {
-                    reject(error);
-                });
+                var loaded = api.getGame();
+                if(loaded) {
+                    ApiRoutesGames.startGame(self.game.id).then(function (result) {
+                        self.game.started = result.started;
+                        resolve(self.game.getGame());
+                    }, function (error) {
+                        reject(error);
+                    });
+                } else {
+                    reject("No game is loaded.");
+                }
             });    
         };
         
         api.endGame = function() {
             return $q(function (resolve, reject) {
-                ApiRoutesGames.endGame(self.game.id).then(function (result) {
-                    self.game.ended = result.ended;
-                    resolve(self.game.getGame());
-                }, function (error) {
-                    reject(error);
-                });
+                var loaded = api.getGame();
+                if(loaded) {
+                    ApiRoutesGames.endGame(self.game.id).then(function (result) {
+                        self.game.ended = result.ended;
+                        resolve(self.game.getGame());
+                    }, function (error) {
+                        reject(error);
+                    });
+                } else {
+                    reject("No game is loaded.");
+                }
             });    
         };
         

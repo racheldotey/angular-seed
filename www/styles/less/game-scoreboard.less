@@ -73,6 +73,12 @@ body.scoreboard .game-scoreboard {
                             padding: 5px 8px;
                             border: 1px solid #fff;
                             box-sizing: border-box;
+                            
+                            p {
+                                word-wrap: break-word;
+                                word-break: break-all;
+                                white-space: normal;
+                            }
                         }
                         th {
                             background-color: @brick-red;
@@ -93,10 +99,6 @@ body.scoreboard .game-scoreboard {
                                 border-top-color: darken(@brick-red, 5%);
                                 border-left-color: darken(@brick-red, 5%);
                                 border-right-color: lighten(@brick-red, 15%);
-                                
-                                p {
-                                    word-break: break-all;
-                                }
                             }
                             &.question-score {
                                 height: @scoreboardRowHeight;

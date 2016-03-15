@@ -59,16 +59,19 @@ angular.module('app.modal.trivia.editRound', [])
     $scope.editing = angular.copy($scope.saved);
     
     if($scope.getMode('new') === 'new') {
-        $scope.editing.name = "Round #" + ($scope.game.rounds.length + 1);
+        $scope.editing.name = "";
+        $scope.editing.defaultQuestionPoints = 5;
     }
     
     /* Click event for the Add / New button */
     $scope.buttonNew = function() {
-        ApiRoutesGames.addGameRound({ 
+        TriviaGame.newRound({ 
             'gameId' : $scope.game.id, 
-            'name' : $scope.editing.name }).then(
+            'name' : $scope.editing.name,
+            'defaultQuestionPoints' : $scope.editing.defaultQuestionPoints
+        }).then(
             function (result) {
-                $uibModalInstance.close(result.game);
+                $uibModalInstance.close(result);
             }, function (error) {
                 $scope.alertProxy.error(error);
             });
