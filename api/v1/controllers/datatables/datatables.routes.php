@@ -30,5 +30,27 @@ class DatatableRoutes {
             });
             
         });
+        
+        // Games
+        
+        $app->group('/datatable', $authenticateForRole('public'), function () use ($app) {
+            
+            $app->map("/games/", function () use ($app) {
+                DatatablesController::getGames($app);
+            })->via('GET', 'POST');
+            
+            $app->map("/games/host/:hostId/", function ($hostId) use ($app) {
+                DatatablesController::getHostGames($app, $hostId);
+            })->via('GET', 'POST');
+            
+            $app->map("/games/venue/:venueId/", function ($venueId) use ($app) {
+                DatatablesController::getVenueGames($app, $venueId);
+            })->via('GET', 'POST');
+            
+            $app->map("/games/team/:teamId/", function ($teamId) use ($app) {
+                DatatablesController::getTeamGames($app, $teamId);
+            })->via('GET', 'POST');
+            
+        });
     }
 }

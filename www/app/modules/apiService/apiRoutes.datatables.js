@@ -43,5 +43,23 @@ angular.module('apiRoutes.datatables', [])
         return getPromise('/datatable/admin/visibility-fields');
     };
     
+    // Games
+    
+    api.publicGamesList = function() { 
+        return getPromise('/datatable/games/');
+    };
+    
+    api.publicHostGamesList = function(hostId) { 
+        return getPromise('/datatable/games/host/' + hostId);
+    };
+    
+    api.publicVenueGamesList = function(venueId) { 
+        return getPromise('/datatable/games/venue/' + venueId);
+    };
+    
+    api.publicTeamGamesList = function(teamId) { 
+        return getPromise('/datatable/games/team/' + teamId);
+    };
+    
     return api;
 }]);

@@ -32,4 +32,29 @@ class DatatablesController {
         return $app->render(200, array('table' => $table ));
     }
     
+    // Games
+    
+    static function getGames($app) {
+        $data = DatatablesData::selectGames();
+        $table = ($data) ? $data : array();
+        return $app->render(200, array('table' => $table ));
+    }
+    
+    static function getHostGames($app, $hostId) {
+        $data = DatatablesData::selectHostGames($hostId);
+        $table = ($data) ? $data : array();
+        return $app->render(200, array('table' => $table ));
+    }
+    
+    static function getVenueGames($app, $venueId) {
+        $data = DatatablesData::selectVenueGames($venueId);
+        $table = ($data) ? $data : array();
+        return $app->render(200, array('table' => $table ));
+    }
+    
+    static function getTeamGames($app, $teamId) {
+        $data = DatatablesData::selectTeamGames($teamId);
+        $table = ($data) ? $data : array();
+        return $app->render(200, array('table' => $table ));
+    }
 }

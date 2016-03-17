@@ -113,4 +113,43 @@ class DatatablesData {
         
         return $elements;
     }
+    
+    // Games
+    
+    
+    static function selectGames() {
+        return DBConn::selectAll("SELECT g.id, g.name, g.scheduled, g.venue_id AS venueId, g.host_user_id AS hostId, "
+                . "game_started AS started, game_ended AS ended, max_points maxPoints, "
+                . "CONCAT(u.name_first, ' ', u.name_last) AS host, v.name AS venue "
+                . "FROM as_games AS g LEFT JOIN as_users AS u ON u.id = g.host_user_id "
+                . "LEFT JOIN as_venues AS v ON v.id = g.venue_id;");
+    }
+    
+    static function selectHostGames($hostId) {
+        return DBConn::selectAll("SELECT g.id, g.name, g.scheduled, g.venue_id AS venueId, g.host_user_id AS hostId, "
+                . "game_started AS started, game_ended AS ended, max_points maxPoints, "
+                . "CONCAT(u.name_first, ' ', u.name_last) AS host, v.name AS venue "
+                . "FROM as_games AS g LEFT JOIN as_users AS u ON u.id = g.host_user_id "
+                . "LEFT JOIN as_venues AS v ON v.id = g.venue_id "
+                . "WHERE g.host_user_id = :host_user_id;", array(':host_user_id' => $hostId));
+    }
+    
+    static function selectVenueGames($venueId) {
+        return DBConn::selectAll("SELECT g.id, g.name, g.scheduled, g.venue_id AS venueId, g.host_user_id AS hostId, "
+                . "game_started AS started, game_ended AS ended, max_points maxPoints, "
+                . "CONCAT(u.name_first, ' ', u.name_last) AS host, v.name AS venue "
+                . "FROM as_games AS g LEFT JOIN as_users AS u ON u.id = g.host_user_id "
+                . "LEFT JOIN as_venues AS v ON v.id = g.venue_id "
+                . "WHERE g.venue_id = :venue_id;", array(':venue_id' => $venueId));
+    }
+    
+    static function selectTeamGames($teamId) {
+        return DBConn::selectAll("SELECT g.id, g.name, g.scheduled, g.venue_id AS venueId, g.host_user_id AS hostId, "
+                . "game_started AS started, game_ended AS ended, max_points maxPoints, "
+                . "CONCAT(u.name_first, ' ', u.name_last) AS host, v.name AS venue "
+                . "FROM as_games AS g LEFT JOIN as_users AS u ON u.id = g.host_user_id "
+                . "LEFT JOIN as_venues AS v ON v.id = g.venue_id "
+                . "JOIN as_game_score_teams AS t ON t.game_id = g.id "
+                . "WHERE t.team_id = :team_id;", array(':team_id' => $teamId));
+    }
 }

@@ -7,8 +7,23 @@
  */
 
 angular.module('app.host.dashboard', [])
-    .controller('HostDashboardCtrl', ['$scope', '$state', 'TriviaModalService', function($scope, $state, TriviaModalService) {
+    .controller('HostDashboardCtrl', ['$scope', '$state', 'TriviaModalService', 'DataTableHelper', 'DTColumnBuilder',
+        function($scope, $state, TriviaModalService, DataTableHelper, DTColumnBuilder) {
 
+
+        // DataTable Setup
+        $scope.dtGames = DataTableHelper.getDTStructure($scope, 'publicGamesList');
+        $scope.dtGames.columns = [
+            DTColumnBuilder.newColumn(null).withTitle('Game Name').renderWith(function (data, type, full, meta) {
+                return '<a data-ui-sref="app.host.game({gameId : ' + data.id + ', pageId : 1 })">' + data.name + '</a>';
+            }),
+            DTColumnBuilder.newColumn('venue').withTitle('Joint'),
+            DTColumnBuilder.newColumn('host').withTitle('Host'),
+            DTColumnBuilder.newColumn('scheduled').withTitle('Scheduled').renderWith(function (data, type, full, meta) {
+                return moment(data, 'YYYY-MM-DD HH:mm:ss').format('M/D/YYYY h:mm a');
+            })
+        ];
+        
         $scope.buttonNewGame = function() {
             var modalInstance = TriviaModalService.openEditGame(false);
             modalInstance.result.then(function(result) {
