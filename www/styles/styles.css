@@ -804,6 +804,50 @@ body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrappe
   border-left: 1px solid #dad9d8;
   white-space: nowrap;
 }
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr td.question-score .form-group,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr td.question-score .form-group,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned thead tr td.question-score .form-group,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table tbody tr td.question-score .form-group,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable tbody tr td.question-score .form-group,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned tbody tr td.question-score .form-group {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr td.question-score .form-group input,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr td.question-score .form-group input,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned thead tr td.question-score .form-group input,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table tbody tr td.question-score .form-group input,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable tbody tr td.question-score .form-group input,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned tbody tr td.question-score .form-group input {
+  width: 100%;
+}
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr td.round-score,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr td.round-score,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned thead tr td.round-score,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table tbody tr td.round-score,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable tbody tr td.round-score,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned tbody tr td.round-score,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr td.round-rank,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr td.round-rank,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned thead tr td.round-rank,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table tbody tr td.round-rank,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable tbody tr td.round-rank,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned tbody tr td.round-rank,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr td.game-score,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr td.game-score,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned thead tr td.game-score,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table tbody tr td.game-score,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable tbody tr td.game-score,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned tbody tr td.game-score,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr td.game-rank,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr td.game-rank,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned thead tr td.game-rank,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table tbody tr td.game-rank,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable tbody tr td.game-rank,
+body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned tbody tr td.game-rank {
+  text-align: center;
+  font-weight: bold;
+}
 body.scoreboard .game-scoreboard > section div#scoreboard_wrapper.dataTables_wrapper div.DTFC_ScrollWrapper div.DTFC_LeftBodyWrapper div.DTFC_LeftBodyLiner {
   overflow-y: hidden !important;
 }

@@ -113,7 +113,22 @@ body.scoreboard .game-scoreboard {
                                 border-bottom: 1px solid @pale-brown;
                                 border-left: 1px solid @pale-brown;
                                 white-space: nowrap;
+                                
+                                .form-group {
+                                    padding-left: 20px;
+                                    padding-right: 20px;
+                                    input {
+                                        width: 100%;
+                                    }
+                                }
                             }
+                            &.round-score,
+                            &.round-rank,
+                            &.game-score,
+                            &.game-rank {
+                                text-align: center;
+                                font-weight: bold;
+                            }                            
                         }
                     }
                 }

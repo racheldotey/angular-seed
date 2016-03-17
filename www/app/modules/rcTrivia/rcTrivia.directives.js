@@ -19,6 +19,8 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
         controller: ['$scope', '$state', '$window', 'TriviaGame', 'AlertConfirmService', 'TriviaModalService', 'DTOptionsBuilder', 'DTColumnDefBuilder',
             function($scope, $state, $window, TriviaGame, AlertConfirmService, TriviaModalService, DTOptionsBuilder, DTColumnDefBuilder) {
                 
+                $scope.unsavedState = false;
+                $scope.displayQuickScoreButtons = false;
                 
             $scope.scoreboardNavHamburger = { isopen: false };
             
@@ -133,48 +135,47 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 }, function () {});
             };
             
-            $scope.buttonQuestionWrong = function(teamId, questionId) {
-                $scope.unsavedState = true;
-                var teams = $scope.game.round.teams;
+            var getMaxScore = function(questionId) {
+                var maxPoints = 1;
+                var questions = $scope.game.round.questions;
                 
-                for(var i = 0; i < teams.length; i++) {
-                    if(parseInt(teams[i].teamId) === parseInt(teamId)) {
-                        for (var q = 0; q <teams[i].scores.length; q++) {
+                for (var i = 0; i < questions.length; i++) {
+                    if (parseInt(questions[i].questionId) === parseInt(questionId)) {
+                        maxPoints = parseFloat(questions[i].maxPoints);
+                        break;
+                    }
+                }
+                return maxPoints;
+            };
+            
+            var addToScore = function(teamId, questionId, maxScore) {
+                
+                var teams = $scope.game.round.teams;
+
+                for (var i = 0; i < teams.length; i++) {
+                    if (parseInt(teams[i].teamId) === parseInt(teamId)) {
+                        for (var q = 0; q < teams[i].scores.length; q++) {
                             if (parseInt(teams[i].scores[q].questionId) === parseInt(questionId)) {
-                                $scope.game.round.teams[i].scores[q].questionScore = 0;
+                                $scope.game.round.teams[i].scores[q].questionScore = maxScore + parseFloat(teams[i].scores[q].questionScore);
                                 break;
                             }
                         }
                         break;
                     }
                 }
+            };
+            
+            $scope.buttonQuestionWrong = function(teamId, questionId) {
+                $scope.unsavedState = true;
+                var maxPoints = getMaxScore(questionId);
+                addToScore(teamId, questionId, (maxPoints * -1));
                 TriviaGame.updateRoundScores($scope.game.round);
             };
         
             $scope.buttonQuestionCorrect = function(teamId, questionId) {
                 $scope.unsavedState = true;
-                var maxPoints = 1;
-                var questions = $scope.game.round.questions;
-                var teams = $scope.game.round.teams;
-                
-                for(var i = 0; i < questions.length; i++) {
-                    if(parseInt(questions[i].questionId) === parseInt(questionId)) {
-                        maxPoints = questions[i].maxPoints;
-                        break;
-                    }
-                }
-
-                for(var i = 0; i < teams.length; i++) {
-                    if(parseInt(teams[i].teamId) === parseInt(teamId)) {
-                        for (var q = 0; q < teams[i].scores.length; q++) {
-                            if (parseInt(teams[i].scores[q].questionId) === parseInt(questionId)) {
-                                $scope.game.round.teams[i].scores[q].questionScore = maxPoints;
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                }
+                var maxPoints = getMaxScore(questionId);
+                addToScore(teamId, questionId, maxPoints);
                 TriviaGame.updateRoundScores($scope.game.round);
             }; 
             

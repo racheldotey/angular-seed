@@ -26,6 +26,9 @@
                 
                 <div class="host-actions">
                     <div id="wide-menu" class="visible-lg-block">
+                        <button ng-show="!displayQuickScoreButtons" ng-click="displayQuickScoreButtons = !displayQuickScoreButtons" type="button" class="btn btn-primary btn-sm">Show Quick Buttons</button>
+                        <button ng-show="displayQuickScoreButtons" ng-click="displayQuickScoreButtons = !displayQuickScoreButtons" type="button" class="btn btn-primary btn-sm">Hide Quick Buttons</button>
+                        
                         <button ng-click="buttonAddTeam()" type="button" class="btn btn-primary btn-sm">Add Team</button>
                         <button ng-click="buttonAddPlayer()" type="button" class="btn btn-primary btn-sm">Add Player</button>
 
@@ -42,6 +45,9 @@
                             <i class="fa fa-bars"></i>
                         </button>
                         <ul uib-dropdown-menu role="menu" aria-labelledby="single-button">
+                            <li ng-show="!displayQuickScoreButtons" role="menuitem"><a ng-click="displayQuickScoreButtons = !displayQuickScoreButtons" href="#">Show Quick Buttons</a></li>
+                            <li ng-show="displayQuickScoreButtons" role="menuitem"><a ng-click="displayQuickScoreButtons = !displayQuickScoreButtons" href="#">Hide Quick Buttons</a></li>
+                            <li class="divider"></li>
                             <li role="menuitem"><a ng-click="buttonAddTeam()" href="#">Add Team</a></li>
                             <li role="menuitem"><a ng-click="buttonAddPlayer()" href="#">Add Player</a></li>
                             <li class="divider"></li>
@@ -55,7 +61,7 @@
                 </div>
 
             </div>
-            
+            <form class="form-inline">
             <table id="scoreboard" datatable="ng" dt-options="dtScoreboard.options">
                 <thead>
                     <tr>
@@ -64,6 +70,10 @@
                             <p class="text-center"><strong>#{{question.questionNumber}} - {{question.maxPoints | numberEx}} pts</strong></p>
                             <p ng-if="question.question">{{question.question}}</p>
                         </th>
+                        <th><p class="text-center">Round Score</p></th>
+                        <th><p class="text-center">Round Rank</p></th>
+                        <th><p class="text-center">Game Score</p></th>
+                        <th><p class="text-center">Game Rank</p></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -71,12 +81,12 @@
                         <td class="team"><p>{{team.team}}</p></td>
                         <td class="question-score" ng-repeat="teamScore in team.scores" data-question-id="{{teamScore.questionId}}">
                             
-                            <div class="input-group input-group-sm">
+                            <div ng-if="displayQuickScoreButtons" class="input-group input-group-sm">
                                 <span class="input-group-btn">
                                     <button 
                                         ng-click="buttonQuestionWrong(team.teamId, teamScore.questionId)"
                                         class="btn btn-warning" 
-                                        type="button"><i class="fa fa-ban"></i></button>
+                                        type="button"><i class="fa fa-minus"></i></button>
                                 </span>
                                 <input 
                                     ng-model="teamScore.questionScore" 
@@ -88,13 +98,28 @@
                                     <button 
                                         ng-click="buttonQuestionCorrect(team.teamId, teamScore.questionId)" 
                                         class="btn btn-success" 
-                                        type="button"><i class="fa fa-check"></i></button>
+                                        type="button"><i class="fa fa-plus"></i></button>
                                 </span>
                             </div><!-- /input-group -->
+                            
+                            <div ng-if="!displayQuickScoreButtons" class="form-group form-group-sm">
+                                <input 
+                                    ng-model="teamScore.questionScore" 
+                                    data-string-to-number 
+                                    type="number" 
+                                    class="form-control" 
+                                    min="0">
+                            </div><!-- /input-group -->
+                            
                         </td>
+                        <th class="round-score"><p class="text-center">{{team.roundScore | numberEx}}</p></th>
+                        <th class="round-rank"><p class="text-center">{{team.roundRank}}</p></th>
+                        <th class="game-score"><p class="text-center">{{team.gameScore | numberEx}}</p></th>
+                        <th class="game-rank"><p class="text-center">{{team.gameRank}}</p></th>
                     </tr>
                 </tbody>
             </table>
+            </form>
         </section>
 
         <footer>
