@@ -241,6 +241,9 @@ img.img-thumbnail.no-margin {
  */
 table.dataTable {
   border-bottom: 1px solid #e3e3e3;
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
 }
 table.dataTable thead {
   background-color: #f5f5f5;
@@ -289,7 +292,19 @@ table.dataTable tbody tr.child td.child table.sub-table {
   margin: 0;
 }
 table.dataTable tbody tr td {
+  font-size: .9em;
   padding: 4px;
+}
+.dataTables_info {
+  font-size: .8em;
+}
+.dataTables_length {
+  font-size: .8em;
+}
+body:not(.admin) .dataTables_length select {
+  color: #fff;
+  background-color: #47413a;
+  border-color: #71685c;
 }
 table.dataTable.table-dark {
   border-color: #6f0000;
@@ -796,22 +811,6 @@ body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrappe
   padding: 5px 8px;
   border: 1px solid #fff;
   box-sizing: border-box;
-}
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr th p,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr th p,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned thead tr th p,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table tbody tr th p,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable tbody tr th p,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned tbody tr th p,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr td p,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr td p,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned thead tr td p,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table tbody tr td p,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable tbody tr td p,
-body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.DTFC_Cloned tbody tr td p {
-  word-wrap: break-word;
-  word-break: break-all;
-  white-space: normal;
 }
 body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table thead tr th,
 body.scoreboard .game-scoreboard > section #scoreboard_wrapper.dataTables_wrapper table.dataTable thead tr th,

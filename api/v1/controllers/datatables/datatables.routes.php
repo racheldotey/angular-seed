@@ -28,6 +28,18 @@ class DatatableRoutes {
             $app->post("/visibility-fields", function () use ($app) {
                 DatatablesController::getVisibilityFields($app);
             });
+
+            $app->post("/trivia-games", function () use ($app) {
+                DatatablesController::getTriviaGames($app);
+            });
+
+            $app->post("/trivia-teams", function () use ($app) {
+                DatatablesController::getTriviaTeams($app);
+            });
+
+            $app->post("/trivia-venues", function () use ($app) {
+                DatatablesController::getTriviaVenues($app);
+            });
             
         });
         

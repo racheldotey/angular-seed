@@ -114,9 +114,34 @@ class DatatablesData {
         return $elements;
     }
     
+    // Admin Trivia
+        
+    static function selectTriviaGames() {
+        return DBConn::selectAll("SELECT g.id, g.name, g.scheduled, g.venue_id AS venueId, g.host_user_id AS hostId, "
+                . "game_started AS started, game_ended AS ended, max_points maxPoints, "
+                . "CONCAT(u.name_first, ' ', u.name_last) AS host, v.name AS venue "
+                . "FROM as_games AS g LEFT JOIN as_users AS u ON u.id = g.host_user_id "
+                . "LEFT JOIN as_venues AS v ON v.id = g.venue_id;");
+    }
+        
+    static function selectTriviaTeams() {
+        return DBConn::selectAll("SELECT t.id, t.name AS team, t.created, 
+CONCAT(u.name_first, ' ', u.name_last) AS createdBy
+FROM as_teams AS t
+LEFT JOIN as_users AS u ON u.id = t.created_user_id
+ORDER BY t.name;");
+    }
+        
+    static function selectTriviaVenues() {
+        return DBConn::selectAll("SELECT v.id, v.name AS venue, v.city, v.state, v.website, v.facebook_url as facebook, v.logo, v.hours, v.referral, v.created, 
+CONCAT(u.name_first, ' ', u.name_last) AS createdBy
+FROM as_venues AS v
+LEFT JOIN as_users AS u ON u.id = v.created_user_id
+ORDER BY v.name;");
+    }
+    
     // Games
-    
-    
+        
     static function selectGames() {
         return DBConn::selectAll("SELECT g.id, g.name, g.scheduled, g.venue_id AS venueId, g.host_user_id AS hostId, "
                 . "game_started AS started, game_ended AS ended, max_points maxPoints, "

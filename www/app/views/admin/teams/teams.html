@@ -1,0 +1,31 @@
+<div class="page admin teams">
+    
+    <div class="well well-sm pull-right">
+        <div class="btn-group btn-group-sm" uib-dropdown>
+            <button id="split-button" type="button" class="btn btn-info"  ng-click="buttonOpenNewTeamModal()"><i class="fa fa-plus"></i> New Team</button>
+            <button type="button" class="btn btn-info" uib-dropdown-toggle>
+                <span class="caret"></span>
+                <span class="sr-only">Split button!</span>
+            </button>
+            <ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
+                <li role="menuitem"><a ng-click="buttonOpenNewGameModal()">Schedule Game</a></li>
+                <li role="menuitem"><a ng-click="buttonOpenNewTeamModal()">New Team</a></li>
+                <li role="menuitem"><a ng-click="buttonOpenNewVenueModal()">Add Joint</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="page-header">
+        <h1>Trivia Teams</h1>
+    </div>
+      
+
+    <table
+        data-datatable=""
+        data-dt-options="dtTeams.options"
+        data-dt-columns="dtTeams.columns"
+        data-dt-instance="dtTeams.instance"
+        class="table table-hover"></table>
+
+    
+</div>

@@ -32,6 +32,26 @@ class DatatablesController {
         return $app->render(200, array('table' => $table ));
     }
     
+    // Admin Trivia
+    
+    static function getTriviaGames($app) {
+        $data = DatatablesData::selectTriviaGames();
+        $table = ($data) ? $data : array();
+        return $app->render(200, array('table' => $table ));
+    }
+    
+    static function getTriviaTeams($app) {
+        $data = DatatablesData::selectTriviaTeams();
+        $table = ($data) ? $data : array();
+        return $app->render(200, array('table' => $table ));
+    }
+    
+    static function getTriviaVenues($app) {
+        $data = DatatablesData::selectTriviaVenues();
+        $table = ($data) ? $data : array();
+        return $app->render(200, array('table' => $table ));
+    }
+    
     // Games
     
     static function getGames($app) {
