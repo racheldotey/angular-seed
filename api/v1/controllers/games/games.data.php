@@ -52,9 +52,10 @@ class GameData {
                         . "IFNULL(s.score, 0) AS gameScore, s.game_rank AS gameRank, s.game_winner AS gameWinner, "
                         . "IFNULL(r.score, 0) AS roundScore, IFNULL(r.round_rank, 0) AS roundRank "
                         . "FROM " . DBConn::prefix() . "game_score_teams AS s "
+                        . "LEFT JOIN " . DBConn::prefix() . "teams AS t ON t.id = s.team_id "
                         . "LEFT JOIN " . DBConn::prefix() . "game_score_rounds AS r ON s.team_id = r.team_id AND r.game_round_id = :game_round_id "
-                        . "JOIN " . DBConn::prefix() . "teams AS t ON t.id = s.team_id "
-                        . "ORDER BY s.team_id;", array(':game_round_id' => $round->roundId));
+                        . "WHERE s.game_id = :game_id "
+                        . "ORDER BY s.team_id;", array(':game_id' => $gameId, ':game_round_id' => $round->roundId));
 
                 $qTeamScores = DBConn::preparedQuery("SELECT q.id AS questionId, IFNULL(s.score, 0) AS questionScore "
                         . "FROM " . DBConn::prefix() . "game_round_questions AS q "

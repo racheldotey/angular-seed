@@ -8,14 +8,107 @@
     display: none !important;
 }
 
+
+
 body {
-    background-color: @brick-red;
-    background-image: url('/media/images/trivia-background.png');
-    background-repeat: no-repeat;
-    background-position: 0 0;
-    background-size: cover;
-    background-attachment: fixed;
-    color: white;
+    
+    &:not(.admin) {
+        background-color: @brick-red;
+        background-image: url('/media/images/trivia-background.png');
+        background-repeat: no-repeat;
+        background-position: 0 0;
+        background-size: cover;
+        background-attachment: fixed;
+        color: white;
+        
+        a:not(.btn) {
+            color: @medium-yellow;
+            
+            &:hover, &:focus, &:active {
+                color: #fff;
+            }
+        }
+        
+        .alert-warning {
+            background-color: @yellow;
+            border-color: lighten(@yellow, 10%);
+        }
+        
+        .page-header, hr {
+            border-color: darken(@brick-red, 5%);
+        }
+        
+        .modal-content {
+            background-color: @medium-brown;
+            
+            .modal-header {
+                border-color: darken(@medium-brown, 5%);
+            }
+            .modal-footer {
+                border-color: darken(@medium-brown, 5%);
+            }
+        }
+        
+        .dropdown-menu {
+            color: #fff;
+            background-color: @medium-brown;
+            >li {
+                &.divider {
+                    background-color:darken(@medium-brown, 5%);
+                }
+                
+                &>a {
+                    color: #fff;
+                    &:hover, &:focus, &:hover {
+                        color: #fff;
+                        background-color:darken(@medium-brown, 5%);
+                    }
+                }
+            }
+        }
+        
+        .pagination {
+            >li {
+                a, span {
+                    font-size: .8em;
+                    
+                    color: @pale-brown;
+                    background-color: @medium-brown;
+                    border-color: lighten(@medium-brown, 15%);
+                    
+                    &:hover, &:focus, &:active {
+                        color: #fff;
+                        background-color: lighten(@brick-red, 5%);
+                        border-color: lighten(@brick-red, 10%);
+                    }
+                }
+                
+                &.active>a, 
+                &.active>span {
+                    color: #fff;
+                    background-color: lighten(@brick-red, 10%);
+                    border-color: lighten(@brick-red, 15%);
+                    &:hover, &:focus, &:active {
+                        color: #fff;
+                        background-color: lighten(@brick-red, 5%);
+                        border-color: lighten(@brick-red, 10%);
+                    }
+                }
+                
+                &.disabled>a, 
+                &.disabled>span {
+                    color: lighten(@medium-brown, 20%);
+                    background-color: @medium-brown;
+                    border-color: lighten(@medium-brown, 15%);
+                    &:hover, &:focus, &:active {
+                        color: lighten(@medium-brown, 20%);
+                        background-color: @medium-brown;
+                        border-color: lighten(@medium-brown, 15%);
+                    }
+                }
+            }
+        }
+    }
     
     panel, .well {
        color: #333;
@@ -29,40 +122,17 @@ body {
             h1,h2,h3,h4,h5,h6, .navbar-brand  {
             }
         }
-    }
-}
-
-.page-header, hr {
-    border-color: darken(@brick-red, 5%);
-}
-
-.modal-content {
-    background-color: @medium-brown;
-    
-    .modal-header {
-        border-color: darken(@medium-brown, 5%);
-    }
-    .modal-footer {
-        border-color: darken(@medium-brown, 5%);
-    }
-}
-.dropdown-menu {
-    color: #fff;
-    background-color: @medium-brown;
-    >li {
-        &.divider {
-            background-color:darken(@medium-brown, 5%);
-        }
-        
-        &>a {
-            color: #fff;
-            &:hover, &:focus, &:hover {
-                color: #fff;
-                background-color:darken(@medium-brown, 5%);
+        .pagination {
+            >li {
+                a, span {
+                    font-size: .8em;
+                }
             }
         }
     }
 }
+
+
 
 .auth .container {
     .logo {
@@ -162,22 +232,3 @@ body {
     }
 }
 
-.pagination {
-    >li {
-        a {
-            color: darken(@brick-red, 15%);
-        }
-        
-        &.active>a, 
-        &.active>span {
-            color: #fff;
-            background-color: lighten(@brick-red, 10%);
-            border-color: lighten(@brick-red, 15%);
-            &:hover, &:focus, &:active {
-                color: #fff;
-                background-color: lighten(@brick-red, 5%);
-                border-color: lighten(@brick-red, 10%);
-            }
-        }
-    }
-}

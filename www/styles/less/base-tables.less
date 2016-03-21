@@ -3,10 +3,6 @@
  * 
  * DataTable and standard Table style overrides.
  */
- 
-table.table-dark {
-    
-}
 
 table.dataTable {
     border-bottom: 1px solid #e3e3e3;
@@ -58,6 +54,26 @@ table.dataTable {
             td {
                 padding: 4px; // Thin out normal bootstrap padding
             }
+        }
+    }
+}
+ 
+table.dataTable.table-dark {
+    border-color: darken(@brick-red, 5%);
+    tr {
+        border-color: darken(@brick-red, 5%);
+        
+        th {
+            background-color: @brick-red;
+            color: #fff;
+            border-bottom-color: lighten(@brick-red, 15%);
+            border-top-color: darken(@brick-red, 5%);
+            border-left-color: darken(@brick-red, 5%);
+            border-right-color: darken(@brick-red, 5%);
+        }
+        
+        td {
+            border-color: darken(@brick-red, 5%);
         }
     }
 }

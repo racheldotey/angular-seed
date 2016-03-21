@@ -291,6 +291,23 @@ table.dataTable tbody tr.child td.child table.sub-table {
 table.dataTable tbody tr td {
   padding: 4px;
 }
+table.dataTable.table-dark {
+  border-color: #6f0000;
+}
+table.dataTable.table-dark tr {
+  border-color: #6f0000;
+}
+table.dataTable.table-dark tr th {
+  background-color: #880000;
+  color: #fff;
+  border-bottom-color: #d40000;
+  border-top-color: #6f0000;
+  border-left-color: #6f0000;
+  border-right-color: #6f0000;
+}
+table.dataTable.table-dark tr td {
+  border-color: #6f0000;
+}
 /*
  * Typography Styles
  * 
@@ -299,7 +316,7 @@ table.dataTable tbody tr td {
 .ng-cloak {
   display: none !important;
 }
-body {
+body:not(.admin) {
   background-color: #880000;
   background-image: url('/media/images/trivia-background.png');
   background-repeat: no-repeat;
@@ -307,6 +324,96 @@ body {
   background-size: cover;
   background-attachment: fixed;
   color: white;
+}
+body:not(.admin) a:not(.btn) {
+  color: #ec971f;
+}
+body:not(.admin) a:not(.btn):hover,
+body:not(.admin) a:not(.btn):focus,
+body:not(.admin) a:not(.btn):active {
+  color: #fff;
+}
+body:not(.admin) .alert-warning {
+  background-color: #f0ad4e;
+  border-color: #f4c37d;
+}
+body:not(.admin) .page-header,
+body:not(.admin) hr {
+  border-color: #6f0000;
+}
+body:not(.admin) .modal-content {
+  background-color: #47413a;
+}
+body:not(.admin) .modal-content .modal-header {
+  border-color: #39342f;
+}
+body:not(.admin) .modal-content .modal-footer {
+  border-color: #39342f;
+}
+body:not(.admin) .dropdown-menu {
+  color: #fff;
+  background-color: #47413a;
+}
+body:not(.admin) .dropdown-menu > li.divider {
+  background-color: #39342f;
+}
+body:not(.admin) .dropdown-menu > li > a {
+  color: #fff;
+}
+body:not(.admin) .dropdown-menu > li > a:hover,
+body:not(.admin) .dropdown-menu > li > a:focus,
+body:not(.admin) .dropdown-menu > li > a:hover {
+  color: #fff;
+  background-color: #39342f;
+}
+body:not(.admin) .pagination > li a,
+body:not(.admin) .pagination > li span {
+  font-size: .8em;
+  color: #dad9d8;
+  background-color: #47413a;
+  border-color: #71685c;
+}
+body:not(.admin) .pagination > li a:hover,
+body:not(.admin) .pagination > li span:hover,
+body:not(.admin) .pagination > li a:focus,
+body:not(.admin) .pagination > li span:focus,
+body:not(.admin) .pagination > li a:active,
+body:not(.admin) .pagination > li span:active {
+  color: #fff;
+  background-color: #a20000;
+  border-color: #bb0000;
+}
+body:not(.admin) .pagination > li.active > a,
+body:not(.admin) .pagination > li.active > span {
+  color: #fff;
+  background-color: #bb0000;
+  border-color: #d40000;
+}
+body:not(.admin) .pagination > li.active > a:hover,
+body:not(.admin) .pagination > li.active > span:hover,
+body:not(.admin) .pagination > li.active > a:focus,
+body:not(.admin) .pagination > li.active > span:focus,
+body:not(.admin) .pagination > li.active > a:active,
+body:not(.admin) .pagination > li.active > span:active {
+  color: #fff;
+  background-color: #a20000;
+  border-color: #bb0000;
+}
+body:not(.admin) .pagination > li.disabled > a,
+body:not(.admin) .pagination > li.disabled > span {
+  color: #7f7468;
+  background-color: #47413a;
+  border-color: #71685c;
+}
+body:not(.admin) .pagination > li.disabled > a:hover,
+body:not(.admin) .pagination > li.disabled > span:hover,
+body:not(.admin) .pagination > li.disabled > a:focus,
+body:not(.admin) .pagination > li.disabled > span:focus,
+body:not(.admin) .pagination > li.disabled > a:active,
+body:not(.admin) .pagination > li.disabled > span:active {
+  color: #7f7468;
+  background-color: #47413a;
+  border-color: #71685c;
 }
 body panel,
 body .well {
@@ -318,34 +425,9 @@ body.admin {
 body.admin .layout.admin .container {
   color: #333;
 }
-.page-header,
-hr {
-  border-color: #6f0000;
-}
-.modal-content {
-  background-color: #47413a;
-}
-.modal-content .modal-header {
-  border-color: #39342f;
-}
-.modal-content .modal-footer {
-  border-color: #39342f;
-}
-.dropdown-menu {
-  color: #fff;
-  background-color: #47413a;
-}
-.dropdown-menu > li.divider {
-  background-color: #39342f;
-}
-.dropdown-menu > li > a {
-  color: #fff;
-}
-.dropdown-menu > li > a:hover,
-.dropdown-menu > li > a:focus,
-.dropdown-menu > li > a:hover {
-  color: #fff;
-  background-color: #39342f;
+body.admin .pagination > li a,
+body.admin .pagination > li span {
+  font-size: .8em;
 }
 .auth .container .logo {
   padding: 30px 0 50px;
@@ -557,25 +639,6 @@ hr {
 .open > .dropdown-toggle.btn-primary:active:active,
 .dropdown-toggle.btn-danger:active:active,
 .dropdown-toggle.btn-primary:active:active {
-  color: #fff;
-  background-color: #a20000;
-  border-color: #bb0000;
-}
-.pagination > li a {
-  color: #3c0000;
-}
-.pagination > li.active > a,
-.pagination > li.active > span {
-  color: #fff;
-  background-color: #bb0000;
-  border-color: #d40000;
-}
-.pagination > li.active > a:hover,
-.pagination > li.active > span:hover,
-.pagination > li.active > a:focus,
-.pagination > li.active > span:focus,
-.pagination > li.active > a:active,
-.pagination > li.active > span:active {
   color: #fff;
   background-color: #a20000;
   border-color: #bb0000;

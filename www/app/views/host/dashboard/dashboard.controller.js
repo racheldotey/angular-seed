@@ -12,7 +12,7 @@ angular.module('app.host.dashboard', [])
 
 
         // DataTable Setup
-        $scope.dtGames = DataTableHelper.getDTStructure($scope, 'publicGamesList');
+        $scope.dtGames = DataTableHelper.getDTStructure($scope, 'publicHostGamesList', 2);
         $scope.dtGames.columns = [
             DTColumnBuilder.newColumn(null).withTitle('Game Name').renderWith(function (data, type, full, meta) {
                 return '<a data-ui-sref="app.host.game({gameId : ' + data.id + ', pageId : 1 })">' + data.name + '</a>';

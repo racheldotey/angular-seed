@@ -12,7 +12,7 @@ angular.module('DataTableHelper', [])
         
     var helper = {};
     
-    helper.getDTStructure = function($scope, method, rowCallback) {
+    helper.getDTStructure = function($scope, method, params, rowCallback) {
         var dt = {};
 
         /* Holds a copy of each row data */
@@ -24,7 +24,7 @@ angular.module('DataTableHelper', [])
             dt.instance = instance;
         };
 
-        dt.options = DTOptionsBuilder.fromFnPromise(ApiRoutesDatatables[method])
+        dt.options = DTOptionsBuilder.fromFnPromise(ApiRoutesDatatables[method](params))
             .withBootstrap()
             .withDOM('<"row"<"col-sm-12 col-md-12"fr><"col-sm-12 col-md-12 add-space"t><"col-sm-4 col-md-4"l><"col-sm-4 col-md-4"i><"col-sm-4 col-md-4"p>>')
             .withPaginationType('full_numbers')

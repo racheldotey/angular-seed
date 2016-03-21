@@ -28,6 +28,10 @@
             <thead>
                     <tr>
                         <th><p>Team Name</p></th>
+                        <th><p class="text-center">Round Score</p></th>
+                        <th><p class="text-center">Round Rank</p></th>
+                        <th><p class="text-center">Game Score</p></th>
+                        <th><p class="text-center">Game Rank</p></th>
                         <th ng-repeat="question in game.round.questions" data-team-id="{{question.questionId}}">
                             <p class="text-center"><strong>#{{question.questionNumber}} - {{question.maxPoints | numberEx}} pts</strong></p>
                             <p ng-if="question.question">{{question.question}}</p>
@@ -36,7 +40,12 @@
             </thead>
             <tbody>
                 <tr ng-repeat="team in game.round.teams" data-team-id="{{team.teamId}}">
-                    <td class="team"><p>{{team.team}}</p></td>
+                        <th class="team"><p>{{team.team}}</p></th>
+                        <th class="round-score"><p class="text-center">{{team.roundScore | numberEx}}</p></th>
+                        <th class="round-rank"><p class="text-center">{{team.roundRank}}</p></th>
+                        <th class="game-score"><p class="text-center">{{team.gameScore | numberEx}}</p></th>
+                        <th class="game-rank"><p class="text-center">{{team.gameRank}}</p></th>
+                        
                     <td class="question-score" ng-repeat="teamScore in team.scores" data-question-id="{{teamScore.questionId}}">
                         <strong>{{teamScore.questionScore| numberEx}} / {{game.round.maxPoints | numberEx}}</strong>
                     </td>
