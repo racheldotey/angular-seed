@@ -40,10 +40,9 @@ angular.module('app.auth.signupVenue', [])
             'website' : '',
             'facebook' : '',
             'hours' : '',
-            'logoUrl' : '',
             'referralCode' : ''
         };
-        $scope.newUserB = {
+        $scope.newUser = {
             'userGroup' : 'player',
             'nameFirst' : 'Ra',
             'nameLast' : 'Carbone',
@@ -52,7 +51,7 @@ angular.module('app.auth.signupVenue', [])
             'passwordB' : 'password1',
             'referer' : 'Google',
             'acceptTerms' : true,
-            'venueName' : 'Bar n Grill',
+            'venueName' : 'TESTING',
             'phone' : '12345678',
             'address' : '1 Main Street',
             'addressb' : 'Downstairs',
@@ -62,7 +61,6 @@ angular.module('app.auth.signupVenue', [])
             'website' : 'http://barngrill.com',
             'facebook' : 'http://facebook.com',
             'hours' : 'Friday and Saturday at 6pm',
-            'logoUrl' : 'xxxxxxxxxxxxxxxxxxxx',
             'referralCode' : 'Facebook'
         };
         

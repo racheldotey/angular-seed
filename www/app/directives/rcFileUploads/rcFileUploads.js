@@ -6,7 +6,7 @@
  * A parent module for my custom directives.
  */
 
-angular.module('rc.FileUploads', [])
+angular.module('rc.FileUploads', ['ngFileUpload', 'ngImgCrop'])
 .directive('rcImageUploadWithEditor', function (DIRECTIVES_URL) {
     return {
         restrict: 'A',          // Must be a attribute on a html tag
@@ -24,12 +24,11 @@ angular.module('rc.FileUploads', [])
             $scope.cropAreaLabel = attributes.cropAreaLabel || 'Crop Your Image';
             $scope.cropPreviewLabel = attributes.cropPreviewLabel || 'Preview';
             
-            $scope.imageUpload = {
-                file : false,
-                photostream : false,
-                imageDataUrl : false,
-                selectedFilesLabel : ''
-            };
+            $scope.imageUpload = $scope.imageUpload || {};
+            $scope.imageUpload.file = false;
+            $scope.imageUpload.photostream = false;
+            $scope.imageUpload.imageDataUrl = false;
+            $scope.imageUpload.selectedFilesLabel = '';
         },
         controller: ["$scope", 'DIRECTIVES_URL', function ($scope, DIRECTIVES_URL) {
             // Controller - Create a controller which publishes an API for 
