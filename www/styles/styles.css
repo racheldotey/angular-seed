@@ -341,7 +341,7 @@ body:not(.admin) {
   color: white;
 }
 body:not(.admin) a:not(.btn) {
-  color: #ec971f;
+  color: #dad9d8;
 }
 body:not(.admin) a:not(.btn):hover,
 body:not(.admin) a:not(.btn):focus,

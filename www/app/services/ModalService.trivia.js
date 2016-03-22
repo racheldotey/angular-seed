@@ -6,13 +6,14 @@
  * 
  * Includes modal controllers and provides and api to launch the modal.
  * https://angular-ui.github.io/bootstrap/#/modal
- */
+ */  
 
 angular.module('TriviaModalService', [
     'app.modal.trivia.editGame',
     'app.modal.trivia.editQuestion',
     'app.modal.trivia.editRound',
-    'app.modal.trivia.editTeam'
+    'app.modal.trivia.editTeam',
+    'app.modal.trivia.invitePlayer'
 ])
 .factory('TriviaModalService', ['$uibModal', function($uibModal) {
         
@@ -142,6 +143,23 @@ angular.module('TriviaModalService', [
             resolve: {
                 editing: function() {
                     return (angular.isDefined(question)) ? question : {};
+                }
+            }
+        });
+    };
+    
+    /*
+     * Open Invite Player to Trivia Joint Modal
+     * 
+     * @return uibModalInstance
+     */
+    api.openInviteFriend = function(currentUser) {
+        return api.openModal({
+            templateUrl: templatePath + 'invitePlayer/invitePlayer.html',
+            controller: 'TriviaInvitePlayerModalCtrl',
+            resolve: {
+                editing: function() {
+                    return (angular.isDefined(currentUser)) ? currentUser : {};
                 }
             }
         });

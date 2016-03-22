@@ -1,4 +1,4 @@
-'use strict';
+ 'use strict';
 
 /* 
  * API Routes for Datatable Content

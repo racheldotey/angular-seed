@@ -7,15 +7,15 @@
  */
 
 angular.module('app.admin.games', [])
-    .controller('AdminGamesCtrl', ['$scope', '$compile', '$filter', 'DTOptionsBuilder', 'DTColumnBuilder', 'DataTableHelper', 'ModalService', 
-        function($scope, $compile, $filter, DTOptionsBuilder, DTColumnBuilder, DataTableHelper, ModalService) {
+    .controller('AdminGamesCtrl', ['$scope', '$compile', '$filter', 'DTOptionsBuilder', 'DTColumnBuilder', 'DataTableHelper', 'TriviaModalService', 
+        function($scope, $compile, $filter, DTOptionsBuilder, DTColumnBuilder, DataTableHelper, TriviaModalService) {
 
         /* Modal triggers */
         // Edit User Modal
         $scope.buttonOpenEditUserModal = function (id) {
             var found = $filter('filter')($scope.dtGames.instance.DataTable.data(), {id: id}, true);
             if(angular.isDefined(found[0])) {
-                var modalInstance = ModalService.openEditUser(found[0]);
+                var modalInstance = TriviaModalService.openEditGame(found[0]);
                 modalInstance.result.then(function (selectedItem) {
                     $scope.dtGames.reloadData();
                 }, function () {});
@@ -84,7 +84,8 @@ angular.module('app.admin.games', [])
         ];
         
         $scope.buttonOpenNewGameModal = function() {
-            
+            var modalInstance = TriviaModalService.openEditGame(false);
+            modalInstance.result.then(function(result) { });
         };
         
         $scope.buttonOpenNewTeamModal = function() {

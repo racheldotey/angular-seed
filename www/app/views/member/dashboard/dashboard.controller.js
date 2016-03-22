@@ -24,7 +24,14 @@ angular.module('app.member.dashboard', [])
             })
         ];
         
-        $scope.buttonNewGame = function() {
+        $scope.buttonInviteFriend = function() {
+            var modalInstance = TriviaModalService.openInviteFriend(false);
+            modalInstance.result.then(function(result) {
+                $scope.alertProxy.success('Invite sent.');
+            });
+        };
+        
+        $scope.buttonCreateTeam = function() {
             var modalInstance = TriviaModalService.openEditGame(false);
             modalInstance.result.then(function(result) {
                 $state.go('app.host.game', {'gameId' : result.id, 'roundNumber': 1});

@@ -47,7 +47,7 @@
                         <th class="game-rank"><p class="text-center">{{team.gameRank}}</p></th>
                         
                     <td class="question-score" ng-repeat="teamScore in team.scores" data-question-id="{{teamScore.questionId}}">
-                        <strong>{{teamScore.questionScore| numberEx}} / {{game.round.maxPoints | numberEx}}</strong>
+                        <strong>{{teamScore.questionScore| numberEx}}</strong>
                     </td>
                 </tr>
             </tbody>
