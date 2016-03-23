@@ -24,11 +24,12 @@ angular.module('rc.FileUploads', ['ngFileUpload', 'ngImgCrop'])
             $scope.cropAreaLabel = attributes.cropAreaLabel || 'Crop Your Image';
             $scope.cropPreviewLabel = attributes.cropPreviewLabel || 'Preview';
             
+            // Be careful not to override saved image
             $scope.imageUpload = $scope.imageUpload || {};
-            $scope.imageUpload.file = false;
-            $scope.imageUpload.photostream = false;
-            $scope.imageUpload.imageDataUrl = false;
-            $scope.imageUpload.selectedFilesLabel = '';
+            $scope.imageUpload.file = $scope.imageUpload.file || false;
+            $scope.imageUpload.photostream = $scope.imageUpload.photostream || false;
+            $scope.imageUpload.imageDataUrl = $scope.imageUpload.imageDataUrl || false;
+            $scope.imageUpload.selectedFilesLabel = $scope.imageUpload.selectedFilesLabel || '';
         },
         controller: ["$scope", 'DIRECTIVES_URL', function ($scope, DIRECTIVES_URL) {
             // Controller - Create a controller which publishes an API for 

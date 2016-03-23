@@ -1,0 +1,128 @@
+<div class="modal-header">
+    <h3 ng-if="newMode" class="modal-title">New Trivia Joint</h3>
+    <h3 ng-if="!newMode && editMode" class="modal-title">Edit Trivia Joint #{{saved.id}}</h3>
+    <h3 ng-if="!newMode && !editMode" class="modal-title">Trivia Joint #{{saved.id}}</h3>
+</div>
+
+<div class="modal-body">
+    
+    <div data-rc-bootstrap-alerts="alertProxy"></div>
+    
+    
+    <div ng-if="!editMode">
+        
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <label>Group Name</label>
+                    <p class="form-control-static">{{saved.group}}</p>
+                </div>
+            </div>
+            <div class="col-xs-12">
+                <div class="form-group" title="Unique identifier to be embedded within the system.">
+                    <label>Unique Reference Identifier</label>
+                    <p class="form-control-static"><code>{{saved.identifier}}</code></p>
+                </div>
+            </div>
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <label>Description</label>
+                    <div class="form-control-static">{{saved.desc | formatParagraphsAsHtml}}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="meta" ng-if="!newMode">
+            <hr/>
+            <p class="text-muted"><strong>Created:</strong> {{saved.created | formatMySQLDate}} by {{saved.createdBy}}</p>
+            <p class="text-muted"><strong>Updated:</strong> {{saved.lastUpdated | formatMySQLDate}} by {{saved.updatedBy}}</p>
+        </div>
+
+    </div>
+    
+    <form ng-if="editMode" name="form.modalForm" role="form" novalidate>
+    
+        <div data-rc-bootstrap-alerts="alertProxy"></div>
+
+        <div class="form-group row">
+            <div class="col-xs-12">
+                <input ng-model="editing.venueName" type="text" class="form-control" name="venueName" placeholder="Joint Name" maxlength="255" required>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-xs-6">
+                <input ng-model="editing.address" type="text" class="form-control" name="address" placeholder="Joint Address" maxlength="255" required>
+            </div>
+            <div class="col-xs-6">
+                <input ng-model="editing.addressb" type="text" class="form-control" name="addressb" placeholder="Joint Address Con't" maxlength="255">
+            </div>
+            </div>
+
+        <div class="form-group row">
+            <div class="col-xs-6">
+                <input ng-model="editing.city" type="text" class="form-control" name="city" placeholder="Joint City" maxlength="255" required>
+            </div>
+
+            <div class="col-xs-3">
+                <select rc-drop-down-states ng-model="editing.state" class="form-control" required>
+                    <option value="">State</option>
+                </select>
+            </div>
+
+            <div class="col-xs-3">
+                <input ng-model="editing.zip" type="text" class="form-control" name="zip" placeholder="Zip" maxlength="255" required>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-xs-6">
+                <input ng-model="editing.phone" type="text" class="form-control" name="phone" placeholder="Joint Phone" maxlength="16" required>
+            </div>
+            <div class="col-xs-6">
+                <input ng-model="editing.hours" type="text" class="form-control" name="hours" placeholder="Trivia Days & Hours" maxlength="255">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-xs-6">
+                <input ng-model="editing.website" type="text" class="form-control" name="website" placeholder="Joint Website (http://...)" maxlength="255">
+            </div>
+            <div class="col-xs-6">
+                <input ng-model="editing.facebook" type="text" class="form-control" name="facebook" placeholder="Joint Facebook Page (http://...)" maxlength="255">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-xs-12">
+                <input ng-model="editing.referralCode" type="text" class="form-control" name="referralCode" placeholder="Referral Code" maxlength="255">
+            </div>
+        </div>
+
+
+        <div 
+            rc-image-upload-with-editor="venueLogo"
+            input-label="Upload Venue Logo"
+            browse-button-label="Select Logo"
+            crop-area-label="Crop Your Logo"
+            crop-preview-label="Logo Preview"        
+            ></div>
+
+        <div data-rc-bootstrap-alerts="alertProxy"></div>
+
+    </form>
+
+</div>
+
+<div ng-if="!editMode" class="modal-footer">
+    <button class="btn btn-default pull-left" ng-click="buttonEdit()">Edit</button>
+    <button class="btn btn-primary" ng-click="buttonCancel()">Done</button>
+</div>
+
+<div ng-if="editMode" class="modal-footer">
+    <!--<button class="btn btn-warning pull-left" ng-if="!newMode" ng-click="buttonDelete()">Delete</button>-->
+    
+    <button class="btn btn-default" ng-click="buttonCancel()">Cancel</button>
+    <button class="btn btn-primary" ng-if="newMode" ng-click="buttonNew()">Add</button>
+    <button class="btn btn-primary" ng-if="!newMode" ng-click="buttonSave()">Save</button>
+</div>

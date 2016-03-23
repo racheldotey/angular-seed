@@ -120,23 +120,23 @@ class DatatablesData {
         return DBConn::selectAll("SELECT g.id, g.name, g.scheduled, g.venue_id AS venueId, g.host_user_id AS hostId, "
                 . "game_started AS started, game_ended AS ended, max_points maxPoints, "
                 . "CONCAT(u.name_first, ' ', u.name_last) AS host, v.name AS venue "
-                . "FROM as_games AS g LEFT JOIN as_users AS u ON u.id = g.host_user_id "
-                . "LEFT JOIN as_venues AS v ON v.id = g.venue_id;");
+                . "FROM " . DBConn::prefix() . "games AS g LEFT JOIN " . DBConn::prefix() . "users AS u ON u.id = g.host_user_id "
+                . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = g.venue_id;");
     }
         
     static function selectTriviaTeams() {
         return DBConn::selectAll("SELECT t.id, t.name AS team, t.created, 
 CONCAT(u.name_first, ' ', u.name_last) AS createdBy
-FROM as_teams AS t
-LEFT JOIN as_users AS u ON u.id = t.created_user_id
+FROM " . DBConn::prefix() . "teams AS t
+LEFT JOIN " . DBConn::prefix() . "users AS u ON u.id = t.created_user_id
 ORDER BY t.name;");
     }
         
     static function selectTriviaVenues() {
         return DBConn::selectAll("SELECT v.id, v.name AS venue, v.city, v.state, v.website, v.facebook_url as facebook, v.logo, v.hours, v.referral, v.created, 
 CONCAT(u.name_first, ' ', u.name_last) AS createdBy
-FROM as_venues AS v
-LEFT JOIN as_users AS u ON u.id = v.created_user_id
+FROM " . DBConn::prefix() . "venues AS v
+LEFT JOIN " . DBConn::prefix() . "users AS u ON u.id = v.created_user_id
 ORDER BY v.name;");
     }
     
@@ -146,16 +146,16 @@ ORDER BY v.name;");
         return DBConn::selectAll("SELECT g.id, g.name, g.scheduled, g.venue_id AS venueId, g.host_user_id AS hostId, "
                 . "game_started AS started, game_ended AS ended, max_points maxPoints, "
                 . "CONCAT(u.name_first, ' ', u.name_last) AS host, v.name AS venue "
-                . "FROM as_games AS g LEFT JOIN as_users AS u ON u.id = g.host_user_id "
-                . "LEFT JOIN as_venues AS v ON v.id = g.venue_id;");
+                . "FROM " . DBConn::prefix() . "games AS g LEFT JOIN " . DBConn::prefix() . "users AS u ON u.id = g.host_user_id "
+                . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = g.venue_id;");
     }
     
     static function selectHostGames($hostId) {
         return DBConn::selectAll("SELECT g.id, g.name, g.scheduled, g.venue_id AS venueId, g.host_user_id AS hostId, "
                 . "game_started AS started, game_ended AS ended, max_points maxPoints, "
                 . "CONCAT(u.name_first, ' ', u.name_last) AS host, v.name AS venue "
-                . "FROM as_games AS g LEFT JOIN as_users AS u ON u.id = g.host_user_id "
-                . "LEFT JOIN as_venues AS v ON v.id = g.venue_id "
+                . "FROM " . DBConn::prefix() . "games AS g LEFT JOIN " . DBConn::prefix() . "users AS u ON u.id = g.host_user_id "
+                . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = g.venue_id "
                 . "WHERE g.host_user_id = :host_user_id;", array(':host_user_id' => $hostId));
     }
     
@@ -163,8 +163,8 @@ ORDER BY v.name;");
         return DBConn::selectAll("SELECT g.id, g.name, g.scheduled, g.venue_id AS venueId, g.host_user_id AS hostId, "
                 . "game_started AS started, game_ended AS ended, max_points maxPoints, "
                 . "CONCAT(u.name_first, ' ', u.name_last) AS host, v.name AS venue "
-                . "FROM as_games AS g LEFT JOIN as_users AS u ON u.id = g.host_user_id "
-                . "LEFT JOIN as_venues AS v ON v.id = g.venue_id "
+                . "FROM " . DBConn::prefix() . "games AS g LEFT JOIN " . DBConn::prefix() . "users AS u ON u.id = g.host_user_id "
+                . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = g.venue_id "
                 . "WHERE g.venue_id = :venue_id;", array(':venue_id' => $venueId));
     }
     
@@ -172,9 +172,9 @@ ORDER BY v.name;");
         return DBConn::selectAll("SELECT g.id, g.name, g.scheduled, g.venue_id AS venueId, g.host_user_id AS hostId, "
                 . "game_started AS started, game_ended AS ended, max_points maxPoints, "
                 . "CONCAT(u.name_first, ' ', u.name_last) AS host, v.name AS venue "
-                . "FROM as_games AS g LEFT JOIN as_users AS u ON u.id = g.host_user_id "
-                . "LEFT JOIN as_venues AS v ON v.id = g.venue_id "
-                . "JOIN as_game_score_teams AS t ON t.game_id = g.id "
+                . "FROM " . DBConn::prefix() . "games AS g LEFT JOIN " . DBConn::prefix() . "users AS u ON u.id = g.host_user_id "
+                . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = g.venue_id "
+                . "JOIN " . DBConn::prefix() . "game_score_teams AS t ON t.game_id = g.id "
                 . "WHERE t.team_id = :team_id;", array(':team_id' => $teamId));
     }
 }

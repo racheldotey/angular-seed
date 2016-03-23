@@ -7,12 +7,12 @@
  */
 
 angular.module('app.host.dashboard', [])
-    .controller('HostDashboardCtrl', ['$scope', '$state', 'TriviaModalService', 'DataTableHelper', 'DTColumnBuilder',
-        function($scope, $state, TriviaModalService, DataTableHelper, DTColumnBuilder) {
+    .controller('HostDashboardCtrl', ['$scope', '$state', 'TriviaModalService', 'DataTableHelper', 'DTColumnBuilder', 'UserSession',
+        function($scope, $state, TriviaModalService, DataTableHelper, DTColumnBuilder, UserSession) {
 
 
         // DataTable Setup
-        $scope.dtGames = DataTableHelper.getDTStructure($scope, 'publicHostGamesList', 2);
+        $scope.dtGames = DataTableHelper.getDTStructure($scope, 'publicHostGamesList', UserSession.id());
         $scope.dtGames.columns = [
             DTColumnBuilder.newColumn(null).withTitle('Game Name').renderWith(function (data, type, full, meta) {
                 return '<a data-ui-sref="app.host.game({gameId : ' + data.id + ', pageId : 1 })">' + data.name + '</a>';

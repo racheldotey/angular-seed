@@ -12,7 +12,7 @@ angular.module('app.admin.games', [])
 
         /* Modal triggers */
         // Edit User Modal
-        $scope.buttonOpenEditUserModal = function (id) {
+        $scope.buttonOpenEditGameModal = function (id) {
             var found = $filter('filter')($scope.dtGames.instance.DataTable.data(), {id: id}, true);
             if(angular.isDefined(found[0])) {
                 var modalInstance = TriviaModalService.openEditGame(found[0]);
@@ -26,7 +26,7 @@ angular.module('app.admin.games', [])
         $scope.dtUserGroups = {};
         $scope.dtUserGroups.options = DTOptionsBuilder.newOptions();
 
-        $scope.dtGames = DataTableHelper.getDTStructure($scope, 'adminGamesList');
+        $scope.dtGames = DataTableHelper.getDTStructure($scope, 'adminGamesList');/*
         $scope.dtGames.options.withOption('responsive', {
             details: {
                 type: 'column',
@@ -66,7 +66,7 @@ angular.module('app.admin.games', [])
                     return table;
                 }
             }
-        });
+        });*/
 
         $scope.dtGames.columns = [/*
             DTColumnBuilder.newColumn(null).withTitle('Groups').withClass('responsive-control text-right noclick').renderWith(function(data, type, full, meta) {
@@ -80,20 +80,27 @@ angular.module('app.admin.games', [])
             DTColumnBuilder.newColumn('scheduled').withTitle('Scheduled').renderWith(function (data, type, full, meta) {
                 return moment(data, 'YYYY-MM-DD HH:mm:ss').format('M/D/YYYY h:mm a');
             }),
+            DTColumnBuilder.newColumn(null).withTitle('').renderWith(function(data, type, full, meta) {
+                return '<button ng-click="buttonOpenEditGameModal(\'' + data.id + '\')" type="button" class="btn btn-default btn-xs pull-right">View</button>';
+            }).notSortable(),
             //DTColumnBuilder.newColumn('groups').withTitle('User Groups').withClass('none').notSortable()
         ];
         
         $scope.buttonOpenNewGameModal = function() {
             var modalInstance = TriviaModalService.openEditGame(false);
-            modalInstance.result.then(function(result) { });
+            modalInstance.result.then(function(result) { 
+                $scope.dtGames.reloadData();
+            });
         };
         
         $scope.buttonOpenNewTeamModal = function() {
-            
+            var modalInstance = TriviaModalService.openEditTeam(false);
+            modalInstance.result.then(function(result) { });
         };
         
         $scope.buttonOpenNewVenueModal = function() {
-            
+            var modalInstance = TriviaModalService.openEditVenue(false);
+            modalInstance.result.then(function(result) { });
         };
         
     }]);

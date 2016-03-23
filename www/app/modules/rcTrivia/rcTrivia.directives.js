@@ -61,13 +61,13 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 
             $scope.buttonViewRound = function(roundNumber) {
                 TriviaGame.loadRound(roundNumber).then(function (result) {
-                        // Change the State (URL) parameters without reloading the page
-                        // Used for deep linking
-                        $scope.game = result;
-                        $state.go($state.$current, {gameId: $scope.game.id, roundNumber: roundNumber}, {notify: false});
-                    }, function (error) {
-                        console.log(error);
-                    });
+                    // Change the State (URL) parameters without reloading the page
+                    // Used for deep linking
+                    $scope.game = result;
+                    $state.go($state.$current, {gameId: $scope.game.id, roundNumber: roundNumber}, {notify: false});
+                }, function (error) {
+                    console.log(error);
+                });
             };
             
             $scope.buttonStartGame = function() {

@@ -7,15 +7,15 @@
  */
 
 angular.module('app.admin.teams', [])
-    .controller('AdminTeamsCtrl', ['$scope', '$compile', '$filter', 'DTOptionsBuilder', 'DTColumnBuilder', 'DataTableHelper', 'ModalService', 
-        function($scope, $compile, $filter, DTOptionsBuilder, DTColumnBuilder, DataTableHelper, ModalService) {
+    .controller('AdminTeamsCtrl', ['$scope', '$compile', '$filter', 'DTOptionsBuilder', 'DTColumnBuilder', 'DataTableHelper', 'TriviaModalService', 
+        function($scope, $compile, $filter, DTOptionsBuilder, DTColumnBuilder, DataTableHelper, TriviaModalService) {
 
         /* Modal triggers */
         // Edit User Modal
-        $scope.buttonOpenEditUserModal = function (id) {
+        $scope.buttonOpenEditTeamModal = function (id) {
             var found = $filter('filter')($scope.dtTeams.instance.DataTable.data(), {id: id}, true);
             if(angular.isDefined(found[0])) {
-                var modalInstance = ModalService.openEditUser(found[0]);
+                var modalInstance = TriviaModalService.openEditTeam(found[0]);
                 modalInstance.result.then(function (selectedItem) {
                     $scope.dtTeams.reloadData();
                 }, function () {});
@@ -85,5 +85,22 @@ angular.module('app.admin.teams', [])
             }).notSortable(),
             //DTColumnBuilder.newColumn('members').withTitle('Team Members').withClass('none').notSortable()
         ];
+        
+        $scope.buttonOpenNewGameModal = function() {
+            var modalInstance = TriviaModalService.openEditGame(false);
+            modalInstance.result.then(function(result) { });
+        };
+        
+        $scope.buttonOpenNewTeamModal = function() {
+            var modalInstance = TriviaModalService.openEditTeam(false);
+            modalInstance.result.then(function(result) { 
+                $scope.dtVenues.reloadData();
+            });
+        };
+        
+        $scope.buttonOpenNewVenueModal = function() {
+            var modalInstance = TriviaModalService.openEditVenue(false);
+            modalInstance.result.then(function(result) { });
+        };
         
     }]);

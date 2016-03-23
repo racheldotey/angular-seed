@@ -16,7 +16,7 @@
         </div>
     </div>
     
-    <div class="col-md-6" ng-if="imageUpload.file" style="margin: 2em 0;">
+    <div class="col-md-6" style="margin: 2em 0;">
         <label>{{cropAreaLabel}}</label>
         <div class="cropArea center-block">
             <img-crop 
@@ -29,7 +29,7 @@
         </div>
     </div>
 
-    <div class="col-md-6" ng-if="imageUpload.file" style="margin: 2em 0;">
+    <div class="col-md-6" style="margin: 2em 0;">
         <label>{{cropPreviewLabel}}</label>
         <div class="preview-image center-block">
             <img ng-src="{{imageUpload.imageDataUrl}}" class="img-responsive" />

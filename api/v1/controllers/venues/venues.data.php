@@ -32,7 +32,7 @@ class VenueData {
     }
   
     public static function insertVenue($validVenue) {
-        return DBConn::insert("INSERT INTO " . DBConn::prefix() . "venues(`name`, `address`, `address_b`, `city`, `state`, `zip`, `phone`, `website`, `facebook_url`, `logo`, `hours`, `referral`, `created_user_id`, `last_updated_by`) "
+        return DBConn::insert("INSERT INTO " . DBConn::prefix() . "venues(name, address, address_b, city, state, zip, phone, website, facebook_url, logo, hours, referral, created_user_id, last_updated_by) "
                 . "VALUES (:name, :address, :address_b, :city, :state, :zip, :phone, :website, :facebook_url, :logo, :hours, :referral, :created_user_id, :last_updated_by)", $validVenue);
     }
   
@@ -42,11 +42,13 @@ class VenueData {
     }
     
     public static function updateVenue($validVenue) {
-        return DBConn::update("UPDATE " . DBConn::prefix() . "venues SET venue=:venue, slug=:slug, "
-                . "desc=:desc, last_updated_by=:last_updated_by;", $validVenue);
+        return DBConn::update("UPDATE " . DBConn::prefix() . "venues SET name=:name, address=:address, address_b=:address_b, "
+                . "city=:city, state=:state, zip=:zip, phone=:phone, website=:website, facebook_url=:facebook_url, "
+                . "logo=:logo, hours=:hours, last_updated_by=:last_updated_by "
+                . "WHERE id=:id;", $validVenue);
     }
     
     public static function deleteVenue($id) {
-        return DBConn::delete("DELETE FROM " . DBConn::prefix() . "venues WHERE id = :id LIMIT 1;", array('id' => $id));
+        return false;//DBConn::delete("DELETE FROM " . DBConn::prefix() . "venues WHERE id = :id LIMIT 1;", array('id' => $id));
     }
 }

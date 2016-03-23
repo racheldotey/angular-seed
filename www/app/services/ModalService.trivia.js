@@ -13,6 +13,7 @@ angular.module('TriviaModalService', [
     'app.modal.trivia.editQuestion',
     'app.modal.trivia.editRound',
     'app.modal.trivia.editTeam',
+    'app.modal.trivia.editVenue',
     'app.modal.trivia.invitePlayer'
 ])
 .factory('TriviaModalService', ['$uibModal', function($uibModal) {
@@ -82,6 +83,47 @@ angular.module('TriviaModalService', [
                 },
                 gameList: function(ApiRoutesSimpleLists) {
                     return ApiRoutesSimpleLists.simpleGamesList();
+                }
+            }
+        });
+    };
+    
+    /*
+     * Open Edit Trivia Team Modal
+     * 
+     * @return uibModalInstance
+     */
+    api.openEditTeam = function(gameId) {
+        return api.openModal({
+            templateUrl: templatePath + 'editTeam/editTeam.html',
+            controller: 'TriviaEditTeamModalCtrl',
+            resolve: {
+                ApiRoutesGames: 'ApiRoutesGames',
+                ApiRoutesSimpleLists: 'ApiRoutesSimpleLists',
+                editing: function(ApiRoutesGames) {
+                    return { 'gameId' : gameId };
+                },
+                gameList: function(ApiRoutesSimpleLists) {
+                    return ApiRoutesSimpleLists.simpleGamesList();
+                }
+            }
+        });
+    };
+    
+    /*
+     * Open Edit Trivia Venue / Joint Modal
+     * 
+     * @return uibModalInstance
+     */
+    api.openEditVenue = function(venueId) {
+        return api.openModal({
+            templateUrl: templatePath + 'editVenue/editVenue.html',
+            controller: 'TriviaEditVenueModalCtrl',
+            resolve: {
+                ApiRoutesGames: 'ApiRoutesGames',
+                ApiRoutesSimpleLists: 'ApiRoutesSimpleLists',
+                editing: function(ApiRoutesGames) {
+                    return { 'venueId' : venueId };
                 }
             }
         });

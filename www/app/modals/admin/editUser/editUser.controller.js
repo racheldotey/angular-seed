@@ -87,7 +87,7 @@ angular.module('app.modal.editUser', [])
                         }, function (error) {
                             $scope.alertProxy.error(error);
                         });
-                }, function () {
+                }, function (error) {
                     $log.info(error);
                 });
         };

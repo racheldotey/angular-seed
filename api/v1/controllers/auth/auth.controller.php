@@ -100,7 +100,7 @@ class AuthController {
             ':phone' => (v::key('phone', v::stringType())->validate($post)) ? $post['phone'] : '', 
             ':website' => (v::key('website', v::stringType())->validate($post)) ? $post['website'] : '', 
             ':facebook_url' => (v::key('facebook', v::stringType())->validate($post)) ? $post['facebook'] : '', 
-            ':logo' => (v::key('logoUrl', v::stringType())->validate($post)) ? $post['logoUrl'] : '', 
+            ':logo' => (v::key('logo', v::stringType())->validate($post)) ? $post['logo'] : '', 
             ':hours' => (v::key('hours', v::stringType())->validate($post)) ? $post['hours'] : '', 
             ':referral' => (v::key('referralCode', v::stringType())->validate($post)) ? $post['referralCode'] : '', 
             ":created_user_id" => $userId,

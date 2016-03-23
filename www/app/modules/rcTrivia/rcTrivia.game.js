@@ -70,15 +70,34 @@ angular.module('rcTrivia.game', [])
             };
 
             me.viewRound = function(roundNumber, newRound) {
+                if(angular.isDefined(_game.round.roundNumber)) {
+                    // Save current round progress
+                    var currentRoundIndex = me.findRoundIndexByNumber(roundNumber);
+                    if (angular.isNumber(roundIndex)) {
+                        console.log("Save Current Round, ", _game.round);
+                        _game.rounds[currentRoundIndex] = _game.round;
+                        console.log("_game, ", _game);
+                    }
+                }
+                    
+                // If its a new round add it
                 if(newRound) {
+                    console.log("Add New Round, ", newRound);
                     me.addRound(newRound);
-                }                    
+                    console.log("_game, ", _game);
+                }
+                
+                // Set the current round to the new round number
                 var found = me.findRoundIndexByNumber(roundNumber);                    
                 if(angular.isNumber(found) && angular.isDefined(_game.rounds[found].questions)) {
+                    console.log("Found Round, ", _game.rounds[found]);
                     _game.round = _game.rounds[found];
+                    console.log("_game, ", _game);
                     return true;
                 } else {
+                    console.log("Did Not Find Round");
                     _game.round = {};
+                    console.log("_game, ", _game);
                     return false;
                 }
             };
@@ -143,7 +162,9 @@ angular.module('rcTrivia.game', [])
         api.loadRound = function(roundNumber) {
             return $q(function (resolve, reject) {
                 var loadedGame = api.getGame();
-                if(loadedGame) {
+                if(loadedGame && loadedGame.round.roundNumber == roundNumber) {
+                    resolve(api.getGame());
+                } else if(loadedGame) {
                     var round = self.game.viewRound(roundNumber);
                     if(round) {
                         resolve(api.getGame());

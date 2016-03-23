@@ -150,27 +150,6 @@ app.config(['$stateProvider', 'USER_ROLES',
             }
         });
 
-        $stateProvider.state('app.auth.signupVenue.plain', {
-            bodyClass: 'auth signup iframe-compatible',
-            title: 'Venue Sign Up',
-            url: '/plain',
-            views: {
-                'header@app.auth': {},
-                'content@app.auth': {
-                    templateUrl: 'app/views/auth/signupVenue/signupVenueiFrame.html'
-                },
-                'signupform@app.auth.signupVenue.plain': {
-                    templateUrl: 'app/views/auth/signupVenue/signupVenueFormPlain.html'
-                },
-                'footer@app.auth': {}
-            },
-            resolve: {
-                alreadyLoggedIn: function() {
-                    return true;
-                }
-            }
-        });
-
         $stateProvider.state('app.auth.signup.confirmEmail', {
             title: 'Please Confirm Your Email',
             url: '/please-confirm-email'

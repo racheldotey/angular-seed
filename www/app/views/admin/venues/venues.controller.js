@@ -7,15 +7,15 @@
  */
 
 angular.module('app.admin.venues', [])
-    .controller('AdminVenuesCtrl', ['$scope', '$compile', '$filter', 'DTOptionsBuilder', 'DTColumnBuilder', 'DataTableHelper', 'ModalService', 
-        function($scope, $compile, $filter, DTOptionsBuilder, DTColumnBuilder, DataTableHelper, ModalService) {
+    .controller('AdminVenuesCtrl', ['$scope', '$compile', '$filter', 'DTOptionsBuilder', 'DTColumnBuilder', 'DataTableHelper', 'TriviaModalService', 
+        function($scope, $compile, $filter, DTOptionsBuilder, DTColumnBuilder, DataTableHelper, TriviaModalService) {
 
         /* Modal triggers */
         // Edit User Modal
-        $scope.buttonOpenEditUserModal = function (id) {
+        $scope.buttonOpenEditVenueModal = function (id) {
             var found = $filter('filter')($scope.dtVenues.instance.DataTable.data(), {id: id}, true);
             if(angular.isDefined(found[0])) {
-                var modalInstance = ModalService.openEditUser(found[0]);
+                var modalInstance = TriviaModalService.openEditVenue(found[0]);
                 modalInstance.result.then(function (selectedItem) {
                     $scope.dtVenues.reloadData();
                 }, function () {});
@@ -76,16 +76,22 @@ angular.module('app.admin.venues', [])
             }).notSortable(),*/
             DTColumnBuilder.newColumn('id').withTitle('ID'),
             DTColumnBuilder.newColumn('logo').withTitle('Logo').renderWith(function(data, type, full, meta) {
-                return 'hi';
+                return '<img ng-src="' + data + '" class="img-responsive" style="max-height: 25px; max-width: 25px;" />';
             }),
             DTColumnBuilder.newColumn('venue').withTitle('Joint Name'),
             DTColumnBuilder.newColumn('city').withTitle('City'),
             DTColumnBuilder.newColumn('state').withTitle('State'),
-            DTColumnBuilder.newColumn('website').withTitle('Website'),
-            DTColumnBuilder.newColumn('facebook').withTitle('Facebook'),
+            DTColumnBuilder.newColumn('website').withTitle('Website').renderWith(function(data, type, full, meta) {
+                return (data.length <= 0) ? '' : '<a href="' + data + '" target="_blank">Website</a>';
+            }),
+            DTColumnBuilder.newColumn('facebook').withTitle('Facebook').renderWith(function(data, type, full, meta) {
+                return (data.length <= 0) ? '' : '<a href="' + data + '" target="_blank">Facebook</a>';
+            }),
             DTColumnBuilder.newColumn('hours').withTitle('Hours'),
-            DTColumnBuilder.newColumn('referral').withTitle('Referral Code'),
-            DTColumnBuilder.newColumn('created').withTitle('Created By'),
+            DTColumnBuilder.newColumn('referral').withTitle('Referral Code').renderWith(function(data, type, full, meta) {
+                return '<code>' + data + '</code>';
+            }),
+            DTColumnBuilder.newColumn('createdBy').withTitle('Created By'),
             DTColumnBuilder.newColumn('created').withTitle('Created').renderWith(function (data, type, full, meta) {
                 return moment(data, 'YYYY-MM-DD HH:mm:ss').format('M/D/YYYY h:mm a');
             }),
@@ -94,5 +100,22 @@ angular.module('app.admin.venues', [])
             }).notSortable(),
             //DTColumnBuilder.newColumn('games').withTitle('Upcoming Games').withClass('none').notSortable()
         ];
+        
+        $scope.buttonOpenNewGameModal = function() {
+            var modalInstance = TriviaModalService.openEditGame(false);
+            modalInstance.result.then(function(result) { });
+        };
+        
+        $scope.buttonOpenNewTeamModal = function() {
+            var modalInstance = TriviaModalService.openEditTeam(false);
+            modalInstance.result.then(function(result) { });
+        };
+        
+        $scope.buttonOpenNewVenueModal = function() {
+            var modalInstance = TriviaModalService.openEditVenue(false);
+            modalInstance.result.then(function(result) { 
+                $scope.dtVenues.reloadData();
+            });
+        };
         
     }]);

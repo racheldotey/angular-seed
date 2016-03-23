@@ -69,15 +69,12 @@ angular.module('app.auth.signupVenue', [])
         $scope.signup = function() {
             if(angular.isString($scope.venueLogo.imageDataUrl) &&
                     ($scope.venueLogo.imageDataUrl.indexOf('data:image') > -1)) {
-                $scope.newUser.logoUrl = $scope.venueLogo.imageDataUrl;
+                $scope.newUser.logo = $scope.venueLogo.imageDataUrl;
             }            
             
             if(!$scope.form.venue.$valid) {
                 $scope.form.venue.$setDirty();
                 $scope.venueAlerts.error('Please fill in all fields for your venue.');
-            /*} else if(!$scope.form.signup.$valid) {
-                $scope.form.signup.$setDirty();
-                $scope.signupAlerts.error('Please fill in Name, Email, and Password fields.');*/
             } else if($scope.newUser.password !== $scope.newUser.passwordB) {
                 $scope.form.venue.$setDirty();
                 $scope.signupAlerts.error('Passwords do not match.');
@@ -116,7 +113,7 @@ angular.module('app.auth.signupVenue', [])
         $scope.facebookSignup = function() {
             if(angular.isString($scope.venueLogo.imageDataUrl)
                     ($scope.venueLogo.imageDataUrl.indexOf('data:image') > -1)) {
-                $scope.newUser.logoUrl = $scope.venueLogo.imageDataUrl;
+                $scope.newUser.logo = $scope.venueLogo.imageDataUrl;
             }
             
             if(!$scope.form.venue.$valid) {
