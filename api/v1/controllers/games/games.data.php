@@ -129,6 +129,18 @@ class GameData {
     }
     
     
+    
+    static function saveQuestionScores($scores) {
+        $saveQuestioneScore = DBConn::preparedQuery("INSERT INTO " . DBConn::prefix() . "game_score_questions(game_id, round_id, question_id, team_id, score, created_user_id) "
+                . "VALUES (:game_id,:round_id,:question_id,:team_id,:score,:created_user_id) "
+                . "ON DUPLICATE KEY UPDATE score = :dup_score, last_updated_by = :last_updated_by;");
+        $result = array();
+        foreach($scores as $score) {
+            $result[] = $saveQuestioneScore->execute($score);
+        }
+        return $result;
+    }
+    
     static function saveRoundScores($scores) {
         $saveRoundScore = DBConn::preparedQuery("INSERT INTO " . DBConn::prefix() . "game_score_rounds (game_id,round_id,team_id,score,round_rank,created_user_id) "
                 . "VALUES (:game_id,:round_id,:team_id,:score,:round_rank,:created_user_id) "
@@ -140,26 +152,46 @@ class GameData {
         return $result;
     }
     
-    static function saveOverallScores($scores) {
-        $saveTeamScore = DBConn::preparedQuery("INSERT INTO " . DBConn::prefix() . "game_score_teams (game_id,team_id,score,game_rank,created_user_id) "
-                . "VALUES (:game_id,:team_id,:score,:game_rank,:created_user_id) "
-                . "ON DUPLICATE KEY UPDATE score = :dup_score, game_rank = :dup_game_rank, "
-                . "last_updated_by = :last_updated_by, game_winner = :game_winner;");
+    static function saveOverallScores($gameId) {
         $result = array();
-        foreach($scores as $score) {
-            $result[] = $saveTeamScore->execute($score);
-        }
-        return $result;
-    }
-    
-    static function saveQuestionScores($scores) {
-        $saveQuestioneScore = DBConn::preparedQuery("INSERT INTO " . DBConn::prefix() . "game_score_questions(game_id, round_id, question_id, team_id, score, created_user_id) "
-                . "VALUES (:game_id,:round_id,:question_id,:team_id,:score,:created_user_id) "
-                . "ON DUPLICATE KEY UPDATE score = :dup_score, last_updated_by = :last_updated_by;");
-        $result = array();
-        foreach($scores as $score) {
-            $result[] = $saveQuestioneScore->execute($score);
-        }
+        $game = array(':game_id' => $gameId);
+        
+        // Update Max Score for Game Rounds
+        $result[] = DBConn::update("UPDATE as_game_rounds AS r "
+                . "INNER JOIN (SELECT qs.round_id, SUM(qs.max_points) AS maxpoints "
+                . "FROM as_game_round_questions AS qs GROUP BY qs.round_id) AS q ON r.id = q.round_id "
+                . "SET r.max_points = q.maxpoints WHERE r.game_id = :game_id;", $game);
+        
+        // Update Max Score for Game
+        $result[] = DBConn::update("UPDATE as_games AS g "
+                . "INNER JOIN (SELECT rs.game_id, SUM(rs.max_points) AS maxpoints "
+                . "FROM as_game_rounds AS rs) AS r ON r.game_id = g.id "
+                . "SET g.max_points = r.maxpoints WHERE g.id = :game_id;", $game);
+        
+        // Update Team Totals for each Round
+        $result[] = DBConn::update("UPDATE as_game_score_rounds AS r "
+                . "INNER JOIN (SELECT qs.round_id, qs.team_id, SUM(qs.score) AS total "
+                . "FROM as_game_score_questions AS qs GROUP BY qs.round_id, qs.team_id) AS q "
+                . "ON r.round_id = q.round_id AND r.team_id = q.team_id SET r.score = q.total WHERE r.game_id = :game_id;", $game);
+        
+        // Update Team Totals for the Game
+        $result[] = DBConn::update("UPDATE as_game_score_teams AS t "
+                . "INNER JOIN (SELECT rs.game_id, rs.team_id, SUM(rs.score) AS total "
+                . "FROM as_game_score_rounds AS rs GROUP BY rs.team_id) AS r "
+                . "ON t.game_id = r.game_id AND t.team_id = r.team_id SET t.score = r.total WHERE t.game_id = :game_id;", $game);
+        
+        // Update Team Totals for the Game Rounds
+        $result[] = DBConn::update("SET @lastscore = 0; SET @ordering = 0; "
+                . "UPDATE as_game_score_rounds SET round_rank = "
+                . "IF(score = @lastscore, @ordering, (@ordering := @ordering + 1)), "
+                . "score = (@lastscore := score) WHERE game_id = :game_id ORDER BY score DESC;", $game);
+        
+        // Update Team Totals for the Game
+        $result[] = DBConn::update("SET @lastscore = 0; SET @ordering = 0; "
+                . "UPDATE as_game_score_teams SET game_rank = "
+                . "IF(score = @lastscore, @ordering, (@ordering := @ordering + 1)), "
+                . "score = (@lastscore := score) WHERE game_id = :game_id ORDER BY score DESC;", $game);
+        
         return $result;
     }
     

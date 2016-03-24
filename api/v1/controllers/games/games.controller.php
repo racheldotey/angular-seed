@@ -124,7 +124,7 @@ class GameController {
         
         $gameSaved = 'Not saved';
         if(!v::key('rounds')->validate($app->request->post())) {
-            $gameSaved = GameData::saveScoreboard($gameId, $app->request->post('rounds'), APIAuth::getUserId());
+            $gameSaved = self::saveScoreboard($gameId, $app->request->post('rounds'), APIAuth::getUserId());
         }
         
         $saved = GameData::updateEndGame(array(
@@ -149,7 +149,8 @@ class GameController {
         
         $saved = self::processScores($gameId, $app->request->post('rounds'));
         if($saved) {
-            return $app->render(200, array('saved' => $saved, 'rounds' => $app->request->post('rounds')));
+            $game = GameData::selectGame($gameId);
+            return $app->render(200, array('saved' => $saved, 'game' => $game));
         } else {
             return $app->render(400,  array('msg' => 'Could not save scoreboard.'));
         }
@@ -159,8 +160,6 @@ class GameController {
         
         $currentUser = APIAuth::getUserId();
         
-        
-        $overallScores = array();
         $roundScores = array();
         $questionScores = array();
         
@@ -175,26 +174,13 @@ class GameController {
                     ':last_updated_by' => $currentUser
                 );
                 
-                // Save overall game score for this team
-                $overallScores[] = array_merge(array(), $general, array(
-                    ':score' => $team['gameScore'], 
-                    ':dup_score' => $team['gameScore'], 
-                    ':game_rank' => $team['gameRank'], 
-                    ':dup_game_rank' => $team['gameRank'], 
-                    ':game_winner' => (isset($team['winner']) && 
-                        ($team['winner'] === 1 || 
-                        $team['winner'] === '1' || 
-                        $team['winner'] === true || 
-                        $team['winner'] === 'true')) ? 1 : 0,
-                ));
-                
                 // Save Round Score for this team
                 $roundScores[] = array_merge(array(), $general, array(
                     ':round_id' => $round['roundId'],
-                    ':score' => $team['roundScore'], 
-                    ':dup_score' => $team['roundScore'], 
-                    ':round_rank' => $team['roundRank'], 
-                    ':dup_round_rank' => $team['roundRank']
+                    ':score' => 0, 
+                    ':dup_score' => 0, 
+                    ':round_rank' => 0, 
+                    ':dup_round_rank' => 0
                 ));
                 
                 foreach($team['scores'] as $question) {
@@ -203,16 +189,16 @@ class GameController {
                         ':round_id' => $round['roundId'],
                         ':question_id' => $question['questionId'],
                         ':score' => $question['questionScore'],
-                        ':dup_score' => $team['questionScore']
+                        ':dup_score' => $question['questionScore']
                     ));
                 }
             }
         }
         
         $saved = [];
-        $saved[] = GameData::saveOverallScores($overallScores);
-        $saved[] = GameData::saveRoundScores($roundScores);
         $saved[] = GameData::saveQuestionScores($questionScores);
+        $saved[] = GameData::saveRoundScores($roundScores);
+        $saved[] = GameData::saveOverallScores($gameId);
         
         return $saved;
     }

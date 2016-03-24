@@ -110,8 +110,6 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
             
             $scope.buttonSaveGame = function() {
                 TriviaScoreboard.saveScoreboard().then(function (result) {
-                        $scope.game = result;
-                        console.log($scope.game);
                     }, function (error) {
                         console.log(error);
                     });
