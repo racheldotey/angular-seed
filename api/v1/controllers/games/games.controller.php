@@ -122,6 +122,11 @@ class GameController {
             return $app->render(400,  array('msg' => 'End game failed. Could not find game.'));
         }
         
+        $gameSaved = 'Not saved';
+        if(!v::key('rounds')->validate($app->request->post())) {
+            $gameSaved = GameData::saveScoreboard($gameId, $app->request->post('rounds'), APIAuth::getUserId());
+        }
+        
         $saved = GameData::updateEndGame(array(
             ":id" => $gameId,
             ":last_updated_by" => APIAuth::getUserId()
@@ -129,9 +134,24 @@ class GameController {
         
         if($saved) {
             $ended = GameData::selectEnded($gameId);
-            return $app->render(200, array('msg' => 'Game has ended.', 'ended' => $ended));
+            return $app->render(200, array('msg' => 'Game has ended.', 'ended' => $ended, 'saved' => $gameSaved));
         } else {
             return $app->render(400,  array('msg' => 'System failed to end game.'));
+        }
+    }
+    
+    static function saveScoreboard($app, $gameId) {
+        if(!v::intVal()->validate($gameId)) {
+            return $app->render(400,  array('msg' => 'End game failed. Could not find game.'));
+        } else if(!v::key('rounds')->validate($app->request->post())) {
+            return $app->render(400,  array('msg' => 'Invalid scoreboard. Check your parameters and try again.'));
+        }
+        
+        $saved = GameData::saveScoreboard($gameId, $app->request->post('rounds'), APIAuth::getUserId());
+        if($saved) {
+            return $app->render(200, array('saved' => $saved, 'rounds' => $app->request->post('rounds')));
+        } else {
+            return $app->render(400,  array('msg' => 'Could not save scoreboard.'));
         }
     }
     

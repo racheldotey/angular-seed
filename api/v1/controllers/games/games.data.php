@@ -42,9 +42,9 @@ class GameData {
                         . "IFNULL(r.score, 0) AS roundScore, IFNULL(r.round_rank, 0) AS roundRank "
                         . "FROM " . DBConn::prefix() . "game_score_teams AS s "
                         . "LEFT JOIN " . DBConn::prefix() . "teams AS t ON t.id = s.team_id "
-                        . "LEFT JOIN " . DBConn::prefix() . "game_score_rounds AS r ON s.team_id = r.team_id AND r.game_round_id = :game_round_id "
+                        . "LEFT JOIN " . DBConn::prefix() . "game_score_rounds AS r ON s.team_id = r.team_id AND r.round_id = :round_id "
                         . "WHERE s.game_id = :game_id "
-                        . "ORDER BY s.team_id;", array(':game_id' => $gameId, ':game_round_id' => $round->roundId));
+                        . "ORDER BY s.team_id;", array(':game_id' => $gameId, ':round_id' => $round->roundId));
 
                 $qTeamScores = DBConn::preparedQuery("SELECT q.id AS questionId, IFNULL(s.score, 0) AS questionScore "
                         . "FROM " . DBConn::prefix() . "game_round_questions AS q "
@@ -66,90 +66,6 @@ class GameData {
             
             return $round;
     }
-
-    static function getScoreboard($gameId) {
-        $game = DBConn::selectOne("SELECT g.id, g.name, g.scheduled, g.venue_id AS venueId, g.host_user_id AS hostId, "
-                . "game_started AS started, game_ended AS ended, max_points maxPoints, "
-                . "CONCAT(u.name_first, ' ', u.name_last) AS updatedBy "
-                . "FROM " . DBConn::prefix() . "games AS g "
-                . "JOIN " . DBConn::prefix() . "users AS u ON u.id = g.last_updated_by WHERE g.id = :game_id LIMIT 1;", array(':game_id' => $id));
-
-        
-        if($game) {
-            // Host
-            $game->host = DBConn::selectOne("SELECT id, name_first AS nameFirst, name_last AS nameLast, email, "
-                    . "CONCAT(name_first, ' ', name_last) AS displayName "
-                    . "FROM " . DBConn::prefix() . "users WHERE id = :hotst_user_id LIMIT 1;", array(':hotst_user_id' => $game->hostId));
-            unset($game->hostId);
-                        
-            // Venue
-            $game->venue = DBConn::selectOne("SELECT id, name, address, address_b AS addressB, city, state, zip, phone, website "
-                    . "FROM " . DBConn::prefix() . "venues WHERE id = :venue_id LIMIT 1;", array(':venue_id' => $game->venueId));
-            unset($game->venueId);
-            
-            
-            // Scoreboard
-            $game->scoreboard = DBConn::selectAll("SELECT s.team_id AS teamId, s.score, s.game_winner AS winner, s.last_updated AS updated, t.name AS team, "
-                    . "CONCAT(u.name_first, ' ', u.name_last) AS updatedBy "
-                    . "FROM " . DBConn::prefix() . "game_score_teams AS s JOIN " . DBConn::prefix() . "teams AS t ON t.id = s.team_id "
-                    . "JOIN " . DBConn::prefix() . "users AS u ON u.id = s.last_updated_by WHERE s.game_id = 1 ORDER BY s.score;", array(':game_id' => $id));
-            
-            // Teams and their score
-            $gTeams = DBConn::executeQuery("SELECT t.id, t.name FROM " . DBConn::prefix() . "teams AS t "
-                    . "JOIN " . DBConn::prefix() . "game_score_teams AS g ON g.team_id = t.id WHERE g.game_id = :game_id;", array(':game_id' => $id));
-
-            $qMembers = DBConn::preparedQuery("SELECT m.joined, u.id, u.name_first AS nameFirst, u.name_last AS nameLast, "
-                    . "CONCAT(u.name_first, ' ', u.name_last) AS displayName "
-                    . "FROM " . DBConn::prefix() . "team_members AS m "
-                    . "LEFT JOIN " . DBConn::prefix() . "users AS u ON u.id = m.user_id "
-                    . "WHERE m.team_id = :team_id;");
-            
-            $teams = Array();
-            while($team = $gTeams->fetch(\PDO::FETCH_OBJ)) {
-                // Members
-                $qMembers->execute(array(':team_id' => $team->id));
-                $team->members = $qMembers->fetchAll(\PDO::FETCH_OBJ);
-                
-                array_push($teams, $team);
-            }
-            $game->teams = $teams;
-            
-            // Game Rounds
-            $qGameRounds = DBConn::executeQuery("SELECT r.id, r.name, r.max_points AS maxPoints, r.last_updated AS updated, "
-                    . "CONCAT(u.name_first, ' ', u.name_last) AS updatedBy "
-                    . "FROM " . DBConn::prefix() . "game_rounds AS r JOIN " . DBConn::prefix() . "users AS u ON r.last_updated_by = u.id "
-                    . "WHERE r.game_id = :game_id ORDER BY r.id;", array(':game_id' => $id));
-            
-            $qRoundScores = DBConn::preparedQuery("SELECT s.score, s.last_updated AS updated, t.id AS teamId, t.name AS team, "
-                    . "CONCAT(u.name_first, ' ', u.name_last) AS updatedBy "
-                    . "FROM " . DBConn::prefix() . "game_score_rounds AS s JOIN " . DBConn::prefix() . "teams AS t ON t.id = s.team_id "
-                    . "JOIN " . DBConn::prefix() . "users AS u ON u.id = s.last_updated_by WHERE s.game_round_id = :game_round_id ORDER BY s.score;");
-            
-            $qRoundQuestions = DBConn::preparedQuery("SELECT s.score, s.last_updated AS updated, t.id AS teamId, t.name AS team, "
-                    . "CONCAT(u.name_first, ' ', u.name_last) AS updatedBy "
-                    . "FROM " . DBConn::prefix() . "game_score_rounds AS s JOIN " . DBConn::prefix() . "teams AS t ON t.id = s.team_id "
-                    . "JOIN " . DBConn::prefix() . "users AS u ON u.id = s.last_updated_by WHERE s.game_round_id = :game_round_id ORDER BY s.score;");
-            
-            
-            $qRoundQuestionScores = DBConn::preparedQuery("SELECT s.score, s.last_updated AS updated, t.id AS teamId, t.name AS team, "
-                    . "CONCAT(u.name_first, ' ', u.name_last) AS updatedBy "
-                    . "FROM " . DBConn::prefix() . "game_score_rounds AS s JOIN " . DBConn::prefix() . "teams AS t ON t.id = s.team_id "
-                    . "JOIN " . DBConn::prefix() . "users AS u ON u.id = s.last_updated_by WHERE s.game_round_id = :game_round_id ORDER BY s.score;");
-            
-            $rounds = Array();
-            while($round = $qGameRounds->fetch(\PDO::FETCH_OBJ)) {
-                // Team Round Scores
-                $qRoundScores->execute(array(':game_round_id' => $round->id));
-                $round->scores = $qRoundScores->fetchAll(\PDO::FETCH_OBJ);
-                
-                array_push($rounds, $round);
-            }
-            $game->rounds = $rounds;
-            
-            return $game;
-        }
-        return $game;
-    }
     
     static function getRoundCount($gameId) {
         return DBConn::selectColumn("SELECT COUNT(id) AS count FROM " . DBConn::prefix() . "game_rounds "
@@ -162,12 +78,12 @@ class GameData {
     }
     
     static function insertRound($validRound) {
-        return DBConn::insert("INSERT INTO " . DBConn::prefix() . "game_rounds(`name`, `order`, `game_id`, `default_question_points`, `created_user_id`, `last_updated_by`) "
+        return DBConn::insert("INSERT INTO " . DBConn::prefix() . "game_rounds(name, order, game_id, default_question_points, created_user_id, last_updated_by) "
                 . "VALUES (:name, :order, :game_id, :default_question_points, :created_user_id, :last_updated_by);", $validRound);
     }
     
     static function insertQuestion($validQuestion) {
-        return DBConn::insert("INSERT INTO " . DBConn::prefix() . "game_round_questions(`question`, `order`, `game_id`, `round_id`, `max_points`, `created_user_id`, `last_updated_by`) "
+        return DBConn::insert("INSERT INTO " . DBConn::prefix() . "game_round_questions(question, order, game_id, round_id, max_points, created_user_id, last_updated_by) "
                 . "VALUES (:question, :order, :game_id, :round_id, :max_points, :created_user_id, :last_updated_by);", $validQuestion);
     }
     
@@ -212,10 +128,64 @@ class GameData {
                 . "WHERE id=:id LIMIT 1;", array(':id' => $gameId));
     }
     
-    static function deleteGame($id) {
-        $fields = DBConn::delete("DELETE FROM " . DBConn::prefix() . "lookup_game_field WHERE game_id = :id;", array('id' => $id));
-        $groups = DBConn::delete("DELETE FROM " . DBConn::prefix() . "lookup_group_game WHERE game_id = :id;", array('id' => $id));
+    
+    static function saveScoreboard($gameId, $rounds, $currentUser) {
+        $saveRoundScore = DBConn::preparedQuery("INSERT INTO " . DBConn::prefix() . "game_score_rounds (game_id,round_id,team_id,score,round_rank,created_user_id) "
+                . "VALUES (:game_id,:round_id,:team_id,:score,:round_rank,:created_user_id) "
+                . "ON DUPLICATE KEY UPDATE score = :dup_score, round_rank = :dup_round_rank, last_updated_by = :last_updated_by;");
         
-        return DBConn::delete("DELETE FROM " . DBConn::prefix() . "games WHERE id = :id LIMIT 1;", array('id' => $id));
+        $saveTeamScore = DBConn::preparedQuery("INSERT INTO " . DBConn::prefix() . "game_score_teams (game_id,team_id,score,game_rank,created_user_id) "
+                . "VALUES (:game_id,:team_id,:score,:game_rank,:created_user_id) "
+                . "ON DUPLICATE KEY UPDATE score = :dup_score, game_rank = :dup_game_rank, last_updated_by = :last_updated_by;");
+        
+        $saveQuestioneScore = DBConn::preparedQuery("INSERT INTO " . DBConn::prefix() . "game_score_questions(game_id, round_id, question_id, team_id, score, created_user_id) "
+                . "VALUES (:game_id,:round_id,:question_id,:team_id,:score,:created_user_id) "
+                . "ON DUPLICATE KEY UPDATE score = :dup_score, last_updated_by = :last_updated_by;");
+        
+        $result = array();
+        foreach($rounds as $round) {
+            
+            foreach($round['teams'] as $team) {
+                // Save Round Score for this team
+                $result[] = $saveRoundScore->execute(array(
+                    ':game_id' => $gameId, 
+                    ':round_id' => $round['roundId'],
+                    ':team_id' => $team['teamId'], 
+                    ':score' => $team['roundScore'], 
+                    ':dup_score' => $team['roundRank'], 
+                    ':round_rank' => $team['gameRank'], 
+                    ':dup_round_rank' => $team['gameRank'], 
+                    ':created_user_id' => $currentUser,
+                    ':last_updated_by' => $currentUser
+                ));
+                
+                // Save overall game score for this team
+                $result[] = $saveTeamScore->execute(array(
+                    ':game_id' => $gameId, 
+                    ':team_id' => $team['teamId'], 
+                    ':score' => $team['gameScore'], 
+                    ':dup_score' => $team['gameScore'], 
+                    ':game_rank' => $team['gameRank'], 
+                    ':dup_game_rank' => $team['gameRank'], 
+                    ':created_user_id' => $currentUser,
+                    ':last_updated_by' => $currentUser
+                ));
+                
+                foreach($team['scores'] as $question) {
+                    // Save question scores for this team
+                    $result[] = $saveQuestioneScore->execute(array(
+                        ':game_id' => $gameId,
+                        ':round_id' => $round['roundId'],
+                        ':question_id' => $question['questionId'],
+                        ':team_id' => $team['teamId'],
+                        ':score' => $question['questionScore'],
+                        ':dup_score' => $team['roundRank'],
+                        ':created_user_id' => $currentUser,
+                        ':last_updated_by' => $currentUser
+                    ));
+                }
+            }
+        }
+        return $result;
     }
 }

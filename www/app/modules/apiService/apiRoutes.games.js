@@ -61,8 +61,13 @@ angular.module('apiRoutes.games', [])
     };
 
     /* End game */
-    api.endGame = function(gameId) {
-        return API.get('trivia/end/' + gameId, 'Could not end game.');
+    api.endGame = function(gameId, rounds) {
+        return API.post('trivia/end/' + gameId, rounds, 'Could not end game.');
+    };
+
+    /* End game */
+    api.saveScoreboard = function(gameId, rounds) {
+        return API.post('trivia/update/scoreboard/' + gameId, rounds, 'Could not save scoreboard game.');
     };
 
 

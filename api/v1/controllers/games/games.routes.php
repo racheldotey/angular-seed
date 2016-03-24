@@ -39,6 +39,13 @@ class GameRoutes {
             });
 
             /*
+             * id, name, venueId, hostId, scheduled
+             */
+            $app->post("/update/scoreboard/:gameId/", function ($gameId) use ($app) {
+                GameController::saveScoreboard($app, $gameId);
+            });
+
+            /*
              * id
              */
             $app->post("/start/:gameId/", function ($gameId) use ($app) {

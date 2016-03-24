@@ -25,13 +25,13 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 die();
             }
             
-            
             $scope.updateTeamRankings = function(teamId) {
+                $scope.unsavedState = true;
                 TriviaGame.updateTeamRankings(teamId);
             };
             
             $scope.unsavedState = false;
-            $scope.displayQuickScoreButtons = false;
+            $scope.displayQuickScoreButtons = true;
                 
             $scope.scoreboardNavHamburger = { isopen: false };
             
@@ -108,6 +108,15 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                     }, function (declined) {});
             };
             
+            $scope.buttonSaveGame = function() {
+                TriviaGame.saveScoreboard().then(function (result) {
+                        $scope.game = result;
+                        console.log($scope.game);
+                    }, function (error) {
+                        console.log(error);
+                    });
+            };
+            
             // Add Trivia Team Modal
             $scope.buttonAddTeam = function() {
                 var modalInstance = TriviaModalService.openAddTeam($scope.game.id);
@@ -179,17 +188,15 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
             };
             
             $scope.buttonQuestionWrong = function(teamId, questionId) {
-                $scope.unsavedState = true;
                 var maxPoints = getMaxScore(questionId);
                 addToScore(teamId, questionId, (maxPoints * -1));
-                TriviaGame.updateRoundScores($scope.game.round);
+                $scope.updateTeamRankings(teamId);
             };
         
             $scope.buttonQuestionCorrect = function(teamId, questionId) {
-                $scope.unsavedState = true;
                 var maxPoints = getMaxScore(questionId);
                 addToScore(teamId, questionId, maxPoints);
-                TriviaGame.updateRoundScores($scope.game.round);
+                $scope.updateTeamRankings(teamId);
             }; 
             
         }],
@@ -206,7 +213,7 @@ app.directive('rcTriviaScoreboardRoundNavigation', function(THIS_DIRECTORY) {
         templateUrl: THIS_DIRECTORY + 'views/scoreboard.roundNavigation.html',
         scope: {
             totalRounds: '=totalRounds',
-            currentRoundNumber: '=currentRoundNumber',
+            currentRoundNumber: '&currentRoundNumber',
             buttonViewRound: '=viewRoundEvent'
         },
         link: function ($scope, element, attributes) {

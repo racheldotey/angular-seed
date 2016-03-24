@@ -38,14 +38,6 @@ angular.module('rcTrivia.game', [])
                     return false;
                 }
             };
-            
-            me.updateTeamScores = function(round) {
-                _game.round = round;
-                var found = me.findRoundIndexByNumber(round.roundNumber);
-                if(found !== false) {
-                    _game.rounds[found] = round;
-                }
-            };
 
             me.findRoundIndexByNumber = function(roundNumber) {
                 var found = false;
@@ -302,7 +294,13 @@ angular.module('rcTrivia.game', [])
             return $q(function (resolve, reject) {
                 var loadedGame = api.getGame();
                 if(loadedGame) {
-                    ApiRoutesGames.endGame(loadedGame.id).then(function (result) {
+                    var data = { 'rounds' : [] };
+                    for(var i = 0; i < loadedGame.rounds.length; i++) {
+                        if(angular.isDefined(loadedGame.rounds[i].teams)) {
+                            data.rounds.push(loadedGame.rounds[i]);                            
+                        }
+                    }
+                    ApiRoutesGames.endGame(loadedGame.id, data).then(function (result) {
                         api.game.setEnded(result.ended);
                         resolve(api.getGame());
                     }, function (error) {
@@ -314,15 +312,32 @@ angular.module('rcTrivia.game', [])
             });    
         };
         
-        api.updateRoundScores = function(round) {
-            api.game.updateTeamScores(round);
+        api.saveScoreboard = function() {
+            return $q(function (resolve, reject) {
+                var loadedGame = api.getGame();
+                if(loadedGame) {
+                    var data = { 'rounds' : [] };
+                    for(var i = 0; i < loadedGame.rounds.length; i++) {
+                        if(angular.isDefined(loadedGame.rounds[i].teams)) {
+                            data.rounds.push(loadedGame.rounds[i]);                            
+                        }
+                    }
+                    ApiRoutesGames.saveScoreboard(loadedGame.id, data).then(function (result) {
+                        console.log(result);
+                        resolve(result);
+                    }, function (error) {
+                        reject(error);
+                    });
+                } else {
+                    reject("No game is loaded.");
+                }
+            });    
         };
         
-        api.updateTeamRankings = function(teamId) {
-            console.log("updateTeamRankings teamId - ", teamId);
-            
+        api.updateTeamRankings = function(teamId) {            
             return $q(function (resolve, reject) {
                 api.game.updateTotals(teamId);
+                console.log(api.getGame());
                 resolve(api.getGame());
             });    
         };

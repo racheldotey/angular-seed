@@ -62,7 +62,7 @@
 
             </div>
             <form class="form-inline">
-            <table id="scoreboard" datatable="ng" dt-options="dtScoreboard.options">
+            <table id="scoreboard" datatable="ng" dt-options="dtScoreboard.options" class="ng-cloak">
                 <thead>
                     <tr>
                         <th><p>Team Name</p></th>
@@ -77,7 +77,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="team in game.round.teams" data-team-id="{{team.teamId}}">
+                    <tr ng-repeat="team in game.round.teams track by $index" data-team-id="{{team.teamId}}" class="ng-cloak">
                         <th class="team"><p>{{team.team}}</p></th>
                         <th class="round-score"><p class="text-center">{{team.roundScore | numberEx}}</p></th>
                         <th class="round-rank"><p class="text-center">{{team.roundRank}}</p></th>
