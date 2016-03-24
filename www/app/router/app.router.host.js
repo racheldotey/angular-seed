@@ -81,11 +81,11 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
                 $q: '$q',
                 $rootScope: '$rootScope', 
                 $state: '$state',
-                TriviaGame: 'TriviaGame',
-                currentGame: function(initUser, TriviaGame, $stateParams, $rootScope, $state, $q) {
+                TriviaScoreboard: 'TriviaScoreboard',
+                currentGame: function(initUser, TriviaScoreboard, $stateParams, $rootScope, $state, $q) {
                     $stateParams.roundNumber = (parseInt($stateParams.roundNumber)) ? $stateParams.roundNumber : 1;
                     return $q(function (resolve, reject) {
-                        TriviaGame.loadGame($stateParams.gameId, $stateParams.roundNumber).then(function (result) {
+                        TriviaScoreboard.loadGame($stateParams.gameId, $stateParams.roundNumber).then(function (result) {
                             resolve(result);
                         }, function (error) {
                             $rootScope.$evalAsync(function () {

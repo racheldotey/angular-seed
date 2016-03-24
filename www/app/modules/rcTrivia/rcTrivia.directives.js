@@ -16,10 +16,10 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
         scope: {
             game: '=rcTriviaScoreboard'
         },
-        controller: ['$scope', '$state', '$window', 'TriviaGame', 'AlertConfirmService', 'TriviaModalService', 'DTOptionsBuilder', 'DTColumnDefBuilder',
-            function($scope, $state, $window, TriviaGame, AlertConfirmService, TriviaModalService, DTOptionsBuilder, DTColumnDefBuilder) {
+        controller: ['$scope', '$state', '$window', 'TriviaScoreboard', 'AlertConfirmService', 'TriviaModalService', 'DTOptionsBuilder', 'DTColumnDefBuilder',
+            function($scope, $state, $window, TriviaScoreboard, AlertConfirmService, TriviaModalService, DTOptionsBuilder, DTColumnDefBuilder) {
             
-            $scope.game = TriviaGame.getGame();
+            $scope.game = TriviaScoreboard.getGame();
             if(!$scope.game) {
                 console.log("Error loading game.");
                 die();
@@ -27,7 +27,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
             
             $scope.updateTeamRankings = function(teamId) {
                 $scope.unsavedState = true;
-                TriviaGame.updateTeamRankings(teamId);
+                TriviaScoreboard.updateTeamRankings(teamId);
             };
             
             $scope.unsavedState = false;
@@ -71,7 +71,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 });
                 
             $scope.buttonViewRound = function(roundNumber) {
-                TriviaGame.loadRound(roundNumber).then(function (result) {
+                TriviaScoreboard.loadRound(roundNumber).then(function (result) {
                     // Change the State (URL) parameters without reloading the page
                     // Used for deep linking
                     $scope.game = result;
@@ -84,7 +84,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
             $scope.buttonStartGame = function() {
                 AlertConfirmService.confirm('Are you sure you want to start this game? It cannot be paused once started.', 'Confirm Start Game.')
                     .result.then(function () {
-                        TriviaGame.startGame().then(function (result) {
+                        TriviaScoreboard.startGame().then(function (result) {
                             $scope.game = result;
                             console.log($scope.game);
                         }, function (error) {
@@ -98,7 +98,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                     .result.then(function () {
                         AlertConfirmService.confirm('Are you sure you positive you would like to close this game? It will finalize team scores.', 'Warning! Closing Game.')
                             .result.then(function () {
-                                TriviaGame.endGame().then(function (result) {
+                                TriviaScoreboard.endGame().then(function (result) {
                                     $scope.game = result;
                                     console.log($scope.game);
                                 }, function (error) {
@@ -109,7 +109,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
             };
             
             $scope.buttonSaveGame = function() {
-                TriviaGame.saveScoreboard().then(function (result) {
+                TriviaScoreboard.saveScoreboard().then(function (result) {
                         $scope.game = result;
                         console.log($scope.game);
                     }, function (error) {

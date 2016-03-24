@@ -3,10 +3,10 @@
 /* @author  Rachel Carbone */
 
 angular.module('app.modal.trivia.editQuestion', [])        
-    .controller('TriviaEditQuestionModalCtrl', ['$scope', '$uibModalInstance', '$filter', 'AlertConfirmService', 'editing', 'TriviaGame', 'ApiRoutesGames',
-    function($scope, $uibModalInstance, $filter, AlertConfirmService, editing, TriviaGame, ApiRoutesGames) {
+    .controller('TriviaEditQuestionModalCtrl', ['$scope', '$uibModalInstance', '$filter', 'AlertConfirmService', 'editing', 'TriviaScoreboard', 'ApiRoutesGames',
+    function($scope, $uibModalInstance, $filter, AlertConfirmService, editing, TriviaScoreboard, ApiRoutesGames) {
     
-    $scope.game = TriviaGame.getGame();
+    $scope.game = TriviaScoreboard.getGame();
     
     /* Used to restrict alert bars */
     $scope.alertProxy = {};
@@ -74,7 +74,7 @@ angular.module('app.modal.trivia.editQuestion', [])
             'questionNumber' : $scope.editing.questionNumber,
             'question': $scope.editing.question
         };
-        TriviaGame.newQuestion(newQuestion).then(
+        TriviaScoreboard.newQuestion(newQuestion).then(
             function (result) {
                 $uibModalInstance.close(result);
             }, function (error) {

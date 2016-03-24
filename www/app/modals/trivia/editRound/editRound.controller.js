@@ -3,10 +3,10 @@
 /* @author  Rachel Carbone */
 
 angular.module('app.modal.trivia.editRound', [])        
-    .controller('TriviaEditRoundModalCtrl', ['$scope', '$uibModalInstance', '$filter', 'AlertConfirmService', 'editing', 'TriviaGame', 'ApiRoutesGames',
-    function($scope, $uibModalInstance, $filter, AlertConfirmService, editing, TriviaGame, ApiRoutesGames) {        
+    .controller('TriviaEditRoundModalCtrl', ['$scope', '$uibModalInstance', '$filter', 'AlertConfirmService', 'editing', 'TriviaScoreboard', 'ApiRoutesGames',
+    function($scope, $uibModalInstance, $filter, AlertConfirmService, editing, TriviaScoreboard, ApiRoutesGames) {        
     
-    $scope.game = TriviaGame.getGame();
+    $scope.game = TriviaScoreboard.getGame();
     
     /* Used to restrict alert bars */
     $scope.alertProxy = {};
@@ -66,7 +66,7 @@ angular.module('app.modal.trivia.editRound', [])
     
     /* Click event for the Add / New button */
     $scope.buttonNew = function() {
-        TriviaGame.newRound({ 
+        TriviaScoreboard.newRound({ 
             'gameId' : $scope.game.id, 
             'name' : $scope.editing.name,
             'defaultQuestionPoints' : $scope.editing.defaultQuestionPoints
