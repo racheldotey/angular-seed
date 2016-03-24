@@ -147,13 +147,77 @@ class GameController {
             return $app->render(400,  array('msg' => 'Invalid scoreboard. Check your parameters and try again.'));
         }
         
-        $saved = GameData::saveScoreboard($gameId, $app->request->post('rounds'), APIAuth::getUserId());
+        $saved = self::processScores($gameId, $app->request->post('rounds'));
         if($saved) {
             return $app->render(200, array('saved' => $saved, 'rounds' => $app->request->post('rounds')));
         } else {
             return $app->render(400,  array('msg' => 'Could not save scoreboard.'));
         }
     }
+    
+    private static function processScores($gameId, $rounds) {
+        
+        $currentUser = APIAuth::getUserId();
+        
+        
+        $overallScores = array();
+        $roundScores = array();
+        $questionScores = array();
+        
+        foreach($rounds as $round) {
+            
+            foreach($round['teams'] as $team) {
+                
+                $general = array(
+                    ':game_id' => $gameId, 
+                    ':team_id' => $team['teamId'], 
+                    ':created_user_id' => $currentUser,
+                    ':last_updated_by' => $currentUser
+                );
+                
+                // Save overall game score for this team
+                $overallScores[] = array_merge(array(), $general, array(
+                    ':score' => $team['gameScore'], 
+                    ':dup_score' => $team['gameScore'], 
+                    ':game_rank' => $team['gameRank'], 
+                    ':dup_game_rank' => $team['gameRank'], 
+                    ':game_winner' => (isset($team['winner']) && 
+                        ($team['winner'] === 1 || 
+                        $team['winner'] === '1' || 
+                        $team['winner'] === true || 
+                        $team['winner'] === 'true')) ? 1 : 0,
+                ));
+                
+                // Save Round Score for this team
+                $roundScores[] = array_merge(array(), $general, array(
+                    ':round_id' => $round['roundId'],
+                    ':score' => $team['roundScore'], 
+                    ':dup_score' => $team['roundScore'], 
+                    ':round_rank' => $team['roundRank'], 
+                    ':dup_round_rank' => $team['roundRank']
+                ));
+                
+                foreach($team['scores'] as $question) {
+                    // Save question scores for this team
+                    $questionScores[] = array_merge(array(), $general, array(
+                        ':round_id' => $round['roundId'],
+                        ':question_id' => $question['questionId'],
+                        ':score' => $question['questionScore'],
+                        ':dup_score' => $team['questionScore']
+                    ));
+                }
+            }
+        }
+        
+        $saved = [];
+        $saved[] = GameData::saveOverallScores($overallScores);
+        $saved[] = GameData::saveRoundScores($roundScores);
+        $saved[] = GameData::saveQuestionScores($questionScores);
+        
+        return $saved;
+    }
+    
+    
     
     static function deleteGame($app, $gameId) {
         if(GameData::didGameStart($gameId)) {

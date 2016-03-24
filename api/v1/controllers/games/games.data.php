@@ -129,6 +129,41 @@ class GameData {
     }
     
     
+    static function saveRoundScores($scores) {
+        $saveRoundScore = DBConn::preparedQuery("INSERT INTO " . DBConn::prefix() . "game_score_rounds (game_id,round_id,team_id,score,round_rank,created_user_id) "
+                . "VALUES (:game_id,:round_id,:team_id,:score,:round_rank,:created_user_id) "
+                . "ON DUPLICATE KEY UPDATE score = :dup_score, round_rank = :dup_round_rank, last_updated_by = :last_updated_by;");
+        $result = array();
+        foreach($scores as $score) {
+            $result[] = $saveRoundScore->execute($score);
+        }
+        return $result;
+    }
+    
+    static function saveOverallScores($scores) {
+        $saveTeamScore = DBConn::preparedQuery("INSERT INTO " . DBConn::prefix() . "game_score_teams (game_id,team_id,score,game_rank,created_user_id) "
+                . "VALUES (:game_id,:team_id,:score,:game_rank,:created_user_id) "
+                . "ON DUPLICATE KEY UPDATE score = :dup_score, game_rank = :dup_game_rank, "
+                . "last_updated_by = :last_updated_by, game_winner = :game_winner;");
+        $result = array();
+        foreach($scores as $score) {
+            $result[] = $saveTeamScore->execute($score);
+        }
+        return $result;
+    }
+    
+    static function saveQuestionScores($scores) {
+        $saveQuestioneScore = DBConn::preparedQuery("INSERT INTO " . DBConn::prefix() . "game_score_questions(game_id, round_id, question_id, team_id, score, created_user_id) "
+                . "VALUES (:game_id,:round_id,:question_id,:team_id,:score,:created_user_id) "
+                . "ON DUPLICATE KEY UPDATE score = :dup_score, last_updated_by = :last_updated_by;");
+        $result = array();
+        foreach($scores as $score) {
+            $result[] = $saveQuestioneScore->execute($score);
+        }
+        return $result;
+    }
+    
+    
     static function saveScoreboard($gameId, $rounds, $currentUser) {
         $saveRoundScore = DBConn::preparedQuery("INSERT INTO " . DBConn::prefix() . "game_score_rounds (game_id,round_id,team_id,score,round_rank,created_user_id) "
                 . "VALUES (:game_id,:round_id,:team_id,:score,:round_rank,:created_user_id) "
@@ -136,7 +171,8 @@ class GameData {
         
         $saveTeamScore = DBConn::preparedQuery("INSERT INTO " . DBConn::prefix() . "game_score_teams (game_id,team_id,score,game_rank,created_user_id) "
                 . "VALUES (:game_id,:team_id,:score,:game_rank,:created_user_id) "
-                . "ON DUPLICATE KEY UPDATE score = :dup_score, game_rank = :dup_game_rank, last_updated_by = :last_updated_by;");
+                . "ON DUPLICATE KEY UPDATE score = :dup_score, game_rank = :dup_game_rank, "
+                . "last_updated_by = :last_updated_by, game_winner = :game_winner;");
         
         $saveQuestioneScore = DBConn::preparedQuery("INSERT INTO " . DBConn::prefix() . "game_score_questions(game_id, round_id, question_id, team_id, score, created_user_id) "
                 . "VALUES (:game_id,:round_id,:question_id,:team_id,:score,:created_user_id) "
@@ -146,18 +182,6 @@ class GameData {
         foreach($rounds as $round) {
             
             foreach($round['teams'] as $team) {
-                // Save Round Score for this team
-                $result[] = $saveRoundScore->execute(array(
-                    ':game_id' => $gameId, 
-                    ':round_id' => $round['roundId'],
-                    ':team_id' => $team['teamId'], 
-                    ':score' => $team['roundScore'], 
-                    ':dup_score' => $team['roundRank'], 
-                    ':round_rank' => $team['gameRank'], 
-                    ':dup_round_rank' => $team['gameRank'], 
-                    ':created_user_id' => $currentUser,
-                    ':last_updated_by' => $currentUser
-                ));
                 
                 // Save overall game score for this team
                 $result[] = $saveTeamScore->execute(array(
@@ -167,6 +191,24 @@ class GameData {
                     ':dup_score' => $team['gameScore'], 
                     ':game_rank' => $team['gameRank'], 
                     ':dup_game_rank' => $team['gameRank'], 
+                    ':game_winner' => (isset($team['winner']) && 
+                        ($team['winner'] === 1 || 
+                        $team['winner'] === '1' || 
+                        $team['winner'] === true || 
+                        $team['winner'] === 'true')) ? 1 : 0, 
+                    ':created_user_id' => $currentUser,
+                    ':last_updated_by' => $currentUser
+                ));
+                
+                // Save Round Score for this team
+                $result[] = $saveRoundScore->execute(array(
+                    ':game_id' => $gameId, 
+                    ':team_id' => $team['teamId'], 
+                    ':round_id' => $round['roundId'],
+                    ':score' => $team['roundScore'], 
+                    ':dup_score' => $team['roundScore'], 
+                    ':round_rank' => $team['roundRank'], 
+                    ':dup_round_rank' => $team['roundRank'], 
                     ':created_user_id' => $currentUser,
                     ':last_updated_by' => $currentUser
                 ));
@@ -175,9 +217,9 @@ class GameData {
                     // Save question scores for this team
                     $result[] = $saveQuestioneScore->execute(array(
                         ':game_id' => $gameId,
+                        ':team_id' => $team['teamId'],
                         ':round_id' => $round['roundId'],
                         ':question_id' => $question['questionId'],
-                        ':team_id' => $team['teamId'],
                         ':score' => $question['questionScore'],
                         ':dup_score' => $team['roundRank'],
                         ':created_user_id' => $currentUser,
