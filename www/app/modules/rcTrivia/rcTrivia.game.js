@@ -5,12 +5,12 @@
  */
 
 angular.module('rcTrivia.game', [])
-    .factory('TriviaGame', ['$q', '$filter', 'ApiRoutesGames', 
-        function($q, $filter, ApiRoutesGames) {
+    .factory('TriviaGame', ['$q', 'ApiRoutesGames', 
+        function($q, ApiRoutesGames) {
             
         var self = this;
-        self.game = false;
         var api = {};
+        api.game = false;
         
         function Game(newGame) {
 
@@ -19,22 +19,21 @@ angular.module('rcTrivia.game', [])
 
             me.getGame = function() {
                 if(angular.isDefined(_game.id)) {
-                    var ga = {
-                        'id' : _game.id,
-                        'name' : _game.name,
-                        'scheduled' : _game.scheduled,
-                        'started' : _game.started,
-                        'ended' : _game.ended,
-                        'totalRounds' : _game.totalRounds,
-                        'maxPoints' : _game.maxPoints,
-
-                        'host' : _game.host,
-                        'venue' : _game.venue,
-                        'teams' : _game.teams,
-                        'round' : _game.round,
-                        'rounds' : _game.rounds
-                    };
-                    return angular.copy(ga);
+                    // var ga = {
+                    //    'id' : _game.id,
+                    //    'name' : _game.name,
+                    //    'scheduled' : _game.scheduled,
+                    //    'started' : _game.started,
+                    //    'ended' : _game.ended,
+                    //    'maxPoints' : _game.maxPoints,
+                    //
+                    //    'host' : _game.host,
+                    //    'venue' : _game.venue,
+                    //    'teams' : _game.teams,
+                    //    'round' : _game.round,
+                    //    'rounds' : _game.rounds
+                    // };
+                    return _game;
                 } else {
                     return false;
                 }
@@ -72,43 +71,103 @@ angular.module('rcTrivia.game', [])
             me.viewRound = function(roundNumber, newRound) {
                 if(angular.isDefined(_game.round.roundNumber)) {
                     // Save current round progress
-                    var currentRoundIndex = me.findRoundIndexByNumber(roundNumber);
-                    if (angular.isNumber(roundIndex)) {
-                        console.log("Save Current Round, ", _game.round);
+                    var currentRoundIndex = me.findRoundIndexByNumber(_game.round.roundNumber);
+                    if (angular.isNumber(currentRoundIndex)) {
                         _game.rounds[currentRoundIndex] = _game.round;
-                        console.log("_game, ", _game);
                     }
                 }
                     
                 // If its a new round add it
                 if(newRound) {
-                    console.log("Add New Round, ", newRound);
                     me.addRound(newRound);
-                    console.log("_game, ", _game);
                 }
                 
                 // Set the current round to the new round number
                 var found = me.findRoundIndexByNumber(roundNumber);                    
                 if(angular.isNumber(found) && angular.isDefined(_game.rounds[found].questions)) {
-                    console.log("Found Round, ", _game.rounds[found]);
                     _game.round = _game.rounds[found];
-                    console.log("_game, ", _game);
                     return true;
                 } else {
-                    console.log("Did Not Find Round");
-                    _game.round = {};
-                    console.log("_game, ", _game);
                     return false;
                 }
             };
+            
+            // Setup update totals event            
+            me.updateTotals = function(teamId) {
+                var teams = _game.round.teams;
+                var found = false;
+                
+                // Find and update the team who's score has been changed
+                for(var i = 0; i < teams.length; i++) {
+                    // Search for the team that was changed
+                    if(found === false && parseInt(teams[i].teamId) === parseInt(teamId)) {
+                    
+                        // Update that teams round score
+                        var roundScore = 0.0;
+                        for(var s = 0; s < teams[i].scores.length; s++) {
+                            roundScore = roundScore + parseFloat(teams[i].scores[s].questionScore);
+                        }
+                        var difference = roundScore - teams[i].roundScore;
+                        teams[i].roundScore = roundScore;
+                        teams[i].gameScore = parseFloat(teams[i].gameScore) + difference;
+                        found = true;
+                        break;
+                    }
+                }
+                
+                // If a change was made - (if not skip for speed)
+                if(found) {
+                    // Sort Round Scores
+                    teams.sort(function (a, b) {
+                        var x = parseFloat(a.roundScore);
+                        var y = parseFloat(b.roundScore);
+                        return (y > 0 && y > x) ? 1 : -1;
+                    });
+                    var lastScore = 0;
+                    var rank = 1;
+                    for(var i = 0; i < teams.length; i++) {
+                        // If the score was different last time increase rank
+                        // if not tie them for rank
+                        if(lastScore !== teams[i].roundScore) {
+                            lastScore = teams[i].roundScore;
+                            teams[i].roundRank = rank;
+                            rank++;
+                        } else {
+                            teams[i].roundRank = rank;
+                        }
+                    }
+                    
+                    // Sort Game Scores
+                    teams.sort(function (a, b) {
+                        var x = parseFloat(a.gameScore);
+                        var y = parseFloat(b.gameScore);
+                        return (y > 0 && y > x) ? 1 : -1;
+                    });
+                    var lastScore = 0;
+                    var rank = 1;
+                    for(var i = 0; i < teams.length; i++) {
+                        // If the score was different last time increase rank
+                        // if not tie them for rank
+                        if(lastScore !== teams[i].gameScore) {
+                            lastScore = teams[i].gameScore;
+                            teams[i].gameRank = rank;
+                            rank++;
+                        } else {
+                            teams[i].gameRank = rank;
+                        }
+                    }
 
-            /* Init */
+                }
+            };
+
+            /* ***********
+             * Init ******
+             * ***********/
             _game.id = newGame.id || 0;
             _game.name = newGame.name || 0;
             _game.scheduled = newGame.scheduled || 0;
             _game.started = newGame.started || 0;
             _game.ended = newGame.ended || 0;
-            _game.totalRounds = (newGame.rounds) ? newGame.rounds.length : 0;
             _game.maxPoints = parseFloat(newGame.maxPoints) || 0.00;
 
             _game.host = newGame.host || {};
@@ -119,19 +178,24 @@ angular.module('rcTrivia.game', [])
             // Current Round - If one was sent set it as current round
             if (angular.isDefined(newGame.round)) {
                 _game.round = newGame.round;
-                var roundIndex = me.findRoundIndexByNumber(newGame.round.roundNumber);
-                if (angular.isNumber(roundIndex)) {
-                    _game.rounds[roundIndex] = newGame.round;
+                var i = me.findRoundIndexByNumber(newGame.round.roundNumber);
+                if (angular.isNumber(i)) {
+                    _game.rounds[i] = newGame.round;
+                }
+                // If teams are set and the round is set
+                // Update the totals
+                if(angular.isDefined(_game.teams[0])) {
+                    me.updateTotals(_game.teams[0].id);
                 }
             } else {
                 _game.round = {};
             }
+            
         } // END: Game()
         
-            
         api.getGame = function() {
             // Safely return the game
-            return (self.game) ? self.game.getGame() : false;
+            return (api.game) ? api.game.getGame() : false;
         };
             
         api.loadGame = function(gameId, roundNumber) {
@@ -150,7 +214,7 @@ angular.module('rcTrivia.game', [])
                     // If no game (or a different game) is loaded
                     // Then reload the whole game
                     ApiRoutesGames.getGame(gameId, roundNumber).then(function (result) {
-                        self.game = new Game(result.game);
+                        api.game = new Game(result.game);
                         resolve(api.getGame());
                     }, function (error) {
                         reject(error);
@@ -165,12 +229,12 @@ angular.module('rcTrivia.game', [])
                 if(loadedGame && loadedGame.round.roundNumber == roundNumber) {
                     resolve(api.getGame());
                 } else if(loadedGame) {
-                    var round = self.game.viewRound(roundNumber);
+                    var round = api.game.viewRound(roundNumber);
                     if(round) {
                         resolve(api.getGame());
                     } else {
                         ApiRoutesGames.getRound(loadedGame.id, roundNumber).then(function (result) {
-                            self.game.viewRound(result.round.roundNumber, result.round);
+                            api.game.viewRound(result.round.roundNumber, result.round);
                             resolve(api.getGame());
                         }, function (error) {
                             reject(error);
@@ -188,7 +252,7 @@ angular.module('rcTrivia.game', [])
                 if(loadedGame) {
                     ApiRoutesGames.addGameRound(round).then(
                         function (result) {
-                            self.game.viewRound(result.round.roundNumber, result.round);
+                            api.game.viewRound(result.round.roundNumber, result.round);
                             resolve(api.getGame());
                         }, function (error) {
                             reject(error);
@@ -206,7 +270,7 @@ angular.module('rcTrivia.game', [])
                 if(loadedGame) {
                     ApiRoutesGames.addGameRoundQuestion(question).then(
                         function (result) {
-                            self.game.viewRound(result.round.roundNumber, result.round);
+                            api.game.viewRound(result.round.roundNumber, result.round);
                             resolve(api.getGame());
                         }, function (error) {
                             reject(error);
@@ -223,7 +287,7 @@ angular.module('rcTrivia.game', [])
                 var loadedGame = api.getGame();
                 if(loadedGame) {
                     ApiRoutesGames.startGame(loadedGame.id).then(function (result) {
-                        self.game.setStarted(result.started);
+                        api.game.setStarted(result.started);
                         resolve(api.getGame());
                     }, function (error) {
                         reject(error);
@@ -239,7 +303,7 @@ angular.module('rcTrivia.game', [])
                 var loadedGame = api.getGame();
                 if(loadedGame) {
                     ApiRoutesGames.endGame(loadedGame.id).then(function (result) {
-                        self.game.setEnded(result.ended);
+                        api.game.setEnded(result.ended);
                         resolve(api.getGame());
                     }, function (error) {
                         reject(error);
@@ -251,8 +315,16 @@ angular.module('rcTrivia.game', [])
         };
         
         api.updateRoundScores = function(round) {
-            console.log("Update team scores, ", round);
-            self.game.updateTeamScores(round);
+            api.game.updateTeamScores(round);
+        };
+        
+        api.updateTeamRankings = function(teamId) {
+            console.log("updateTeamRankings teamId - ", teamId);
+            
+            return $q(function (resolve, reject) {
+                api.game.updateTotals(teamId);
+                resolve(api.getGame());
+            });    
         };
         
         return api;

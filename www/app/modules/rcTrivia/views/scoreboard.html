@@ -94,10 +94,10 @@
                                 </span>
                                 <input 
                                     ng-model="teamScore.questionScore" 
+                                    ng-change="updateTeamRankings(team.teamId)"
                                     data-string-to-number 
                                     type="number" 
-                                    class="form-control" 
-                                    min="0">
+                                    class="form-control">
                                 <span class="input-group-btn">
                                     <button 
                                         ng-click="buttonQuestionCorrect(team.teamId, teamScore.questionId)" 
@@ -109,10 +109,10 @@
                             <div ng-if="!displayQuickScoreButtons" class="form-group form-group-sm">
                                 <input 
                                     ng-model="teamScore.questionScore" 
+                                    ng-change="updateTeamRankings(team.teamId)"
                                     data-string-to-number 
                                     type="number" 
-                                    class="form-control" 
-                                    min="0">
+                                    class="form-control">
                             </div><!-- /input-group -->
                             
                         </td>

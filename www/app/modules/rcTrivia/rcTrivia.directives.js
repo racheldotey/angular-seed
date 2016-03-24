@@ -18,9 +18,20 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
         },
         controller: ['$scope', '$state', '$window', 'TriviaGame', 'AlertConfirmService', 'TriviaModalService', 'DTOptionsBuilder', 'DTColumnDefBuilder',
             function($scope, $state, $window, TriviaGame, AlertConfirmService, TriviaModalService, DTOptionsBuilder, DTColumnDefBuilder) {
-                
-                $scope.unsavedState = false;
-                $scope.displayQuickScoreButtons = false;
+            
+            $scope.game = TriviaGame.getGame();
+            if(!$scope.game) {
+                console.log("Error loading game.");
+                die();
+            }
+            
+            
+            $scope.updateTeamRankings = function(teamId) {
+                TriviaGame.updateTeamRankings(teamId);
+            };
+            
+            $scope.unsavedState = false;
+            $scope.displayQuickScoreButtons = false;
                 
             $scope.scoreboardNavHamburger = { isopen: false };
             
@@ -134,6 +145,8 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                     $scope.game = result;
                 }, function () {});
             };
+            
+            // Right and Wrong speed buttons 
             
             var getMaxScore = function(questionId) {
                 var maxPoints = 1;

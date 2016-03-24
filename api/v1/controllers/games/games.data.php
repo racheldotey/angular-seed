@@ -5,27 +5,16 @@ class GameData {
   
     static function selectGame($gameId, $roundNumber = 1) {
         $game = DBConn::selectOne("SELECT g.id, g.name, g.scheduled, g.venue_id AS venueId, g.host_user_id AS hostId, "
-                . "game_started AS started, game_ended AS ended, max_points maxPoints, "
-                . "CONCAT(u.name_first, ' ', u.name_last) AS updatedBy "
+                . "game_started AS started, game_ended AS ended, max_points maxPoints, v.name AS venue, "
+                . "CONCAT(u.name_first, ' ', u.name_last) AS updatedBy, "
+                . "CONCAT(h.name_first, ' ', h.name_last) AS hostName "
                 . "FROM " . DBConn::prefix() . "games AS g "
-                . "JOIN " . DBConn::prefix() . "users AS u ON u.id = g.last_updated_by WHERE g.id = :game_id LIMIT 1;", array(':game_id' => $gameId));
-
-        if($game) {
-            // Host
-            $game->host = DBConn::selectOne("SELECT id, name_first AS nameFirst, name_last AS nameLast, email, "
-                    . "CONCAT(name_first, ' ', name_last) AS displayName "
-                    . "FROM " . DBConn::prefix() . "users WHERE id = :hotst_user_id LIMIT 1;", array(':hotst_user_id' => $game->hostId));
-            unset($game->hostId);
-                        
-            // Venue
-            $game->venue = DBConn::selectOne("SELECT id, name, address, address_b AS addressB, city, state, zip, phone, website "
-                    . "FROM " . DBConn::prefix() . "venues WHERE id = :venue_id LIMIT 1;", array(':venue_id' => $game->venueId));
-            unset($game->venueId);
-            
-            // Teams and their score
-            $game->teams = DBConn::selectAll("SELECT t.id, t.name FROM " . DBConn::prefix() . "teams AS t "
-                    . "JOIN " . DBConn::prefix() . "game_score_teams AS g ON g.team_id = t.id WHERE g.game_id = :game_id;", array(':game_id' => $gameId));
-                        
+                . "LEFT JOIN " . DBConn::prefix() . "users AS u ON u.id = g.last_updated_by "
+                . "LEFT JOIN " . DBConn::prefix() . "users AS h ON h.id = g.last_updated_by "
+                . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = g.venue_id "
+                . "WHERE g.id = :game_id LIMIT 1;", array(':game_id' => $gameId));
+        
+        if($game) {                        
             $game->rounds = DBConn::selectAll("SELECT r.id, r.order AS roundNumber, r.name FROM " . DBConn::prefix() . "game_rounds AS r "
                     . "WHERE r.game_id = :game_id ORDER BY r.order;", array(':game_id' => $gameId));
             
