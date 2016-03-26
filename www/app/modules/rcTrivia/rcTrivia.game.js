@@ -97,7 +97,7 @@ angular.module('rcTrivia.game', [])
             
             // Setup update totals event            
             self.updateTotals = function(teamId) {
-                var teams = _game.round.teams;
+                var teams = _game.round.teams || [];
                 var found = false;
                 
                 // Find and update the team who's score has been changed
@@ -126,18 +126,16 @@ angular.module('rcTrivia.game', [])
                         var y = parseFloat(b.roundScore);
                         return (y > 0 && y > x) ? 1 : -1;
                     });
-                    var lastScore = 0;
-                    var rank = 1;
+                    var lastScore = false;
+                    var rank = 0;
                     for(var i = 0; i < teams.length; i++) {
                         // If the score was different last time increase rank
                         // if not tie them for rank
                         if(lastScore !== teams[i].roundScore) {
-                            lastScore = teams[i].roundScore;
-                            teams[i].roundRank = rank;
                             rank++;
-                        } else {
-                            teams[i].roundRank = rank;
                         }
+                        lastScore = teams[i].roundScore;
+                        teams[i].roundRank = rank;
                     }
                     
                     // Sort Game Scores
@@ -146,18 +144,16 @@ angular.module('rcTrivia.game', [])
                         var y = parseFloat(b.gameScore);
                         return (y > 0 && y > x) ? 1 : -1;
                     });
-                    var lastScore = 0;
-                    var rank = 1;
+                    var lastScore = false;
+                    var rank = 0;
                     for(var i = 0; i < teams.length; i++) {
                         // If the score was different last time increase rank
                         // if not tie them for rank
                         if(lastScore !== teams[i].gameScore) {
-                            lastScore = teams[i].gameScore;
-                            teams[i].gameRank = rank;
                             rank++;
-                        } else {
-                            teams[i].gameRank = rank;
                         }
+                        lastScore = teams[i].gameScore;
+                        teams[i].gameRank = rank;
                     }
 
                 }

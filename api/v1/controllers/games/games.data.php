@@ -66,6 +66,49 @@ class GameData {
             
             return $round;
     }
+  
+    static function selectRound($roundId) {
+            
+            // Game Rounds
+            $round = DBConn::selectOne("SELECT r.id AS roundId, r.game_id AS gameId, r.order AS roundNumber, r.name, r.max_points AS maxPoints, r.default_question_points AS defaultQuestionPoints "
+                    . "FROM " . DBConn::prefix() . "game_rounds AS r WHERE r.id = :id;", 
+                    array(':id' => $roundId));
+            
+            if($round) {
+
+                $round->questions = DBConn::selectAll("SELECT q.id AS questionId, q.order AS questionNumber, q.question, q.max_points AS maxPoints "
+                        . "FROM " . DBConn::prefix() . "game_round_questions AS q  WHERE q.round_id = :round_id ORDER BY q.order;", 
+                        array(':round_id' => $round->roundId));
+                
+                $qRoundTeams = DBConn::executeQuery("SELECT t.name AS team, s.team_id AS teamId, "
+                        . "IFNULL(s.score, 0) AS gameScore, s.game_rank AS gameRank, s.game_winner AS gameWinner, "
+                        . "IFNULL(r.score, 0) AS roundScore, IFNULL(r.round_rank, 0) AS roundRank "
+                        . "FROM " . DBConn::prefix() . "game_score_teams AS s "
+                        . "LEFT JOIN " . DBConn::prefix() . "teams AS t ON t.id = s.team_id "
+                        . "LEFT JOIN " . DBConn::prefix() . "game_score_rounds AS r ON s.team_id = r.team_id AND r.round_id = :round_id "
+                        . "WHERE s.game_id = :game_id "
+                        . "ORDER BY s.team_id;", array(':game_id' => $round->gameId, ':round_id' => $round->roundId));
+
+                $qTeamScores = DBConn::preparedQuery("SELECT q.id AS questionId, IFNULL(s.score, 0) AS questionScore "
+                        . "FROM " . DBConn::prefix() . "game_round_questions AS q "
+                        . "LEFT JOIN " . DBConn::prefix() . "game_score_questions AS s ON s.question_id = q.id AND s.team_id = :team_id "
+                        . "WHERE q.round_id = :round_id "
+                        . "ORDER BY q.order;");
+
+                $teams = Array();
+                while($team = $qRoundTeams->fetch(\PDO::FETCH_OBJ)) {
+                    // Team Round Scores
+                    $qTeamScores->execute(array(':round_id' => $round->roundId, ':team_id' => $team->teamId));
+                    $team->scores = $qTeamScores->fetchAll(\PDO::FETCH_OBJ);
+
+                    array_push($teams, $team);
+                }
+                $round->teams = $teams;
+                
+            }
+            
+            return $round;
+    }
     
     static function getRoundCount($gameId) {
         return DBConn::selectColumn("SELECT COUNT(id) AS count FROM " . DBConn::prefix() . "game_rounds "
@@ -78,7 +121,7 @@ class GameData {
     }
     
     static function insertRound($validRound) {
-        $results = DBConn::insert("INSERT INTO " . DBConn::prefix() . "game_rounds(name, order, game_id, default_question_points, created_user_id, last_updated_by) "
+        $results = DBConn::insert("INSERT INTO " . DBConn::prefix() . "game_rounds(name, `order`, game_id, default_question_points, created_user_id, last_updated_by) "
                 . "VALUES (:name, :order, :game_id, :default_question_points, :created_user_id, :last_updated_by);", $validRound);
         
         if($results) {
@@ -90,19 +133,19 @@ class GameData {
     }
     
     static function insertQuestion($validQuestion) {
-        $results = DBConn::insert("INSERT INTO " . DBConn::prefix() . "game_round_questions(question, order, game_id, round_id, max_points, created_user_id, last_updated_by) "
+        $results = DBConn::insert("INSERT INTO " . DBConn::prefix() . "game_round_questions(question, `order`, game_id, round_id, max_points, created_user_id, last_updated_by) "
                 . "VALUES (:question, :order, :game_id, :round_id, :max_points, :created_user_id, :last_updated_by);", $validQuestion);
-        
+        /*
         if($results) {
             self::calculateRoundScores($validQuestion[':game_id'], $validQuestion[':created_user_id']);
             self::calculateGameScores($validQuestion[':game_id'], $validQuestion[':created_user_id']);
-        }
+        }*/
         
         return $results;
     }
     
     static function insertTeamIntoGame($validQuestion) {
-        $results = DBConn::insert("INSERT INTO " . DBConn::prefix() . "game_score_teams(question, order, game_id, round_id, max_points, created_user_id, last_updated_by) "
+        $results = DBConn::insert("INSERT INTO " . DBConn::prefix() . "game_score_teams(question, number, game_id, round_id, max_points, created_user_id, last_updated_by) "
                 . "VALUES (:question, :order, :game_id, :round_id, :max_points, :created_user_id, :last_updated_by);", $validQuestion);
         
         if($results) {

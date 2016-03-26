@@ -212,7 +212,7 @@ class GameController {
                 $app->request->post('defaultQuestionPoints') : 5;
         $validRound = array(
             ":name" => $app->request->post('name'),
-            ":order" => ($count <= 0) ? 1 : $count + 1,
+            ":order" => $count + 1,
             ":game_id" => $app->request->post('gameId'),
             ":default_question_points" => $defaultPoints,
             ":created_user_id" => APIAuth::getUserId(),
@@ -221,8 +221,8 @@ class GameController {
         
         $roundId = GameData::insertRound($validRound);
         if($roundId) {
-            $saved = GameData::selectGameRound($app->request->post('gameId'), $count);
-            return $app->render(200, array('round' => $saved));
+            $saved = GameData::selectRound($roundId);
+            return $app->render(200, array('round' => $saved, 'id' => $roundId));
         } else {
             return $app->render(400,  array('msg' => 'Could not add game round.'));
         }
@@ -234,27 +234,24 @@ class GameController {
             !v::key('roundId', v::intVal())->validate($app->request->post())) {
             return $app->render(400,  array('msg' => 'Invalid question. Check your parameters and try again.'));
         }
-        $count = (!v::key('questionNumber', v::intVal())->validate($app->request->post())) ?
-                GameData::getQuestionCount($app->request->post('roundId')) :
-                $app->request->post('questionNumber');
+        $count = GameData::getQuestionCount($app->request->post('roundId'));
         
         $points = (v::key('maxPoints', v::intVal())->validate($app->request->post())) ? $app->request->post('maxPoints') : '5.00';
         $validQuestion = array(
             ":question" => $app->request->post('question'),
-            ":order" => ($count <= 0) ? 1 : $count,
+            ":order" => $count + 1,
             ":game_id" => $app->request->post('gameId'),
             ":round_id" => $app->request->post('roundId'),
             ":max_points" => $points,
             ":created_user_id" => APIAuth::getUserId(),
             ":last_updated_by" => APIAuth::getUserId()
-        );
-        
+        );        
         $questionId = GameData::insertQuestion($validQuestion);
         if($questionId) {
-            $saved = GameData::selectGameRound($app->request->post('gameId'), $app->request->post('roundId'));
+            $saved = GameData::selectRound($app->request->post('roundId'));
             return $app->render(200, array('round' => $saved));
         } else {
-            return $app->render(400,  array('msg' => 'Could not add question.'));
+            return $app->render(400,  array('msg' => 'Could not add question.', 'data' => $validQuestion, 'back' => $questionId));
         }
     }
 }
