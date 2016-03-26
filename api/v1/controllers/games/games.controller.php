@@ -157,48 +157,33 @@ class GameController {
     }
     
     private static function processScores($gameId, $rounds) {
-        
         $currentUser = APIAuth::getUserId();
-        
-        $roundScores = array();
         $questionScores = array();
         
         foreach($rounds as $round) {
             
             foreach($round['teams'] as $team) {
                 
-                $general = array(
-                    ':game_id' => $gameId, 
-                    ':team_id' => $team['teamId'], 
-                    ':created_user_id' => $currentUser,
-                    ':last_updated_by' => $currentUser
-                );
-                
-                // Save Round Score for this team
-                $roundScores[] = array_merge(array(), $general, array(
-                    ':round_id' => $round['roundId'],
-                    ':score' => 0, 
-                    ':dup_score' => 0, 
-                    ':round_rank' => 0, 
-                    ':dup_round_rank' => 0
-                ));
-                
                 foreach($team['scores'] as $question) {
                     // Save question scores for this team
-                    $questionScores[] = array_merge(array(), $general, array(
+                    $questionScores[] = array(
+                        ':game_id' => $gameId, 
+                        ':team_id' => $team['teamId'], 
+                        ':created_user_id' => $currentUser,
+                        ':last_updated_by' => $currentUser,
                         ':round_id' => $round['roundId'],
                         ':question_id' => $question['questionId'],
                         ':score' => $question['questionScore'],
                         ':dup_score' => $question['questionScore']
-                    ));
+                    );
                 }
             }
         }
         
         $saved = [];
         $saved[] = GameData::saveQuestionScores($questionScores);
-        $saved[] = GameData::saveRoundScores($roundScores);
-        $saved[] = GameData::saveOverallScores($gameId);
+        $saved[] = GameData::calculateRoundScores($gameId, $currentUser);
+        $saved[] = GameData::calculateGameScores($gameId, $currentUser);
         
         return $saved;
     }

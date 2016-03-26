@@ -19,6 +19,9 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
         controller: ['$scope', '$state', '$window', 'TriviaScoreboard', 'AlertConfirmService', 'TriviaModalService', 'DTOptionsBuilder', 'DTColumnDefBuilder',
             function($scope, $state, $window, TriviaScoreboard, AlertConfirmService, TriviaModalService, DTOptionsBuilder, DTColumnDefBuilder) {
             
+            /* Used to restrict alert bars */
+            $scope.alertProxy = {};
+    
             $scope.game = TriviaScoreboard.getGame();
             if(!$scope.game) {
                 console.log("Error loading game.");
@@ -77,7 +80,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                     $scope.game = result;
                     $state.go($state.$current, {gameId: $scope.game.id, roundNumber: roundNumber}, {notify: false});
                 }, function (error) {
-                    console.log(error);
+                    $scope.alertProxy.error(error);
                 });
             };
             
@@ -88,7 +91,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                             $scope.game = result;
                             console.log($scope.game);
                         }, function (error) {
-                            console.log(error);
+                            $scope.alertProxy.error(error);
                         });
                     }, function (declined) {});
             };
@@ -102,7 +105,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                                     $scope.game = result;
                                     console.log($scope.game);
                                 }, function (error) {
-                                    console.log(error);
+                                    $scope.alertProxy.error(error);
                                 });
                             }, function (declined) {});
                     }, function (declined) {});
@@ -110,8 +113,9 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
             
             $scope.buttonSaveGame = function() {
                 TriviaScoreboard.saveScoreboard().then(function (result) {
+                        $scope.alertProxy.success("Game saved.");
                     }, function (error) {
-                        console.log(error);
+                        $scope.alertProxy.error(error);
                     });
             };
             
