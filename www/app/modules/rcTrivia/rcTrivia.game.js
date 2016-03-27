@@ -11,6 +11,10 @@ angular.module('rcTrivia.game', [])
             var _game = false;
 
             self.init = function(newGame) {
+                if(!angular.isDefined(newGame.id)) {
+                    return;
+                }
+                
                 _game = {};
                 // Game Details
                 _game.id = newGame.id || 0;

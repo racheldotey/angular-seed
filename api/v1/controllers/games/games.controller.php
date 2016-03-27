@@ -45,31 +45,14 @@ class GameController {
         
         $defaultPoints = (v::key('defaultQuestionPoints')->validate($app->request->post())) ? 
                 $app->request->post('defaultQuestionPoints') : 5;
-        $result = self::addRoundsToGame(1, $gameId, $defaultPoints);
+        $result = GameData::insertStartingRounds(1, $gameId, $defaultPoints, APIAuth::getUserId());
+        
         if($gameId) {
             $game = GameData::selectGame($gameId);
-            return $app->render(200, array('game' => $game));
+            return $app->render(200, array('game' => $game, 'starting' => $result));
         } else {
             return $app->render(400,  array('msg' => 'Could not add game.'));
         }
-    }
-    
-    private static function addRoundsToGame($count, $gameId, $defaultPoints = 5) {
-        for($i = 1; $i <= $count; $i++) {
-            $validRound = array(
-                ":name" => "Round #" + $i,
-                ":order" => $i,
-                ":game_id" => $gameId,
-                ":default_question_points" => $defaultPoints,
-                ":created_user_id" => APIAuth::getUserId(),
-                ":last_updated_by" => APIAuth::getUserId()
-            );
-            $result = GameData::insertRound($validRound);
-            if(!$result) {
-                return false;
-            }
-        }
-        return true;
     }
     
     static function saveGame($app, $gameId) {
@@ -124,7 +107,7 @@ class GameController {
         
         $gameSaved = 'Not saved';
         if(!v::key('rounds')->validate($app->request->post())) {
-            $gameSaved = self::saveScoreboard($gameId, $app->request->post('rounds'), APIAuth::getUserId());
+            $gameSaved = self::processScores($gameId, $app->request->post('rounds'));
         }
         
         $saved = GameData::updateEndGame(array(
@@ -188,8 +171,6 @@ class GameController {
         return $saved;
     }
     
-    
-    
     static function deleteGame($app, $gameId) {
         if(GameData::didGameStart($gameId)) {
             return $app->render(400,  array('msg' => 'Ths game has already started and can no longer be deleted.'));
@@ -200,8 +181,6 @@ class GameController {
         }
     }
 
-    
-    
     static function addRound($app) {
         if(!v::key('name', v::stringType()->length(0,255))->validate($app->request->post()) ||
             !v::key('gameId', v::intVal())->validate($app->request->post())) {
@@ -251,7 +230,7 @@ class GameController {
             $saved = GameData::selectRound($app->request->post('roundId'));
             return $app->render(200, array('round' => $saved));
         } else {
-            return $app->render(400,  array('msg' => 'Could not add question.', 'data' => $validQuestion, 'back' => $questionId));
+            return $app->render(400,  array('msg' => 'Could not add question.'));
         }
     }
 }
