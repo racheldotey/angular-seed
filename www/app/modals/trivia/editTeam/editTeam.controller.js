@@ -3,7 +3,7 @@
 /* @author  Rachel Carbone */
 
 angular.module('app.modal.trivia.editTeam', [])        
-    .controller('TriviaEditTeamModalCtrl', ['$scope', '$uibModalInstance', '$filter', 'AlertConfirmService', 'editing',
+    .controller('TriviaEditTeamModalCtrl', ['$scope', '$uibModalInstance', 'editing',
     function($scope, $uibModalInstance, editing) {        
     /* Used to restrict alert bars */
     $scope.alertProxy = {};

@@ -96,6 +96,24 @@ angular.module('rcTrivia.scoreboard', ['rcTrivia.game'])
             });          
         };
         
+        api.addTeamToGame = function(teamId) {
+            return $q(function (resolve, reject) {
+                var loadedGame = api.getGame();
+                if(loadedGame) {
+                    ApiRoutesGames.addTeamToGame(loadedGame.id, loadedGame.round.roundNumber, teamId).then(
+                        function (result) {
+                            TriviaGame.init(result.game);
+                            resolve(api.getGame());
+                        }, function (error) {
+                            reject(error);
+                        });
+                } else {
+                    reject("No game is loaded.");
+                }
+
+            });     
+        };
+        
         api.startGame = function() {
             return $q(function (resolve, reject) {
                 var loadedGame = api.getGame();
@@ -144,7 +162,7 @@ angular.module('rcTrivia.scoreboard', ['rcTrivia.game'])
                             data.rounds.push(loadedGame.rounds[i]);                            
                         }
                     }
-                    ApiRoutesGames.saveScoreboard(loadedGame.id, data).then(function (result) {
+                    ApiRoutesGames.saveScoreboard(loadedGame.id, loadedGame.round.roundNumber, data).then(function (result) {
                         TriviaGame.init(result.game);
                         resolve(result);
                     }, function (error) {

@@ -121,7 +121,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
             
             // Add Trivia Team Modal
             $scope.buttonAddTeam = function() {
-                var modalInstance = TriviaModalService.openAddTeam($scope.game.id);
+                var modalInstance = TriviaModalService.openAddTeam($scope.game);
                 modalInstance.result.then(function (result) {
                     console.log(result);
                     $scope.game = result;

@@ -39,10 +39,10 @@ class GameRoutes {
             });
 
             /*
-             * id, name, venueId, hostId, scheduled
+             * gameId, roundNumber, name, venueId, hostId, scheduled
              */
-            $app->post("/update/scoreboard/:gameId/", function ($gameId) use ($app) {
-                GameController::saveScoreboard($app, $gameId);
+            $app->post("/update/scoreboard/:gameId/:roundNumber/", function ($gameId, $roundNumber) use ($app) {
+                GameController::saveScoreboard($app, $gameId, $roundNumber);
             });
 
             /*
@@ -68,10 +68,10 @@ class GameRoutes {
             
                         
             /*
-             * gameId, teamId
+             * gameId, roundNumber, teamId
              */
-            $app->post("/checkin-team/:gameId", function ($gameId) use ($app) {
-                GameController::checkTeamIntoGame($app, $gameId);
+            $app->post("/checkin-team/:gameId/:roundNumber/", function ($gameId, $roundNumber) use ($app) {
+                GameController::checkTeamIntoGame($app, $gameId, $roundNumber);
             });
                         
             /*

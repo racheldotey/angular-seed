@@ -51,8 +51,11 @@ angular.module('apiRoutes.games', [])
     };
 
     /* Add team to game */
-    api.addTeamToGame = function(gameId, roundNumber) {
-        return API.get('trivia/round/get/' + gameId + '/' + roundNumber, 'Could not get game round.');
+    api.addTeamToGame = function(gameId, roundNumber, teamId) {
+        if(angular.isUndefined(gameId) || angular.isUndefined(roundNumber) || angular.isUndefined(teamId)) {
+            return API.reject('Invalid team or game please check your parameters and try again.');
+        }
+        return API.post('trivia/checkin-team/' + gameId + '/' + roundNumber, { 'teamId' : teamId }, 'Could not check team into game.');
     };
 
     /* Start game */
@@ -66,8 +69,8 @@ angular.module('apiRoutes.games', [])
     };
 
     /* End game */
-    api.saveScoreboard = function(gameId, rounds) {
-        return API.post('trivia/update/scoreboard/' + gameId, rounds, 'Could not save scoreboard game.');
+    api.saveScoreboard = function(gameId, roundNumber, rounds) {
+        return API.post('trivia/update/scoreboard/' + gameId + '/' + roundNumber, rounds, 'Could not save scoreboard game.');
     };
 
 

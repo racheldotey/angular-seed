@@ -123,7 +123,7 @@ class GameController {
         }
     }
     
-    static function saveScoreboard($app, $gameId) {
+    static function saveScoreboard($app, $gameId, $roundNumber) {
         if(!v::intVal()->validate($gameId)) {
             return $app->render(400,  array('msg' => 'End game failed. Could not find game.'));
         } else if(!v::key('rounds')->validate($app->request->post())) {
@@ -132,7 +132,7 @@ class GameController {
         
         $saved = self::processScores($gameId, $app->request->post('rounds'));
         if($saved) {
-            $game = GameData::selectGame($gameId);
+            $game = GameData::selectGame($gameId, $roundNumber);
             return $app->render(200, array('saved' => $saved, 'game' => $game));
         } else {
             return $app->render(400,  array('msg' => 'Could not save scoreboard.'));
@@ -181,7 +181,7 @@ class GameController {
         }
     }
 
-    static function checkTeamIntoGame($app, $gameId) {
+    static function checkTeamIntoGame($app, $gameId, $roundNumber) {
         if(!v::intVal()->validate($gameId) || 
             !v::key('teamId', v::intVal())->validate($app->request->post())) {
             return $app->render(400,  array('msg' => 'Invalid game or team. Check your parameters and try again.'));
@@ -195,7 +195,7 @@ class GameController {
         );        
         $saved = GameData::insertTeamIntoGame($validTeam);
         if($saved) {
-            $game = GameData::selectGame($gameId);
+            $game = GameData::selectGame($gameId, $roundNumber);
             return $app->render(200, array('game' => $game));
         } else {
             return $app->render(400,  array('msg' => 'Could not check team into game.'));

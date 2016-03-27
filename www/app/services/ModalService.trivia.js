@@ -9,6 +9,7 @@
  */  
 
 angular.module('TriviaModalService', [
+    'app.modal.trivia.addTeamToGame',
     'app.modal.trivia.editGame',
     'app.modal.trivia.editQuestion',
     'app.modal.trivia.editRound',
@@ -71,18 +72,17 @@ angular.module('TriviaModalService', [
      * 
      * @return uibModalInstance
      */
-    api.openAddTeam = function(gameId) {
+    api.openAddTeam = function(game) {
         return api.openModal({
-            templateUrl: templatePath + 'editTeam/editTeam.html',
-            controller: 'TriviaEditTeamModalCtrl',
+            templateUrl: templatePath + 'addTeamToGame/addTeamToGame.html',
+            controller: 'TriviaAddTeamToGameModalCtrl',
             resolve: {
-                ApiRoutesGames: 'ApiRoutesGames',
                 ApiRoutesSimpleLists: 'ApiRoutesSimpleLists',
-                editing: function(ApiRoutesGames) {
-                    return { 'gameId' : gameId };
+                game: function() {
+                    return game;
                 },
-                gameList: function(ApiRoutesSimpleLists) {
-                    return ApiRoutesSimpleLists.simpleGamesList();
+                teamsList: function(ApiRoutesSimpleLists) {
+                    return ApiRoutesSimpleLists.simpleTeamsList();
                 }
             }
         });
