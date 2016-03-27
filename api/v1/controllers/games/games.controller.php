@@ -181,6 +181,27 @@ class GameController {
         }
     }
 
+    static function checkTeamIntoGame($app, $gameId) {
+        if(!v::intVal()->validate($gameId) || 
+            !v::key('teamId', v::intVal())->validate($app->request->post())) {
+            return $app->render(400,  array('msg' => 'Invalid game or team. Check your parameters and try again.'));
+        }
+        
+        $validTeam = array(
+            ":game_id" => $gameId,
+            ":team_id" => $app->request->post('teamId'),
+            ":created_user_id" => APIAuth::getUserId(),
+            ":last_updated_by" => APIAuth::getUserId()
+        );        
+        $saved = GameData::insertTeamIntoGame($validTeam);
+        if($saved) {
+            $game = GameData::selectGame($gameId);
+            return $app->render(200, array('game' => $game));
+        } else {
+            return $app->render(400,  array('msg' => 'Could not check team into game.'));
+        }
+    }
+    
     static function addRound($app) {
         if(!v::key('name', v::stringType()->length(0,255))->validate($app->request->post()) ||
             !v::key('gameId', v::intVal())->validate($app->request->post())) {

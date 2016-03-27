@@ -215,7 +215,7 @@ app.directive('rcTriviaScoreboardRoundNavigation', function(THIS_DIRECTORY) {
         templateUrl: THIS_DIRECTORY + 'views/scoreboard.roundNavigation.html',
         scope: {
             totalRounds: '=totalRounds',
-            currentRoundNumber: '&currentRoundNumber',
+            currentRoundNumber: '=currentRoundNumber',
             buttonViewRound: '=viewRoundEvent'
         },
         link: function ($scope, element, attributes) {

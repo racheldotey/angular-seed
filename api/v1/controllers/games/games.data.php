@@ -162,13 +162,13 @@ class GameData {
         return $results;
     }
     
-    static function insertTeamIntoGame($validQuestion) {
-        $results = DBConn::insert("INSERT INTO as_game_score_teams(question, number, game_id, round_id, max_points, created_user_id, last_updated_by) "
-                . "VALUES (:question, :order, :game_id, :round_id, :max_points, :created_user_id, :last_updated_by);", $validQuestion);
+    static function insertTeamIntoGame($validTeam) {
+        $results = DBConn::insert("INSERT INTO as_game_score_teams(`game_id`, `team_id`, `created_user_id`, `last_updated_by`) "
+                . "VALUES (:game_id, :team_id, :created_user_id, :last_updated_by);", $validTeam);
         
         if($results) {
-            self::calculateRoundScores($validQuestion[':game_id'], $validQuestion[':created_user_id']);
-            self::calculateGameScores($validQuestion[':game_id'], $validQuestion[':created_user_id']);
+            self::calculateRoundScores($validTeam[':game_id'], $validTeam[':created_user_id']);
+            self::calculateGameScores($validTeam[':game_id'], $validTeam[':created_user_id']);
         }
         
         return $results;

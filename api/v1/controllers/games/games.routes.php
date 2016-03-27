@@ -68,6 +68,13 @@ class GameRoutes {
             
                         
             /*
+             * gameId, teamId
+             */
+            $app->post("/checkin-team/:gameId", function ($gameId) use ($app) {
+                GameController::checkTeamIntoGame($app, $gameId);
+            });
+                        
+            /*
              * gameId, name, defaultQuestionPoints
              */
             $app->post("/insert/round", function () use ($app) {
