@@ -14,16 +14,73 @@ class GameData {
                 . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = g.venue_id "
                 . "WHERE g.id = :game_id LIMIT 1;", array(':game_id' => $gameId));
         
-        if($game) {  
-            // Teams and their score
-            $game->teams = DBConn::selectAll("SELECT t.id, t.name, g.score AS gameScore, game_rank AS gameRank, game_winner AS gameWinner FROM " . DBConn::prefix() . "teams AS t "
-                    . "JOIN " . DBConn::prefix() . "game_score_teams AS g ON g.team_id = t.id WHERE g.game_id = :game_id;", array(':game_id' => $gameId));
-            
-            $game->rounds = DBConn::selectAll("SELECT r.id, r.order AS roundNumber, r.name FROM " . DBConn::prefix() . "game_rounds AS r "
-                    . "WHERE r.game_id = :game_id ORDER BY r.order;", array(':game_id' => $gameId));
-            
-            $game->round = self::selectGameRound($gameId, $roundNumber);
+        if(!$game) {  
+            return $game;
         }
+        
+        // Teams and their score
+        $qTeams = DBConn::executeQuery("SELECT t.id AS teamId, t.name, g.score AS gameScore, game_rank AS gameRank, game_winner AS gameWinner "
+                . "FROM " . DBConn::prefix() . "game_score_teams AS g "
+                . "JOIN " . DBConn::prefix() . "teams AS t ON g.team_id = t.id "
+                . "WHERE g.game_id = :game_id;", array(':game_id' => $gameId));
+        
+        $qTeamRounds = DBConn::preparedQuery("SELECT r.id AS roundId, r.order AS number, r.max_points AS maxPoints, "
+                . "r.default_question_points AS defaultQuestionPoints, "
+                . "s.score AS roundScore, s.round_rank AS roundRank "
+                . "FROM " . DBConn::prefix() . "game_rounds AS r "
+                . "LEFT JOIN " . DBConn::prefix() . "game_score_rounds AS s ON r.id = s.round_id "
+                . "WHERE r.game_id = :game_id AND s.team_id = :team_id ORDER BY r.order;");
+
+        $qTeamQuestions = DBConn::preparedQuery("SELECT q.id AS questionId, q.order AS number, "
+                . "q.max_points AS maxPoints, s.score AS questionScore "
+                . "FROM " . DBConn::prefix() . "game_round_questions AS q "
+                . "LEFT JOIN " . DBConn::prefix() . "game_score_questions AS s ON q.id = s.question_id "
+                . "WHERE q.round_id = :round_id AND s.team_id = :team_id ORDER BY q.order;");
+        
+        //// FORMAT SCOREBOARD
+        $teams = Array();
+        while($team = $qTeams->fetch(\PDO::FETCH_OBJ)) {
+            //// TEAM ROUND SCORES
+            $teamRounds = Array();
+            $qTeamRounds->execute(array(':game_id' => $gameId, ':team_id' => $team->teamId));
+            while($round = $qTeamRounds->fetch(\PDO::FETCH_OBJ)) {
+                //// TEAM QUESTION SCORES
+                $teamQuestions = Array();
+                $qTeamQuestions->execute(array(':round_id' => $round->roundId, ':team_id' => $team->teamId));
+                while($question = $qTeamQuestions->fetch(\PDO::FETCH_OBJ)) {
+                    $teamQuestions[$question->number] = $question;
+                }
+                $round->questions = $teamQuestions;
+                $teamRounds[$round->number] = $round;
+            }
+            $team->rounds = $teamRounds;
+            $teams[$team->teamId] = $team;
+        }
+        //// OVERALL TEAM SCORE
+        $game->teams = $teams;
+
+        // All Game Rounds and Questions
+        $qGameRounds = DBConn::preparedQuery("SELECT r.id AS roundId, r.order AS number, r.name FROM " . DBConn::prefix() . "game_rounds AS r "
+                . "WHERE r.game_id = :game_id ORDER BY r.order;");
+
+        $qRoundQuestions = DBConn::preparedQuery("SELECT q.id AS questionId, q.order AS number, "
+                . "q.max_points AS maxPoints "
+                . "FROM " . DBConn::prefix() . "game_round_questions AS q "
+                . "WHERE q.round_id = :round_id ORDER BY q.order;");
+        
+        $gameRounds = Array();
+        $qGameRounds->execute(array(':game_id' => $gameId));
+        while($round = $qGameRounds->fetch(\PDO::FETCH_OBJ)) {
+            //// GAME QUESTIONS
+            $roundQuestions = Array();
+            $qRoundQuestions->execute(array(':round_id' => $round->roundId));
+            while ($question = $qRoundQuestions->fetch(\PDO::FETCH_OBJ)) {
+                $roundQuestions[$question->number] = $question;
+            }
+            $round->questions = $roundQuestions;
+            $gameRounds[$round->number] = $round;
+        }
+        $game->rounds = $gameRounds;
         
         return $game;
     }

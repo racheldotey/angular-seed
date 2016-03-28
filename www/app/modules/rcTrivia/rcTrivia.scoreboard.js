@@ -40,7 +40,7 @@ angular.module('rcTrivia.scoreboard', ['rcTrivia.game'])
         api.loadRound = function(roundNumber) {
             return $q(function (resolve, reject) {
                 var loadedGame = api.getGame();
-                if(loadedGame && loadedGame.round.roundNumber == roundNumber) {
+                if(loadedGame && loadedGame.currentRoundNumber == roundNumber) {
                     resolve(api.getGame());
                 } else if(loadedGame) {
                     var round = TriviaGame.viewRound(roundNumber);
@@ -100,9 +100,9 @@ angular.module('rcTrivia.scoreboard', ['rcTrivia.game'])
             return $q(function (resolve, reject) {
                 var loadedGame = api.getGame();
                 if(loadedGame) {
-                    ApiRoutesGames.addTeamToGame(loadedGame.id, loadedGame.round.roundNumber, teamId).then(
+                    ApiRoutesGames.addTeamToGame(loadedGame.id, loadedGame.currentRoundNumber, teamId).then(
                         function (result) {
-                            TriviaGame.init(result.game);
+                            TriviaGame.init(result.game, loadedGame.currentRoundNumber);
                             resolve(api.getGame());
                         }, function (error) {
                             reject(error);
@@ -162,8 +162,8 @@ angular.module('rcTrivia.scoreboard', ['rcTrivia.game'])
                             data.rounds.push(loadedGame.rounds[i]);                            
                         }
                     }
-                    ApiRoutesGames.saveScoreboard(loadedGame.id, loadedGame.round.roundNumber, data).then(function (result) {
-                        TriviaGame.init(result.game);
+                    ApiRoutesGames.saveScoreboard(loadedGame.id, loadedGame.currentRoundNumber, data).then(function (result) {
+                        TriviaGame.init(result.game, loadedGame.currentRoundNumber);
                         resolve(result);
                     }, function (error) {
                         reject(error);

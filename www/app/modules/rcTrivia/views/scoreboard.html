@@ -8,10 +8,11 @@
                 <h4 class="game-title visible-sm-inline-block">{{game.name}}</h4>
                 <p class="game-title visible-xs-inline-block"><strong>{{game.name}}</strong></p>
                 
-                <!--
-                <p class="game-host">Hosted by: {{game.host.displayName}}</p>
-                <p class="game-host">Started: {{game.started| formatMySQLDate}}</p>
-                <p class="game-host">Ended: {{game.ended| formatMySQLDate}}</p>-->
+                <p><small>Round {{game.currentRoundNumber}} - {{game.rounds[game.currentRoundNumber].questions}}</small></p>
+                <p class="game-host"><small>Hosted by: {{game.hostName}} At {{game.venue}}</small></p>
+                <p class="game-host"><small>Started: {{game.started| formatMySQLDate}}</small></p>
+                <p class="game-host"><small>Ended: {{game.ended| formatMySQLDate}}</small></p>
+                
             </div>
         </header>
 
@@ -20,7 +21,7 @@
             <div id="scoreboard-navigation">
 
                 <div data-rc-trivia-scoreboard-round-navigation
-                     data-total-rounds="game.rounds.length" 
+                     data-total-rounds="game.numberOfRounds" 
                      data-current-round-number="game.currentRoundNumber"
                      data-view-round-event="buttonViewRound"
                      class="game-round-navigation"></div>
@@ -56,8 +57,8 @@
                             <li role="menuitem"><a ng-click="buttonAddRound()" href="#">Add Round</a></li>
                             <li role="menuitem"><a ng-click="buttonAddQuestion()" href="#">Add Question</a></li>
                             <li class="divider"></li>
-                            <li role="menuitem"><a ng-click="buttonSaveGame()" href="#">Save and Publish</a></li>
-                            <li role="menuitem"><a ng-click="buttonEndGame()" href="#">Save and End Game</a></li>
+                            <li role="menuitem"><a ng-click="buttonSaveGame()" href="#"><i ng-show="unsavedState" class="fa fa-star"></i> Save and Publish</a></li>
+                            <li role="menuitem"><a ng-click="buttonEndGame()" href="#"><i ng-show="unsavedState" class="fa fa-star"></i> Save and End Game</a></li>
                         </ul>
                     </div>
                 </div>
@@ -72,37 +73,39 @@
                         <th><p class="text-center">Round Rank</p></th>
                         <th><p class="text-center">Game Score</p></th>
                         <th><p class="text-center">Game Rank</p></th>
-                        <th ng-repeat="question in game.round.questions" data-team-id="{{question.questionId}}">
-                            <p class="text-center"><strong>#{{question.questionNumber}} - {{question.maxPoints | numberEx}} pts</strong></p>
+                        <th>Hello! <br/><pre><code>{{game.rounds[game.currentRoundNumber]}}</code></pre></th>
+                        <th ng-repeat="(key, question) in game.rounds[game.currentRoundNumber].questions">
+                            <p class="text-center"><strong>#{{question.number}} - {{question.maxPoints | numberEx}} pts</strong></p>
                             <p ng-if="question.question">{{question.question}}</p>
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="team in game.round.teams track by $index" data-team-id="{{team.teamId}}" class="ng-cloak">
-                        <th class="team"><p>{{team.team}}</p></th>
-                        <th class="round-score"><p class="text-center">{{team.roundScore | numberEx}}</p></th>
-                        <th class="round-rank"><p class="text-center">{{team.roundRank}}</p></th>
+                    <tr ng-repeat="team in game.teams" data-team-id="{{team.teamId}}" class="ng-cloak">
+                        <th class="team"><p>{{team.name}}</p></th>
+                        <th class="round-score"><p class="text-center">{{team.rounds[game.currentRoundNumber].roundScore | numberEx}}</p></th>
+                        <th class="round-rank"><p class="text-center">{{team.rounds[game.currentRoundNumber].roundRank}}</p></th>
                         <th class="game-score"><p class="text-center">{{team.gameScore | numberEx}}</p></th>
                         <th class="game-rank"><p class="text-center">{{team.gameRank}}</p></th>
-                        <td class="question-score" ng-repeat="teamScore in team.scores" data-question-id="{{teamScore.questionId}}">
+                        <td class="question-score" ng-repeat="question in game.rounds[game.currentRoundNumber].questions" data-question-id="{{question.questionId}}">
                             
                             <div ng-if="displayQuickScoreButtons" class="input-group input-group-sm">
                                 <span class="input-group-btn">
                                     <button 
-                                        ng-click="buttonQuestionWrong(team.teamId, teamScore.questionId)"
+                                        ng-click="team.rounds[game.currentRoundNumber].questions[question.number].questionScore = 0"
                                         class="btn btn-warning" 
                                         type="button"><i class="fa fa-minus"></i></button>
                                 </span>
                                 <input 
-                                    ng-model="teamScore.questionScore" 
+                                    ng-model="team.rounds[game.currentRoundNumber].questions[question.number].questionScore" 
                                     ng-change="updateTeamRankings(team.teamId)"
                                     data-string-to-number 
                                     type="number" 
+                                    maxvalue="question.maxScore"
                                     class="form-control">
                                 <span class="input-group-btn">
                                     <button 
-                                        ng-click="buttonQuestionCorrect(team.teamId, teamScore.questionId)" 
+                                        ng-click="team.rounds[game.currentRoundNumber].questions[question.number].questionScore = angular.copy(question.maxScore)" 
                                         class="btn btn-success" 
                                         type="button"><i class="fa fa-plus"></i></button>
                                 </span>
@@ -116,7 +119,7 @@
                                     type="number" 
                                     class="form-control">
                             </div><!-- /input-group -->
-                            
+                        <td><pre><code>{{team.rounds[game.currentRoundNumber]}}</code></pre></td>
                         </td>
                     </tr>
                 </tbody>

@@ -10,7 +10,7 @@ angular.module('rcTrivia.game', [])
             var self = this;
             var _game = false;
 
-            self.init = function(newGame) {
+            self.init = function(newGame, viewRound) {
                 if(!angular.isDefined(newGame.id)) {
                     return;
                 }
@@ -34,18 +34,13 @@ angular.module('rcTrivia.game', [])
                 _game.rounds = newGame.rounds || [];
 
                 // Current Round 
-                // If one was sent set it as current round
-                if (angular.isDefined(newGame.round)) {
-                    _game.round = newGame.round;
-                    _game.currentRoundNumber = newGame.round.roundNumber;
-                    var i = self.findRoundIndexByNumber(newGame.round.roundNumber);
-                    if (angular.isNumber(i)) {
-                        _game.rounds[i] = newGame.round;
-                    }
-                    self.updateTotals();
-                } else {
-                    _game.round = false;
-                    _game.currentRoundNumber = 0;
+                _game.currentRoundNumber = viewRound || 0;
+                _game.numberOfRounds = Object.keys(_game.rounds).length;
+            };
+            
+            self.updateGameScoreReferences = function() {
+                if(angular.isDefined(_game.round.roundNumber)) {
+                    
                 }
             };
             
@@ -79,6 +74,7 @@ angular.module('rcTrivia.game', [])
             };
 
             self.viewRound = function(roundNumber, newRound) {
+                _game.currentRoundNumber = roundNumber;
                 if(angular.isDefined(_game.round.roundNumber)) {
                     // Save current round progress
                     var currentRoundIndex = self.findRoundIndexByNumber(_game.round.roundNumber);

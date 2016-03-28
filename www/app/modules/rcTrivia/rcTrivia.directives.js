@@ -51,27 +51,27 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                     $scope.setScoreboardHeight();
                 });
                 
-                // Responsive table height
-                
-                $scope.setScoreboardHeight = function() {
-                    // Get the height of everything that is not the table
-                    var otherHeight = $('body').height() - $('.dataTables_scrollBody').height();
-                    // Subtract the height of everything but the table from the
-                    // height of the window to get whats left for the table
-                    var tableHeight = $(window).height() - otherHeight - 1;
-                    
-                    // Max height on table
-                    var scoreboardTable = $('table#scoreboard').height();
-                    tableHeight = (tableHeight < scoreboardTable) ? tableHeight : scoreboardTable;
-                    // Min Height on table
-                    tableHeight = (tableHeight >= 300) ? tableHeight : 300;
-                    
-                    // Set the datatables wrapper to that height
-                    $('.dataTables_scrollBody').css('height', tableHeight + 'px');
-                };
-                angular.element($window).on('resize', function () {
-                    $scope.setScoreboardHeight();
-                });
+            // Responsive table height
+
+            $scope.setScoreboardHeight = function() {
+                // Get the height of everything that is not the table
+                var otherHeight = $('body').height() - $('.dataTables_scrollBody').height();
+                // Subtract the height of everything but the table from the
+                // height of the window to get whats left for the table
+                var tableHeight = $(window).height() - otherHeight - 1;
+
+                // Max height on table
+                var scoreboardTable = $('table#scoreboard').height();
+                tableHeight = (tableHeight < scoreboardTable) ? tableHeight : scoreboardTable;
+                // Min Height on table
+                tableHeight = (tableHeight >= 300) ? tableHeight : 300;
+
+                // Set the datatables wrapper to that height
+                $('.dataTables_scrollBody').css('height', tableHeight + 'px');
+            };
+            angular.element($window).on('resize', function () {
+                $scope.setScoreboardHeight();
+            });
                 
             $scope.buttonViewRound = function(roundNumber) {
                 TriviaScoreboard.loadRound(roundNumber).then(function (result) {
