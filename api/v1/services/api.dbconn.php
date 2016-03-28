@@ -190,6 +190,7 @@ class DBConn {
     
     /*
      * Preform fetchAll opperation with on a prepared PDO query.
+     * If only one value is found, just the value is returned.
      * 
      * @param string A valid SQL statement template for the target database server.
      * @param array|optional An array of values with as many elements as there 
@@ -198,14 +199,16 @@ class DBConn {
      * defaulting to \PDO::FETCH_OBJ (php.net/manual/en/pdostatement.fetch.php)
      * 
      * @return array|bool returns a single column in the next row of a result set,
-     * or FALSE if no results were found.
+     * or FALSE if no results were found. If only one value is found, just the 
+     * value is returned.
      */
-    public static function selectColumn($query, $data = array(), $style = \PDO::FETCH_OBJ) {
+    public static function selectColumn($query, $data = array()) {
         $pdo = self::connect();
         try {
             $q = $pdo->prepare($query);            
             $q->execute($data);
-            return $q->fetchColumn();
+            $found = $q->fetchAll(\PDO::FETCH_COLUMN);
+            return ($found && isset($found[0]) && count($found) === 1) ? $found[0] : $found;
         } catch (\PDOException $e) {
             self::logPDOError($q);
             return false;
