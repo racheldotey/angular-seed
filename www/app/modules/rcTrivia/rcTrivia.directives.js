@@ -78,10 +78,6 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 TriviaScoreboard.loadRound(roundNumber).then(function (result) {
                     // Change the State (URL) parameters without reloading the page
                     // Used for deep linking
-                    // $scope.game = result;
-                            console.log($scope.game);
-                    $state.go($state.$current, {gameId: $scope.game.id, roundNumber: roundNumber}, {notify: false});
-                            console.log($scope.game);
                 }, function (error) {
                     $scope.alertProxy.error(error);
                 });
@@ -91,8 +87,6 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 AlertConfirmService.confirm('Are you sure you want to start this game? It cannot be paused once started.', 'Confirm Start Game.')
                     .result.then(function () {
                         TriviaScoreboard.startGame().then(function (result) {
-                            // $scope.game = result;
-                            console.log($scope.game);
                         }, function (error) {
                             $scope.alertProxy.error(error);
                         });
@@ -105,7 +99,6 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                         AlertConfirmService.confirm('Are you sure you positive you would like to close this game? It will finalize team scores.', 'Warning! Closing Game.')
                             .result.then(function () {
                                 TriviaScoreboard.endGame().then(function (result) {
-                                    // $scope.game = result;
                                     console.log($scope.game);
                                 }, function (error) {
                                     $scope.alertProxy.error(error);
@@ -127,7 +120,6 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 var modalInstance = TriviaModalService.openAddTeam($scope.game);
                 modalInstance.result.then(function (result) {
                     console.log(result);
-                    // $scope.game = result;
                 }, function () {});
                 
             };
@@ -137,7 +129,6 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 var modalInstance = TriviaModalService.openAddPlayer($scope.game.id);
                 modalInstance.result.then(function (result) {
                     console.log(result);
-                    // $scope.game = result;
                 }, function () {});
                 
             };
@@ -147,7 +138,6 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 var modalInstance = TriviaModalService.openEditRound($scope.game.id);
                 modalInstance.result.then(function (result) {
                     console.log(result);
-                    // $scope.game = result;
                 }, function () {});
             };
             
@@ -160,47 +150,17 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 }, function () {});
             };
             
-            // Right and Wrong speed buttons 
+            // Right and Wrong speed buttons
             
-            var getMaxScore = function(questionId) {
-                var maxPoints = 1;
-                var questions = $scope.game.round.questions;
-                
-                for (var i = 0; i < questions.length; i++) {
-                    if (parseInt(questions[i].questionId) === parseInt(questionId)) {
-                        maxPoints = parseFloat(questions[i].maxPoints);
-                        break;
-                    }
-                }
-                return maxPoints;
-            };
-            
-            var addToScore = function(teamId, questionId, maxScore) {
-                
-                var teams = $scope.game.round.teams;
-
-                for (var i = 0; i < teams.length; i++) {
-                    if (parseInt(teams[i].teamId) === parseInt(teamId)) {
-                        for (var q = 0; q < teams[i].scores.length; q++) {
-                            if (parseInt(teams[i].scores[q].questionId) === parseInt(questionId)) {
-                                $scope.game.round.teams[i].scores[q].questionScore = maxScore + parseFloat(teams[i].scores[q].questionScore);
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                }
-            };
-            
-            $scope.buttonQuestionWrong = function(teamId, questionId) {
-                var maxPoints = getMaxScore(questionId);
-                addToScore(teamId, questionId, (maxPoints * -1));
+            $scope.buttonQuestionWrong = function(teamId, questionNumber) {
+                var teamScore = $scope.game.teams[teamId].rounds[$scope.game.currentRoundNumber].questions[questionNumber];
+                teamScore.questionScore = parseFloat(teamScore.questionScore) - parseFloat(teamScore.maxPoints);
                 $scope.updateTeamRankings(teamId);
             };
         
-            $scope.buttonQuestionCorrect = function(teamId, questionId) {
-                var maxPoints = getMaxScore(questionId);
-                addToScore(teamId, questionId, maxPoints);
+            $scope.buttonQuestionCorrect = function(teamId, questionNumber) {
+                var teamScore = $scope.game.teams[teamId].rounds[$scope.game.currentRoundNumber].questions[questionNumber];
+                teamScore.questionScore = parseFloat(teamScore.questionScore) + parseFloat(teamScore.maxPoints);
                 $scope.updateTeamRankings(teamId);
             }; 
             

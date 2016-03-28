@@ -74,13 +74,7 @@
                         <th><p class="text-center">Game Score</p></th>
                         <th><p class="text-center">Game Rank</p></th>
                         
-                        <th class="question">
-                            <div ng-repeat="(key, question) in game.rounds[game.currentRoundNumber].questions track by $index">
-                                <pre><code>{{question}}</code></pre>
-                            </div>
-                        </th>
-                        
-                        <th class="question" ng-repeat="(key, question) in game.teams[8].rounds[game.currentRoundNumber].questions track by $index">
+                        <th class="question" ng-repeat="(key, question) in game.rounds[game.currentRoundNumber].questions track by $index">
                             <p class="text-center"><strong>#{{question.number}} - {{question.maxPoints | numberEx}} pts</strong></p>
                             <p ng-if="question.question">{{question.question}}</p>
                         </th>
@@ -93,15 +87,9 @@
                         <td><p class="text-center">Round Score</p></td>
                         <td><p class="text-center">Round Rank</p></td>
                         <td><p class="text-center">Game Score</p></td>
-                        <td><p class="text-center">Game Rank</p></td> 
+                        <td><p class="text-center">Game Rank</p></td>
                         
-                        <td class="question">
-                            <div ng-repeat="(key, question) in game.rounds[game.currentRoundNumber].questions">
-                                <pre><code>{{question}}</code></pre>
-                            </div>
-                        </td>
-                        
-                        <td class="question" ng-repeat="(key, question) in game.teams[8].rounds[game.currentRoundNumber].questions">
+                        <td class="question" ng-repeat="(key, question) in game.rounds[game.currentRoundNumber].questions">
                             <p class="text-center"><strong>#{{question.number}} - {{question.maxPoints | numberEx}} pts</strong></p>
                             <p ng-if="question.question">{{question.question}}</p>
                         </td>
@@ -120,7 +108,7 @@
                             <div ng-if="displayQuickScoreButtons" class="input-group input-group-sm">
                                 <span class="input-group-btn">
                                     <button 
-                                        ng-click="teamScore.questionScore = 0"
+                                        ng-click="buttonQuestionWrong(team.teamId, teamScore.number)"
                                         class="btn btn-warning" 
                                         type="button"><i class="fa fa-minus"></i></button>
                                 </span>
@@ -131,7 +119,7 @@
                                     class="form-control">
                                 <span class="input-group-btn">
                                     <button 
-                                        ng-click="teamScore.questionScore = angular.copy(teamScore.mnaxPoints)" 
+                                        ng-click="buttonQuestionCorrect(team.teamId, teamScore.number)"
                                         class="btn btn-success" 
                                         type="button"><i class="fa fa-plus"></i></button>
                                 </span>
@@ -148,7 +136,6 @@
                             
                         </td>
                         
-                        <td><p class="text-center">Game Rank</p></td> 
                     </tr>
                 </tbody>
                 
