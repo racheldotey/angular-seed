@@ -147,7 +147,6 @@ class GameData {
                 . "VALUES (:name, :order, :game_id, :default_question_points, :created_user_id, :last_updated_by);", $validRound);
         
         if($results) {
-            self::calculateRoundScores($validRound[':game_id'], $validRound[':created_user_id']);
             self::calculateGameScores($validRound[':game_id'], $validRound[':created_user_id']);
         }
         
@@ -159,7 +158,6 @@ class GameData {
                 . "VALUES (:question, :order, :game_id, :round_id, :max_points, :created_user_id, :last_updated_by);", $validQuestion);
         
         if($results) {
-            self::calculateRoundScores($validQuestion[':game_id'], $validQuestion[':created_user_id']);
             self::calculateGameScores($validQuestion[':game_id'], $validQuestion[':created_user_id']);
         }
         
@@ -171,7 +169,6 @@ class GameData {
                 . "VALUES (:game_id, :team_id, :created_user_id, :last_updated_by);", $validTeam);
         
         if($results) {
-            self::calculateRoundScores($validTeam[':game_id'], $validTeam[':created_user_id']);
             self::calculateGameScores($validTeam[':game_id'], $validTeam[':created_user_id']);
         }
         
@@ -232,7 +229,8 @@ class GameData {
         return $result;
     }
     
-    static function calculateRoundScores($gameId, $currentUser) {
+    static function calculateGameScores($gameId, $currentUser) {
+        
         $result = array();
         $game = array(':game_id' => $gameId);
         
@@ -241,19 +239,33 @@ class GameData {
         
         $rounds = DBConn::selectColumn("SELECT id FROM " . DBConn::prefix() . "game_rounds "
                  . "WHERE game_id=:game_id;", $game);
-        
+                
         $saveRoundScore = DBConn::preparedQuery("INSERT INTO " . DBConn::prefix() . "game_score_rounds (game_id,round_id,team_id,created_user_id) "
                 . "VALUES (:game_id,:round_id,:team_id,:created_user_id) "
                 . "ON DUPLICATE KEY UPDATE score = 0, round_rank = 0, last_updated_by = :last_updated_by;");
         
+        $saveTeamScore = DBConn::preparedQuery("INSERT INTO " . DBConn::prefix() . "game_score_teams (game_id,team_id,created_user_id) "
+                . "VALUES (:game_id,:team_id,:created_user_id) "
+                . "ON DUPLICATE KEY UPDATE score = 0, game_rank = 0, last_updated_by = :last_updated_by;");
+        
         for($t = 0; $t < count($teams); $t++) {
+            $saved = $saveTeamScore->execute(array_merge(array(), $game, array(
+                ':team_id' => $teams[$t],
+                ':created_user_id' => $currentUser,
+                ':last_updated_by' => $currentUser
+            )));
+            
+            $result[] = "Team #" . $teams[$t] . " saved = " . $saved;
+            
             for($r = 0; $r < count($rounds); $r++) {
-                $result[] = $saveRoundScore->execute(array_merge(array(), $game, array(
+                $saved = $saveRoundScore->execute(array_merge(array(), $game, array(
                     ':team_id' => $teams[$t], 
                     ':round_id' => $rounds[$r],
                     ':created_user_id' => $currentUser,
                     ':last_updated_by' => $currentUser
                 )));
+            
+                $result[] = "Team #" . $teams[$t] . " Round #" . $rounds[$r] .  " saved = " . $saved;
             }
         }
         
@@ -275,14 +287,7 @@ class GameData {
                 . "UPDATE " . DBConn::prefix() . "game_score_rounds SET round_rank = "
                 . "IF(score = @lastscore, @ordering, (@ordering := @ordering + 1)), "
                 . "score = (@lastscore := score) WHERE game_id = :game_id ORDER BY score DESC;", $game);
-        
-        return $result;
-    }
-    
-    static function calculateGameScores($gameId, $currentUser) {
-        $result = array();
-        $game = array(':game_id' => $gameId);
-        
+                
         // Update Max Score for Game
         $result[] = DBConn::update("UPDATE " . DBConn::prefix() . "games AS g "
                 . "INNER JOIN (SELECT rs.game_id, SUM(rs.max_points) AS maxpoints "

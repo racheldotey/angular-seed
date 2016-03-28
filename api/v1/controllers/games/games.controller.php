@@ -165,7 +165,6 @@ class GameController {
         
         $saved = [];
         $saved[] = GameData::saveQuestionScores($questionScores);
-        $saved[] = GameData::calculateRoundScores($gameId, $currentUser);
         $saved[] = GameData::calculateGameScores($gameId, $currentUser);
         
         return $saved;
