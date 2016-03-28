@@ -75,6 +75,7 @@ angular.module('rcTrivia.game', [])
 
             self.viewRound = function(roundNumber, newRound) {
                 _game.currentRoundNumber = roundNumber;
+                /*
                 if(angular.isDefined(_game.round.roundNumber)) {
                     // Save current round progress
                     var currentRoundIndex = self.findRoundIndexByNumber(_game.round.roundNumber);
@@ -93,14 +94,16 @@ angular.module('rcTrivia.game', [])
                 if(angular.isNumber(found) && angular.isDefined(_game.rounds[found].questions)) {
                     _game.round = _game.rounds[found];
                     _game.currentRoundNumber = angular.copy(_game.round.roundNumber);
+                    _game.currentRoundId = angular.copy(_game.round.roundId);
                     return true;
                 } else {
                     return false;
-                }
+                }*/
             };
             
             // Setup update totals event            
             self.updateTotals = function(teamId) {
+                /*
                 var teams = _game.round.teams || [];
                 var found = false;
                 
@@ -161,6 +164,7 @@ angular.module('rcTrivia.game', [])
                     }
 
                 }
+                */
             };
         
     }]); // END: Game()

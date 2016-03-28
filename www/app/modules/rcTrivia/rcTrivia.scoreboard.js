@@ -28,7 +28,7 @@ angular.module('rcTrivia.scoreboard', ['rcTrivia.game'])
                     // If no game (or a different game) is loaded
                     // Then reload the whole game
                     ApiRoutesGames.getGame(gameId, roundNumber).then(function (result) {
-                        TriviaGame.init(result.game);
+                        TriviaGame.init(result.game, roundNumber);
                         resolve(api.getGame());
                     }, function (error) {
                         reject(error);
@@ -39,6 +39,9 @@ angular.module('rcTrivia.scoreboard', ['rcTrivia.game'])
         
         api.loadRound = function(roundNumber) {
             return $q(function (resolve, reject) {
+                    TriviaGame.viewRound(roundNumber);
+                    resolve(api.getGame());
+                        /*
                 var loadedGame = api.getGame();
                 if(loadedGame && loadedGame.currentRoundNumber == roundNumber) {
                     resolve(api.getGame());
@@ -56,7 +59,7 @@ angular.module('rcTrivia.scoreboard', ['rcTrivia.game'])
                     }
                 } else {
                     reject("No game is loaded.");
-                }
+                }*/
             });          
         };
         

@@ -39,13 +39,14 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
             $scope.scoreboardNavHamburger = { isopen: false };
             
             $scope.dtScoreboard = {};
+            
             $scope.dtScoreboard.options = DTOptionsBuilder.newOptions()
                 .withDOM('t')
                 .withOption('scrollX', '100%')
                 .withOption('scrollCollapse', true)
                 .withOption('deferRender', true)
                 .withOption('paging', false)
-                .withFixedColumns({ leftColumns: 1 })
+                //.withFixedColumns({ leftColumns: 1 })
                 .withOption('responsive', false)
                 .withOption('drawCallback', function() {
                     $scope.setScoreboardHeight();
@@ -77,8 +78,10 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 TriviaScoreboard.loadRound(roundNumber).then(function (result) {
                     // Change the State (URL) parameters without reloading the page
                     // Used for deep linking
-                    $scope.game = result;
+                    // $scope.game = result;
+                            console.log($scope.game);
                     $state.go($state.$current, {gameId: $scope.game.id, roundNumber: roundNumber}, {notify: false});
+                            console.log($scope.game);
                 }, function (error) {
                     $scope.alertProxy.error(error);
                 });
@@ -88,7 +91,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 AlertConfirmService.confirm('Are you sure you want to start this game? It cannot be paused once started.', 'Confirm Start Game.')
                     .result.then(function () {
                         TriviaScoreboard.startGame().then(function (result) {
-                            $scope.game = result;
+                            // $scope.game = result;
                             console.log($scope.game);
                         }, function (error) {
                             $scope.alertProxy.error(error);
@@ -102,7 +105,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                         AlertConfirmService.confirm('Are you sure you positive you would like to close this game? It will finalize team scores.', 'Warning! Closing Game.')
                             .result.then(function () {
                                 TriviaScoreboard.endGame().then(function (result) {
-                                    $scope.game = result;
+                                    // $scope.game = result;
                                     console.log($scope.game);
                                 }, function (error) {
                                     $scope.alertProxy.error(error);
@@ -124,7 +127,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 var modalInstance = TriviaModalService.openAddTeam($scope.game);
                 modalInstance.result.then(function (result) {
                     console.log(result);
-                    $scope.game = result;
+                    // $scope.game = result;
                 }, function () {});
                 
             };
@@ -134,7 +137,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 var modalInstance = TriviaModalService.openAddPlayer($scope.game.id);
                 modalInstance.result.then(function (result) {
                     console.log(result);
-                    $scope.game = result;
+                    // $scope.game = result;
                 }, function () {});
                 
             };
@@ -144,7 +147,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 var modalInstance = TriviaModalService.openEditRound($scope.game.id);
                 modalInstance.result.then(function (result) {
                     console.log(result);
-                    $scope.game = result;
+                    // $scope.game = result;
                 }, function () {});
             };
             
@@ -153,7 +156,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 var modalInstance = TriviaModalService.openEditQuestion();
                 modalInstance.result.then(function (result) {
                     console.log(result);
-                    $scope.game = result;
+                    // $scope.game = result;
                 }, function () {});
             };
             
