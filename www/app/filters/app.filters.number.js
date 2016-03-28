@@ -37,6 +37,14 @@ app.filter('numberEx', ['numberFilter', '$locale',
 
         var formats = $locale.NUMBER_FORMATS;
         return function (input, fractionSize) {
+            
+            if(!angular.isDefined(input)) {
+                return input;
+            }
+            
+            if(!angular.isDefined(fractionSize)) {
+                fractionSize = 2;
+            }
             //Get formatted value
             var formattedValue = number(input, fractionSize);
 
