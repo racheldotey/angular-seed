@@ -30,6 +30,7 @@ angular.module('rcTrivia.game', [])
                 _game.venueId = newGame.venueId || 0;
                 _game.venue = newGame.venue || '';
                 // Scoreboard Data
+                _game.teams = newGame.teams || [];
                 _game.rounds = newGame.rounds || [];
 
                 // Current Round 
