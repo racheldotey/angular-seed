@@ -19,23 +19,23 @@ class GameData {
         }
         
         // Teams and their score
-        $qTeams = DBConn::executeQuery("SELECT t.id AS teamId, t.name, g.score AS gameScore, game_rank AS gameRank, game_winner AS gameWinner "
+        $qTeams = DBConn::executeQuery("SELECT t.id AS teamId, t.name, IFNULL(g.score, 0) AS gameScore, IFNULL(game_rank, 0) AS gameRank, game_winner AS gameWinner "
                 . "FROM " . DBConn::prefix() . "game_score_teams AS g "
                 . "JOIN " . DBConn::prefix() . "teams AS t ON g.team_id = t.id "
                 . "WHERE g.game_id = :game_id;", array(':game_id' => $gameId));
         
         $qTeamRounds = DBConn::preparedQuery("SELECT r.id AS roundId, r.order AS number, r.max_points AS maxPoints, "
                 . "r.default_question_points AS defaultQuestionPoints, "
-                . "s.score AS roundScore, s.round_rank AS roundRank "
+                . "IFNULL(s.score, 0) AS roundScore, IFNULL(s.round_rank, 0) AS roundRank "
                 . "FROM " . DBConn::prefix() . "game_rounds AS r "
                 . "LEFT JOIN " . DBConn::prefix() . "game_score_rounds AS s ON r.id = s.round_id "
-                . "WHERE r.game_id = :game_id AND s.team_id = :team_id ORDER BY r.order;");
+                . "WHERE r.game_id = :game_id AND (s.team_id = :team_id OR s.team_id IS NULL) ORDER BY r.order;");
 
         $qTeamQuestions = DBConn::preparedQuery("SELECT q.id AS questionId, q.order AS number, "
-                . "q.max_points AS maxPoints, s.score AS questionScore "
+                . "q.max_points AS maxPoints, IFNULL(s.score, 0) AS questionScore "
                 . "FROM " . DBConn::prefix() . "game_round_questions AS q "
                 . "LEFT JOIN " . DBConn::prefix() . "game_score_questions AS s ON q.id = s.question_id "
-                . "WHERE q.round_id = :round_id AND s.team_id = :team_id ORDER BY q.order;");
+                . "WHERE q.round_id = :round_id AND (s.team_id = :team_id OR s.team_id IS NULL) ORDER BY q.order;");
         
         //// FORMAT SCOREBOARD
         $teams = Array();

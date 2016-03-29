@@ -152,7 +152,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
             
             // Right and Wrong speed buttons
             
-            $scope.buttonQuestionWrong = function(teamId, questionNumber) {
+            $scope.buttonQuestionWrong = function(teamId, questionId) {
                 var teamScore = $scope.game.teams[teamId].rounds[$scope.game.currentRoundNumber].questions[questionNumber];
                 teamScore.questionScore = parseFloat(teamScore.questionScore) - parseFloat(teamScore.maxPoints);
                 $scope.updateTeamRankings(teamId);

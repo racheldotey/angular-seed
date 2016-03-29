@@ -32,16 +32,10 @@ angular.module('rcTrivia.game', [])
                 // Scoreboard Data
                 _game.teams = newGame.teams || [];
                 _game.rounds = newGame.rounds || [];
+                _game.numberOfRounds = Object.keys(_game.rounds).length;
 
                 // Current Round 
                 _game.currentRoundNumber = viewRound || 0;
-                _game.numberOfRounds = Object.keys(_game.rounds).length;
-            };
-            
-            self.updateGameScoreReferences = function() {
-                if(angular.isDefined(_game.round.roundNumber)) {
-                    
-                }
             };
             
             self.getGame = function() {
@@ -52,80 +46,45 @@ angular.module('rcTrivia.game', [])
                 }
             };
 
-            self.findRoundIndexByNumber = function(roundNumber) {
-                var found = false;
-                for(var i = 0; i < _game.rounds.length; i++) {
-                    if(found === false && 
-                            parseInt(_game.rounds[i].roundNumber) === parseInt(roundNumber)) {
-                        found = i;
-                        break;
-                    }
-                }
-                return found;
-            };
-
             self.addRound = function(round) {
-                var found = self.findRoundIndexByNumber(round.roundNumber);
-                if(found === false) {
-                    _game.rounds.push(round);
-                } else {
-                    _game.rounds[found] = round;
-                }
+                console.log("cant do this. just refresh");
             };
 
             self.viewRound = function(roundNumber, newRound) {
                 _game.currentRoundNumber = roundNumber;
-                /*
-                if(angular.isDefined(_game.round.roundNumber)) {
-                    // Save current round progress
-                    var currentRoundIndex = self.findRoundIndexByNumber(_game.round.roundNumber);
-                    if (angular.isNumber(currentRoundIndex)) {
-                        _game.rounds[currentRoundIndex] = _game.round;
-                    }
-                }
-                    
-                // If its a new round add it
-                if(newRound) {
-                    self.addRound(newRound);
-                }
-                
-                // Set the current round to the new round number
-                var found = self.findRoundIndexByNumber(roundNumber);                    
-                if(angular.isNumber(found) && angular.isDefined(_game.rounds[found].questions)) {
-                    _game.round = _game.rounds[found];
-                    _game.currentRoundNumber = angular.copy(_game.round.roundNumber);
-                    _game.currentRoundId = angular.copy(_game.round.roundId);
-                    return true;
-                } else {
-                    return false;
-                }*/
             };
             
             // Setup update totals event            
-            self.updateTotals = function(teamId) {
-                /*
-                var teams = _game.round.teams || [];
-                var found = false;
-                
+            self.updateTotals = function(teamId) {                
                 // Find and update the team who's score has been changed
-                for(var i = 0; i < teams.length; i++) {
-                    // Search for the team that was changed
-                    if(found === false && parseInt(teams[i].teamId) === parseInt(teamId)) {
+                if(angular.isDefined(_game.teams[teamId])) {
                     
-                        // Update that teams round score
-                        var roundScore = 0.0;
-                        for(var s = 0; s < teams[i].scores.length; s++) {
-                            roundScore = roundScore + parseFloat(teams[i].scores[s].questionScore);
-                        }
-                        var difference = roundScore - teams[i].roundScore;
-                        teams[i].roundScore = roundScore;
-                        teams[i].gameScore = parseFloat(teams[i].gameScore) + difference;
-                        found = true;
-                        break;
+                    var changedTeamRound = _game.teams[teamId].rounds[_game.currentRoundNumber];
+                    var roundScore = 0.0;
+                    
+                    for(var key in changedTeamRound.questions) {
+                        roundScore = roundScore + parseFloat(changedTeamRound.questions[key].questionScore);
                     }
+                    
+                    var doCalculations = (roundScore !== parseFloat(changedTeamRound.roundScore)) ? true : false;
+                    changedTeamRound.roundScore = roundScore;
+                    
                 }
                 
                 // If a change was made - (if not skip for speed)
+                if(angular.isDefined(doCalculations) && doCalculations) {
+                    
+                    // Calculate Round Ranking
+                    for(var key in changedTeamRound.questions) {
+                        roundScore = roundScore + parseFloat(changedTeamRound.questions[key].questionScore);
+                    }
+                    
+                    // Calculate Gamne Scores
+                    
+                    // Calculate Gamne Ranking
+                }
+                
+                /*
                 if(found) {
                     // Sort Round Scores
                     teams.sort(function (a, b) {

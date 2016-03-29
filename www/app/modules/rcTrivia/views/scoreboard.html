@@ -65,36 +65,23 @@
 
             </div>
             <form class="form-inline">
-            <table id="scoreboard" datatable="ng" dt-options="dtScoreboard.options" class="ng-cloak">
+            <table id="scoreboard" datatable="ng" dt-options="dtScoreboard.options">
                 <thead>
                     <tr>
                         <th><p>Team Name</p></th>
                         <th><p class="text-center">Round Score</p></th>
                         <th><p class="text-center">Round Rank</p></th>
                         <th><p class="text-center">Game Score</p></th>
-                        <th><p class="text-center">Game Rank</p></th>
+                        <th><p class="text-center">Game Rank <code>{{game.rounds[game.currentRoundNumber].questions}}</code></p></th>
                         
-                        <th class="question" ng-repeat="(key, question) in game.rounds[game.currentRoundNumber].questions track by $index">
+                        <th class="question" ng-repeat="question in game.rounds[game.currentRoundNumber].questions">
                             <p class="text-center"><strong>#{{question.number}} - {{question.maxPoints | numberEx}} pts</strong></p>
                             <p ng-if="question.question">{{question.question}}</p>
                         </th>
                         
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td><p>Team Name</p></td>
-                        <td><p class="text-center">Round Score</p></td>
-                        <td><p class="text-center">Round Rank</p></td>
-                        <td><p class="text-center">Game Score</p></td>
-                        <td><p class="text-center">Game Rank</p></td>
-                        
-                        <td class="question" ng-repeat="(key, question) in game.rounds[game.currentRoundNumber].questions">
-                            <p class="text-center"><strong>#{{question.number}} - {{question.maxPoints | numberEx}} pts</strong></p>
-                            <p ng-if="question.question">{{question.question}}</p>
-                        </td>
-                    </tr>
-                    
+                <tbody>                    
                     <tr ng-repeat="team in game.teams">
                         <th class="team"><p>{{team.name}}</p></th>
                         <th class="round-score"><p class="text-center">{{team.rounds[game.currentRoundNumber].roundScore | numberEx}}</p></th>
@@ -102,7 +89,7 @@
                         <th class="game-score"><p class="text-center">{{team.gameScore | numberEx}}</p></th>
                         <th class="game-rank"><p class="text-center">{{team.gameRank}}</p></th>
                         
-                        <td class="question-score" ng-repeat="(key, teamScore) in team.rounds[game.currentRoundNumber].questions">
+                        <td class="question-score" ng-repeat="teamScore in team.rounds[game.currentRoundNumber].questions">
                             <pre><code>{{teamScore}}</code></pre>
 
                             <div ng-if="displayQuickScoreButtons" class="input-group input-group-sm">
@@ -140,6 +127,8 @@
                 </tbody>
                 
             </table>
+                
+                <span ng-repeat="question in game.rounds[game.currentRoundNumber].questions"></span>
                 
             </form>
         </section>
