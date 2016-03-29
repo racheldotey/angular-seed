@@ -65,28 +65,30 @@
 
             </div>
             <form class="form-inline">
-            <table id="scoreboard" class="dataTable" ng-repeat="thisGame in game">
-                <tr>
-                    <th><p>Team Name</p></th>
-                    <th><p class="text-center">Round Score</p></th>
-                    <th><p class="text-center">Round Rank</p></th>
-                    <th><p class="text-center">Game Score</p></th>
-                    <th><p class="text-center">Game Rank <code>{{thisGame.rounds[thisGame.currentRoundNumber].questions}}</code></p></th>
+            <table id="scoreboard" datatable="ng" dt-options="dtScoreboard.options">
+                <thead>
+                    <tr>
+                        <th><p>Team Name</p></th>
+                        <th><p class="text-center">Round Score</p></th>
+                        <th><p class="text-center">Round Rank</p></th>
+                        <th><p class="text-center">Game Score</p></th>
+                        <th><p class="text-center">Game Rank</p></th>
 
-                    <th class="question" ng-repeat="question in thisGame.rounds[thisGame.currentRoundNumber].questions">
-                        <p class="text-center"><strong>B#{{question.number}} - {{question.maxPoints | numberEx}} pts</strong></p>
-                        <p ng-if="question.question">{{question.question}}</p>
-                    </th>
-                </tr>
+                        <th class="question" ng-repeat="question in game.rounds[game.currentRoundNumber].questions">
+                            <p class="text-center"><strong>B#{{question.number}} - {{question.maxPoints | numberEx}} pts</strong></p>
+                            <p ng-if="question.question">{{question.question}}</p>
+                        </th>
+                    </tr>
+                </thead>
                 <tbody>
-                    <tr ng-repeat="team in thisGame.teams">
+                    <tr ng-repeat="team in game.teams">
                         <th class="team"><p>{{team.name}}</p></th>
-                        <th class="round-score"><p class="text-center">{{team.rounds[thisGame.currentRoundNumber].roundScore | numberEx}}</p></th>
-                        <th class="round-rank"><p class="text-center">{{team.rounds[thisGame.currentRoundNumber].roundRank}}</p></th>
+                        <th class="round-score"><p class="text-center">{{team.rounds[game.currentRoundNumber].roundScore | numberEx}}</p></th>
+                        <th class="round-rank"><p class="text-center">{{team.rounds[game.currentRoundNumber].roundRank}}</p></th>
                         <th class="game-score"><p class="text-center">{{team.gameScore | numberEx}}</p></th>
                         <th class="game-rank"><p class="text-center">{{team.gameRank}}</p></th>
                         
-                        <td class="question-score" ng-repeat="teamScore in team.rounds[thisGame.currentRoundNumber].questions">
+                        <td class="question-score" ng-repeat="teamScore in team.rounds[game.currentRoundNumber].questions">
                             <div ng-if="displayQuickScoreButtons" class="input-group input-group-sm">
                                 <span class="input-group-btn">
                                     <button 
