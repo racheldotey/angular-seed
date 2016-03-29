@@ -78,6 +78,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 TriviaScoreboard.loadRound(roundNumber).then(function (result) {
                     // Change the State (URL) parameters without reloading the page
                     // Used for deep linking
+                    $state.go($state.$current, {gameId: $scope.game.id, roundNumber: roundNumber}, {notify: false});
                 }, function (error) {
                     $scope.alertProxy.error(error);
                 });

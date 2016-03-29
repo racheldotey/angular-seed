@@ -36,6 +36,7 @@ angular.module('rcTrivia.game', [])
 
                 // Current Round 
                 _game.currentRoundNumber = viewRound || 0;
+                _game.round = _game.rounds[_game.currentRoundNumber] || {};
             };
             
             self.getGame = function() {
@@ -52,6 +53,7 @@ angular.module('rcTrivia.game', [])
 
             self.viewRound = function(roundNumber, newRound) {
                 _game.currentRoundNumber = roundNumber;
+                _game.round = _game.rounds[_game.currentRoundNumber];
             };
             
             // Setup update totals event            
