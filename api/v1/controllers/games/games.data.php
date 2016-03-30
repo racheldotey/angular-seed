@@ -24,18 +24,20 @@ class GameData {
                 . "JOIN " . DBConn::prefix() . "teams AS t ON g.team_id = t.id "
                 . "WHERE g.game_id = :game_id;", array(':game_id' => $gameId));
         
-        $qTeamRounds = DBConn::preparedQuery("SELECT r.id AS roundId, r.order AS number, r.max_points AS maxPoints, "
-                . "r.default_question_points AS defaultQuestionPoints, "
+        $qTeamRounds = DBConn::preparedQuery("SELECT r.id AS roundId, r.order AS number, "
+                . "r.max_points AS maxPoints, r.default_question_points AS defaultQuestionPoints, "
                 . "IFNULL(s.score, 0) AS roundScore, IFNULL(s.round_rank, 0) AS roundRank "
-                . "FROM " . DBConn::prefix() . "game_rounds AS r "
-                . "LEFT JOIN " . DBConn::prefix() . "game_score_rounds AS s ON r.id = s.round_id "
-                . "WHERE r.game_id = :game_id AND (s.team_id = :team_id OR s.team_id IS NULL) ORDER BY r.order;");
-
+                . "FROM " . DBConn::prefix() . "game_rounds AS r LEFT JOIN (SELECT sr.round_id, sr.score, sr.round_rank "
+                . "FROM " . DBConn::prefix() . "game_score_rounds AS sr WHERE sr.team_id = :team_id) AS s ON s.round_id = r.id "
+                . "WHERE r.game_id = :game_id ORDER BY r.order;");
+        
         $qTeamQuestions = DBConn::preparedQuery("SELECT q.id AS questionId, q.order AS number, "
                 . "q.max_points AS maxPoints, IFNULL(s.score, 0) AS questionScore "
                 . "FROM " . DBConn::prefix() . "game_round_questions AS q "
-                . "LEFT JOIN " . DBConn::prefix() . "game_score_questions AS s ON q.id = s.question_id "
-                . "WHERE q.round_id = :round_id AND (s.team_id = :team_id OR s.team_id IS NULL) ORDER BY q.order;");
+                . "LEFT JOIN (SELECT sq.question_id, sq.score "
+                . "FROM " . DBConn::prefix() . "game_score_questions AS sq "
+                . "WHERE sq.team_id = :team_id) AS s ON s.question_id = q.id "
+                . "WHERE q.round_id = :round_id ORDER BY q.order;");
         
         //// FORMAT SCOREBOARD
         $teams = Array();
