@@ -40,6 +40,12 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
             
             $scope.dtScoreboard = {};
             
+            /* Object to hold DataTableInstance */
+            //dt.instance = {};
+            $scope.dtScoreboard.instance = function (instance) {
+                $scope.dtScoreboard.instance = instance;
+            };
+        
             $scope.dtScoreboard.options = DTOptionsBuilder.newOptions()
                 .withDOM('t')
                 .withOption('scrollX', '100%')
@@ -75,13 +81,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
             });
                 
             $scope.buttonViewRound = function(roundNumber) {
-                TriviaScoreboard.loadRound(roundNumber).then(function (result) {
-                    // Change the State (URL) parameters without reloading the page
-                    // Used for deep linking
-                    $state.go($state.$current, {gameId: $scope.game.id, roundNumber: roundNumber}, {notify: false});
-                }, function (error) {
-                    $scope.alertProxy.error(error);
-                });
+                    $state.go($state.$current, {gameId: $scope.game.id, roundNumber: roundNumber});
             };
             
             $scope.buttonStartGame = function() {
@@ -153,7 +153,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
             
             // Right and Wrong speed buttons
             
-            $scope.buttonQuestionWrong = function(teamId, questionId) {
+            $scope.buttonQuestionWrong = function(teamId, questionNumber) {
                 var teamScore = $scope.game.teams[teamId].rounds[$scope.game.currentRoundNumber].questions[questionNumber];
                 teamScore.questionScore = parseFloat(teamScore.questionScore) - parseFloat(teamScore.maxPoints);
                 $scope.updateTeamRankings(teamId);
