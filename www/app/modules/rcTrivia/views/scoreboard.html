@@ -1,70 +1,70 @@
 <div class="game-scoreboard">
-    
+
     <div data-rc-bootstrap-alerts="alertProxy"></div>
 
-        <header>
-            <div class="game-header">                
-                <h2 class="game-title hidden-xs hidden-sm">{{game.name}}</h2>
-                <h4 class="game-title visible-sm-inline-block">{{game.name}}</h4>
-                <p class="game-title visible-xs-inline-block"><strong>{{game.name}}</strong></p>
-                <!--
-                <p><small>Round {{game.currentRoundNumber}} - {{game.rounds[game.currentRoundNumber].questions}}</small></p>
-                <p class="game-host"><small>Hosted by: {{game.hostName}} At {{game.venue}}</small></p>
-                <p class="game-host"><small>Started: {{game.started| formatMySQLDate}}</small></p>
-                <p class="game-host"><small>Ended: {{game.ended| formatMySQLDate}}</small></p>
-                -->
-            </div>
-        </header>
+    <header>
+        <div class="game-header">                
+            <h2 class="game-title hidden-xs hidden-sm">{{game.name}}</h2>
+            <h4 class="game-title visible-sm-inline-block">{{game.name}}</h4>
+            <p class="game-title visible-xs-inline-block"><strong>{{game.name}}</strong></p>
+            <!--
+            <p><small>Round {{game.currentRoundNumber}} - {{game.rounds[game.currentRoundNumber].questions}}</small></p>
+            <p class="game-host"><small>Hosted by: {{game.hostName}} At {{game.venue}}</small></p>
+            <p class="game-host"><small>Started: {{game.started| formatMySQLDate}}</small></p>
+            <p class="game-host"><small>Ended: {{game.ended| formatMySQLDate}}</small></p>
+            -->
+        </div>
+    </header>
 
-        <section>
-            
-            <div id="scoreboard-navigation">
+    <section>
 
-                <div data-rc-trivia-scoreboard-round-navigation
-                     data-total-rounds="game.numberOfRounds" 
-                     data-current-round-number="game.currentRoundNumber"
-                     data-view-round-event="buttonViewRound"
-                     class="game-round-navigation"></div>
-                    
-                
-                <div class="host-actions">
-                    <div id="wide-menu" class="visible-lg-block">
-                        <button ng-show="!displayQuickScoreButtons" ng-click="displayQuickScoreButtons = !displayQuickScoreButtons" type="button" class="btn btn-primary btn-sm">Show Quick Buttons</button>
-                        <button ng-show="displayQuickScoreButtons" ng-click="displayQuickScoreButtons = !displayQuickScoreButtons" type="button" class="btn btn-primary btn-sm">Hide Quick Buttons</button>
-                        
-                        <button ng-click="buttonAddTeam()" type="button" class="btn btn-primary btn-sm">Add Team</button>
-                        <button ng-click="buttonAddPlayer()" type="button" class="btn btn-primary btn-sm">Add Player</button>
+        <div id="scoreboard-navigation">
 
-                        <button ng-click="buttonAddRound()" type="button" class="btn btn-primary btn-sm">Add Round</button>
-                        <button ng-click="buttonAddQuestion()" type="button" class="btn btn-primary btn-sm">Add Question</button>
+            <div data-rc-trivia-scoreboard-round-navigation
+                 data-total-rounds="game.numberOfRounds" 
+                 data-current-round-number="game.currentRoundNumber"
+                 data-view-round-event="buttonViewRound"
+                 class="game-round-navigation"></div>
 
-                        <button ng-click="buttonSaveGame()" type="button" class="btn btn-primary btn-sm"><i ng-show="unsavedState" class="fa fa-star"></i> Save and Publish</button>
-                        <button ng-click="buttonEndGame()" type="button" class="btn btn-primary btn-sm"><i ng-show="unsavedState" class="fa fa-star"></i> Save and End Game</button>
-                    </div>
-                    
-                    <div id="mobile-menu" class="btn-group hidden-lg" 
-                         uib-dropdown is-open="scoreboardNavHamburger.isopen" aria-haspopup="true" aria-expanded="true">
-                        <button type="button" class="btn btn-primary" uib-dropdown-toggle aria-label="Scoreboard Menu">
-                            <i class="fa fa-bars"></i>
-                        </button>
-                        <ul uib-dropdown-menu role="menu" aria-labelledby="single-button">
-                            <li ng-show="!displayQuickScoreButtons" role="menuitem"><a ng-click="displayQuickScoreButtons = !displayQuickScoreButtons" href="#">Show Quick Buttons</a></li>
-                            <li ng-show="displayQuickScoreButtons" role="menuitem"><a ng-click="displayQuickScoreButtons = !displayQuickScoreButtons" href="#">Hide Quick Buttons</a></li>
-                            <li class="divider"></li>
-                            <li role="menuitem"><a ng-click="buttonAddTeam()" href="#">Add Team</a></li>
-                            <li role="menuitem"><a ng-click="buttonAddPlayer()" href="#">Add Player</a></li>
-                            <li class="divider"></li>
-                            <li role="menuitem"><a ng-click="buttonAddRound()" href="#">Add Round</a></li>
-                            <li role="menuitem"><a ng-click="buttonAddQuestion()" href="#">Add Question</a></li>
-                            <li class="divider"></li>
-                            <li role="menuitem"><a ng-click="buttonSaveGame()" href="#"><i ng-show="unsavedState" class="fa fa-star"></i> Save and Publish</a></li>
-                            <li role="menuitem"><a ng-click="buttonEndGame()" href="#"><i ng-show="unsavedState" class="fa fa-star"></i> Save and End Game</a></li>
-                        </ul>
-                    </div>
+
+            <div class="host-actions">
+                <div id="wide-menu" class="visible-lg-block">
+                    <button ng-show="!displayQuickScoreButtons" ng-click="displayQuickScoreButtons = !displayQuickScoreButtons" type="button" class="btn btn-primary btn-sm">Show Quick Buttons</button>
+                    <button ng-show="displayQuickScoreButtons" ng-click="displayQuickScoreButtons = !displayQuickScoreButtons" type="button" class="btn btn-primary btn-sm">Hide Quick Buttons</button>
+
+                    <button ng-click="buttonAddTeam()" type="button" class="btn btn-primary btn-sm">Add Team</button>
+                    <button ng-click="buttonAddPlayer()" type="button" class="btn btn-primary btn-sm">Add Player</button>
+
+                    <button ng-click="buttonAddRound()" type="button" class="btn btn-primary btn-sm">Add Round</button>
+                    <button ng-click="buttonAddQuestion()" type="button" class="btn btn-primary btn-sm">Add Question</button>
+
+                    <button ng-click="buttonSaveGame()" type="button" class="btn btn-primary btn-sm"><i ng-show="unsavedState" class="fa fa-star"></i> Save and Publish</button>
+                    <button ng-click="buttonEndGame()" type="button" class="btn btn-primary btn-sm"><i ng-show="unsavedState" class="fa fa-star"></i> Save and End Game</button>
                 </div>
 
+                <div id="mobile-menu" class="btn-group hidden-lg" 
+                     uib-dropdown is-open="scoreboardNavHamburger.isopen" aria-haspopup="true" aria-expanded="true">
+                    <button type="button" class="btn btn-primary" uib-dropdown-toggle aria-label="Scoreboard Menu">
+                        <i class="fa fa-bars"></i>
+                    </button>
+                    <ul uib-dropdown-menu role="menu" aria-labelledby="single-button">
+                        <li ng-show="!displayQuickScoreButtons" role="menuitem"><a ng-click="displayQuickScoreButtons = !displayQuickScoreButtons" href="#">Show Quick Buttons</a></li>
+                        <li ng-show="displayQuickScoreButtons" role="menuitem"><a ng-click="displayQuickScoreButtons = !displayQuickScoreButtons" href="#">Hide Quick Buttons</a></li>
+                        <li class="divider"></li>
+                        <li role="menuitem"><a ng-click="buttonAddTeam()" href="#">Add Team</a></li>
+                        <li role="menuitem"><a ng-click="buttonAddPlayer()" href="#">Add Player</a></li>
+                        <li class="divider"></li>
+                        <li role="menuitem"><a ng-click="buttonAddRound()" href="#">Add Round</a></li>
+                        <li role="menuitem"><a ng-click="buttonAddQuestion()" href="#">Add Question</a></li>
+                        <li class="divider"></li>
+                        <li role="menuitem"><a ng-click="buttonSaveGame()" href="#"><i ng-show="unsavedState" class="fa fa-star"></i> Save and Publish</a></li>
+                        <li role="menuitem"><a ng-click="buttonEndGame()" href="#"><i ng-show="unsavedState" class="fa fa-star"></i> Save and End Game</a></li>
+                    </ul>
+                </div>
             </div>
-            <form class="form-inline">
+
+        </div>
+        <form class="form-inline">
             <table id="scoreboard" data-datatable="ng" data-dt-options="dtScoreboard.options" data-dt-instance="dtScoreboard.instance">
                 <thead>
                     <tr>
@@ -75,7 +75,7 @@
                         <th><p class="text-center">Game Rank</p></th>
 
                         <th class="question" ng-repeat="question in game.rounds[game.currentRoundNumber].questions">
-                            <p class="text-center"><strong>#{{question.number}} - {{question.maxPoints | numberEx}} pts</strong></p>
+                            <p class="text-center"><strong>#{{question.number}} - {{question.maxPoints| numberEx}} pts</strong></p>
                             <p ng-if="question.question">{{question.question}}</p>
                         </th>
                     </tr>
@@ -83,11 +83,11 @@
                 <tbody>
                     <tr ng-repeat="team in game.teams">
                         <th class="team"><p>{{team.name}}</p></th>
-                        <th class="round-score"><p class="text-center">{{team.rounds[game.currentRoundNumber].roundScore | numberEx}}</p></th>
+                        <th class="round-score"><p class="text-center">{{team.rounds[game.currentRoundNumber].roundScore| numberEx}}</p></th>
                         <th class="round-rank"><p class="text-center">{{team.rounds[game.currentRoundNumber].roundRank}}</p></th>
-                        <th class="game-score"><p class="text-center">{{team.gameScore | numberEx}}</p></th>
+                        <th class="game-score"><p class="text-center">{{team.gameScore| numberEx}}</p></th>
                         <th class="game-rank"><p class="text-center">{{team.gameRank}}</p></th>
-                        
+
                         <td class="question-score" ng-repeat="teamScore in team.rounds[game.currentRoundNumber].questions">
                             <div ng-if="displayQuickScoreButtons" class="input-group input-group-sm">
                                 <span class="input-group-btn">
@@ -117,19 +117,19 @@
                                     type="number" 
                                     class="form-control">
                             </div>
-                            
+
                         </td>
-                        
+
                     </tr>
                 </tbody>
-                
-            </table>
-                
-            </form>
-        </section>
 
-        <footer>
-            <div></div>
-            <div></div>
-        </footer>
-    </div>
+            </table>
+
+        </form>
+    </section>
+
+    <footer>
+        <div></div>
+        <div></div>
+    </footer>
+</div>
