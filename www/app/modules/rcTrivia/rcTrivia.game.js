@@ -79,16 +79,19 @@ angular.module('rcTrivia.game', [])
                     // Calculate Round Ranking
                     var allTeamGameScores = new Array();
                     var allTeamRoundScores = new Array();
+                    var teamRoundScores = new Array();
                     
                     for(var teamKey in _game.teams) { // For every team
-                        var teamRoundScores = new Array();
-                    
+                        
                         for(var teamRoundKey in _game.teams[teamKey].rounds) { // For every team round
+                            if(!angular.isDefined(allTeamRoundScores[teamRoundKey])) {
+                                allTeamRoundScores[teamRoundKey] = new Array();
+                            }
                             
                             // Get all unique round scores for each team
                             var score = parseFloat(_game.teams[teamKey].rounds[teamRoundKey].roundScore);
-                            if(allTeamRoundScores.indexOf(score) < 0) {
-                                allTeamRoundScores.push(score);
+                            if(allTeamRoundScores[teamRoundKey].indexOf(score) < 0) {
+                                allTeamRoundScores[teamRoundKey].push(score);
                             }
                             // Get all scores for this team
                             teamRoundScores.push(score);
@@ -102,15 +105,26 @@ angular.module('rcTrivia.game', [])
                             allTeamGameScores.push(_game.teams[teamKey].gameScore);
                         }
                     }
-                    allTeamRoundScores.sort(function(a, b){ return b-a; });
-                    allTeamGameScores.sort(function(a, b){ return b-a; });
+                    
+                    // Sort all the game scores
+                    allTeamGameScores.sort(function(a, b){ 
+                        var result = b-a; 
+                        console.log("allTeamGameScores.sort: " + b + " - " + a + " = " + result);
+                        return b-a; 
+                    });
                     
                     for(var teamKey in _game.teams) { // For every team
                         
                         for(var teamRoundKey in _game.teams[teamKey].rounds) { // For every team round
+                            // Sort the scores in this round
+                            allTeamRoundScores[teamRoundKey].sort(function(a, b){ 
+                                var result = b-a; 
+                                console.log("allTeamRoundScores[teamRoundKey].sort: [" + teamRoundKey + "] " + b + " - " + a + " = " + result);
+                                return b-a; 
+                            });
                             ///// ROUND RANK
                             var score = parseFloat(_game.teams[teamKey].rounds[teamRoundKey].roundScore);
-                            var index = allTeamRoundScores.indexOf(score);
+                            var index = allTeamRoundScores[teamRoundKey].indexOf(score);
                             _game.teams[teamKey].rounds[teamRoundKey].roundRank = (index < 0) ? 0 : index + 1;
                         }
                     

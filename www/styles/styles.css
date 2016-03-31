@@ -674,7 +674,7 @@ html body {
 html body .page {
   margin-bottom: 60px;
 }
-html body .footer {
+html body footer.footer {
   position: absolute;
   bottom: 0;
   width: 100%;
@@ -693,15 +693,11 @@ html body.iframe-compatible .footer {
 }
 /* Custom page CSS
 -------------------------------------------------- */
-body > .layout-view > .layout > .container {
-  padding: 0 15px 0;
+body .container {
+  padding: 0 5px 0;
 }
 .container .text-muted {
   margin: 20px 0;
-}
-.footer > .container {
-  padding-right: 15px;
-  padding-left: 15px;
 }
 code {
   font-size: 80%;
