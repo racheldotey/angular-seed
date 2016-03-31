@@ -38,6 +38,30 @@ angular.module('rcTrivia.game', [])
                 _game.currentRoundNumber = viewRound || 0;
                 _game.round = _game.rounds[_game.currentRoundNumber] || {};
             };
+
+            self.update = function(updatedGame) {
+                // Game Details
+                _game.name = updatedGame.name || _game.name;
+                _game.scheduled = updatedGame.scheduled || _game.scheduled;
+                _game.started = updatedGame.started || _game.started;
+                _game.ended = updatedGame.ended || _game.ended;
+                _game.maxPoints = parseFloat(updatedGame.maxPoints) || _game.maxPoints;
+                // Host
+                _game.hostId = updatedGame.hostId || _game.hostId;
+                _game.hostName = updatedGame.hostName || _game.hostName;
+                // Venue
+                _game.venueId = updatedGame.venueId || _game.venueId;
+                _game.venue = updatedGame.venue || _game.venue;
+                // Scoreboard Data
+                _game.teams = updatedGame.teams || _game.teams;
+                _game.rounds = updatedGame.rounds || _game.rounds;
+                
+                _game.numberOfRounds = Object.keys(_game.rounds).length;
+
+                // Current Round 
+                _game.currentRoundNumber = updatedGame.currentRoundNumber || _game.currentRoundNumber;
+                _game.round = _game.rounds[_game.currentRoundNumber] || {};
+            };
             
             self.getGame = function() {
                 if(angular.isDefined(_game.id)) {

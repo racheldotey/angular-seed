@@ -63,7 +63,7 @@ class GameRoutes {
             /*
              * id
              */
-            $app->map("/delete/:gameId/", function ($gameId) use ($app) {
+            $app->map("/delete/game/:gameId/", function ($gameId) use ($app) {
                 GameController::deleteGame($app, $gameId);
             })->via('DELETE', 'POST');
             
@@ -83,11 +83,26 @@ class GameRoutes {
             });
                     
             /*
-             * gameId, roundId, question
+             * gameId, roundId, question, maxPoints
              */
             $app->post("/insert/question", function () use ($app) {
                 GameController::addQuestion($app);
             });
+                    
+            /*
+             * questionId, gameId, roundId, question, maxPoints
+             */
+            $app->post("/update/question/:questionId/", function ($questionId) use ($app) {
+                GameController::editQuestion($app, $questionId);
+            });
+
+            /*
+             * questionId
+             */
+            $app->map("/delete/question/:questionId/", function ($questionId) use ($app) {
+                GameController::deleteQuestion($app, $questionId);
+            })->via('DELETE', 'POST');
+            
         });
     }
 }

@@ -1,5 +1,6 @@
 <?php namespace API;
  require_once dirname(dirname(dirname(__FILE__))) . '/services/api.dbconn.php';
+ require_once dirname(dirname(dirname(__FILE__))) . '/services/api.auth.php';
 
 class GameData {
   
@@ -206,18 +207,7 @@ class GameData {
                 . "VALUES (:name, :order, :game_id, :default_question_points, :created_user_id, :last_updated_by);", $validRound);
         
         if($results) {
-            self::calculateGameScores($validRound[':game_id'], $validRound[':created_user_id']);
-        }
-        
-        return $results;
-    }
-    
-    static function insertQuestion($validQuestion) {
-        $results = DBConn::insert("INSERT INTO " . DBConn::prefix() . "game_round_questions(question, `order`, game_id, round_id, max_points, created_user_id, last_updated_by) "
-                . "VALUES (:question, :order, :game_id, :round_id, :max_points, :created_user_id, :last_updated_by);", $validQuestion);
-        
-        if($results) {
-            self::calculateGameScores($validQuestion[':game_id'], $validQuestion[':created_user_id']);
+            self::calculateGameScores($validRound[':game_id']);
         }
         
         return $results;
@@ -275,7 +265,43 @@ class GameData {
                 . "WHERE id=:id LIMIT 1;", array(':id' => $gameId));
     }
     
+    /* CRUD for Game Questions */
     
+    static function insertQuestion($validQuestion) {
+        $results = DBConn::insert("INSERT INTO " . DBConn::prefix() . "game_round_questions(question, `order`, game_id, round_id, max_points, created_user_id, last_updated_by) "
+                . "VALUES (:question, :order, :game_id, :round_id, :max_points, :created_user_id, :last_updated_by);", $validQuestion);
+        
+        if($results) {
+            self::calculateGameScores($validQuestion[':game_id']);
+        }
+        
+        return $results;
+    }
+    
+    static function updateQuestion($validQuestion) {                    
+        $results = DBConn::update("UPDATE " . DBConn::prefix() . "game_round_questions SET "
+                . "question = :question, max_points = :max_points, wager = :wager, last_updated_by = :last_updated_by "
+                . "WHERE id = :id AND game_id = :game_id AND round_id = :round_id;", $validQuestion);
+        
+        if($results) {
+            self::calculateGameScores($validQuestion[':game_id']);
+        }
+        
+        return $results;
+    }
+    
+    static function deleteQuestion($validQuestion) {
+        $results = DBConn::delete("DELETE FROM " . DBConn::prefix() . "game_score_questions "
+                . "WHERE question_id = :id AND game_id = :game_id AND round_id = :round_id;", $validQuestion);
+        
+        $results = DBConn::delete("DELETE FROM " . DBConn::prefix() . "game_round_questions "
+                . "WHERE id = :id AND game_id = :game_id AND round_id = :round_id;", $validQuestion);
+        
+        
+        self::calculateGameScores($validQuestion[':game_id']);
+        
+        return $results;
+    }
     
     static function saveQuestionScores($scores) {
         $saveQuestioneScore = DBConn::preparedQuery("INSERT INTO " . DBConn::prefix() . "game_score_questions(game_id, round_id, question_id, team_id, score, created_user_id) "
@@ -288,8 +314,8 @@ class GameData {
         return $result;
     }
     
-    static function calculateGameScores($gameId, $currentUser) {
-        
+    static function calculateGameScores($gameId) {
+        $currentUser = APIAuth::getUserId();
         $result = array();
         $game = array(':game_id' => $gameId);
         

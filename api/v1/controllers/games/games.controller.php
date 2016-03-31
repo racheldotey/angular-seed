@@ -220,8 +220,8 @@ class GameController {
         
         $roundId = GameData::insertRound($validRound);
         if($roundId) {
-            $saved = GameData::selectRound($roundId);
-            return $app->render(200, array('round' => $saved, 'id' => $roundId));
+            $saved = GameData::selectGame($app->request->post('gameId'), $app->request->post('roundId'));
+            return $app->render(200, array('game' => $saved, 'id' => $roundId));
         } else {
             return $app->render(400,  array('msg' => 'Could not add game round.'));
         }
@@ -236,21 +236,94 @@ class GameController {
         $count = GameData::getQuestionCount($app->request->post('roundId'));
         
         $points = (v::key('maxPoints', v::intVal())->validate($app->request->post())) ? $app->request->post('maxPoints') : '5.00';
+        
+        $wager = 0;
+        if (v::key('wager')->validate($app->request->post())) {
+            // TODO: Implement cusitom boolean Respect\Validator
+            // Converting to boolean did not work well, 
+            // This allows a wider range of true false values
+            $wager = ($app->request->post('wager') === 1 || 
+                        $app->request->post('wager') === '1' || 
+                        $app->request->post('wager') === true || 
+                        $app->request->post('wager') === 'true') ? 1 : 0;
+        }
+        
         $validQuestion = array(
             ":question" => $app->request->post('question'),
             ":order" => $count + 1,
             ":game_id" => $app->request->post('gameId'),
             ":round_id" => $app->request->post('roundId'),
             ":max_points" => $points,
+            ":wager" => $wager,
             ":created_user_id" => APIAuth::getUserId(),
             ":last_updated_by" => APIAuth::getUserId()
         );        
         $questionId = GameData::insertQuestion($validQuestion);
         if($questionId) {
-            $saved = GameData::selectRound($app->request->post('roundId'));
-            return $app->render(200, array('round' => $saved));
+            $saved = GameData::selectGame($app->request->post('gameId'), $app->request->post('roundId'));
+            return $app->render(200, array('game' => $saved));
         } else {
             return $app->render(400,  array('msg' => 'Could not add question.'));
+        }
+    }
+    
+    static function editQuestion($app, $questionId) {
+        if(!v::intVal()->validate($questionId) ||
+            !v::key('question', v::stringType()->length(0,255))->validate($app->request->post()) ||
+            !v::key('gameId', v::intVal())->validate($app->request->post()) || 
+            !v::key('roundId', v::intVal())->validate($app->request->post())) {
+            return $app->render(400,  array('msg' => 'Invalid question. Check your parameters and try again.'));
+        }
+        
+        $points = (v::key('maxPoints', v::intVal())->validate($app->request->post())) ? $app->request->post('maxPoints') : '5.00';
+        
+        $wager = 0;
+        if (v::key('wager')->validate($app->request->post())) {
+            // TODO: Implement cusitom boolean Respect\Validator
+            // Converting to boolean did not work well, 
+            // This allows a wider range of true false values
+            $wager = ($app->request->post('wager') === 1 || 
+                        $app->request->post('wager') === '1' || 
+                        $app->request->post('wager') === true || 
+                        $app->request->post('wager') === 'true') ? 1 : 0;
+        }
+        
+        $validQuestion = array(
+            ":id" => $questionId,
+            ":question" => $app->request->post('question'),
+            ":game_id" => $app->request->post('gameId'),
+            ":round_id" => $app->request->post('roundId'),
+            ":max_points" => $points,
+            ":wager" => $wager,
+            ":last_updated_by" => APIAuth::getUserId()
+        );        
+        $updated = GameData::updateQuestion($validQuestion);
+        if($updated) {
+            $saved = GameData::selectGame($app->request->post('gameId'), $app->request->post('roundId'));
+            return $app->render(200, array('game' => $saved));
+        } else {
+            return $app->render(400,  array('msg' => 'Could not edit question.'));
+        }
+    }
+    
+    static function deleteQuestion($app, $questionId) {
+        if(!v::intVal()->validate($questionId) ||
+            !v::key('gameId', v::intVal())->validate($app->request->post()) || 
+            !v::key('roundId', v::intVal())->validate($app->request->post())) {
+            return $app->render(400,  array('msg' => 'Invalid question. Check your parameters and try again.'));
+        }
+        
+        $validQuestion = array(
+            ":id" => $questionId,
+            ":game_id" => $app->request->post('gameId'),
+            ":round_id" => $app->request->post('roundId')
+        );        
+        $deleted = GameData::deleteQuestion($validQuestion);
+        if($deleted) {
+            $saved = GameData::selectGame($app->request->post('gameId'), $app->request->post('roundId'));
+            return $app->render(200, array('game' => $saved));
+        } else {
+            return $app->render(400,  array('msg' => 'Could not delete question.'));
         }
     }
 }

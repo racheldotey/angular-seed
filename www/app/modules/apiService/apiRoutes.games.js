@@ -49,6 +49,23 @@ angular.module('apiRoutes.games', [])
         }
         return API.post('trivia/insert/question', question, 'Could not insert game question.');
     };
+    
+    /* Edit Round Question */
+    api.editGameRoundQuestion = function(question) {
+        if(angular.isUndefined(question.questionId) || angular.isUndefined(question.gameId) || angular.isUndefined(question.roundId) || angular.isUndefined(question.question)) {
+            return API.reject('Invalid game question please check your parameters and try again.');
+        }
+        return API.post('trivia/update/question/' + question.questionId, question, 'Could not save game question.');
+    };
+    
+    /* Add new question to round */
+    api.deleteGameRoundQuestion = function(question) {
+        if(angular.isUndefined(question.questionId) || angular.isUndefined(question.gameId) || angular.isUndefined(question.roundId)) {
+            return API.reject('Invalid game question please check your parameters and try again.');
+        }
+        return API.post('trivia/delete/question/' + question.questionId, question, 'Could not delete game question.');
+    };
+    
 
     /* Add team to game */
     api.addTeamToGame = function(gameId, roundNumber, teamId) {

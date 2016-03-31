@@ -52,7 +52,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 .withOption('scrollCollapse', true)
                 .withOption('deferRender', true)
                 .withOption('paging', false)
-                //.withFixedColumns({ leftColumns: 1 })
+                .withFixedColumns({ leftColumns: 1 })
                 .withOption('responsive', false)
                 .withOption('drawCallback', function() {
                     $scope.setScoreboardHeight();
@@ -79,10 +79,6 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
             angular.element($window).on('resize', function () {
                 $scope.setScoreboardHeight();
             });
-                
-            $scope.buttonViewRound = function(roundNumber) {
-                    $state.go($state.$current, {gameId: $scope.game.id, roundNumber: roundNumber});
-            };
             
             $scope.buttonStartGame = function() {
                 AlertConfirmService.confirm('Are you sure you want to start this game? It cannot be paused once started.', 'Confirm Start Game.')
@@ -151,6 +147,16 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 }, function () {});
             };
             
+            // Edit Trivia Round Question Modal
+            $scope.buttonEditQuestion = function(questionNumber) {
+                var question = $scope.game.rounds[$scope.game.currentRoundNumber].questions[questionNumber];
+                var modalInstance = TriviaModalService.openEditQuestion(question);
+                modalInstance.result.then(function (result) {
+                    console.log(result);
+                    // $scope.game = result;
+                }, function () {});
+            };
+            
             // Right and Wrong speed buttons
             
             $scope.buttonQuestionWrong = function(teamId, questionNumber) {
@@ -177,25 +183,18 @@ app.directive('rcTriviaScoreboardRoundNavigation', function(THIS_DIRECTORY) {
     return {
         restrict: 'A',          // Must be a element attribute
         templateUrl: THIS_DIRECTORY + 'views/scoreboard.roundNavigation.html',
-        scope: {
-            totalRounds: '=totalRounds',
-            currentRoundNumber: '=currentRoundNumber',
-            buttonViewRound: '=viewRoundEvent'
-        },
         link: function ($scope, element, attributes) {
             // Link - Programmatically modify resulting DOM element instances, 
             // add event listeners, and set up data binding. 
             
-            $scope.currentRoundNumber = (angular.isDefined($scope.currentRoundNumber)) ? parseInt($scope.currentRoundNumber) : 1;
-            $scope.totalRounds = (angular.isDefined($scope.totalRounds)) ? parseInt($scope.totalRounds) : 1;
+            $scope.currentRoundNumber = (angular.isDefined($scope.game.currentRoundNumber)) ? parseInt($scope.game.currentRoundNumber) : 1;
+            $scope.totalRounds = (angular.isDefined($scope.game.numberOfRounds)) ? parseInt($scope.game.numberOfRounds) : 1;
         },
-        controller: ["$scope", function ($scope) {
+        controller: ["$scope", '$state', function ($scope, $state) {
             // Controller - Create a controller which publishes an API for 
             // communicating across directives.
             $scope.paginationChange = function() {
-                if(angular.isFunction($scope.buttonViewRound)) {
-                    $scope.buttonViewRound($scope.currentRoundNumber);
-                }
+                $state.go($state.$current, {gameId: $scope.game.id, roundNumber: $scope.currentRoundNumber});
             };
         }]
     };
@@ -208,9 +207,17 @@ app.directive('rcTriviaScoreboardReadonly', function(THIS_DIRECTORY) {
         scope: {
             game: '=rcTriviaScoreboardReadonly'
         },
-        controller: ['$scope', 'DTOptionsBuilder', '$window', 
-            function($scope, DTOptionsBuilder, $window) {
-                console.log($scope.game);
+        controller: ['$scope', 'DTOptionsBuilder', '$window', 'TriviaScoreboard',
+            function($scope, DTOptionsBuilder, $window, TriviaScoreboard) {
+            /* Used to restrict alert bars */
+            $scope.alertProxy = {};
+    
+            $scope.game = TriviaScoreboard.getGame();
+            if(!$scope.game) {
+                console.log("Error loading game.");
+                die();
+            }
+            
             $scope.dtScoreboard = {};
             $scope.dtScoreboard.options = DTOptionsBuilder.newOptions()
                 .withDOM('t')

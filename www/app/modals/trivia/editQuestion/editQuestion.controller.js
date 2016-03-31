@@ -35,12 +35,6 @@ angular.module('app.modal.trivia.editQuestion', [])
         }
     };
     
-    if(angular.isDefined(editing.id)) {
-        $scope.setMode('view');
-    } else {
-        $scope.setMode('new');
-    }
-    
     $scope.getMode = function() {
         if($scope.newMode) {
             return 'new';
@@ -51,9 +45,15 @@ angular.module('app.modal.trivia.editQuestion', [])
         }
     };
     
-    
-    /* Save for resetting purposes */
-    $scope.saved = (angular.isDefined(editing.id)) ? angular.copy(editing) : {};
+    if(angular.isDefined(editing.questionId)) {
+        $scope.setMode('view');
+        /* Save for resetting purposes */
+        $scope.saved = angular.copy(editing);
+        $scope.saved.maxPoints = parseFloat(editing.maxPoints);
+    } else {
+        $scope.setMode('new');
+        $scope.saved = {};
+    }
     
     /* Item to display and edit */
     $scope.editing = angular.copy($scope.saved);
@@ -72,7 +72,8 @@ angular.module('app.modal.trivia.editQuestion', [])
             'roundId': $scope.game.round.roundId,
             'maxPoints': $scope.editing.maxPoints,
             'questionNumber' : $scope.editing.questionNumber,
-            'question': $scope.editing.question
+            'question': $scope.editing.question,
+            'wager': $scope.editing.wager
         };
         TriviaScoreboard.newQuestion(newQuestion).then(
             function (result) {
@@ -84,10 +85,35 @@ angular.module('app.modal.trivia.editQuestion', [])
     
     /* Click event for the Save button */
     $scope.buttonSave = function() {
+        var question = {
+            'gameId': $scope.game.id,
+            'roundId': $scope.game.round.roundId,
+            'questionId': $scope.editing.questionId,
+            'maxPoints': $scope.editing.maxPoints,
+            'question': $scope.editing.question,
+            'wager': $scope.editing.wager
+        };
+        TriviaScoreboard.editQuestion(question).then(
+            function (result) {
+                $uibModalInstance.close(result);
+            }, function (error) {
+                $scope.alertProxy.error(error);
+            });
     };
     
     /* Click event for the Delete button */
     $scope.buttonDelete = function() {
+        var question = {
+            'gameId': $scope.game.id,
+            'roundId': $scope.game.round.roundId,
+            'questionId': $scope.editing.questionId
+        };
+        TriviaScoreboard.deleteQuestion(question).then(
+            function (result) {
+                $uibModalInstance.close(result);
+            }, function (error) {
+                $scope.alertProxy.error(error);
+            });
     };
         
     /* Click event for the Cancel button */
