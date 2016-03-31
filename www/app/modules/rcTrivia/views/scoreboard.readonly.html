@@ -1,5 +1,7 @@
 <div class="game-scoreboard">
 
+    <div data-rc-bootstrap-alerts="alertProxy"></div>
+    
     <header>
         <div class="game-header">
             <h2 class="game-title hidden-xs hidden-sm">{{game.name}}</h2>
@@ -15,38 +17,33 @@
     <section>
 
         <div id="scoreboard-navigation">
-
-            <div data-rc-trivia-scoreboard-round-navigation
-                 data-total-rounds="game.rounds.length" 
-                 data-current-round-number="game.currentRoundNumber"
-                 data-view-round-event="buttonViewRound"
-                 class="game-round-navigation"></div>
-                 
+            <div data-rc-trivia-scoreboard-round-navigation class="game-round-navigation"></div>
         </div>
         
-        <table id="scoreboard" datatable="ng" dt-options="dtScoreboard.options">
+        <table id="scoreboard" data-datatable="ng" data-dt-options="dtScoreboard.options" data-dt-instance="dtScoreboard.instance">
             <thead>
-                    <tr>
-                        <th><p>Team Name</p></th>
-                        <th><p class="text-center">Round Score</p></th>
-                        <th><p class="text-center">Round Rank</p></th>
-                        <th><p class="text-center">Game Score</p></th>
-                        <th><p class="text-center">Game Rank</p></th>
-                        <th ng-repeat="question in game.round.questions" data-team-id="{{question.questionId}}">
-                            <p class="text-center"><strong>#{{question.questionNumber}} - {{question.maxPoints | numberEx}} pts</strong></p>
-                            <p ng-if="question.question">{{question.question}}</p>
-                        </th>
-                    </tr>
+                <tr>
+                    <th><p>Team Name</p></th>
+                    <th><p class="text-center">Round Score</p></th>
+                    <th><p class="text-center">Round Rank</p></th>
+                    <th><p class="text-center">Game Score</p></th>
+                    <th><p class="text-center">Game Rank</p></th>
+
+                    <th class="question" ng-repeat="question in game.rounds[game.currentRoundNumber].questions">
+                        <p class="text-center"><strong>#{{question.number}} - {{question.maxPoints | numberEx}} pts</strong></p>
+                        <p ng-if="question.question">{{question.question}}</p>
+                    </th>
+                </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="team in game.round.teams" data-team-id="{{team.teamId}}">
-                        <th class="team"><p>{{team.team}}</p></th>
-                        <th class="round-score"><p class="text-center">{{team.roundScore | numberEx}}</p></th>
-                        <th class="round-rank"><p class="text-center">{{team.roundRank}}</p></th>
-                        <th class="game-score"><p class="text-center">{{team.gameScore | numberEx}}</p></th>
-                        <th class="game-rank"><p class="text-center">{{team.gameRank}}</p></th>
-                        
-                    <td class="question-score" ng-repeat="teamScore in team.scores" data-question-id="{{teamScore.questionId}}">
+                <tr ng-repeat="team in game.teams" data-team-id="{{team.teamId}}">
+                    <th class="team"><p>{{team.name}}</p></th>
+                    <th class="round-score"><p class="text-center">{{team.rounds[game.currentRoundNumber].roundScore | numberEx}}</p></th>
+                    <th class="round-rank"><p class="text-center">{{team.rounds[game.currentRoundNumber].roundRank}}</p></th>
+                    <th class="game-score"><p class="text-center">{{team.gameScore | numberEx}}</p></th>
+                    <th class="game-rank"><p class="text-center">{{team.gameRank}}</p></th>
+
+                    <td class="question-score" ng-repeat="teamScore in team.rounds[game.currentRoundNumber].questions" data-question-id="{{teamScore.questionId}}">
                         <strong>{{teamScore.questionScore| numberEx}}</strong>
                     </td>
                 </tr>
