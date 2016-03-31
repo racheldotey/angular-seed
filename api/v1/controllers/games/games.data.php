@@ -268,8 +268,8 @@ class GameData {
     /* CRUD for Game Questions */
     
     static function insertQuestion($validQuestion) {
-        $results = DBConn::insert("INSERT INTO " . DBConn::prefix() . "game_round_questions(question, `order`, game_id, round_id, max_points, created_user_id, last_updated_by) "
-                . "VALUES (:question, :order, :game_id, :round_id, :max_points, :created_user_id, :last_updated_by);", $validQuestion);
+        $results = DBConn::insert("INSERT INTO " . DBConn::prefix() . "game_round_questions(question, `order`, game_id, round_id, max_points, wager, created_user_id, last_updated_by) "
+                . "VALUES (:question, :order, :game_id, :round_id, :max_points, :wager, :created_user_id, :last_updated_by);", $validQuestion);
         
         if($results) {
             self::calculateGameScores($validQuestion[':game_id']);

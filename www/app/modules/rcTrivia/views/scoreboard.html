@@ -1,5 +1,5 @@
 <div class="game-scoreboard">
-
+    
     <div data-rc-bootstrap-alerts="alertProxy"></div>
 
     <header>
@@ -58,68 +58,68 @@
                     </ul>
                 </div>
             </div>
-
         </div>
+        
         <form class="form-inline">
-            <table id="scoreboard" data-datatable="ng" data-dt-options="dtScoreboard.options" data-dt-instance="dtScoreboard.instance">
-                <thead>
-                    <tr>
-                        <th><p>Team Name</p></th>
-                        <th><p class="text-center">Round Score</p></th>
-                        <th><p class="text-center">Round Rank</p></th>
-                        <th><p class="text-center">Game Score</p></th>
-                        <th><p class="text-center">Game Rank</p></th>
+        <table id="scoreboard" data-datatable="ng" data-dt-options="dtScoreboard.options" data-dt-instance="dtScoreboard.instance">
+            <thead>
+                <tr>
+                    <th><p>Team Name</p></th>
+                    <th><p class="text-center">Round Score</p></th>
+                    <th><p class="text-center">Round Rank</p></th>
+                    <th><p class="text-center">Game Score</p></th>
+                    <th><p class="text-center">Game Rank</p></th>
 
-                        <th class="question" ng-repeat="question in game.rounds[game.currentRoundNumber].questions">
-                            <p class="text-center"><strong>#{{question.number}} - {{question.maxPoints| numberEx}} pts</strong></p>
-                            <p ng-if="question.question">{{question.question}}</p>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="team in game.teams">
-                        <th class="team"><p>{{team.name}}</p></th>
-                        <th class="round-score"><p class="text-center">{{team.rounds[game.currentRoundNumber].roundScore| numberEx}}</p></th>
-                        <th class="round-rank"><p class="text-center">{{team.rounds[game.currentRoundNumber].roundRank}}</p></th>
-                        <th class="game-score"><p class="text-center">{{team.gameScore| numberEx}}</p></th>
-                        <th class="game-rank"><p class="text-center">{{team.gameRank}}</p></th>
+                    <th class="question" ng-repeat="question in game.rounds[game.currentRoundNumber].questions">
+                        <p class="text-center"><a href="" ng-click="buttonEditQuestion(question.number)"><strong>#{{question.number}} - {{question.maxPoints | numberEx}} pts</strong></a></p>
+                        <p ng-if="question.question">{{question.question}}</p>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="team in game.teams" data-team-id="{{team.teamId}}">
+                    <th class="team"><p>{{team.name}}</p></th>
+                    <th class="round-score"><p class="text-center">{{team.rounds[game.currentRoundNumber].roundScore | numberEx}}</p></th>
+                    <th class="round-rank"><p class="text-center">{{team.rounds[game.currentRoundNumber].roundRank}}</p></th>
+                    <th class="game-score"><p class="text-center">{{team.gameScore | numberEx}}</p></th>
+                    <th class="game-rank"><p class="text-center">{{team.gameRank}}</p></th>
 
-                        <td class="question-score" ng-repeat="teamScore in team.rounds[game.currentRoundNumber].questions">
-                            <div ng-if="displayQuickScoreButtons" class="input-group input-group-sm">
-                                <span class="input-group-btn">
-                                    <button 
-                                        ng-click="buttonQuestionWrong(team.teamId, teamScore.number)"
-                                        class="btn btn-warning" 
-                                        type="button"><i class="fa fa-minus"></i></button>
-                                </span>
-                                <input 
-                                    ng-model="teamScore.questionScore" 
-                                    data-string-to-number 
-                                    type="number"
-                                    class="form-control">
-                                <span class="input-group-btn">
-                                    <button 
-                                        ng-click="buttonQuestionCorrect(team.teamId, teamScore.number)"
-                                        class="btn btn-success" 
-                                        type="button"><i class="fa fa-plus"></i></button>
-                                </span>
+                    <td class="question-score" ng-repeat="teamScore in team.rounds[game.currentRoundNumber].questions">
+                        <div ng-if="displayQuickScoreButtons" class="input-group input-group-sm">
+                            <span class="input-group-btn">
+                                <button 
+                                    ng-click="buttonQuestionWrong(team.teamId, teamScore.number)"
+                                    class="btn btn-warning" 
+                                    type="button"><i class="fa fa-minus"></i></button>
+                            </span>
+                            <input 
+                                ng-model="teamScore.questionScore" 
+                                data-string-to-number 
+                                type="number"
+                                class="form-control">
+                            <span class="input-group-btn">
+                                <button 
+                                    ng-click="buttonQuestionCorrect(team.teamId, teamScore.number)"
+                                    class="btn btn-success" 
+                                    type="button"><i class="fa fa-plus"></i></button>
+                            </span>
 
-                            </div>
+                        </div>
 
-                            <div ng-if="!displayQuickScoreButtons" class="form-group form-group-sm">
-                                <input 
-                                    ng-model="teamScore.questionScore" 
-                                    data-string-to-number 
-                                    type="number" 
-                                    class="form-control">
-                            </div>
+                        <div ng-if="!displayQuickScoreButtons" class="form-group form-group-sm">
+                            <input 
+                                ng-model="teamScore.questionScore" 
+                                data-string-to-number 
+                                type="number" 
+                                class="form-control">
+                        </div>
 
-                        </td>
+                    </td>
 
-                    </tr>
-                </tbody>
+                </tr>
+            </tbody>
 
-            </table>
+        </table>
 
         </form>
     </section>
@@ -128,4 +128,5 @@
         <div></div>
         <div></div>
     </footer>
+    
 </div>
