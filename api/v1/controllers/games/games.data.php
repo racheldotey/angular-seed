@@ -32,10 +32,10 @@ class GameData {
                 . "FROM " . DBConn::prefix() . "game_score_rounds AS sr WHERE sr.team_id = :team_id) AS s ON s.round_id = r.id "
                 . "WHERE r.game_id = :game_id ORDER BY r.order;");
         
-        $qTeamQuestions = DBConn::preparedQuery("SELECT q.id AS questionId, q.order AS number, "
-                . "q.max_points AS maxPoints, IFNULL(s.score, 0) AS questionScore "
+        $qTeamQuestions = DBConn::preparedQuery("SELECT q.id AS questionId, q.order AS number, q.max_points AS maxPoints, q.wager, "
+                . "IFNULL(s.score, 0) AS questionScore, IFNULL(s.answer, '') AS answer "
                 . "FROM " . DBConn::prefix() . "game_round_questions AS q "
-                . "LEFT JOIN (SELECT sq.question_id, sq.score "
+                . "LEFT JOIN (SELECT sq.question_id, sq.score, sq.answer "
                 . "FROM " . DBConn::prefix() . "game_score_questions AS sq "
                 . "WHERE sq.team_id = :team_id) AS s ON s.question_id = q.id "
                 . "WHERE q.round_id = :round_id ORDER BY q.order;");

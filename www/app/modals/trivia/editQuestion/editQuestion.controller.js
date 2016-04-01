@@ -71,7 +71,6 @@ angular.module('app.modal.trivia.editQuestion', [])
             'gameId': $scope.game.id,
             'roundId': $scope.game.round.roundId,
             'maxPoints': $scope.editing.maxPoints,
-            'questionNumber' : $scope.editing.questionNumber,
             'question': $scope.editing.question,
             'wager': $scope.editing.wager
         };

@@ -95,31 +95,40 @@ angular.module('rcTrivia.scoreboard', ['rcTrivia.game'])
                 } else {
                     reject("No game is loaded.");
                 }
-                
             });          
         };
         
         api.editQuestion = function(question) {
             return $q(function (resolve, reject) {
-                ApiRoutesGames.editGameRoundQuestion(question).then(
-                    function (result) {
-                        TriviaGame.update(result.game);
-                        resolve(api.getGame());
-                    }, function (error) {
-                        reject(error);
-                    });
+                var loadedGame = api.getGame();
+                if(loadedGame) {
+                    ApiRoutesGames.editGameRoundQuestion(question).then(
+                        function (result) {
+                            TriviaGame.update(result.game);
+                            resolve(api.getGame());
+                        }, function (error) {
+                            reject(error);
+                        });
+                } else {
+                    reject("No game is loaded.");
+                }
             });          
         };
         
-        api.deleteQuestion = function(question) {
+        api.deleteQuestion = function(questionId) {
             return $q(function (resolve, reject) {
-                ApiRoutesGames.deleteGameRoundQuestion(question).then(
-                    function (result) {
-                        TriviaGame.update(result.game);
-                        resolve(api.getGame());
-                    }, function (error) {
-                        reject(error);
-                    });
+                var loadedGame = api.getGame();
+                if(loadedGame) {
+                    ApiRoutesGames.deleteGameRoundQuestion(question).then(
+                        function (result) {
+                            TriviaGame.update(result.game);
+                            resolve(api.getGame());
+                        }, function (error) {
+                            reject(error);
+                        });
+                } else {
+                    reject("No game is loaded.");
+                }
             });          
         };
         

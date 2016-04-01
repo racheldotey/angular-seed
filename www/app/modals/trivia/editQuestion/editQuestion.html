@@ -71,7 +71,10 @@
             <div class="col-xs-12">
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox" ng-model="editing.wager"> Players may place a wager for this question.
+                        <input type="checkbox"
+                            ng-true-value="'1'"
+                            ng-false-value="'0'"
+                            ng-model="editing.wager"> Players may place a wager for this question.
                     </label>
                 </div>
             </div>
