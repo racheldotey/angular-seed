@@ -67,7 +67,7 @@ class GameData {
                 . "WHERE r.game_id = :game_id ORDER BY r.order;");
 
         $qRoundQuestions = DBConn::preparedQuery("SELECT q.id AS questionId, q.order AS number, question, "
-                . "q.max_points AS maxPoints "
+                . "wager, q.max_points AS maxPoints "
                 . "FROM " . DBConn::prefix() . "game_round_questions AS q "
                 . "WHERE q.round_id = :round_id ORDER BY q.order;");
         
