@@ -7,10 +7,6 @@
             <h2 class="game-title hidden-xs hidden-sm">{{game.name}}</h2>
             <h4 class="game-title visible-sm-inline-block">{{game.name}}</h4>
             <p class="game-title visible-xs-inline-block"><strong>{{game.name}}</strong></p>
-            <!--
-            <p class="game-host">Hosted by: {{game.host.displayName}}</p>
-            <p class="game-host">Started: {{game.started| formatMySQLDate}}</p>
-            <p class="game-host">Ended: {{game.ended| formatMySQLDate}}</p>-->
         </div>
     </header>
 
@@ -23,7 +19,11 @@
         <table id="scoreboard" data-datatable="ng" data-dt-options="dtScoreboard.options" data-dt-instance="dtScoreboard.instance">
             <thead>
                 <tr>
-                    <th><p>Team Name</p></th>
+                    <th>
+                        <p>Round #{{game.round.number}}
+                            <span ng-show="game.round.name"> -<br/>"{{game.round.name}}"</span></p>
+                        <p>Team Name</p>
+                    </th>
                     <th><p class="text-center">Round Score</p></th>
                     <th><p class="text-center">Round Rank</p></th>
                     <th><p class="text-center">Game Score</p></th>

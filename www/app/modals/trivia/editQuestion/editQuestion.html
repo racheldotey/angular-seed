@@ -38,6 +38,13 @@
             </div>
         </div>
 
+        <div class="form-group" ng-if="editing.wager === '1'">
+            <label class="col-xs-5 col-sm-4 col-md-3 control-label">Wager Question</label>
+            <div class="col-xs-7 col-sm-8 col-md-9">
+                <p class="form-control-static">Players may place a wager for this question.</p>
+            </div>
+        </div>
+
         <div class="meta" ng-if="!newMode && saved.created">
             <hr/>
             <p class="text-muted"><strong>Created:</strong> {{saved.created | formatMySQLDate}} by {{saved.createdBy}}</p>
@@ -46,29 +53,46 @@
 
     </form>
 
-    <form ng-if="editMode" name="form.modalForm" role="form" novalidate>
+    <form ng-if="editMode" name="form.modalForm" role="form" class="form-horizontal" novalidate>
 
-        <div class="row">
-            <div class="col-xs-12">
-                <label ng-if="newMode">Adding a new question to Game #{{game.id}} - Round #{{game.round.number}}</label>
-                <label ng-if="!newMode">Editing question #{{saved.number}} in Game #{{game.id}} - Round #{{game.round.number}}</label>
+        <div class="form-group">
+            <label class="col-xs-5 col-sm-4 col-md-3 control-label">Game #{{game.id}}</label>
+            <div class="col-xs-7 col-sm-8 col-md-9">
+                <p class="form-control-static">{{game.name}}</p>
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-xs-8">
-                <label>Question # {{editing.questionNumber}} Text <small>(optional)</small></label>
+        <div class="form-group">
+            <label class="col-xs-5 col-sm-4 col-md-3 control-label">Round #{{game.round.number}}</label>
+            <div class="col-xs-7 col-sm-8 col-md-9">
+                <p class="form-control-static">{{game.round.name}}</p>
+            </div>
+        </div>
+
+        <div class="form-group" ng-if="!newMode">
+            <label class="col-xs-5 col-sm-4 col-md-3 control-label">Question #{{saved.number}}</label>
+            <div class="col-xs-7 col-sm-8 col-md-9">
+                <p class="form-control-static">{{saved.question}}</p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-xs-5 col-sm-4 col-md-3 control-label">Text <small>(optional)</small></label>
+            <div class="col-xs-7 col-sm-8 col-md-9">
                 <input class="form-control" name="question" ng-model="editing.question" type="text" maxlength="255" />
             </div>
-            
-            <div class="col-xs-4" ng-show="editing.wager === '0'">
-                <label>Default Points</label>
+        </div>
+
+        <div class="form-group">
+            <label class="col-xs-5 col-sm-4 col-md-3 control-label">Default Points</label>
+            <div class="col-xs-7 col-sm-2">
                 <input class="form-control" name="maxPoints" ng-model="editing.maxPoints" type="number" maxlength="9" />
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-xs-12">
+        <div class="form-group">
+            <label class="col-xs-5 col-sm-4 col-md-3 control-label"></label>
+            <div class="col-xs-7 col-sm-8 col-md-9">
                 <div class="checkbox">
                     <label>
                         <input type="checkbox"

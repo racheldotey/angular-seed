@@ -500,6 +500,11 @@ body.admin .pagination > li span {
 .modal-body .meta p {
   margin: 0 0 5px;
 }
+.modal-body .form-horizontal .control-label {
+  padding-top: 7px;
+  margin-bottom: 0;
+  text-align: right;
+}
 /* CSS Styles for Bootstrap Circle Buttons */
 .btn-round {
   width: 40px;
