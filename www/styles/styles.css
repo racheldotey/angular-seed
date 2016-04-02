@@ -345,9 +345,18 @@ body:not(.admin) a:not(.btn):focus,
 body:not(.admin) a:not(.btn):active {
   color: #fff;
 }
-body:not(.admin) .alert-warning {
-  background-color: #f0ad4e;
-  border-color: #f4c37d;
+body:not(.admin) .alert {
+  background-color: #fff;
+  border-color: #6f0000;
+  color: #880000;
+}
+body:not(.admin) .alert a {
+  color: #6f0000;
+}
+body:not(.admin) .alert a:hover,
+body:not(.admin) .alert a:focus,
+body:not(.admin) .alert a:hover {
+  color: #a20000;
 }
 body:not(.admin) .page-header,
 body:not(.admin) hr {

@@ -29,9 +29,16 @@ body {
             }
         }
         
-        .alert-warning {
-            background-color: @yellow;
-            border-color: lighten(@yellow, 10%);
+        .alert {
+            background-color: #fff;
+            border-color: darken(@brick-red, 5%);
+            color: @brick-red;
+            a {
+                color: darken(@brick-red, 5%);
+                &:hover, &:focus, &:hover {
+                    color: lighten(@brick-red, 5%);
+                }
+            }
         }
         
         .page-header, hr {

@@ -39,27 +39,13 @@ angular.module('rcTrivia.scoreboard', ['rcTrivia.game'])
         
         api.loadRound = function(roundNumber) {
             return $q(function (resolve, reject) {
-                    TriviaGame.viewRound(roundNumber);
-                    resolve(api.getGame());
-                        /*
+                TriviaGame.viewRound(roundNumber);
                 var loadedGame = api.getGame();
-                if(loadedGame && loadedGame.currentRoundNumber == roundNumber) {
-                    resolve(api.getGame());
-                } else if(loadedGame) {
-                    var round = TriviaGame.viewRound(roundNumber);
-                    if(round) {
-                        resolve(api.getGame());
-                    } else {
-                        ApiRoutesGames.getRound(loadedGame.id, roundNumber).then(function (result) {
-                            TriviaGame.viewRound(result.round.roundNumber, result.round);
-                            resolve(api.getGame());
-                        }, function (error) {
-                            reject(error);
-                        });
-                    }
+                if(loadedGame) {
+                    resolve(loadedGame);
                 } else {
                     reject("No game is loaded.");
-                }*/
+                }
             });          
         };
         
@@ -119,7 +105,7 @@ angular.module('rcTrivia.scoreboard', ['rcTrivia.game'])
             return $q(function (resolve, reject) {
                 var loadedGame = api.getGame();
                 if(loadedGame) {
-                    ApiRoutesGames.deleteGameRoundQuestion(question).then(
+                    ApiRoutesGames.deleteGameRoundQuestion(questionId).then(
                         function (result) {
                             TriviaGame.update(result.game);
                             resolve(api.getGame());
@@ -138,7 +124,7 @@ angular.module('rcTrivia.scoreboard', ['rcTrivia.game'])
                 if(loadedGame) {
                     ApiRoutesGames.addTeamToGame(loadedGame.id, loadedGame.currentRoundNumber, teamId).then(
                         function (result) {
-                            TriviaGame.init(result.game, loadedGame.currentRoundNumber);
+                            TriviaGame.update(result.game);
                             resolve(api.getGame());
                         }, function (error) {
                             reject(error);

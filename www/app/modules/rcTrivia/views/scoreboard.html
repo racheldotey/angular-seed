@@ -7,12 +7,6 @@
             <h2 class="game-title hidden-xs hidden-sm">{{game.name}}</h2>
             <h4 class="game-title visible-sm-inline-block">{{game.name}}</h4>
             <p class="game-title visible-xs-inline-block"><strong>{{game.name}}</strong></p>
-            <!--
-            <p><small>Round {{game.currentRoundNumber}} - {{game.rounds[game.currentRoundNumber].questions}}</small></p>
-            <p class="game-host"><small>Hosted by: {{game.hostName}} At {{game.venue}}</small></p>
-            <p class="game-host"><small>Started: {{game.started| formatMySQLDate}}</small></p>
-            <p class="game-host"><small>Ended: {{game.ended| formatMySQLDate}}</small></p>
-            -->
         </div>
     </header>
 
@@ -29,7 +23,6 @@
                     <button ng-show="displayQuickScoreButtons" ng-click="displayQuickScoreButtons = !displayQuickScoreButtons" type="button" class="btn btn-primary btn-sm">Hide Quick Buttons</button>
 
                     <button ng-click="buttonAddTeam()" type="button" class="btn btn-primary btn-sm">Add Team</button>
-                    <button ng-click="buttonAddPlayer()" type="button" class="btn btn-primary btn-sm">Add Player</button>
 
                     <button ng-click="buttonAddRound()" type="button" class="btn btn-primary btn-sm">Add Round</button>
                     <button ng-click="buttonAddQuestion()" type="button" class="btn btn-primary btn-sm">Add Question</button>
@@ -64,7 +57,11 @@
         <table id="scoreboard" data-datatable="ng" data-dt-options="dtScoreboard.options" data-dt-instance="dtScoreboard.instance">
             <thead>
                 <tr>
-                    <th><p>Team Name</p></th>
+                    <th>
+                        <p><a href="" ng-click="buttonEditRound(game.round.number)">Round #{{game.round.number}}</a>
+                            <span ng-show="game.round.name"> -<br/>"{{game.round.name}}"</span></p>
+                        <p>Team Name</p>
+                    </th>
                     <th><p class="text-center">Round Score</p></th>
                     <th><p class="text-center">Round Rank</p></th>
                     <th><p class="text-center">Game Score</p></th>
@@ -172,8 +169,16 @@
     </section>
 
     <footer>
-        <div></div>
-        <div></div>
+        <address>
+            <small>
+            <strong>About This Game</strong><br>
+            {{game.name}}<br/>
+            <abbr title="Venue">Venue</abbr> {{game.venue}}<br/>
+            <abbr title="Host">Host:</abbr> {{game.hostName}}<br/>
+            <abbr title="Scheduled">Scheduled:</abbr> {{game.scheduled | formatMySQLDate}}<br/>
+            <abbr title="Started">Started:</abbr> {{game.started | formatMySQLDate}}<br/>
+            <abbr title="Ended">Ended:</abbr> {{game.ended | formatMySQLDate}}<br/>
+            </small>
+        </address>
     </footer>
-    
 </div>

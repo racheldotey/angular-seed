@@ -53,7 +53,16 @@
     </section>
 
     <footer>
-        <div></div>
-        <div></div>
+        <address>
+            <small>
+            <strong>About This Game</strong><br>
+            {{game.name}}<br/>
+            <abbr title="Venue">Venue</abbr> {{game.venue}}<br/>
+            <abbr title="Host">Host:</abbr> {{game.hostName}}<br/>
+            <abbr title="Scheduled">Scheduled:</abbr> {{game.scheduled | formatMySQLDate}}<br/>
+            <abbr title="Started">Started:</abbr> {{game.started | formatMySQLDate}}<br/>
+            <abbr title="Ended">Ended:</abbr> {{game.ended | formatMySQLDate}}<br/>
+            </small>
+        </address>
     </footer>
 </div>

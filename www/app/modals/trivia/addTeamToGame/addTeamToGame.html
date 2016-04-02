@@ -6,14 +6,12 @@
     
     <div data-rc-bootstrap-alerts="alertProxy"></div>
     
-    <form name="form.addTeam" role="form" novalidate>
+    <form name="form.addTeam" role="form" class="form-horizontal" novalidate>
         
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="form-group">
-                    <label>Game Name</label>
-                    <input class="form-control" ng-model="game.name" data-game-id="game.id" type="text" readonly />
-                </div>
+        <div class="form-group">
+            <label class="col-xs-5 col-sm-4 col-md-3 control-label">Game #{{game.id}}</label>
+            <div class="col-xs-7 col-sm-8 col-md-9">
+                <p class="form-control-static">{{game.name}}</p>
             </div>
         </div>
         
