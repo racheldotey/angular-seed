@@ -3,8 +3,8 @@
 /* @author  Rachel Carbone */
 
 angular.module('app.modal.trivia.editRound', [])        
-    .controller('TriviaEditRoundModalCtrl', ['$scope', '$uibModalInstance', '$filter', 'AlertConfirmService', 'editing', 'TriviaScoreboard', 'ApiRoutesGames',
-    function($scope, $uibModalInstance, $filter, AlertConfirmService, editing, TriviaScoreboard, ApiRoutesGames) {        
+    .controller('TriviaEditRoundModalCtrl', ['$scope', '$uibModalInstance', '$filter', 'AlertConfirmService', 'editing', 'TriviaScoreboard',
+    function($scope, $uibModalInstance, $filter, AlertConfirmService, editing, TriviaScoreboard) {        
     
     $scope.game = TriviaScoreboard.getGame();
     
@@ -61,11 +61,12 @@ angular.module('app.modal.trivia.editRound', [])
     
     /* Click event for the Add / New button */
     $scope.buttonNew = function() {
-        TriviaScoreboard.newRound({ 
+        var round = {
             'gameId' : $scope.game.id, 
             'name' : $scope.editing.name,
             'defaultQuestionPoints' : $scope.editing.defaultQuestionPoints
-        }).then(
+        };
+        TriviaScoreboard.newRound(round).then(
             function (result) {
                 $uibModalInstance.close(result);
             }, function (error) {
@@ -75,14 +76,29 @@ angular.module('app.modal.trivia.editRound', [])
     
     /* Click event for the Save button */
     $scope.buttonSave = function() {
+        var round = {
+            'gameId' : $scope.game.id, 
+            'roundId' : $scope.editing.roundId, 
+            'name' : $scope.editing.name,
+            'defaultQuestionPoints' : $scope.editing.defaultQuestionPoints
+        };
+        TriviaScoreboard.editRound(round).then(
+            function (result) {
+                $uibModalInstance.close(result);
+            }, function (error) {
+                $scope.alertProxy.error(error);
+            });
     };
     
     /* Click event for the Delete button */
-    $scope.buttonDelete = function() {
-        
-        AlertConfirmService.confirm('Are you sure you want to disable this round?.')
+    $scope.buttonDelete = function() {        
+        AlertConfirmService.confirm('Are you sure you want to delete this round? This action cannot be undone.')
             .result.then(function () {
-                ApiRoutesGames.deleteRound($scope.editing.id).then(
+                var round = {
+                    'gameId' : $scope.game.id, 
+                    'roundId' : $scope.editing.roundId
+                };
+                TriviaScoreboard.deleteRound(round).then(
                     function (result) {
                         $uibModalInstance.close(result);
                     }, function (error) {

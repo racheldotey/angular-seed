@@ -67,6 +67,40 @@ angular.module('rcTrivia.scoreboard', ['rcTrivia.game'])
             });          
         };
         
+        api.editRound = function(round) {
+            return $q(function (resolve, reject) {
+                var loadedGame = api.getGame();
+                if(loadedGame) {
+                    ApiRoutesGames.editGameRound(round).then(
+                        function (result) {
+                            TriviaGame.update(result.game);
+                            resolve(api.getGame());
+                        }, function (error) {
+                            reject(error);
+                        });
+                } else {
+                    reject("No game is loaded.");
+                }
+            });          
+        };
+        
+        api.deleteRound = function(roundId) {
+            return $q(function (resolve, reject) {
+                var loadedGame = api.getGame();
+                if(loadedGame) {
+                    ApiRoutesGames.deleteGameRound(roundId).then(
+                        function (result) {
+                            TriviaGame.update(result.game);
+                            resolve(api.getGame());
+                        }, function (error) {
+                            reject(error);
+                        });
+                } else {
+                    reject("No game is loaded.");
+                }
+            });          
+        };
+        
         api.newQuestion = function(question) {
             return $q(function (resolve, reject) {
                 var loadedGame = api.getGame();

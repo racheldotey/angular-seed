@@ -197,24 +197,64 @@ class GameController {
             !v::key('gameId', v::intVal())->validate($app->request->post())) {
             return $app->render(400,  array('msg' => 'Invalid round. Check your parameters and try again.'));
         }
+        
         $count = GameData::getRoundCount($app->request->post('gameId'));
         $defaultPoints = (v::key('defaultQuestionPoints')->validate($app->request->post())) ? 
                 $app->request->post('defaultQuestionPoints') : 5;
-        $validRound = array(
+        
+        $roundId = GameData::insertRound(array(
             ":name" => $app->request->post('name'),
             ":order" => $count + 1,
             ":game_id" => $app->request->post('gameId'),
             ":default_question_points" => $defaultPoints,
             ":created_user_id" => APIAuth::getUserId(),
             ":last_updated_by" => APIAuth::getUserId()
-        );
-        
-        $roundId = GameData::insertRound($validRound);
+        ));
         if($roundId) {
-            $saved = GameData::selectGame($app->request->post('gameId'), $app->request->post('roundId'));
-            return $app->render(200, array('game' => $saved, 'id' => $roundId));
+            return $app->render(200, array('id' => $roundId, 'game' => GameData::selectGame($app->request->post('gameId'))));
         } else {
             return $app->render(400,  array('msg' => 'Could not add game round.'));
+        }
+    }
+    
+    static function editRound($app, $roundId) {
+        if(!v::intVal()->validate($roundId) ||
+            !v::key('name', v::stringType()->length(0,255))->validate($app->request->post()) ||
+            !v::key('gameId', v::intVal())->validate($app->request->post())) {
+            return $app->render(400,  array('msg' => 'Invalid round. Check your parameters and try again.'));
+        }
+        
+        $defaultPoints = (v::key('defaultQuestionPoints')->validate($app->request->post())) ? 
+                $app->request->post('defaultQuestionPoints') : 5;
+        
+        if(GameData::updateRound(array(
+            ":id" => $roundId,
+            ":name" => $app->request->post('name'),
+            ":game_id" => $app->request->post('gameId'),
+            ":default_question_points" => $defaultPoints,
+            ":last_updated_by" => APIAuth::getUserId()
+        ))) {
+            return $app->render(200, array('game' => GameData::selectGame($app->request->post('gameId'))));
+        } else {
+            return $app->render(400,  array('msg' => 'Could not edit question.'));
+        }
+    }
+    
+    static function deleteRound($app, $roundId) {
+        if(!v::intVal()->validate($roundId) ||
+            !v::key('gameId', v::intVal())->validate($app->request->post())) {
+            return $app->render(400,  array('msg' => 'Invalid round. Check your parameters and try again.'));
+        } else if(GameData::getQuestionCount($app->request->post('roundId')) > 0) {
+            return $app->render(400,  array('msg' => 'This round cannot be deleted because it has questions associated with it.'));
+        }
+        
+        if(GameData::deleteRound(array(
+            ":id" => $roundId,
+            ":game_id" => $app->request->post('gameId')
+        ))) {
+            return $app->render(200, array('game' => GameData::selectGame($app->request->post('gameId'))));
+        } else {
+            return $app->render(400,  array('msg' => 'Could not delete question.'));
         }
     }
     

@@ -35,6 +35,7 @@
             <label class="col-xs-5 col-sm-4 col-md-3 control-label">Questions</label>
             <div class="col-xs-7 col-sm-8 col-md-9">
                 <ul class="list-unstyled">
+                    <li ng-show="!saved.questions.length">No questions in this round.</li>
                     <li ng-repeat="question in saved.questions">{{question.number}} - {{question.question}}</li>
                 </ul>
             </div>
@@ -87,7 +88,7 @@
 </div>
 
 <div ng-if="editMode" class="modal-footer">
-    <button class="btn btn-warning pull-left" ng-if="!newMode" ng-click="buttonDelete()">Delete</button>
+    <button class="btn btn-warning pull-left" ng-if="!newMode && !saved.questions.length" ng-click="buttonDelete()">Delete</button>
 
     <button class="btn btn-default" ng-click="buttonCancel()">Cancel</button>
     <button class="btn btn-primary" ng-if="newMode" ng-click="buttonNew()">Add</button>

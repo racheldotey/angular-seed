@@ -99,36 +99,7 @@ class GameData {
         return DBConn::selectColumn("SELECT COUNT(id) AS count FROM " . DBConn::prefix() . "game_round_questions "
                 . "WHERE round_id=:round_id LIMIT 1;", array(':round_id' => $roundId));
     }
-    
-    static function insertStartingRounds($count, $gameId, $defaultPoints, $currentUser) {
-        $qAddRound = DBConn::preparedQuery("INSERT INTO " . DBConn::prefix() . "game_rounds(name, `order`, game_id, default_question_points, created_user_id, last_updated_by) "
-                . "VALUES (:name, :order, :game_id, :default_question_points, :created_user_id, :last_updated_by);");
         
-        $results = array();
-        for($i = 1; $i <= $count; $i++) {
-            $results[] = $qAddRound->execute(array(
-                ":name" => "Round #" . $i,
-                ":order" => $i,
-                ":game_id" => $gameId,
-                ":default_question_points" => $defaultPoints,
-                ":created_user_id" => $currentUser,
-                ":last_updated_by" => $currentUser
-            ));
-        }
-        return $results;
-    }
-    
-    static function insertRound($validRound) {
-        $results = DBConn::insert("INSERT INTO " . DBConn::prefix() . "game_rounds(name, `order`, game_id, default_question_points, created_user_id, last_updated_by) "
-                . "VALUES (:name, :order, :game_id, :default_question_points, :created_user_id, :last_updated_by);", $validRound);
-        
-        if($results) {
-            self::calculateGameScores($validRound[':game_id']);
-        }
-        
-        return $results;
-    }
-    
     static function insertTeamIntoGame($validTeam) {
         $results = DBConn::insert("INSERT INTO " . DBConn::prefix() . "game_score_teams(`game_id`, `team_id`, `created_user_id`, `last_updated_by`) "
                 . "VALUES (:game_id, :team_id, :created_user_id, :last_updated_by);", $validTeam);
@@ -181,6 +152,70 @@ class GameData {
                 . "WHERE id=:id LIMIT 1;", array(':id' => $gameId));
     }
     
+    /* CRUD for Game Rounds */
+    
+    static function insertStartingRounds($count, $gameId, $defaultPoints, $currentUser) {
+        $qAddRound = DBConn::preparedQuery("INSERT INTO " . DBConn::prefix() . "game_rounds(name, `order`, game_id, default_question_points, created_user_id, last_updated_by) "
+                . "VALUES (:name, :order, :game_id, :default_question_points, :created_user_id, :last_updated_by);");
+        
+        $results = array();
+        for($i = 1; $i <= $count; $i++) {
+            $results[] = $qAddRound->execute(array(
+                ":name" => "Round #" . $i,
+                ":order" => $i,
+                ":game_id" => $gameId,
+                ":default_question_points" => $defaultPoints,
+                ":created_user_id" => $currentUser,
+                ":last_updated_by" => $currentUser
+            ));
+        }
+        return $results;
+    }
+    
+    static function insertRound($validRound) {
+        $results = DBConn::insert("INSERT INTO " . DBConn::prefix() . "game_rounds(name, `order`, game_id, default_question_points, created_user_id, last_updated_by) "
+                . "VALUES (:name, :order, :game_id, :default_question_points, :created_user_id, :last_updated_by);", $validRound);
+        
+        if($results) {
+            self::calculateGameScores($validRound[':game_id']);
+        }
+        
+        return $results;
+    }
+    
+    static function updateRound($validRound) {
+        $results = DBConn::update("UPDATE " . DBConn::prefix() . "game_rounds SET "
+                . "name = :name, default_question_points = :default_question_points, last_updated_by = :last_updated_by "
+                . "WHERE id = :id AND game_id = :game_id;", $validRound);
+        
+        if($results) {
+            self::calculateGameScores($validRound[':game_id']);
+        }
+        
+        return $results;
+    }
+
+    static function deleteRound($validRound) {
+        $results = DBConn::delete("DELETE FROM " . DBConn::prefix() . "game_score_rounds "
+                . "WHERE game_id = :game_id AND round_id = :round_id;", $validRound);
+        
+        $results = DBConn::delete("DELETE FROM " . DBConn::prefix() . "game_rounds "
+                . "WHERE id = :id AND game_id = :game_id;", $validRound);
+        
+        if($results) {
+            self::updateRoundOrder($validRound[':game_id']);
+            self::calculateGameScores($validRound[':game_id']);
+        }
+        
+        return $results;
+    }
+    
+    private static function updateRoundOrder($gameId) {
+        return DBConn::update("SET @rownumber = 0; "
+                . "UPDATE " . DBConn::prefix() . "game_rounds SET `order` = (@rownumber:=@rownumber+1) "
+                . "WHERE game_id = :game_id ORDER BY `order` ASC;", array(':game_id' => $gameId));
+    }
+    
     /* CRUD for Game Questions */
     
     static function insertQuestion($validQuestion) {
@@ -213,10 +248,17 @@ class GameData {
         $results = DBConn::delete("DELETE FROM " . DBConn::prefix() . "game_round_questions "
                 . "WHERE id = :id AND game_id = :game_id AND round_id = :round_id;", $validQuestion);
         
-        
-        self::calculateGameScores($validQuestion[':game_id']);
+        if($results) {
+            self::updateQuestionOrder($validQuestion[':round_id']);
+            self::calculateGameScores($validQuestion[':game_id']);
+        }
         
         return $results;
+    }
+    
+    private static function updateQuestionOrder($roundId) {
+        return DBConn::update("SET @rownumber = 0; UPDATE " . DBConn::prefix() . "game_round_questions SET `order` = (@rownumber:=@rownumber+1) "
+                . "WHERE round_id = :round_id ORDER BY `order` ASC;", array(':round_id' => $roundId));
     }
     
     static function saveQuestionScores($scores) {
@@ -229,6 +271,8 @@ class GameData {
         }
         return $result;
     }
+    
+    /* GAME SCORING */
     
     static function calculateGameScores($gameId) {
         $currentUser = APIAuth::getUserId();

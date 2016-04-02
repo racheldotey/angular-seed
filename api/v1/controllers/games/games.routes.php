@@ -35,13 +35,6 @@ class GameRoutes {
             });
 
             /*
-             * gameId, roundNumber, name, venueId, hostId, scheduled
-             */
-            $app->post("/update/scoreboard/:gameId/:roundNumber/", function ($gameId, $roundNumber) use ($app) {
-                GameController::saveScoreboard($app, $gameId, $roundNumber);
-            });
-
-            /*
              * id
              */
             $app->post("/start/:gameId/", function ($gameId) use ($app) {
@@ -78,6 +71,20 @@ class GameRoutes {
             });
                     
             /*
+             * roundId, gameId, name, defaultQuestionPoints
+             */
+            $app->post("/update/round/:roundId/", function ($questionId) use ($app) {
+                GameController::editRound($app, $questionId);
+            });
+
+            /*
+             * roundId, gameId
+             */
+            $app->map("/delete/round/:roundId/", function ($questionId) use ($app) {
+                GameController::deleteRound($app, $questionId);
+            })->via('DELETE', 'POST');
+                    
+            /*
              * gameId, roundId, question, maxPoints
              */
             $app->post("/insert/question", function () use ($app) {
@@ -92,7 +99,7 @@ class GameRoutes {
             });
 
             /*
-             * questionId
+             * questionId, gameId, roundId
              */
             $app->map("/delete/question/:questionId/", function ($questionId) use ($app) {
                 GameController::deleteQuestion($app, $questionId);
