@@ -21,11 +21,6 @@ class GameRoutes {
             })->via('GET', 'POST');
 
             /*
-            $app->map("/round/get/:gameId/:roundNumber/", function ($gameId, $roundNumber) use ($app) {
-                GameController::getGameRound($app, $gameId, $roundNumber);
-            })->via('GET', 'POST');
-           */
-            /*
              * name, venueId, hostId, scheduled, defaultQuestionPoints
              */
             $app->post("/insert/game", function () use ($app) {

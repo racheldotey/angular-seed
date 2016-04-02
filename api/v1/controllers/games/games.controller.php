@@ -15,15 +15,6 @@ class GameController {
             return $app->render(400,  array('msg' => 'Could not select game.'));
         }
     }
-
-    static function getGameRound($app, $gameId, $roundNumber) {
-        $round = GameData::selectGameRound($gameId, $roundNumber);
-        if($round) {
-            return $app->render(200, array('round' => $round));
-        } else {
-            return $app->render(400,  array('msg' => 'Could not select game round.'));
-        }
-    }
     
     static function addGame($app) {
         if(!v::key('name', v::stringType()->length(1,255))->validate($app->request->post()) ||
