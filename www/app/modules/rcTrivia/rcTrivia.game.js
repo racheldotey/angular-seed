@@ -103,9 +103,9 @@ angular.module('rcTrivia.game', [])
                     // Calculate Round Ranking
                     var allTeamGameScores = new Array();
                     var allTeamRoundScores = new Array();
-                    var teamRoundScores = new Array();
                     
                     for(var teamKey in _game.teams) { // For every team
+                        var teamRoundScores = new Array();
                         
                         for(var teamRoundKey in _game.teams[teamKey].rounds) { // For every team round
                             if(!angular.isDefined(allTeamRoundScores[teamRoundKey])) {

@@ -171,6 +171,37 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 $scope.updateTeamRankings(teamId);
             }; 
             
+            // Wager Buttons
+            
+            $scope.buttonIncreaseTeamWager = function(teamId, questionNumber) {
+                var teamScore = $scope.game.teams[teamId].rounds[$scope.game.currentRoundNumber].questions[questionNumber];
+                teamScore.teamWager = parseFloat(teamScore.teamWager) + 10;
+                $scope.checkboxCorrectWagerQuestion(teamId, questionNumber);
+            }; 
+            
+            $scope.buttonDecreaseTeamWager = function(teamId, questionNumber) {
+                var teamScore = $scope.game.teams[teamId].rounds[$scope.game.currentRoundNumber].questions[questionNumber];
+                teamScore.teamWager = parseFloat(teamScore.teamWager) - 10;
+                $scope.checkboxCorrectWagerQuestion(teamId, questionNumber);
+            };
+            
+            $scope.checkboxCorrectWagerQuestion = function(teamId, questionNumber) {
+                var teamScore = $scope.game.teams[teamId].rounds[$scope.game.currentRoundNumber].questions[questionNumber];
+                var correct = (angular.isDefined(teamScore.wagerChecked) && teamScore.wagerChecked);
+                var wager = parseFloat(teamScore.teamWager);
+                teamScore.questionScore =  (correct) ? wager : (wager* -1);
+                $scope.updateTeamRankings(teamId);
+            };  
+            
+            $scope.getQuestionType = function(questionNumber) {
+                var question = $scope.game.rounds[$scope.game.currentRoundNumber].questions[questionNumber];
+                if(question.wager === '1') {
+                    return 'wager';
+                } else {
+                    return 'default';
+                }
+            };
+            
         }],
         link: function(scope, element, attrs) {
             

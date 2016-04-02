@@ -61,9 +61,9 @@
                 <input class="form-control" name="question" ng-model="editing.question" type="text" maxlength="255" />
             </div>
             
-            <div class="col-xs-4">
-                <label>Points</label>
-                <input class="form-control" name="maxPoints" ng-model="editing.maxPoints" type="number" maxlength="9" required />
+            <div class="col-xs-4" ng-show="editing.wager === '0'">
+                <label>Default Points</label>
+                <input class="form-control" name="maxPoints" ng-model="editing.maxPoints" type="number" maxlength="9" />
             </div>
         </div>
 
@@ -77,9 +77,6 @@
                             ng-model="editing.wager"> Players may place a wager for this question.
                     </label>
                 </div>
-            </div>
-            <div class="col-xs-12" ng-show="editing.wager">
-                <p>* The "Points" field above is the maximum allowed wager for this question.</p>
             </div>
         </div>
     </form>
