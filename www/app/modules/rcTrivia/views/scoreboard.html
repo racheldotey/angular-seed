@@ -7,6 +7,12 @@
             <h2 class="game-title hidden-xs hidden-sm">{{game.name}}</h2>
             <h4 class="game-title visible-sm-inline-block">{{game.name}}</h4>
             <p class="game-title visible-xs-inline-block"><strong>{{game.name}}</strong></p>
+            <p>
+                <small>
+                    <a ng-click="buttonEditRound(game.round.number); $event.stopPropagation();">Round #{{game.round.number}}</a>
+                            <span ng-show="game.round.name"> - "{{game.round.name}}"</span>
+                </small>
+            </p>
         </div>
     </header>
 
@@ -53,22 +59,22 @@
         </div>
         
         <form class="form-inline">
-        <table id="scoreboard" data-datatable="ng" data-dt-options="dtScoreboard.options" data-dt-instance="dtScoreboard.instance">
+        <table id="scoreboard" 
+               data-datatable="ng" 
+               data-dt-options="dtScoreboard.options" 
+               data-dt-instance="dtScoreboard.instance"
+               data-dt-columns="dtScoreboard.columns">
             <thead>
                 <tr>
-                    <th>
-                        <p><a href="" ng-click="buttonEditRound(game.round.number)">Round #{{game.round.number}}</a>
-                            <span ng-show="game.round.name"> -<br/>"{{game.round.name}}"</span></p>
-                        <p>Team Name</p>
-                    </th>
-                    <th><a href="" ng-click="buttonEditRound(game.round.number)"><p class="text-center">Round Score</p></a></th>
+                    <th><p>Team Names</p></th>
+                    <th><p class="text-center">Round Score</p></th>
                     <th><p class="text-center">Round Rank</p></th>
                     <th><p class="text-center">Game Score</p></th>
                     <th><p class="text-center">Game Rank</p></th>
 
                     <th class="question" ng-repeat="question in game.rounds[game.currentRoundNumber].questions">
                         <a href="" ng-click="buttonEditQuestion(question.number)">
-                            <p class="text-center"><strong>#{{question.number}} - {{question.maxPoints | numberEx}} pts</strong></p>
+                            <p class="text-center"><strong>#{{question.number}}<span ng-if="getQuestionType(question.number) === 'default'"> - {{question.maxPoints | numberEx}} pts</span></strong></p>
                             <p ng-if="question.question">{{question.question}}</p>
                         </a>
                     </th>

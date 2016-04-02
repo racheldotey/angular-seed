@@ -58,6 +58,19 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                     $scope.setScoreboardHeight();
                 });
                 
+            $scope.dtScoreboard.columns = [
+                DTColumnDefBuilder.newColumnDef(0),
+                DTColumnDefBuilder.newColumnDef(1),
+                DTColumnDefBuilder.newColumnDef(2),
+                DTColumnDefBuilder.newColumnDef(3),
+                DTColumnDefBuilder.newColumnDef(4)
+            ];
+            var colNum = 5;
+            for(var i = 0; i < Object.keys($scope.game.rounds[$scope.game.currentRoundNumber].questions).length; i++) {
+                $scope.dtScoreboard.columns.push(DTColumnDefBuilder.newColumnDef(colNum).notSortable());
+                colNum++;
+            }
+                
             // Responsive table height
 
             $scope.setScoreboardHeight = function() {
