@@ -156,18 +156,13 @@ angular.module('TriviaModalService', [
      * 
      * @return uibModalInstance
      */
-    api.openEditRound = function(gameId, roundId) {
+    api.openEditRound = function(round) {
         return api.openModal({
             templateUrl: templatePath + 'editRound/editRound.html',
             controller: 'TriviaEditRoundModalCtrl',
             resolve: {
-                ApiRoutesGames: 'ApiRoutesGames',
-                ApiRoutesSimpleLists: 'ApiRoutesSimpleLists',
-                editing: function(ApiRoutesGames) {
-                    return { 'gameId' : gameId };
-                },
-                gameList: function(ApiRoutesSimpleLists) {
-                    return ApiRoutesSimpleLists.simpleGamesList();
+                editing: function() {
+                    return (angular.isDefined(round)) ? round : {};
                 }
             }
         });

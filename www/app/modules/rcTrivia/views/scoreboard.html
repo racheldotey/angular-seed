@@ -16,7 +16,6 @@
 
             <div data-rc-trivia-scoreboard-round-navigation class="game-round-navigation"></div>
 
-
             <div class="host-actions">
                 <div id="wide-menu" class="visible-lg-block">
                     <button ng-show="!displayQuickScoreButtons" ng-click="displayQuickScoreButtons = !displayQuickScoreButtons" type="button" class="btn btn-primary btn-sm">Show Quick Buttons</button>
@@ -62,7 +61,7 @@
                             <span ng-show="game.round.name"> -<br/>"{{game.round.name}}"</span></p>
                         <p>Team Name</p>
                     </th>
-                    <th><p class="text-center">Round Score</p></th>
+                    <th><a href="" ng-click="buttonEditRound(game.round.number)"><p class="text-center">Round Score</p></a></th>
                     <th><p class="text-center">Round Rank</p></th>
                     <th><p class="text-center">Game Score</p></th>
                     <th><p class="text-center">Game Rank</p></th>

@@ -35,12 +35,6 @@ angular.module('app.modal.trivia.editRound', [])
         }
     };
     
-    if(angular.isDefined(editing.id)) {
-        $scope.setMode('view');
-    } else {
-        $scope.setMode('new');
-    }
-    
     $scope.getMode = function() {
         if($scope.newMode) {
             return 'new';
@@ -51,18 +45,19 @@ angular.module('app.modal.trivia.editRound', [])
         }
     };
     
-    
-    /* Save for resetting purposes */
-    $scope.saved = (angular.isDefined(editing.id)) ? angular.copy(editing) : {};
+    if(angular.isDefined(editing.roundId)) {
+        $scope.setMode('view');
+        /* Save for resetting purposes */
+        $scope.saved = angular.copy(editing);
+        $scope.saved.maxPoints = parseFloat(editing.maxPoints);
+        $scope.saved.defaultQuestionPoints = parseFloat(editing.defaultQuestionPoints);
+    } else {
+        $scope.setMode('new');
+        $scope.saved = { defaultQuestionPoints : 10 };
+    }
     
     /* Item to display and edit */
     $scope.editing = angular.copy($scope.saved);
-    
-    if($scope.getMode('new') === 'new') {
-        $scope.editing.name = "";
-        $scope.editing.defaultQuestionPoints = (angular.isDefined($scope.game.round.defaultQuestionPoints) && $scope.game.round.defaultQuestionPoints > 0) ? 
-            parseFloat($scope.game.round.defaultQuestionPoints) : 10;
-    }
     
     /* Click event for the Add / New button */
     $scope.buttonNew = function() {
@@ -84,6 +79,16 @@ angular.module('app.modal.trivia.editRound', [])
     
     /* Click event for the Delete button */
     $scope.buttonDelete = function() {
+        
+        AlertConfirmService.confirm('Are you sure you want to disable this round?.')
+            .result.then(function () {
+                ApiRoutesGames.deleteRound($scope.editing.id).then(
+                    function (result) {
+                        $uibModalInstance.close(result);
+                    }, function (error) {
+                        $scope.alertProxy.error(error);
+                    });
+            });
     };
         
     /* Click event for the Cancel button */

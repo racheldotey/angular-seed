@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <h3 ng-if="newMode" class="modal-title">Add Question</h3>
+    <h3 ng-if="newMode" class="modal-title">Add Question to Round #{{game.round.number}}</h3>
     <h3 ng-if="!newMode && editMode" class="modal-title">Edit Question #{{saved.number}} in Round #{{game.round.number}}</h3>
     <h3 ng-if="!newMode && !editMode" class="modal-title">Question #{{saved.number}} in Round #{{game.round.number}}</h3>
 </div>

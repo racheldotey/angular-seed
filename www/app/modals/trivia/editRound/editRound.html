@@ -1,45 +1,42 @@
 <div class="modal-header">
-    <h3 ng-if="newMode" class="modal-title">New Round</h3>
-    <h3 ng-if="!newMode && editMode" class="modal-title">Edit Round #{{saved.roundNumber}}</h3>
-    <h3 ng-if="!newMode && !editMode" class="modal-title">Round #{{saved.roundNumber}}</h3>
+    <h3 ng-if="newMode" class="modal-title">Add Round to Game #{{game.id}}</h3>
+    <h3 ng-if="!newMode && editMode" class="modal-title">Edit Round #{{saved.number}} in Game #{{game.id}}</h3>
+    <h3 ng-if="!newMode && !editMode" class="modal-title">Round #{{saved.number}} in Game #{{game.id}}</h3>
 </div>
 
 <div class="modal-body">
 
     <div data-rc-bootstrap-alerts="alertProxy"></div>
 
-    <div ng-if="!editMode">
+    <div ng-if="!editMode" class="form-horizontal">
 
-        <div class="row">
-            <div class="col-xs-12">
-                <label>Viewing round #{{saved.roundNumber}} in Game #{{game.id}} - {{game.name}}</label>
+        <div class="form-group">
+            <label class="col-xs-5 col-sm-4 col-md-3 control-label">Game #{{game.id}}</label>
+            <div class="col-xs-7 col-sm-8 col-md-9">
+                <p class="form-control-static">{{game.name}}</p>
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-xs-12">
-                <label>Round Name</label>
+        <div class="form-group">
+            <label class="col-xs-5 col-sm-4 col-md-3 control-label">Round #{{saved.number}}</label>
+            <div class="col-xs-7 col-sm-8 col-md-9">
                 <p class="form-control-static">{{saved.name}}</p>
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-xs-12">
-                <label>Questions:</label>
-                <ol>
-                    <li ng-repeat="question in saved.questions">{{question.question}}</li>
-                </ol>
+        <div class="form-group">
+            <label class="col-xs-5 col-sm-4 col-md-3 control-label">Questions</label>
+            <div class="col-xs-7 col-sm-8 col-md-9">
+                <ul class="list-unstyled">
+                    <li ng-repeat="question in saved.questions">{{question.number}} - {{question.question}}</li>
+                </ul>
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="meta" ng-if="!newMode">
-                    <hr/>
-                    <p class="text-muted"><strong>Created:</strong> {{saved.created| formatMySQLDate}} by {{saved.createdBy}}</p>
-                    <p class="text-muted"><strong>Updated:</strong> {{saved.lastUpdated| formatMySQLDate}} by {{saved.updatedBy}}</p>
-                </div>
-            </div>
+        <div class="meta" ng-if="!newMode && saved.created">
+            <hr/>
+            <p class="text-muted"><strong>Created:</strong> {{saved.created | formatMySQLDate}} by {{saved.createdBy}}</p>
+            <p class="text-muted"><strong>Updated:</strong> {{saved.lastUpdated | formatMySQLDate}} by {{saved.updatedBy}}</p>
         </div>
 
     </div>

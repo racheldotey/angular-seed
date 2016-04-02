@@ -138,12 +138,20 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 }, function () {});
             };
             
+            // Edit Trivia Round Modal
+            $scope.buttonEditRound = function(roundNumber) {
+                var round = $scope.game.rounds[roundNumber];
+                var modalInstance = TriviaModalService.openEditRound(round);
+                modalInstance.result.then(function (result) {
+                    console.log(result);
+                }, function () {});
+            };
+            
             // Add Trivia Round Question Modal
             $scope.buttonAddQuestion = function() {
                 var modalInstance = TriviaModalService.openEditQuestion();
                 modalInstance.result.then(function (result) {
                     console.log(result);
-                    // $scope.game = result;
                 }, function () {});
             };
             
@@ -153,7 +161,6 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 var modalInstance = TriviaModalService.openEditQuestion(question);
                 modalInstance.result.then(function (result) {
                     console.log(result);
-                    // $scope.game = result;
                 }, function () {});
             };
             
