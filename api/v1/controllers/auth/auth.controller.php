@@ -22,7 +22,7 @@ class AuthController {
         if($found['authenticated']) {
             return $app->render(200, $found);
         }  else {
-            return $app->render(401, "Unauthenticated");
+            return $app->render(401, $found);
         }
     }
             
@@ -30,9 +30,8 @@ class AuthController {
     ///// Sign Up
     ///// 
             
-    /*
-     * email, nameFirst, nameLast, password
-     */
+    /* email, nameFirst, nameLast, password */
+    
     static function signup($app) {
         $result = AuthControllerNative::signup($app);
         if($result['registered']) {
@@ -42,6 +41,7 @@ class AuthController {
         }
     }
     
+    /* email, nameFirst, nameLast, facebookId, accessToken */
     static function facebookSignup($app) {
         $result = AuthControllerFacebook::signup($app);
         if($result['registered']) {
@@ -51,6 +51,7 @@ class AuthController {
         }
     }
     
+    /* email, nameFirst, nameLast, password */
     static function venueSignup($app) {
         $result = AuthControllerNative::signup($app);
         if(!$result['registered']) {

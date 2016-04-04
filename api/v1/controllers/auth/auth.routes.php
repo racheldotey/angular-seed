@@ -31,6 +31,8 @@ class AuthRoutes {
             ///// Authentication
             ///// 
 
+            /* apiKey, apiToken */
+            
             $app->post("/authenticate/", function () use ($app) {
                 AuthController::isAuthenticated($app);
             });
@@ -39,18 +41,28 @@ class AuthRoutes {
             ///// Sign Up
             ///// 
 
+            /* email, nameFirst, nameLast, password */
+            
             $app->post("/signup/", function () use ($app) {
                 AuthController::signup($app);
             });
-
+            
+            /* email, nameFirst, nameLast, facebookId, accessToken */
+            
             $app->post("/signup/facebook/", function () use ($app) {
                 AuthController::facebookSignup($app);
             });
-
+            
+            /* email, nameFirst, nameLast, password, venueName, address, city, state, zip */
+            /* OPTIONAL: addressb, phone, website, facebook, logo, hours, referralCode */
+                    
             $app->post("/venue/signup/", function () use ($app) {
                 AuthController::venueSignup($app);
             });
 
+            /* email, nameFirst, nameLast, facebookId, accessToken, venueName, address, city, state, zip */
+            /* OPTIONAL: addressb, phone, website, facebook, logo, hours, referralCode */
+                    
             $app->post("/venue/signup/facebook/", function () use ($app) {
                 AuthController::venueFacebookSignup($app);
             });
@@ -63,13 +75,12 @@ class AuthRoutes {
             ///// Login
             ///// 
             
-            /*
-             * email, passowrd
-             */
+            /* email, passowrd */
             $app->post("/login/", function () use ($app) {
                 AuthController::login($app);
             });
             
+            /* email, nameFirst, nameLast, facebookId, accessToken */
             $app->post("/login/facebook/", function () use ($app) {
                 AuthController::facebookLogin($app);
             });

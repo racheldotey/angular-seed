@@ -28,17 +28,17 @@ class AuthControllerNative {
             return array('authenticated' => false, 'msg' => 'Unauthenticated: No User');
         } else if (!password_verify($post['apiToken'], $user->apiToken)) {
             // Validate Password
-            return array('authenticated' => false, 'msg' => 'Unauthenticated: Invalid Cookie');
+            return array('authenticated' => false, 'msg' => 'Unauthenticated: Invalid API Token');
+        } else {
+            // Go now. Be free little brother.
+            if(isset($user->apiKey)){ 
+                unset($user->apiKey);
+            }
+            if(isset($user->apiToken)){ 
+                unset($user->apiToken);
+            }
+            return array('authenticated' => true, 'user' => $user);
         }
-        
-        // Go now. Be free little brother.
-        if(isset($user->apiKey)){ 
-            unset($user->apiKey);
-        }
-        if(isset($user->apiToken)){ 
-            unset($user->apiToken);
-        }
-        return array('authenticated' => true, 'user' => $user);
     }
     
     // Signup Function

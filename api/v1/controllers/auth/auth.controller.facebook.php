@@ -227,10 +227,10 @@ class AuthControllerFacebook {
      * return String|bool Failed message or true 
      */
     private static function validateFacebookProfile($post) {
-        return (v::key('accessToken', v::stringType())->validate($post) || 
-           v::key('facebookId', v::stringType())->validate($post) || 
-           v::key('nameFirst', v::stringType())->validate($post) || 
-           v::key('nameLast', v::stringType())->validate($post) || 
+        return (v::key('accessToken', v::stringType())->validate($post) &&
+           v::key('facebookId', v::stringType())->validate($post) &&
+           v::key('nameFirst', v::stringType())->validate($post) &&
+           v::key('nameLast', v::stringType())->validate($post) &&
            v::key('email', v::email())->validate($post));
     }
 }
