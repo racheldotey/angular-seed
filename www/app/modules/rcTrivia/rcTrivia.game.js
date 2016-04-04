@@ -9,6 +9,7 @@ angular.module('rcTrivia.game', [])
 
             var self = this;
             var _game = false;
+            var _origionalTeams = false;
 
             self.init = function(newGame, viewRound) {
                 if(!angular.isDefined(newGame.id)) {
@@ -31,6 +32,7 @@ angular.module('rcTrivia.game', [])
                 _game.venue = newGame.venue || '';
                 // Scoreboard Data
                 _game.teams = newGame.teams || [];
+                _origionalTeams = angular.copy(_game.teams);
                 _game.rounds = newGame.rounds || [];
                 _game.numberOfRounds = Object.keys(_game.rounds).length;
 
@@ -54,6 +56,7 @@ angular.module('rcTrivia.game', [])
                 _game.venue = updatedGame.venue || _game.venue;
                 // Scoreboard Data
                 _game.teams = updatedGame.teams || _game.teams;
+                _origionalTeams = angular.copy(_game.teams);
                 _game.rounds = updatedGame.rounds || _game.rounds;
                 
                 _game.numberOfRounds = Object.keys(_game.rounds).length;
@@ -162,4 +165,21 @@ angular.module('rcTrivia.game', [])
                 }
             };
         
+            // Get Changed Scores
+            self.getChangedScores = function() {
+                var scoreboard = new Array();
+                if(!angular.equals(_origionalTeams, _game.teams)) {
+                    
+                    for(var teamKey in _game.teams) { // For every team
+                        for(var teamRoundKey in _game.teams[teamKey].rounds) { // For every team round
+                            if(_game.teams[teamKey].rounds[teamRoundKey].roundScore !== _origionalTeams[teamKey].rounds[teamRoundKey].roundScore) {
+                                
+                            }
+                        }
+                    }
+                    
+                }
+                return scoreboard;
+            };
+            
     }]); // END: Game()

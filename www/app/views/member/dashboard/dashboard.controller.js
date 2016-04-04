@@ -15,7 +15,7 @@ angular.module('app.member.dashboard', [])
         $scope.dtGames = DataTableHelper.getDTStructure($scope, 'publicGamesList');
         $scope.dtGames.columns = [
             DTColumnBuilder.newColumn(null).withTitle('Game Name').renderWith(function (data, type, full, meta) {
-                return '<a data-ui-sref="app.host.game({gameId : ' + data.id + ', pageId : 1 })">' + data.name + '</a>';
+                return '<a data-ui-sref="app.member.game({gameId : ' + data.id + ', pageId : 1 })">' + data.name + '</a>';
             }),
             DTColumnBuilder.newColumn('venue').withTitle('Joint'),
             DTColumnBuilder.newColumn('host').withTitle('Host'),

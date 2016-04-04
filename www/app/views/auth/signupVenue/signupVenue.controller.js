@@ -42,35 +42,12 @@ angular.module('app.auth.signupVenue', [])
             'hours' : '',
             'referralCode' : ''
         };
-        $scope.newUser = {
-            'userGroup' : 'player',
-            'nameFirst' : 'Ra',
-            'nameLast' : 'Carbone',
-            'email' : 'r@gmail.com',
-            'password' : 'password1',
-            'passwordB' : 'password1',
-            'referer' : 'Google',
-            'acceptTerms' : true,
-            'venueName' : 'TESTING',
-            'phone' : '12345678',
-            'address' : '1 Main Street',
-            'addressb' : 'Downstairs',
-            'city' : 'Clifton Park',
-            'state' : 'NY',
-            'zip' : '12065',
-            'website' : 'http://barngrill.com',
-            'facebook' : 'http://facebook.com',
-            'hours' : 'Friday and Saturday at 6pm',
-            'referralCode' : 'Facebook'
-        };
-        
-        
         
         $scope.signup = function() {
             if(angular.isString($scope.venueLogo.imageDataUrl) &&
                     ($scope.venueLogo.imageDataUrl.indexOf('data:image') > -1)) {
                 $scope.newUser.logo = $scope.venueLogo.imageDataUrl;
-            }            
+            }
             
             if(!$scope.form.venue.$valid) {
                 $scope.form.venue.$setDirty();

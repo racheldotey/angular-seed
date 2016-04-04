@@ -17,7 +17,7 @@
             </div>
         </div>
 
-        <div class="form-group" ng-if="editing.wager === '0'">
+        <div class="form-group" ng-hide="editing.wager === '1'">
             <label class="col-xs-5 col-sm-4 col-md-3 control-label">Default Points</label>
             <div class="col-xs-7 col-sm-8 col-md-9">
                 <p class="form-control-static">{{saved.maxPoints | numberEx}}</p>
@@ -38,7 +38,7 @@
             </div>
         </div>
 
-        <div class="form-group" ng-if="editing.wager === '1'">
+        <div class="form-group" ng-show="editing.wager === '1'">
             <label class="col-xs-5 col-sm-4 col-md-3 control-label">Wager Question</label>
             <div class="col-xs-7 col-sm-8 col-md-9">
                 <p class="form-control-static">Players may place a wager for this question.</p>
