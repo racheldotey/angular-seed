@@ -130,7 +130,7 @@ angular.module('app.auth.signupVenue', [])
             }
         };
         
-        var passwordValidator = /^(?=.*\d)(?=.*[A-Za-z])[A-Za-z0-9_!@#$%^&*+=-]{8,100}$/;
+        var passwordValidator = /^(?=.*\d)(?=.*[A-Za-z])[A-Za-z0-9_!@#$%^&*+=-]{8,55}$/;
         $scope.onChangeValidatePassword = function() {
             $scope.showPasswordRules = (!passwordValidator.test($scope.newUser.password));
             $scope.onChangeValidateConfirmPassword();

@@ -58,7 +58,7 @@
         <div class="form-group col-xs-6">
             <input ng-model="newUser.password"
                    ng-change="onChangeValidatePassword()" 
-                   type="password" class="form-control" name="password" placeholder="Player Password" maxlength="100" required>
+                   type="password" class="form-control" name="password" placeholder="Player Password" maxlength="55" required>
         </div>
 
         <div ng-if="showPasswordMissmatch" class="form-group">
@@ -70,7 +70,7 @@
         <div class="form-group col-xs-6">
             <input ng-model="newUser.passwordB"
                    ng-change="onChangeValidateConfirmPassword()" 
-                   type="password" class="form-control" name="passwordB" placeholder="Confirm Player Password" maxlength="100" required>
+                   type="password" class="form-control" name="passwordB" placeholder="Confirm Player Password" maxlength="55" required>
         </div>
 
         <div class="form-group col-xs-12">

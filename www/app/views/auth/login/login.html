@@ -18,7 +18,7 @@
                 
                 <div class="form-group" show-errors>
                     <label for="userPassword">Password <span rc-messages="userPassword"></span></label>
-                    <input ng-model="credentials.password" maxlength="255" required type="password" class="form-control" name="userPassword" placeholder="Password">
+                    <input ng-model="credentials.password" maxlength="55" required type="password" class="form-control" name="userPassword" placeholder="Password">
                 </div>
                 
                 <div class="row">
@@ -171,12 +171,12 @@
                 
                 <div class="form-group">
                     <label for="newPassword">Reenter Password</label>
-                    <input type="password" class="form-control" id="newPassword" placeholder="Create a password">
+                    <input type="password" class="form-control" maxlength="55" id="newPassword" placeholder="Create a password">
                 </div>
                 
                 <div class="form-group">
                     <label for="confirmPassword">Confirm Password</label>
-                    <input type="password" class="form-control" id="confirmPassword" placeholder="Reenter password">
+                    <input type="password" class="form-control" maxlength="55" id="confirmPassword" placeholder="Reenter password">
                 </div>
                 
                 <div class="text-right">
