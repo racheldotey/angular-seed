@@ -102,7 +102,7 @@ class AuthControllerNative {
     }
     
     static function validatePasswordRequirements($post, $key = 'password') {
-        return (v::key($key, v::stringType()->length(8,255)->noWhitespace()->alnum('!@#$%^&*_+=-')->regex('/^(?=.*[a-zA-Z])(?=.*[0-9])/'))->validate($post));
+        return (v::key($key, v::stringType()->length(8,55)->noWhitespace()->alnum('!@#$%^&*_+=-')->regex('/^(?=.*[a-zA-Z])(?=.*[0-9])/'))->validate($post));
     }
     
     /*
@@ -160,8 +160,8 @@ class AuthControllerNative {
     
     static function createAuthToken($app, $userId) {
         $token = array();
+        $token['apiToken'] = hash('sha256', uniqid());
         $token['apiKey'] = hash('sha512', uniqid());
-        $token['apiToken'] = hash('sha512', uniqid());
         $token['sessionLifeHours'] = self::login_getSessionExpirationInHours($app->request->post());
         
         // Congrats - you're logged in!
