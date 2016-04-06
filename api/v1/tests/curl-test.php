@@ -1,6 +1,28 @@
 <?php
+$params = array(
+    'email' => 'test@test.com',
+    'firstName' => 'FirstTest',
+    'lastName' => 'LastTest',
+    'password' => '1234567890passwords',
+    'appVersion' => '2',
+    'code' => 'gBa4U7UYHX4Q3amRXnxGvH1rKAZsHXTXz31tbWsSTwIXG',
+    'authKey' => 'W5fLHehgfHUhmI7x7clD8x1Ki1Gf8oY4uePbs7rHOmZb4',
+    'os' => '2',
+    'packageCode' => 'com.hotsalsainteractive.browserTrivia'
+);
 
-$ch = curl_init('http://www.hartwick.edu/');
+// create curl resource 
+$ch = curl_init(); 
+
+// set url 
+curl_setopt($ch, CURLOPT_URL, 'https://svcdev.hotsalsainteractive.com/user/registerAPI'); 
+curl_setopt($ch, CURLOPT_POST, true); 
+curl_setopt($ch, CURLOPT_POSTFIELDS, $params); 
+
+//return the transfer as a string 
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+
+// $output contains the output string 
 $response = curl_exec($ch);
 
 echo '<pre>';
