@@ -25,7 +25,7 @@ angular.module('app.auth.signup', [])
             'email' : '',
             'password' : '',
             'passwordB' : '',
-            'referer' : '',
+            'referrer' : '',
             'acceptTerms' : false
         };
         $scope.newUserB = {
@@ -35,7 +35,7 @@ angular.module('app.auth.signup', [])
             'email' : 'r@gmail.com',
             'password' : 'password1',
             'passwordB' : 'password1',
-            'referer' : 'Google',
+            'referrer' : 'Google',
             'acceptTerms' : true
         };
 
