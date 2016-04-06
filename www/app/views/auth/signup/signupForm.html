@@ -46,12 +46,14 @@
         </div>
 
         <div ng-if="showPasswordRules" class="form-group">
-            <div class="alert alert-warning" role="alert">
-                <p><strong>Passwords Must:</strong></p>
-                <ul>
-                    <li>Be at least 8 characters in length.</li>
-                    <li>Contain at least one letter and number.</li>
-                </ul>
+            <div class="col-xs-12">
+                <div class="alert alert-warning" role="alert">
+                    <p><strong>Passwords Must:</strong></p>
+                    <ul>
+                        <li>Be at least 8 characters in length.</li>
+                        <li>Contain at least one letter and number.</li>
+                    </ul>
+                </div>
             </div>
         </div>
 
@@ -61,16 +63,18 @@
                    type="password" class="form-control" name="password" placeholder="Player Password" maxlength="55" required>
         </div>
 
-        <div ng-if="showPasswordMissmatch" class="form-group">
-            <div class="alert alert-warning" role="alert">
-                <p>Passwords must match</p>
-            </div>
-        </div>
-
         <div class="form-group col-xs-6">
             <input ng-model="newUser.passwordB"
                    ng-change="onChangeValidateConfirmPassword()" 
                    type="password" class="form-control" name="passwordB" placeholder="Confirm Player Password" maxlength="55" required>
+        </div>
+
+        <div ng-if="showPasswordMissmatch" class="form-group">
+            <div  class="col-xs-12">
+                <div class="alert alert-warning" role="alert">
+                    <p>Passwords must match</p>
+                </div>
+            </div>
         </div>
 
         <div class="form-group col-xs-12">

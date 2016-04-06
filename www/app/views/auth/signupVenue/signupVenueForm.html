@@ -36,7 +36,8 @@
         </div>
     </div>
 
-        <div ng-if="showPasswordRules" class="form-group">
+    <div ng-if="showPasswordRules" class="form-group">
+        <div class="col-xs-12">
             <div class="alert alert-warning" role="alert">
                 <p><strong>Passwords Must:</strong></p>
                 <ul>
@@ -45,14 +46,9 @@
                 </ul>
             </div>
         </div>
+    </div>
 
     <div class="form-group row">
-
-        <div ng-if="showPasswordMissmatch" class="col-xs-12 form-group">
-            <div class="alert alert-warning" role="alert">
-                <p>Passwords must match</p>
-            </div>
-        </div>
 
         <div class="col-xs-6">
             <input ng-model="newUser.password"
@@ -64,6 +60,15 @@
             <input ng-model="newUser.passwordB"
                    ng-change="onChangeValidateConfirmPassword()" 
                    type="password" class="form-control" name="passwordB" placeholder="Confirm Contact Password" maxlength="55" required>
+        </div>
+        
+    </div>
+
+    <div ng-if="showPasswordMissmatch" class="form-group">
+        <div  class="col-xs-12">
+            <div class="alert alert-warning" role="alert">
+                <p>Passwords must match</p>
+            </div>
         </div>
     </div>
     
