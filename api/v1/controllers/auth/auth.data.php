@@ -49,7 +49,7 @@ class AuthData {
                 . "FROM " . DBConn::prefix() . "users WHERE id = :id LIMIT 1;", array(':id' => $id));
         if($user) {
             $user->displayName = $user->nameFirst;
-            $user->roles = DBConn::selectAll("SELECT gr.auth_role_id FROM " . DBConn::prefix() . "auth_lookup_user_group AS ug "
+            $user->roles = DBConn::selectAll("SELECT DISTINCT(gr.auth_role_id) FROM " . DBConn::prefix() . "auth_lookup_user_group AS ug "
                     . "JOIN " . DBConn::prefix() . "auth_lookup_group_role AS gr ON ug.auth_group_id = gr.auth_group_id "
                     . "WHERE ug.user_id = :id;", array(':id' => $id), \PDO::FETCH_COLUMN);
         }
@@ -61,7 +61,7 @@ class AuthData {
                 . "FROM " . DBConn::prefix() . "users WHERE facebook_id = :facebook_id LIMIT 1;", array(':facebook_id' => $facebookId));
         if($user) {
             $user->displayName = $user->nameFirst;
-            $user->roles = DBConn::selectAll("SELECT gr.auth_role_id FROM " . DBConn::prefix() . "auth_lookup_user_group AS ug "
+            $user->roles = DBConn::selectAll("SELECT DISTINCT(gr.auth_role_id) FROM " . DBConn::prefix() . "auth_lookup_user_group AS ug "
                     . "JOIN " . DBConn::prefix() . "auth_lookup_group_role AS gr ON ug.auth_group_id = gr.auth_group_id "
                     . "WHERE ug.user_id = :id;", array(':id' => $user->id), \PDO::FETCH_COLUMN);
         }
@@ -73,7 +73,7 @@ class AuthData {
                 . "FROM " . DBConn::prefix() . "users WHERE email = :email LIMIT 1;", array(':email' => $email));
         if($user) {
             $user->displayName = $user->nameFirst;
-            $user->roles = DBConn::selectAll("SELECT gr.auth_role_id FROM " . DBConn::prefix() . "auth_lookup_user_group AS ug "
+            $user->roles = DBConn::selectAll("SELECT DISTINCT(gr.auth_role_id) FROM " . DBConn::prefix() . "auth_lookup_user_group AS ug "
                     . "JOIN " . DBConn::prefix() . "auth_lookup_group_role AS gr ON ug.auth_group_id = gr.auth_group_id "
                     . "WHERE ug.user_id = :id;", array(':id' => $user->id), \PDO::FETCH_COLUMN);
         }
@@ -92,7 +92,7 @@ class AuthData {
                 . "AND u.disabled IS NULL;", array(':identifier' => $identifier));
         if($user) {
             $user->displayName = $user->nameFirst;
-            $user->roles = DBConn::selectAll("SELECT gr.auth_role_id FROM " . DBConn::prefix() . "auth_lookup_user_group AS ug "
+            $user->roles = DBConn::selectAll("SELECT DISTINCT(gr.auth_role_id) FROM " . DBConn::prefix() . "auth_lookup_user_group AS ug "
                     . "JOIN " . DBConn::prefix() . "auth_lookup_group_role AS gr ON ug.auth_group_id = gr.auth_group_id "
                     . "WHERE ug.user_id = :id;", array(':id' => $user->id), \PDO::FETCH_COLUMN);
         }

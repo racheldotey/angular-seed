@@ -129,7 +129,7 @@ class AuthRoutes {
              *      {
              *          "data": {
              *              "registered": false,
-             *              "msg": "Signup  failed. Check your parameters and try again."
+             *              "msg": "Signup failed. Check your parameters and try again."
              *          },
              *          "meta": {
              *              "error": true,
