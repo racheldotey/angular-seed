@@ -16,7 +16,6 @@ $ch = curl_init();
 
 // set url 
 curl_setopt($ch, CURLOPT_URL, 'https://svcdev.hotsalsainteractive.com/user/registerAPI'); 
-curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
 curl_setopt($ch, CURLOPT_POST, true); 
 curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
 

@@ -4,7 +4,6 @@ require_once dirname(__FILE__) . '/auth.data.php';
 class AuthHooks {
     
     static function signup($app, $apiResponse) {
-        self::data_deleteStupidUser($apiResponse['user']->id);
         self::hookCallHotSalsa($app, $apiResponse);
     }    
     
@@ -52,7 +51,6 @@ class AuthHooks {
 
         // set url 
         curl_setopt($ch, CURLOPT_URL, $vars['HOT_SALSA_URL']); 
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
         curl_setopt($ch, CURLOPT_POST, true); 
         curl_setopt($ch, CURLOPT_POSTFIELDS, $params); 
 
@@ -69,11 +67,11 @@ class AuthHooks {
             self::data_logHotSalsaError($apiResponse['user']->id, $error, $info);
         } else {
             // Results
-            if(!isset($curlOutput['status']) || $curlOutput['status'] === 'failed') {
-                $error = (isset($curlOutput['message'])) ? $curlOutput['message'] : 'ERROR: Unknown error occured';
-                self::data_logHotSalsaError($apiResponse['user']->id, $error, json_encode($curlOutput));
+            $curlResult = json_decode($curlOutput, true);
+            if(!isset($curlResult['status']) || $curlResult['status'] === 'failed') {
+                $error = (isset($curlResult['message'])) ? $curlResult['message'] : 'ERROR: Unknown error occured';
+                self::data_logHotSalsaError($apiResponse['user']->id, $error, $curlOutput);
             } else {
-                $curlResult = json_decode($curlOutput);
                 self::data_logHotSalsaResults($curlResult, $app, $apiResponse);
             }
         }        
