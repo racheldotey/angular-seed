@@ -1,0 +1,108 @@
+<form name="form.venue" role="form" novalidate>
+
+    <div data-rc-bootstrap-alerts="venueAlerts"></div>
+    
+    <div class="row">
+
+        <div class="col-xs-12 checkbox text-center">
+            <label>
+                <input type="checkbox"> Agree to our <a href="http://www.triviajoint.com/terms-and-conditions/" target="_blank">terms of service</a>
+            </label>
+        </div>
+
+        <div class="col-xs-12 form-group">
+            <input type="text" class="form-control" />
+        </div>
+
+        <div class="col-md-6 form-group">
+            <input type="text" class="form-control" />
+        </div>
+
+        <div class="col-md-6 form-group">
+            <input type="text" class="form-control" />
+        </div>
+
+        <div class="col-xs-6 form-group">
+            <input type="text" class="form-control" />
+        </div>
+
+        <div class="col-xs-3 form-group">
+            <select class="form-control">
+                <option value="">State</option>
+            </select>
+        </div>
+
+        <div class="col-xs-3 form-group">
+            <input type="text" class="form-control" />
+        </div>
+
+        <div class="col-xs-12 form-group">
+            <input type="text" class="form-control" />
+        </div>
+
+        <div class="col-xs-12 form-group">
+            <input type="text" class="form-control" />
+        </div>
+
+        <div class="col-xs-12 form-group">
+            <input type="text" class="form-control" />
+        </div>
+
+        <div class="col-xs-12 form-group">
+            <input type="text" class="form-control" />
+        </div>
+
+        <div class="col-xs-12 form-group">
+            <input type="text" class="form-control" />
+        </div>
+
+    </div>
+
+</form>
+
+<hr/>
+
+<form name="form.user" role="form" novalidate>
+    <div class="row" >
+
+        <div class="col-md-6 form-group">
+            <input type="text" class="form-control" />
+        </div>
+
+        <div class="col-md-6 form-group">
+            <input type="text" class="form-control" />
+        </div>
+
+        <div class="col-xs-12 form-group">
+            <input type="text" class="form-control" />
+        </div>
+
+        <div ng-if="showPasswordRules" class="col-xs-12">
+            <div class="alert alert-warning" role="alert">
+                <p><strong>Passwords Must:</strong></p>
+                <ul>
+                    <li>Be at least 8 characters in length.</li>
+                    <li>Contain at least one letter and number.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-md-6 form-group">
+            <input type="text" class="form-control" />
+        </div>
+
+        <div class="col-md-6 form-group">
+            <input type="text" class="form-control" />
+        </div>
+
+        <div ng-if="showPasswordMissmatch" class="col-xs-12">
+            <div class="alert alert-warning" role="alert">
+                <p>Passwords must match</p>
+            </div>
+        </div>
+
+        <div class="col-sm-12 form-group">
+        </div>
+
+    </div>
+</form>
