@@ -5,6 +5,7 @@ require_once dirname(__FILE__) . '/auth.data.php';
 require_once dirname(__FILE__) . '/auth.additionalInfo.data.php';
 require_once dirname(__FILE__) . '/auth.controller.native.php';
 require_once dirname(__FILE__) . '/auth.controller.facebook.php';
+require_once dirname(__FILE__) . '/auth.hooks.php';
 
 use \Respect\Validation\Validator as v;
 
@@ -35,6 +36,7 @@ class AuthController {
     static function signup($app) {
         $result = AuthControllerNative::signup($app);
         if($result['registered']) {
+            AuthHooks::signup($app, $result);
             return $app->render(200, $result);
         } else {
             return $app->render(400, $result);
@@ -45,6 +47,7 @@ class AuthController {
     static function facebookSignup($app) {
         $result = AuthControllerFacebook::signup($app);
         if($result['registered']) {
+            AuthHooks::signup($app, $result);
             return $app->render(200, $result);
         } else {
             return $app->render(400, $result);
