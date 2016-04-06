@@ -52,6 +52,7 @@ class AuthHooks {
 
         // set url 
         curl_setopt($ch, CURLOPT_URL, $vars['HOT_SALSA_URL']); 
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
         curl_setopt($ch, CURLOPT_POST, true); 
         curl_setopt($ch, CURLOPT_POSTFIELDS, $params); 
 
@@ -61,13 +62,21 @@ class AuthHooks {
         // $output contains the output string 
         $curlOutput = curl_exec($ch);
         
-        if($curlOutput) {
-            $curlResult = json_decode($curlOutput);
-            self::data_logHotSalsaResults($curlResult, $app, $apiResponse);
+        if(!$curlOutput) {
+            // No Results = Error
+            $error = (curl_error($ch)) ? curl_error($ch) : 'ERROR: No results';
+            $info = (curl_getinfo($ch)) ? json_encode(curl_getinfo($ch)) : 'ERROR: No Info';
+            self::data_logHotSalsaError($apiResponse['user']->id, $error, $info);
         } else {
-            self::data_logHotSalsaError($apiResponse['user']->id, curl_error($ch), json_encode(curl_getinfo($ch)));
-        }
-        
+            // Results
+            if(!isset($curlOutput['status']) || $curlOutput['status'] === 'failed') {
+                $error = (isset($curlOutput['message'])) ? $curlOutput['message'] : 'ERROR: Unknown error occured';
+                self::data_logHotSalsaError($apiResponse['user']->id, $error, json_encode($curlOutput));
+            } else {
+                $curlResult = json_decode($curlOutput);
+                self::data_logHotSalsaResults($curlResult, $app, $apiResponse);
+            }
+        }        
 
         // close curl resource to free up system resources 
         curl_close($ch);
@@ -113,6 +122,6 @@ class AuthHooks {
 
 
     private static function data_deleteStupidUser($id) {
-        DBConn::delete("DELETE FROM `as_users` WHERE id = :id;", array(":id" => $id));
+        DBConn::delete("DELETE FROM " . DBConn::prefix() . "users WHERE id = :id;", array(":id" => $id));
     }
 }
