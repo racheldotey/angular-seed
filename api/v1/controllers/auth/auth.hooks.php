@@ -69,7 +69,7 @@ class AuthHooks {
             // Results
             $curlResult = json_decode($curlOutput, true);
             if(!isset($curlResult['status']) || $curlResult['status'] === 'failed') {
-                $error = (isset($curlResult['message'])) ? $curlResult['message'] : 'ERROR: Unknown error occured';
+                $error = (isset($curlResult['status'])) ? $curlResult['status'] : 'ERROR: Unknown error occured';
                 self::data_logHotSalsaError($apiResponse['user']->id, $error, $curlOutput);
             } else {
                 self::data_logHotSalsaResults($curlResult, $app, $apiResponse);
@@ -79,8 +79,7 @@ class AuthHooks {
         // close curl resource to free up system resources 
         curl_close($ch);
         
-    }
-    
+    }    
     
     private static function data_hookConfigVars($prefix) {
         $varsQuery =  DBConn::executeQuery("SELECT name, `value` FROM " . DBConn::prefix() . "system_config "
