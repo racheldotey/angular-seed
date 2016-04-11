@@ -120,6 +120,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
             $scope.buttonSaveGame = function() {
                 TriviaScoreboard.saveScoreboard().then(function (result) {
                         $scope.alertProxy.success("Game saved.");
+                        $scope.unsavedState = false;
                     }, function (error) {
                         $scope.alertProxy.error(error);
                     });

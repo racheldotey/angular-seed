@@ -175,7 +175,7 @@ angular.module('rcTrivia.scoreboard', ['rcTrivia.game'])
                 var loadedGame = api.getGame();
                 if(loadedGame) {
                     ApiRoutesGames.startGame(loadedGame.id).then(function (result) {
-                        TriviaGame.setStarted(result.started);
+                        TriviaGame.update(result.game);
                         resolve(api.getGame());
                     }, function (error) {
                         reject(error);
@@ -190,18 +190,23 @@ angular.module('rcTrivia.scoreboard', ['rcTrivia.game'])
             return $q(function (resolve, reject) {
                 var loadedGame = api.getGame();
                 if(loadedGame) {
-                    var data = { 'rounds' : [] };
-                    for(var i = 0; i < loadedGame.rounds.length; i++) {
-                        if(angular.isDefined(loadedGame.rounds[i].teams)) {
-                            data.rounds.push(loadedGame.rounds[i]);                            
-                        }
+                    var data = TriviaGame.getChangedScores();
+                    
+                    if(data.length <= 0) {
+                        ApiRoutesGames.endGame(loadedGame.id).then(function (result) {
+                            TriviaGame.update(result.game);
+                            resolve(api.getGame());
+                        }, function (error) {
+                            reject(error);
+                        });
+                    } else {
+                        ApiRoutesGames.saveScoreboard(loadedGame.id, { 'questions' : data, 'endGame' : true }).then(function (result) {
+                            TriviaGame.update(result.game);
+                            resolve(api.getGame());
+                        }, function (error) {
+                            reject(error);
+                        });
                     }
-                    ApiRoutesGames.endGame(loadedGame.id, data).then(function (result) {
-                        TriviaGame.setEnded(result.ended);
-                        resolve(api.getGame());
-                    }, function (error) {
-                        reject(error);
-                    });
                 } else {
                     reject("No game is loaded.");
                 }
@@ -217,7 +222,7 @@ angular.module('rcTrivia.scoreboard', ['rcTrivia.game'])
                     if(data.length <= 0) {
                         resolve(api.getGame());
                     } else {
-                        ApiRoutesGames.saveScoreboard(loadedGame.id, data).then(function (result) {
+                        ApiRoutesGames.saveScoreboard(loadedGame.id, { 'questions' : data }).then(function (result) {
                             TriviaGame.update(result.game);
                             resolve(api.getGame());
                         }, function (error) {

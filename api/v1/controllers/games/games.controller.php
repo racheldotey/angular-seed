@@ -39,6 +39,11 @@ class GameController {
         $result = GameData::insertStartingRounds(1, $gameId, $defaultPoints, APIAuth::getUserId());
         
         if($gameId) {
+            $saved = GameData::updateStartGame(array(
+                ":id" => $gameId,
+                ":last_updated_by" => APIAuth::getUserId()
+            ));
+            
             $game = GameData::selectGame($gameId);
             return $app->render(200, array('game' => $game, 'starting' => $result));
         } else {
@@ -84,8 +89,8 @@ class GameController {
         ));
         
         if($saved) {
-            $started = GameData::selectStarted($gameId);
-            return $app->render(200, array('msg' => 'Game has started.', 'started' => $started));
+            $game = GameData::selectGame($gameId);
+            return $app->render(200, array('msg' => 'Game has started.', 'game' => $game, 'saved' => $saved));
         } else {
             return $app->render(400,  array('msg' => 'System failed to start game.'));
         }
@@ -96,19 +101,11 @@ class GameController {
             return $app->render(400,  array('msg' => 'End game failed. Could not find game.'));
         }
         
-        $gameSaved = 'Not saved';
-        if(!v::key('rounds')->validate($app->request->post())) {
-            $gameSaved = self::processScores($gameId, $app->request->post('rounds'));
-        }
-        
-        $saved = GameData::updateEndGame(array(
-            ":id" => $gameId,
-            ":last_updated_by" => APIAuth::getUserId()
-        ));
+        $saved = GameData::updateEndGame($gameId, APIAuth::getUserId());
         
         if($saved) {
-            $ended = GameData::selectEnded($gameId);
-            return $app->render(200, array('msg' => 'Game has ended.', 'ended' => $ended, 'saved' => $gameSaved));
+            $game = GameData::selectGame($gameId);
+            return $app->render(200, array('msg' => 'Game has ended.', 'game' => $game, 'saved' => $saved));
         } else {
             return $app->render(400,  array('msg' => 'System failed to end game.'));
         }
@@ -123,6 +120,21 @@ class GameController {
         
         $saved = self::processScores($gameId, $app->request->post('questions'));
         if($saved) {
+            
+            if (v::key('endGame')->validate($app->request->post()) &&
+               ($app->request->post('endGame') === 1 || 
+                $app->request->post('endGame') === '1' || 
+                $app->request->post('endGame') === true || 
+                $app->request->post('endGame') === 'true')) {
+                // TODO: Implement cusitom boolean Respect\Validator
+                // Converting to boolean did not work well, 
+                // This allows a wider range of true false values
+                $saved = GameData::updateEndGame(array(
+                    ":id" => $gameId,
+                    ":last_updated_by" => APIAuth::getUserId()
+                ));
+            }
+            
             $game = GameData::selectGame($gameId);
             return $app->render(200, array('saved' => $saved, 'game' => $game));
         } else {
@@ -157,7 +169,7 @@ class GameController {
         
         return $saved;
     }
-    
+        
     static function deleteGame($app, $gameId) {
         if(GameData::didGameStart($gameId)) {
             return $app->render(400,  array('msg' => 'Ths game has already started and can no longer be deleted.'));

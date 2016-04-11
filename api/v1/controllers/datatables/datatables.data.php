@@ -147,7 +147,8 @@ ORDER BY v.name;");
                 . "game_started AS started, game_ended AS ended, max_points maxPoints, "
                 . "CONCAT(u.name_first, ' ', u.name_last) AS host, v.name AS venue "
                 . "FROM " . DBConn::prefix() . "games AS g LEFT JOIN " . DBConn::prefix() . "users AS u ON u.id = g.host_user_id "
-                . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = g.venue_id;");
+                . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = g.venue_id "
+                . "WHERE g.started IS NOT NULL;");
     }
     
     static function selectHostGames($hostId) {

@@ -82,11 +82,29 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
                 $rootScope: '$rootScope', 
                 $state: '$state',
                 TriviaScoreboard: 'TriviaScoreboard',
-                currentGame: function(initUser, TriviaScoreboard, $stateParams, $rootScope, $state, $q) {
+                AlertConfirmService: 'AlertConfirmService',
+                currentGame: function(AlertConfirmService, TriviaScoreboard, $stateParams, $rootScope, $state, $q) {
                     $stateParams.roundNumber = (parseInt($stateParams.roundNumber)) ? $stateParams.roundNumber : 1;
                     return $q(function (resolve, reject) {
                         TriviaScoreboard.loadGame($stateParams.gameId, $stateParams.roundNumber).then(function (result) {
-                            resolve(result);
+                            if(!result && $stateParams.roundNumber > 1) {
+                                $rootScope.$evalAsync(function () {
+                                    $state.go('app.host.game', {gameId: $stateParams.gameId, roundNumber: 1 });
+                                });
+                            } else if (!result) {
+                                AlertConfirmService.alert('A game with this ID could not be found. Confirm your URL and try again.', 'Game could not be loaded.')
+                                    .result.then(function () {
+                                        $rootScope.$evalAsync(function () {
+                                            $state.go('app.host.dashboard');
+                                        });
+                                    }, function (declined) {
+                                        $rootScope.$evalAsync(function () {
+                                            $state.go('app.host.dashboard');
+                                        });
+                                    });
+                            } else {
+                                resolve(result);
+                            }
                         }, function (error) {
                             $rootScope.$evalAsync(function () {
                                 $state.go('app.host.dashboard');

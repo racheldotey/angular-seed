@@ -138,13 +138,14 @@ class GameData {
                 . "WHERE id=:id LIMIT 1;", array(':id' => $gameId));
     }
     
-    static function updateEndGame($game) {
-        return DBConn::update("UPDATE " . DBConn::prefix() . "games SET game_ended=NOW(), last_updated_by=:last_updated_by "
-                . "WHERE id=:id AND game_started IS NOT NULL;", $game);
-        /*
-        return DBConn::update("UPDATE " . DBConn::prefix() . "games SET game_ended=NOW(), last_updated_by=:last_updated_by "
-                . "WHERE id=:id AND game_started IS NOT NULL AND game_ended IS NULL;", $game);
-         */
+    static function updateEndGame($gameId, $userId) {
+        self::calculateGameScores($gameId);
+        
+        DBConn::update("UPDATE " . DBConn::prefix() . "games SET game_ended=NOW(), last_updated_by=:last_updated_by "
+                . "WHERE id=:id;", array(":id" => $gameId, ":last_updated_by" => $userId));
+         
+        return DBConn::update("UPDATE " . DBConn::prefix() . "game_score_teams SET game_winner=1, last_updated_by=:last_updated_by "
+                . "WHERE game_id=:game_id AND game_rank = 1;", array(':game_id' => $gameId, ":last_updated_by" => $userId));
     }
     
     static function selectEnded($gameId) {
