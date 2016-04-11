@@ -262,9 +262,11 @@ class GameData {
     }
     
     static function saveQuestionScores($scores) {
-        $saveQuestioneScore = DBConn::preparedQuery("INSERT INTO " . DBConn::prefix() . "game_score_questions(game_id, round_id, question_id, team_id, score, created_user_id) "
-                . "VALUES (:game_id,:round_id,:question_id,:team_id,:score,:created_user_id) "
-                . "ON DUPLICATE KEY UPDATE score = :dup_score, last_updated_by = :last_updated_by;");
+        $saveQuestioneScore = DBConn::preparedQuery("INSERT INTO " . DBConn::prefix() . "game_score_questions"
+                . "(game_id, round_id, question_id, team_id, wager, answer, score, created_user_id) "
+                . "VALUES (:game_id,:round_id,:question_id,:team_id,:wager,:answer,:score,:created_user_id) "
+                . "ON DUPLICATE KEY UPDATE wager = :dup_wager, answer = :dup_answer, score = :dup_score, "
+                . "last_updated_by = :last_updated_by;");
         $result = array();
         foreach($scores as $score) {
             $result[] = $saveQuestioneScore->execute($score);
@@ -281,10 +283,12 @@ class GameData {
         
         $teams = DBConn::selectColumn("SELECT team_id FROM " . DBConn::prefix() . "game_score_teams "
                 . "WHERE game_id=:game_id;", $game);
+        $teams = (is_array($teams)) ? $teams : array($teams);
         
         $rounds = DBConn::selectColumn("SELECT id FROM " . DBConn::prefix() . "game_rounds "
                  . "WHERE game_id=:game_id;", $game);
-                
+        $rounds = (is_array($rounds)) ? $rounds : array($rounds);
+        
         $saveRoundScore = DBConn::preparedQuery("INSERT INTO " . DBConn::prefix() . "game_score_rounds (game_id,round_id,team_id,created_user_id) "
                 . "VALUES (:game_id,:round_id,:team_id,:created_user_id) "
                 . "ON DUPLICATE KEY UPDATE score = 0, round_rank = 0, last_updated_by = :last_updated_by;");
@@ -294,23 +298,31 @@ class GameData {
                 . "ON DUPLICATE KEY UPDATE score = 0, game_rank = 0, last_updated_by = :last_updated_by;");
         
         for($t = 0; $t < count($teams); $t++) {
-            $saved = $saveTeamScore->execute(array_merge(array(), $game, array(
+            $saved = $saveTeamScore->execute(array(
+                ':game_id' => $gameId,
                 ':team_id' => $teams[$t],
                 ':created_user_id' => $currentUser,
                 ':last_updated_by' => $currentUser
-            )));
-            
-            $result[] = "Team #" . $teams[$t] . " saved = " . $saved;
+            ));
             
             for($r = 0; $r < count($rounds); $r++) {
-                $saved = $saveRoundScore->execute(array_merge(array(), $game, array(
+                $saved = $saveRoundScore->execute(array(
+                    ':game_id' => $gameId,
                     ':team_id' => $teams[$t], 
                     ':round_id' => $rounds[$r],
                     ':created_user_id' => $currentUser,
                     ':last_updated_by' => $currentUser
-                )));
+                ));
             
                 $result[] = "Team #" . $teams[$t] . " Round #" . $rounds[$r] .  " saved = " . $saved;
+                
+            $result[] = array(
+                ':game_id' => $gameId,
+                    ':team_id' => $teams[$t], 
+                    ':round_id' => $rounds[$r],
+                    ':created_user_id' => $currentUser,
+                    ':last_updated_by' => $currentUser
+            );
             }
         }
         

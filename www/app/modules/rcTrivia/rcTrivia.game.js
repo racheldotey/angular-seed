@@ -168,17 +168,47 @@ angular.module('rcTrivia.game', [])
             // Get Changed Scores
             self.getChangedScores = function() {
                 var scoreboard = new Array();
+                
+                // Only save if game.teams object (aka scoreboard data) 
+                // has been changed. Attempt to skip for speed.
                 if(!angular.equals(_origionalTeams, _game.teams)) {
                     
-                    for(var teamKey in _game.teams) { // For every team
-                        for(var teamRoundKey in _game.teams[teamKey].rounds) { // For every team round
-                            if(_game.teams[teamKey].rounds[teamRoundKey].roundScore !== _origionalTeams[teamKey].rounds[teamRoundKey].roundScore) {
-                                
+                    // Loop through each team
+                    for(var teamKey in _game.teams) {
+                        // Loop through each round for that team
+                        for(var teamRoundKey in _game.teams[teamKey].rounds) {
+                            
+                            // Only save if game.teams object (aka scoreboard data) 
+                            // has been changed. Attempt to skip for speed.
+                            if(!angular.equals(_game.teams[teamKey].rounds[teamRoundKey].questions, 
+                                    _origionalTeams[teamKey].rounds[teamRoundKey].questions)) {
+                                    
+                                    // Check each question
+                                    for(var questionKey in _game.teams[teamKey].rounds[teamRoundKey].questions) {
+
+                                        if(!angular.equals(_game.teams[teamKey].rounds[teamRoundKey].questions[questionKey], 
+                                        _origionalTeams[teamKey].rounds[teamRoundKey].questions[questionKey])) {
+ 
+                                        var changed = _game.teams[teamKey].rounds[teamRoundKey].questions[questionKey];
+                                        scoreboard.push({
+                                            teamId: teamKey, 
+                                            roundId: _game.teams[teamKey].rounds[teamRoundKey].roundId, 
+                                            questionId: changed.questionId, 
+                                            teamWager: changed.teamWager, 
+                                            teamAnswer: changed.answer,
+                                            questionScore: changed.questionScore
+                                        });
+                                        }
+                                    }
+                                       
                             }
                         }
                     }
                     
                 }
+                
+                console.log("scoreboard", scoreboard);
+                
                 return scoreboard;
             };
             

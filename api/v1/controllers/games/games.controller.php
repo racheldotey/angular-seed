@@ -114,49 +114,46 @@ class GameController {
         }
     }
     
-    static function saveScoreboard($app, $gameId, $roundNumber) {
+    static function saveScoreboard($app, $gameId) {
         if(!v::intVal()->validate($gameId)) {
-            return $app->render(400,  array('msg' => 'End game failed. Could not find game.'));
-        } else if(!v::key('rounds')->validate($app->request->post())) {
+            return $app->render(400,  array('msg' => 'Save game failed. Could not find game.'));
+        } else if(!v::key('questions')->validate($app->request->post())) {
             return $app->render(400,  array('msg' => 'Invalid scoreboard. Check your parameters and try again.'));
         }
         
-        $saved = self::processScores($gameId, $app->request->post('rounds'));
+        $saved = self::processScores($gameId, $app->request->post('questions'));
         if($saved) {
-            $game = GameData::selectGame($gameId, $roundNumber);
+            $game = GameData::selectGame($gameId);
             return $app->render(200, array('saved' => $saved, 'game' => $game));
         } else {
             return $app->render(400,  array('msg' => 'Could not save scoreboard.'));
         }
     }
     
-    private static function processScores($gameId, $rounds) {
+    private static function processScores($gameId, $questions) {
         $currentUser = APIAuth::getUserId();
         $questionScores = array();
         
-        foreach($rounds as $round) {
-            
-            foreach($round['teams'] as $team) {
-                
-                foreach($team['scores'] as $question) {
-                    // Save question scores for this team
-                    $questionScores[] = array(
-                        ':game_id' => $gameId, 
-                        ':team_id' => $team['teamId'], 
-                        ':created_user_id' => $currentUser,
-                        ':last_updated_by' => $currentUser,
-                        ':round_id' => $round['roundId'],
-                        ':question_id' => $question['questionId'],
-                        ':score' => $question['questionScore'],
-                        ':dup_score' => $question['questionScore']
-                    );
-                }
-            }
+        foreach($questions as $question) {
+            $questionScores[] = array(
+                ':game_id' => $gameId, 
+                ':team_id' => $question['teamId'], 
+                ':round_id' => $question['roundId'],
+                ':question_id' => $question['questionId'],
+                ':created_user_id' => $currentUser,
+                ':last_updated_by' => $currentUser,
+                ':wager' => $question['teamWager'],
+                ':dup_wager' => $question['teamWager'],
+                ':answer' => $question['teamAnswer'],
+                ':dup_answer' => $question['teamAnswer'],
+                ':score' => $question['questionScore'],
+                ':dup_score' => $question['questionScore']
+            );
         }
         
         $saved = [];
         $saved[] = GameData::saveQuestionScores($questionScores);
-        $saved[] = GameData::calculateGameScores($gameId, $currentUser);
+        $saved[] = GameData::calculateGameScores($gameId);
         
         return $saved;
     }

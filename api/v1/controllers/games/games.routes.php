@@ -33,6 +33,12 @@ class GameRoutes {
             $app->post("/update/:gameId/", function ($gameId) use ($app) {
                 GameController::saveGame($app, $gameId);
             });
+            /*
+             * questions [] { teamId, roundId, questionId, teamWager, teamAnswer, questionScore }
+             */
+            $app->post("/save/scoreboard/:gameId/", function ($gameId) use ($app) {
+                GameController::saveScoreboard($app, $gameId);
+            });
 
             /*
              * id

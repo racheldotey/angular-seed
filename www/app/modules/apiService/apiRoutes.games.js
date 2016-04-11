@@ -102,8 +102,8 @@ angular.module('apiRoutes.games', [])
     };
 
     /* End game */
-    api.saveScoreboard = function(gameId, roundNumber, rounds) {
-        return API.post('trivia/update/scoreboard/' + gameId + '/' + roundNumber, rounds, 'Could not save scoreboard game.');
+    api.saveScoreboard = function(gameId, questions) {
+        return API.post('trivia/save/scoreboard/' + gameId, { 'questions' : questions }, 'Could not save game.');
     };
 
 
