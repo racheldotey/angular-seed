@@ -80,10 +80,6 @@ class AuthData {
         return $user;
     }
     
-    static function selectUserPasswordById($userId) {
-        return DBConn::selectColumn("SELECT password FROM " . DBConn::prefix() . "users WHERE id = :id LIMIT 1;", array(':id' => $userId));
-    }
-    
     static function selectUserByIdentifierToken($identifier) {
         $user = DBConn::selectOne("SELECT u.id, name_first AS nameFirst, name_last AS nameLast, email, token AS apiToken, identifier AS apiKey "
                 . "FROM " . DBConn::prefix() . "tokens_auth AS t "
@@ -97,5 +93,9 @@ class AuthData {
                     . "WHERE ug.user_id = :id;", array(':id' => $user->id), \PDO::FETCH_COLUMN);
         }
         return $user;
+    }
+    
+    static function selectUserPasswordById($userId) {
+        return DBConn::selectColumn("SELECT password FROM " . DBConn::prefix() . "users WHERE id = :id LIMIT 1;", array(':id' => $userId));
     }
 }
