@@ -22,7 +22,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
         $stateProvider.state('app.host', {
             url: '/host',
             abstract: true,
-            data: {authorizedRoles: USER_ROLES.user},
+            data: {authorizedRoles: USER_ROLES.host},
             views: {
                 'header@app.host': {
                     templateUrl: 'app/views/host/hostHeader/hostHeader.html',
