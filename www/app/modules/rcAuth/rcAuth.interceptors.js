@@ -74,7 +74,7 @@ app.run(['$rootScope', '$state', 'AUTH_EVENTS', 'AuthService',
                     delete $rootScope.redirectPlaceholder;
                 } else {
                     // Go to the loged in user dashboard
-                    //$state.go('app.member.dashboard');
+                    $state.go('app.member.dashboard');
                 }
             });
         });
@@ -92,7 +92,7 @@ app.run(['$rootScope', '$state', 'AUTH_EVENTS', 'AuthService',
             $rootScope.$evalAsync(function () {
                 // Go to the login state
                 $state.go('app.auth.signup');
-                //$state.go('app.public.landing');
+                $state.go('app.public.landing');
             });
         });
 
@@ -105,7 +105,7 @@ app.run(['$rootScope', '$state', 'AUTH_EVENTS', 'AuthService',
                     $rootScope.redirectPlaceholder = args;
                 }
                 // Go to the login state
-                //$state.go('app.auth.login');
+                $state.go('app.auth.login');
             });
         });
 
