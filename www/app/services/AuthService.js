@@ -11,7 +11,8 @@ angular.module('AuthService', [
     'rcAuth.facebook',
     'rcAuth.interceptors',
     'rcAuth.user',
-    'rcAuth.visibility'
+    'rcAuth.visibility',
+    'rcAuth.directives'
 ]).factory('AuthService', ['$rootScope', '$q', '$log', 'UserSession', 'AUTH_EVENTS', 'VisibilityService', 'ApiRoutesAuth', 'FacebookAuthService', 'CookieService',
     function ($rootScope, $q, $log, UserSession, AUTH_EVENTS, VisibilityService, API, FacebookAuthService, CookieService) {
 
