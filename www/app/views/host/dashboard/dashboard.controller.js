@@ -7,9 +7,10 @@
  */
 
 angular.module('app.host.dashboard', [])
-    .controller('HostDashboardCtrl', ['$scope', '$state', 'TriviaModalService', 'DataTableHelper', 'DTColumnBuilder', 'UserSession',
-        function($scope, $state, TriviaModalService, DataTableHelper, DTColumnBuilder, UserSession) {
+    .controller('HostDashboardCtrl', ['$scope', '$state', 'TriviaModalService', 'DataTableHelper', 'DTColumnBuilder', 'UserSession', 'HostData', 'AlertConfirmService',
+        function($scope, $state, TriviaModalService, DataTableHelper, DTColumnBuilder, UserSession, HostData, AlertConfirmService) {
 
+        $scope.hostActiveGames = HostData.activeGames || [];
 
         // DataTable Setup
         $scope.dtGames = DataTableHelper.getDTStructure($scope, 'publicHostGamesList', UserSession.id());
@@ -35,6 +36,24 @@ angular.module('app.host.dashboard', [])
         ];
         
         $scope.buttonNewGame = function() {
+            if($scope.hostActiveGames.length >= 1) {
+                AlertConfirmService.alert("Game hosts may not have more than one game running at a time.", "Unable to start game.");
+            } else {
+                var modalInstance = TriviaModalService.openEditGame(false);
+                modalInstance.result.then(function (result) {
+                    $state.go('app.host.game', {'gameId': result.id, 'roundNumber': 1});
+                });
+            }
+        };
+        
+        $scope.buttonInviteFriend = function() {
+            var modalInstance = TriviaModalService.openInviteFriend(false);
+            modalInstance.result.then(function(result) {
+                $scope.alertProxy.success('Invite sent.');
+            });
+        };
+        
+        $scope.buttonCreateTeam = function() {
             var modalInstance = TriviaModalService.openEditGame(false);
             modalInstance.result.then(function(result) {
                 $state.go('app.host.game', {'gameId' : result.id, 'roundNumber': 1});

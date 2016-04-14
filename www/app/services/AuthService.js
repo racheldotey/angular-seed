@@ -26,26 +26,32 @@ angular.module('AuthService', [
             /* Returns promise that always resolves true */
             return $q(function (resolve, reject) {
                 if (UserSession.get()) {
+                    console.log("AuthService Init - User already set - ", UserSession.get());
                     return resolve(true);
                 }
 
                 var credentials = CookieService.getAuthCookie();
 
                 if (credentials) {
+                    console.log("AuthService Init - credentials - ", credentials);
                     API.getAuthenticatedUser(credentials)
-                            .then(function (data) {
-                                data.user.apiKey = credentials.apiKey;
-                                data.user.apiToken = credentials.apiToken;
-                                if (!UserSession.create(data.user)) {
-                                    $log.error('[authInit] Credentials found but session Couldn\'t be Created', data);
-                                }
-                                return resolve(true);
-                            }, function (error) {
-                                CookieService.destroyAuthCookie();
-                                $log.info('[authInit]', error);
-                                return resolve(false);
-                            });
+                        .then(function (data) {
+                            data.user.apiKey = credentials.apiKey;
+                            data.user.apiToken = credentials.apiToken;
+                            if (!UserSession.create(data.user)) {
+                                $log.error('[authInit] Credentials found but session Couldn\'t be Created', data);
+                            }
+                    console.log("AuthService Init - Happy true ness - ", data);
+                            return resolve(UserSession.get());
+                        }, function (error) {
+                            CookieService.destroyAuthCookie();
+                            $log.info('[authInit]', error);
+                            /// Why is this silent? 
+                            return resolve(false);
+                        });
                 } else {
+                    console.log("AuthService Init - No idea what the hell is going on");
+                    /// Why is this silent? 
                     return resolve(false);
                 }
             });

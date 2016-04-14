@@ -367,4 +367,21 @@ class GameData {
         
         return $result;
     }
+    
+    static function selectGameHostData($hostId) {
+        $hostData = array();
+        $hostData['activeGames'] = DBConn::selectAll("SELECT g.id, g.name, g.scheduled, g.venue_id AS venueId, g.host_user_id AS hostId, "
+                . "game_started AS started, game_ended AS ended, max_points maxPoints, "
+                . "CONCAT(u.name_first, ' ', u.name_last) AS host, v.name AS venue "
+                . "FROM " . DBConn::prefix() . "games AS g LEFT JOIN " . DBConn::prefix() . "users AS u ON u.id = g.host_user_id "
+                . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = g.venue_id "
+                . "WHERE g.host_user_id = :host_user_id AND g.game_started IS NOT NULL;", array(':host_user_id' => $hostId));
+        $hostData['scheduledGames'] = DBConn::selectAll("SELECT g.id, g.name, g.scheduled, g.venue_id AS venueId, g.host_user_id AS hostId, "
+                . "game_started AS started, game_ended AS ended, max_points maxPoints, "
+                . "CONCAT(u.name_first, ' ', u.name_last) AS host, v.name AS venue "
+                . "FROM " . DBConn::prefix() . "games AS g LEFT JOIN " . DBConn::prefix() . "users AS u ON u.id = g.host_user_id "
+                . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = g.venue_id "
+                . "WHERE g.host_user_id = :host_user_id AND g.game_started IS NULL;", array(':host_user_id' => $hostId));
+        return $hostData;
+    }
 }

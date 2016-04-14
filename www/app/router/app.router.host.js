@@ -48,6 +48,21 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
                     templateUrl: 'app/views/host/dashboard/dashboard.html',
                     controller: 'HostDashboardCtrl'
                 }
+            },
+            resolve: {
+                $q: '$q',
+                ApiRoutesGames: 'ApiRoutesGames',
+                HostData: function($q, ApiRoutesGames, initUser) {
+                    return $q(function (resolve, reject) {
+                        ApiRoutesGames.getGameHost(initUser.id).then(function (result) {
+                            console.log('HOST Resolve Success: ' + result);
+                            resolve(result);
+                        }, function (error) {
+                            console.log('HOST Resolve Error: ' + error);
+                            resolve({});
+                        });
+                    });
+                }
             }
         });
         

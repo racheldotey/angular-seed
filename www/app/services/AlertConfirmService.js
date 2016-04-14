@@ -15,19 +15,19 @@ angular.module('AlertConfirmService', [])
         api.alert = function(msg, title) {
             var message = 'It\'s dangerous to go alone.';
             var header = 'Alert!';
-            var buttonText = 'OK';
+            var buttonTextOk = 'OK';
                 
             if (angular.isObject(msg)) {
                 message = msg.message || message;
                 header = msg.header || header;
-                buttonText = msg.buttonText || buttonText;
+                buttonTextOk = msg.buttonTextOk || buttonTextOk;
             } else if (angular.isString(msg)) {
                 message = msg;
             }
             
             if (angular.isObject(title)) {
                 header = title.header || header;
-                buttonText = title.buttonText || buttonText;
+                buttonTextOk = title.buttonTextOk || buttonTextOk;
             } else if (angular.isString(title)){
                 header = title;
             }

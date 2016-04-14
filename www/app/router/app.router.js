@@ -55,19 +55,8 @@
   });
  */
 
-var app = angular.module('app.router', [
-  'ui.router',
-  'rcAuth.constants',
-  'app.maintenance',
-  'app.error',
-  'app.router.admin',
-  'app.router.auth',
-  'app.router.host',
-  'app.router.member',
-  'app.router.public',
-  'app.router.venue'
-]);
-app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', 
+angular.module('app.router.default', [])
+    .config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', 
     function ($stateProvider, $urlRouterProvider, USER_ROLES) {
 
         /*  Abstract App */
@@ -75,9 +64,16 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES',
             abstract: true,
             data: {authorizedRoles: USER_ROLES.guest},
             resolve: {
+                $q: '$q',
                 AuthService: 'AuthService',
-                initUser: function(AuthService) {
-                    return AuthService.init();
+                initUser: function($q, AuthService) {
+                    return $q(function (resolve, reject) {
+                        AuthService.init().then(function (data) {
+                            resolve(data);
+                        }, function (error) {
+                            reject(error);
+                        });
+                    });
                 },
                 siteSystemVariables: function() {
                     return {
@@ -144,3 +140,17 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES',
         $urlRouterProvider.when('/#', '/signup');
         $urlRouterProvider.otherwise('/error/404');
     }]);
+
+angular.module('app.router', [
+  'ui.router',
+  'rcAuth.constants',
+  'app.maintenance',
+  'app.error',
+  'app.router.default',
+  'app.router.admin',
+  'app.router.auth',
+  'app.router.host',
+  'app.router.member',
+  'app.router.public',
+  'app.router.venue'
+]);

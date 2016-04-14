@@ -14,13 +14,13 @@ angular.module('apiRoutes.games', [])
     // Host Functions
 
     /* Select Game for Display */
-    api.getGame = function(gameId, roundNumber) {
-        return API.get('trivia/get/' + gameId + '/' + roundNumber, 'Could not get game.');
+    api.getGameHost = function(hostId) {
+        return API.get('trivia/host/get/' + hostId, 'Could not get game host.');
     };
 
-    /* Select round for game */
-    api.getRound = function(gameId, roundNumber) {
-        return API.get('trivia/round/get/' + gameId + '/' + roundNumber, 'Could not get game round.');
+    /* Select Game for Display */
+    api.getGame = function(gameId, roundNumber) {
+        return API.get('trivia/game/get/' + gameId + '/' + roundNumber, 'Could not get game.');
     };
 
     /* Insert game into database */

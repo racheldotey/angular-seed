@@ -7,7 +7,22 @@ use \Respect\Validation\Validator as v;
 
 class GameController {
 
+    static function getGameHost($app, $userId) {
+        if(!v::intVal()->validate($userId)) {
+            return $app->render(400,  array('msg' => 'Invalid game. Check your parameters and try again.'));
+        }
+        $hostData = GameData::selectGameHostData($userId);
+        if($hostData) {
+            return $app->render(200, $hostData);
+        } else {
+            return $app->render(400,  array('msg' => 'Could not select game host data.'));
+        }
+    }
+
     static function getGame($app, $gameId, $roundNumber = 1) {
+        if(!v::intVal()->validate($gameId)) {
+            return $app->render(400,  array('msg' => 'Invalid game. Check your parameters and try again.'));
+        }
         $game = GameData::selectGame($gameId, $roundNumber);
         if($game) {
             return $app->render(200, array('game' => $game));

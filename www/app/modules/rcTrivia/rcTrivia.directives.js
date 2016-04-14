@@ -110,6 +110,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                             .result.then(function () {
                                 TriviaScoreboard.endGame().then(function (result) {
                                     console.log($scope.game);
+                                    $state.go('app.member.game', { 'gameId': $scope.game.id, 'roundNumber' : 1 });
                                 }, function (error) {
                                     $scope.alertProxy.error(error);
                                 });

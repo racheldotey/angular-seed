@@ -12,14 +12,21 @@ class GameRoutes {
             /*
              * id
              */
-            $app->map("/get/:gameId/", function ($gameId) use ($app) {
+            $app->map("/game/get/:gameId/", function ($gameId) use ($app) {
                 GameController::getGame($app, $gameId);
             })->via('GET', 'POST');
 
-            $app->map("/get/:gameId/:roundNumber/", function ($gameId, $roundNumber) use ($app) {
+            $app->map("/game/get/:gameId/:roundNumber/", function ($gameId, $roundNumber) use ($app) {
                 GameController::getGame($app, $gameId, $roundNumber);
             })->via('GET', 'POST');
 
+            /*
+             * id
+             */
+            $app->map("/host/get/:userId/", function ($userId) use ($app) {
+                GameController::getGameHost($app, $userId);
+            })->via('GET', 'POST');
+            
             /*
              * name, venueId, hostId, scheduled, defaultQuestionPoints
              */
