@@ -7,14 +7,20 @@
  */
 
 angular.module('app.host.dashboard', [])
-    .controller('HostDashboardCtrl', ['$scope', '$state', 'TriviaModalService', 'DataTableHelper', 'DTColumnBuilder', 'UserSession', 'HostData', 'AlertConfirmService',
-        function($scope, $state, TriviaModalService, DataTableHelper, DTColumnBuilder, UserSession, HostData, AlertConfirmService) {
+    .controller('HostDashboardCtrl', ['$scope', '$state', '$compile', '$filter', 'TriviaModalService', 'DataTableHelper', 'DTOptionsBuilder', 'DTColumnBuilder', 'UserSession', 'HostData', 'AlertConfirmService',
+        function($scope, $state, $compile, $filter, TriviaModalService, DataTableHelper, DTOptionsBuilder, DTColumnBuilder, UserSession, HostData, AlertConfirmService) {
 
         $scope.hostActiveGames = HostData.activeGames || [];
 
         // DataTable Setup
+        $scope.dtScoreboard = {};
+        $scope.dtScoreboard.options = DTOptionsBuilder.newOptions();
+        // DataTable Setup
         $scope.dtGames = DataTableHelper.getDTStructure($scope, 'publicHostGamesList', UserSession.id());
         $scope.dtGames.columns = [
+            DTColumnBuilder.newColumn(null).withTitle('Scoreboard').withClass('responsive-control text-center noclick').renderWith(function(data, type, full, meta) {
+                return '<a><small>Scoreboard</small> <i class="fa"></i></a>';
+            }).notSortable(),
             DTColumnBuilder.newColumn(null).withTitle('Game Name').renderWith(function (data, type, full, meta) {
                 return '<a data-ui-sref="app.member.game({gameId : ' + data.id + ', pageId : 1 })">' + data.name + '</a>';
             }),
@@ -32,8 +38,46 @@ angular.module('app.host.dashboard', [])
                 } else {
                     return '<span title="Scheduled: ' + scheduled + '">Scheduled for  ' + scheduled + '</span>';
                 }
-            })
+            }),
+            DTColumnBuilder.newColumn('scoreboard').withTitle('Scoreboard').notSortable()//.withClass('none')
         ];
+        $scope.dtGames.options.withOption('responsive', {
+            details: {
+                type: 'column',
+                renderer: function(api, rowIdx, columns) {
+                    var data = {};
+                    angular.forEach(columns, function (value, key) {
+                        if(value.title === 'Scoreboard') {
+                            data = value.data;
+                        }
+                    });
+                        
+                    var header = '<table datatable="" dt-options="dtScoreboard.options" class="table sub-table table-striped">\n\
+                        <thead><tr>\n\
+                        <th>Rank</th>\n\
+                        <th>Score</th>\n\
+                        <th>Team</th>\n\
+                        </tr></thead><tbody>';
+
+                    var body = '';
+                    $.each(data, function(index, value) {
+                        //var winner = (value.gameWinner === '1') ? '' : '';
+                        var score = $filter('numberEx')(value.gameScore);
+                        body += '<tr><td>' + value.gameRank + '</td><td>' + score + '</td><td>' + value.teamName + '</td></tr>\n';
+                    });
+
+                    // Create angular table element
+                    body = (body) ? body : '<tr><td colspan="3"><p>There are no teams participating in this game.</p></td></tr>';
+
+                    var table = angular.element(header + body + '</tbody></table>');
+
+                    // compile the table to keep the directives (ngClick)
+                    $compile(table.contents())($scope);
+
+                    return table;
+                }
+            }
+        });
         
         $scope.buttonNewGame = function() {
             if($scope.hostActiveGames.length >= 1) {

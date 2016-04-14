@@ -46,6 +46,7 @@ table.dataTable {
             &.child {
                 padding: 0;
                 border-left: 2px solid #e3e3e3;
+                border-right: 2px solid #e3e3e3;
                 td.child {
                     padding: 0;
                     table.sub-table {
@@ -74,23 +75,50 @@ body:not(.admin) {
         border-color: lighten(@medium-brown, 15%);
     }
 }
- 
-table.dataTable.table-dark {
-    border-color: darken(@brick-red, 5%);
-    tr {
+table, table.dataTable {
+    &.table-dark,  
+    &.table-dark table.sub-table {
         border-color: darken(@brick-red, 5%);
-        
-        th {
-            background-color: @brick-red;
-            color: #fff;
-            border-bottom-color: lighten(@brick-red, 15%);
-            border-top-color: darken(@brick-red, 5%);
-            border-left-color: darken(@brick-red, 5%);
-            border-right-color: darken(@brick-red, 5%);
-        }
-        
-        td {
+        tr {
             border-color: darken(@brick-red, 5%);
+
+            th {
+                background-color: @brick-red;
+                color: #fff;
+                border-bottom-color: lighten(@brick-red, 15%);
+                border-top-color: darken(@brick-red, 5%);
+                border-left-color: darken(@brick-red, 5%);
+                border-right-color: darken(@brick-red, 5%);
+            }
+
+            td {
+                border-color: darken(@brick-red, 5%);
+                
+                /* Responsive sub table */
+                &.child {
+                    border-left: 2px solid darken(@brick-red, 5%);
+                    border-right: 2px solid darken(@brick-red, 5%);
+                }
+            }
+        }
+
+        &.table-striped {
+            >thead {
+                th {
+                    background-color: @brick-red;
+                    color: #fff;
+                    border-bottom-color: lighten(@brick-red, 15%);
+                    border-top-color: darken(@brick-red, 5%);
+                    border-left-color: darken(@brick-red, 5%);
+                    border-right-color: darken(@brick-red, 5%);
+                }
+            }
+            >tbody {
+                background-color: lighten(@brick-red, 1%);
+                &>tr:nth-of-type(odd) {
+                    background-color: darken(@brick-red, 2%);
+                }
+            }
         }
     }
 }

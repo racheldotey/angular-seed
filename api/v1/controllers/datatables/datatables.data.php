@@ -140,42 +140,65 @@ LEFT JOIN " . DBConn::prefix() . "users AS u ON u.id = v.created_user_id
 ORDER BY v.name;");
     }
     
-    // Games
-        
+    // Games    
+    
     static function selectGames() {
-        return DBConn::selectAll("SELECT g.id, g.name, g.scheduled, g.venue_id AS venueId, g.host_user_id AS hostId, "
-                . "game_started AS started, game_ended AS ended, max_points maxPoints, "
+        $qGames = DBConn::executeQuery("SELECT g.id, g.name, g.scheduled, g.venue_id AS venueId, g.host_user_id AS hostId, "
+                . "g.game_started AS started, g.game_ended AS ended, g.max_points maxPoints, "
                 . "CONCAT(u.name_first, ' ', u.name_last) AS host, v.name AS venue "
                 . "FROM " . DBConn::prefix() . "games AS g LEFT JOIN " . DBConn::prefix() . "users AS u ON u.id = g.host_user_id "
                 . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = g.venue_id "
-                . "WHERE g.started IS NOT NULL;");
+                . "WHERE g.game_started IS NOT NULL;");
+        return self::selectGameScoreboard($qGames);
     }
     
     static function selectHostGames($hostId) {
-        return DBConn::selectAll("SELECT g.id, g.name, g.scheduled, g.venue_id AS venueId, g.host_user_id AS hostId, "
-                . "game_started AS started, game_ended AS ended, max_points maxPoints, "
+        $qGames = DBConn::executeQuery("SELECT g.id, g.name, g.scheduled, g.venue_id AS venueId, g.host_user_id AS hostId, "
+                . "g.game_started AS started, g.game_ended AS ended, g.max_points maxPoints, "
                 . "CONCAT(u.name_first, ' ', u.name_last) AS host, v.name AS venue "
                 . "FROM " . DBConn::prefix() . "games AS g LEFT JOIN " . DBConn::prefix() . "users AS u ON u.id = g.host_user_id "
                 . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = g.venue_id "
                 . "WHERE g.host_user_id = :host_user_id;", array(':host_user_id' => $hostId));
+        return self::selectGameScoreboard($qGames);
     }
     
     static function selectVenueGames($venueId) {
-        return DBConn::selectAll("SELECT g.id, g.name, g.scheduled, g.venue_id AS venueId, g.host_user_id AS hostId, "
-                . "game_started AS started, game_ended AS ended, max_points maxPoints, "
+        $qGames = DBConn::executeQuery("SELECT g.id, g.name, g.scheduled, g.venue_id AS venueId, g.host_user_id AS hostId, "
+                . "g.game_started AS started, g.game_ended AS ended, g.max_points maxPoints, "
                 . "CONCAT(u.name_first, ' ', u.name_last) AS host, v.name AS venue "
                 . "FROM " . DBConn::prefix() . "games AS g LEFT JOIN " . DBConn::prefix() . "users AS u ON u.id = g.host_user_id "
                 . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = g.venue_id "
                 . "WHERE g.venue_id = :venue_id;", array(':venue_id' => $venueId));
+        return self::selectGameScoreboard($qGames);
     }
     
     static function selectTeamGames($teamId) {
-        return DBConn::selectAll("SELECT g.id, g.name, g.scheduled, g.venue_id AS venueId, g.host_user_id AS hostId, "
-                . "game_started AS started, game_ended AS ended, max_points maxPoints, "
+        $qGames = DBConn::executeQuery("SELECT g.id, g.name, g.scheduled, g.venue_id AS venueId, g.host_user_id AS hostId, "
+                . "g.game_started AS started, g.game_ended AS ended, g.max_points maxPoints, "
                 . "CONCAT(u.name_first, ' ', u.name_last) AS host, v.name AS venue "
                 . "FROM " . DBConn::prefix() . "games AS g LEFT JOIN " . DBConn::prefix() . "users AS u ON u.id = g.host_user_id "
                 . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = g.venue_id "
                 . "JOIN " . DBConn::prefix() . "game_score_teams AS t ON t.game_id = g.id "
                 . "WHERE t.team_id = :team_id;", array(':team_id' => $teamId));
+        return self::selectGameScoreboard($qGames);
+    }
+    
+    private static function selectGameScoreboard($qGames) {
+        $qScores = DBConn::preparedQuery("SELECT s.team_id AS teamId, s.score AS gameScore, "
+                . "s.game_rank AS gameRank, s.game_winner AS gameWinner, t.name AS teamName "
+                . "FROM " . DBConn::prefix() . "game_score_teams AS s "
+                . "LEFT JOIN " . DBConn::prefix() . "teams AS t ON s.team_id = t.id "
+                . "WHERE s.game_id = :game_id ORDER BY s.game_rank");
+        
+        $elements = Array();
+
+        while($game = $qGames->fetch(\PDO::FETCH_OBJ)) {            
+            $qScores->execute(array(':game_id' => $game->id));
+            $game->scoreboard = $qScores->fetchAll(\PDO::FETCH_OBJ);
+            
+            array_push($elements, $game);
+        }
+        
+        return $elements;
     }
 }

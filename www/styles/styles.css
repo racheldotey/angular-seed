@@ -281,6 +281,7 @@ table.dataTable tbody tr.parent td.responsive-control i.fa:before {
 table.dataTable tbody tr.child {
   padding: 0;
   border-left: 2px solid #e3e3e3;
+  border-right: 2px solid #e3e3e3;
 }
 table.dataTable tbody tr.child td.child {
   padding: 0;
@@ -303,13 +304,22 @@ body:not(.admin) .dataTables_length select {
   background-color: #47413a;
   border-color: #71685c;
 }
-table.dataTable.table-dark {
+table.table-dark,
+table.dataTable.table-dark,
+table.table-dark table.sub-table,
+table.dataTable.table-dark table.sub-table {
   border-color: #6f0000;
 }
-table.dataTable.table-dark tr {
+table.table-dark tr,
+table.dataTable.table-dark tr,
+table.table-dark table.sub-table tr,
+table.dataTable.table-dark table.sub-table tr {
   border-color: #6f0000;
 }
-table.dataTable.table-dark tr th {
+table.table-dark tr th,
+table.dataTable.table-dark tr th,
+table.table-dark table.sub-table tr th,
+table.dataTable.table-dark table.sub-table tr th {
   background-color: #880000;
   color: #fff;
   border-bottom-color: #d40000;
@@ -317,8 +327,42 @@ table.dataTable.table-dark tr th {
   border-left-color: #6f0000;
   border-right-color: #6f0000;
 }
-table.dataTable.table-dark tr td {
+table.table-dark tr td,
+table.dataTable.table-dark tr td,
+table.table-dark table.sub-table tr td,
+table.dataTable.table-dark table.sub-table tr td {
   border-color: #6f0000;
+  /* Responsive sub table */
+}
+table.table-dark tr td.child,
+table.dataTable.table-dark tr td.child,
+table.table-dark table.sub-table tr td.child,
+table.dataTable.table-dark table.sub-table tr td.child {
+  border-left: 2px solid #6f0000;
+  border-right: 2px solid #6f0000;
+}
+table.table-dark.table-striped > thead th,
+table.dataTable.table-dark.table-striped > thead th,
+table.table-dark table.sub-table.table-striped > thead th,
+table.dataTable.table-dark table.sub-table.table-striped > thead th {
+  background-color: #880000;
+  color: #fff;
+  border-bottom-color: #d40000;
+  border-top-color: #6f0000;
+  border-left-color: #6f0000;
+  border-right-color: #6f0000;
+}
+table.table-dark.table-striped > tbody,
+table.dataTable.table-dark.table-striped > tbody,
+table.table-dark table.sub-table.table-striped > tbody,
+table.dataTable.table-dark table.sub-table.table-striped > tbody {
+  background-color: #8d0000;
+}
+table.table-dark.table-striped > tbody > tr:nth-of-type(odd),
+table.dataTable.table-dark.table-striped > tbody > tr:nth-of-type(odd),
+table.table-dark table.sub-table.table-striped > tbody > tr:nth-of-type(odd),
+table.dataTable.table-dark table.sub-table.table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: #7e0000;
 }
 /*
  * Typography Styles
