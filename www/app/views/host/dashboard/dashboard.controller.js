@@ -7,8 +7,8 @@
  */
 
 angular.module('app.host.dashboard', [])
-    .controller('HostDashboardCtrl', ['$scope', '$state', '$compile', '$filter', 'TriviaModalService', 'DataTableHelper', 'DTOptionsBuilder', 'DTColumnBuilder', 'UserSession', 'HostData', 'AlertConfirmService',
-        function($scope, $state, $compile, $filter, TriviaModalService, DataTableHelper, DTOptionsBuilder, DTColumnBuilder, UserSession, HostData, AlertConfirmService) {
+    .controller('HostDashboardCtrl', ['$scope', '$state', '$compile', '$filter', 'TriviaModalService', 'DataTableHelper', 'DTOptionsBuilder', 'DTColumnBuilder', 'UserSession', 'HostData', 'AlertConfirmService', 'ApiRoutesGames',
+        function($scope, $state, $compile, $filter, TriviaModalService, DataTableHelper, DTOptionsBuilder, DTColumnBuilder, UserSession, HostData, AlertConfirmService, ApiRoutesGames) {
 
         $scope.hostActiveGames = HostData.activeGames || [];
 
@@ -39,7 +39,7 @@ angular.module('app.host.dashboard', [])
                     return '<span title="Scheduled: ' + scheduled + '">Scheduled for  ' + scheduled + '</span>';
                 }
             }),
-            DTColumnBuilder.newColumn('scoreboard').withTitle('Scoreboard').notSortable()//.withClass('none')
+            DTColumnBuilder.newColumn('scoreboard').withTitle('Scoreboard').notSortable().withClass('none')
         ];
         $scope.dtGames.options.withOption('responsive', {
             details: {
@@ -97,11 +97,35 @@ angular.module('app.host.dashboard', [])
             });
         };
         
-        $scope.buttonCreateTeam = function() {
-            var modalInstance = TriviaModalService.openEditGame(false);
-            modalInstance.result.then(function(result) {
-                $state.go('app.host.game', {'gameId' : result.id, 'roundNumber': 1});
-            });
+        $scope.buttonCreateTeam = function(gameId) {
+            var game = $filter('filter')($scope.dtGames.data, {id: gameId}, true);
+            var modalInstance = TriviaModalService.openEditTeam(game);
+            modalInstance.result.then(function (result) {
+                console.log(result);
+            }, function () {});
+        };
+        
+        $scope.buttonCheckinTeam = function(gameId) {
+            var game = $filter('filter')($scope.dtGames.data, {id: gameId}, true);
+            var modalInstance = TriviaModalService.openAddTeam(game);
+            modalInstance.result.then(function (result) {
+                console.log(result);
+            }, function () {});
+        };
+        
+        $scope.buttonEndGame = function(gameId) {
+        AlertConfirmService.confirm('Are you sure you want to end this game? It cannot be started again once it has been closed.', 'Confirm End Game.')
+                    .result.then(function () {
+                        AlertConfirmService.confirm('Are you sure you positive you would like to close this game? It will finalize team scores.', 'Warning! Closing Game.')
+                            .result.then(function () {
+                                ApiRoutesGames.endGame(gameId).then(function (result) {
+                                    console.log(result);
+                                }, function (error) {
+                                    reject(error);
+                                });
+                            }, function (declined) {});
+                    }, function (declined) {});
+            
         };
 
     }]);

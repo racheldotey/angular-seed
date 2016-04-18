@@ -99,16 +99,33 @@ class GameData {
         return DBConn::selectColumn("SELECT COUNT(id) AS count FROM " . DBConn::prefix() . "game_round_questions "
                 . "WHERE round_id=:round_id LIMIT 1;", array(':round_id' => $roundId));
     }
-        
+    
+    /* Team and Game interactions */
+    
     static function insertTeamIntoGame($validTeam) {
         $results = DBConn::insert("INSERT INTO " . DBConn::prefix() . "game_score_teams(`game_id`, `team_id`, `created_user_id`, `last_updated_by`) "
                 . "VALUES (:game_id, :team_id, :created_user_id, :last_updated_by);", $validTeam);
         
         if($results) {
             self::calculateGameScores($validTeam[':game_id'], $validTeam[':created_user_id']);
+            self::updateTeamCheckedInStatus(array(
+                ':id' => $validTeam[':team_id'], 
+                ':current_game_id' => $validTeam[':game_id'], 
+                ':last_updated_by' => $validTeam[':last_updated_by']));
         }
         
         return $results;
+    }
+        
+    static function updateTeamCheckedInStatus($validTeam) {
+        return DBConn::update("UPDATE " . DBConn::prefix() . "teams SET current_game_id=:current_game_id, last_updated_by=:last_updated_by "
+                . "WHERE id = :id;", $validTeam);
+    }
+        
+    static function checkoutTeamsFromGame($gameId, $userId) {
+        return DBConn::update("UPDATE " . DBConn::prefix() . "teams SET current_game_id=0, last_updated_by=:last_updated_by "
+                . "WHERE current_game_id = :current_game_id;", 
+                array(':current_game_id' => $gameId, ":last_updated_by" => $userId));
     }
     
     /* CRUD for Games */
@@ -140,12 +157,13 @@ class GameData {
     
     static function updateEndGame($gameId, $userId) {
         self::calculateGameScores($gameId);
+        self::checkoutTeamsFromGame($gameId, $userId);
         
-        DBConn::update("UPDATE " . DBConn::prefix() . "games SET game_ended=NOW(), last_updated_by=:last_updated_by "
-                . "WHERE id=:id;", array(":id" => $gameId, ":last_updated_by" => $userId));
-         
-        return DBConn::update("UPDATE " . DBConn::prefix() . "game_score_teams SET game_winner=1, last_updated_by=:last_updated_by "
+        DBConn::update("UPDATE " . DBConn::prefix() . "game_score_teams SET game_winner=1, last_updated_by=:last_updated_by "
                 . "WHERE game_id=:game_id AND game_rank = 1;", array(':game_id' => $gameId, ":last_updated_by" => $userId));
+        
+        return DBConn::update("UPDATE " . DBConn::prefix() . "games SET game_ended=NOW(), last_updated_by=:last_updated_by "
+                . "WHERE id=:id;", array(":id" => $gameId, ":last_updated_by" => $userId));
     }
     
     static function selectEnded($gameId) {

@@ -32,10 +32,38 @@ class TeamController {
         
         if($teamId) {
             $team = TeamData::getTeam($teamId);
-            return $app->render(200, array('team' => $team));
+            $results = array();
+            if(v::key('players', v::arrayType())->validate($app->request->post())) {
+                $results = self::addPlayers($teamId, $app->request->post('players'));
+            }
+            return $app->render(200, array('team' => $team, 'adds' => $results));
         } else {
             return $app->render(400,  array('msg' => 'Could not add team.'));
         }
+    }
+    
+    private static function addPlayers($teamId, $players) {
+        $results = array();
+        foreach($players AS $player) {
+            if (isset($player['email']) && !isset($player['id'])) {
+                $found = TeamData::selectUserIdByEmail($player['email']);
+                if($found) {
+                    $player['id'] = $found;
+                }
+            }
+            
+            if(isset($player['id'])) {
+                $results[] = TeamData::addTeamMember(array(
+                        ':user_id' => $player['id'],
+                        ":team_id" => $teamId,
+                        ":added_by" => APIAuth::getUserId()
+                ));
+            }  else {
+                $results[] = false;
+                $results[] = $player;
+            }
+        }
+        return $results;
     }
     
     static function saveTeam($app, $teamId) {

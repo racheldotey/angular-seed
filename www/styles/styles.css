@@ -393,6 +393,7 @@ body:not(.admin) .alert {
   background-color: #fff;
   border-color: #6f0000;
   color: #880000;
+  overflow: hidden;
 }
 body:not(.admin) .alert a {
   color: #6f0000;

@@ -2,7 +2,7 @@
     
     <div class="host-controls pull-right">
         <button ng-click="buttonNewGame()" class="btn btn-primary">Start New Game</button> 
-        <button ng-click="buttonInviteFriend()" class="btn btn-primary">Invite Friend</button> 
+        <button ng-click="buttonInviteFriend()" class="btn btn-primary">Invite Player</button> 
         <button ng-click="buttonCreateTeam()" class="btn btn-primary">Create Team</button>
     </div>
     
@@ -11,8 +11,14 @@
     </div>
     
     <div class="alert alert-warning" role="alert" ng-repeat="game in hostActiveGames">
-        <p><strong>Active Game:</strong> {{game.name}}
-        <a data-ui-sref="app.host.game({'gameId' :{{game.id}}, 'roundNumber' : 1 })" class="alert-link pull-right">View Game</a></p>
+        <p class="pull-left">
+            <strong>Active Game:</strong> {{game.name}}
+        </p>
+        <div class="pull-right">
+            <button data-ui-sref="app.host.game({'gameId' :{{game.id}}, 'roundNumber' : 1 })" class="btn btn-primary btn-sm">Edit Scores</button>
+            <button ng-click="buttonCheckinTeam(game.id)" class="btn btn-primary btn-sm">Checkin Team</button>
+            <button ng-click="buttonEndGame(game.id)" class="btn btn-primary btn-sm">End Game</button>
+        </div>
     </div>
     
     <table

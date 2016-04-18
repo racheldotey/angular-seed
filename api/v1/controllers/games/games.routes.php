@@ -9,6 +9,10 @@ class GameRoutes {
         
         $app->group('/trivia', $authenticateForRole('registered-user'), function () use ($app) {
             
+            /////
+            ///// GAMES
+            /////
+            
             /*
              * id
              */
@@ -18,13 +22,6 @@ class GameRoutes {
 
             $app->map("/game/get/:gameId/:roundNumber/", function ($gameId, $roundNumber) use ($app) {
                 GameController::getGame($app, $gameId, $roundNumber);
-            })->via('GET', 'POST');
-
-            /*
-             * id
-             */
-            $app->map("/host/get/:userId/", function ($userId) use ($app) {
-                GameController::getGameHost($app, $userId);
             })->via('GET', 'POST');
             
             /*
@@ -40,6 +37,17 @@ class GameRoutes {
             $app->post("/update/:gameId/", function ($gameId) use ($app) {
                 GameController::saveGame($app, $gameId);
             });
+
+            /*
+             * id
+             */
+            $app->map("/delete/game/:gameId/", function ($gameId) use ($app) {
+                GameController::deleteGame($app, $gameId);
+            })->via('DELETE', 'POST');
+            
+            /////
+            ///// SCOREBOARD
+            /////
             /*
              * questions [] { teamId, roundId, questionId, teamWager, teamAnswer, questionScore }
              */
@@ -60,21 +68,32 @@ class GameRoutes {
             $app->post("/end/:gameId/", function ($gameId) use ($app) {
                 GameController::endGame($app, $gameId);
             });
+            
+            /////
+            ///// HOST
+            /////
 
             /*
              * id
              */
-            $app->map("/delete/game/:gameId/", function ($gameId) use ($app) {
-                GameController::deleteGame($app, $gameId);
-            })->via('DELETE', 'POST');
+            $app->map("/host/get/:userId/", function ($userId) use ($app) {
+                GameController::getGameHost($app, $userId);
+            })->via('GET', 'POST');
+                
+            /////
+            ///// TEAMS
+            /////
             
-                        
             /*
              * gameId, roundNumber, teamId
              */
             $app->post("/checkin-team/:gameId/:roundNumber/", function ($gameId, $roundNumber) use ($app) {
                 GameController::checkTeamIntoGame($app, $gameId, $roundNumber);
             });
+            
+            /////
+            ///// GAME ROUND
+            /////
                         
             /*
              * gameId, name, defaultQuestionPoints
@@ -96,7 +115,11 @@ class GameRoutes {
             $app->map("/delete/round/:roundId/", function ($questionId) use ($app) {
                 GameController::deleteRound($app, $questionId);
             })->via('DELETE', 'POST');
-                    
+            
+            /////
+            ///// QUESTIONS
+            /////
+            
             /*
              * gameId, roundId, question, maxPoints
              */

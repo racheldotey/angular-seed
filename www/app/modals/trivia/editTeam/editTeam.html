@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <h3 ng-if="newMode" class="modal-title">New Team</h3>
+    <h3 ng-if="newMode" class="modal-title">Create New Team</h3>
     <h3 ng-if="!newMode && editMode" class="modal-title">Edit Team #{{saved.id}}</h3>
     <h3 ng-if="!newMode && !editMode" class="modal-title">Team #{{saved.id}}</h3>
 </div>
@@ -9,33 +9,21 @@
     <div data-rc-bootstrap-alerts="alertProxy"></div>
     
     
-    <div ng-if="!editMode && !manageRolesMode">
+    <div ng-if="!editMode">
         
         <div class="row">
             <div class="col-xs-12">
                 <div class="form-group">
-                    <label>Group Name</label>
-                    <p class="form-control-static">{{saved.group}}</p>
-                </div>
-            </div>
-            <div class="col-xs-12">
-                <div class="form-group" title="Unique identifier to be embedded within the system.">
-                    <label>Unique Reference Identifier</label>
-                    <p class="form-control-static"><code>{{saved.identifier}}</code></p>
-                </div>
-            </div>
-            <div class="col-xs-12">
-                <div class="form-group">
-                    <label>Description</label>
-                    <div class="form-control-static">{{saved.desc | formatParagraphsAsHtml}}</div>
+                    <label>Team Name</label>
+                    <p class="form-control-static">{{saved.name}}</p>
                 </div>
             </div>
         </div>
 
-        <div class="meta" ng-if="!newMode">
+        <div class="meta" ng-if="!newMode && (saved.created || saved.lastUpdated)">
             <hr/>
-            <p class="text-muted"><strong>Created:</strong> {{saved.created | formatMySQLDate}} by {{saved.createdBy}}</p>
-            <p class="text-muted"><strong>Updated:</strong> {{saved.lastUpdated | formatMySQLDate}} by {{saved.updatedBy}}</p>
+            <p ng-if="saved.created" class="text-muted"><strong>Created:</strong> {{saved.created | formatMySQLDate}} by {{saved.createdBy}}</p>
+            <p ng-if="saved.lastUpdated" class="text-muted"><strong>Updated:</strong> {{saved.lastUpdated | formatMySQLDate}} by {{saved.updatedBy}}</p>
         </div>
 
     </div>
@@ -45,61 +33,39 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="form-group">
-                    <label>Group Name</label>
-                    <input class="form-control" name="group" ng-model="editing.group" type="text" maxlength="255" required />
+                    <label>Team Name</label>
+                    <input placeholder="Clever Team Name" class="form-control" name="name" ng-model="editing.name" type="text" maxlength="255" required />
                 </div>
             </div>
         </div>
         
         <div class="row">
             <div class="col-xs-12">
-                <div class="form-group" title="Unique identifier to be embedded within the system.">
-                    <label>Unique Reference Identifier</label>
-                    <p class="form-control-static"><code>{{editing.group | getSlugDashSeperated}}</code></p>
+                <label>Invite Team Members</label>
+                <div class="form-group" ng-repeat="player in editing.players">
+                    <input ng-model="player.email" class="form-control" type="email" maxlength="255" />
                 </div>
             </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="form-group">
-                    <label for="desc">Description</label>
-                    <textarea class="form-control" name="desc" row="2" ng-model="editing.desc" maxlength="1000" required></textarea>
+            
+            <div class="form-group">
+                <div class="col-xs-12">
+                    <button class="btn btn-primary btn-sm pull-right" ng-click="buttonNewEmailField()">Invite Another Player</button>
                 </div>
             </div>
         </div>
     </form>
-    
-    <div ng-if="manageRolesMode">
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr><th>ID</th><th>Label</th><th></th></tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="role in roleList">
-                    <td>{{role.id}}</td>
-                    <td>{{role.label}}</td>
-                    <td>
-                        <button ng-if="isRoleAssignedToGroup(role.id)" type="button" ng-click="buttonRemoveRoleFromGroup(role.id)" class="btn btn-warning btn-xs pull-right">Remove</button>
-                        <button ng-if="!isRoleAssignedToGroup(role.id)" type="button" ng-click="buttonAddRoleToGroup(role.id)" class="btn btn-default btn-xs pull-right">Add</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
 
 </div>
 
 <div ng-if="!editMode" class="modal-footer">
-    <button ng-if="!manageRolesMode" class="btn btn-default pull-left" ng-click="buttonEdit()">Edit</button>
-    <button ng-if="!manageRolesMode" class="btn btn-default pull-left" ng-click="buttonManageRoles()">Manage Roles</button>
+    <button class="btn btn-default pull-left" ng-click="buttonEdit()">Edit</button>
     <button class="btn btn-primary" ng-click="buttonCancel()">Done</button>
 </div>
 
 <div ng-if="editMode" class="modal-footer">
     <button class="btn btn-warning pull-left" ng-if="!newMode" ng-click="buttonDelete()">Delete</button>
     
-    <button class="btn btn-default" ng-click="buttonCancel()">Cancel</button>
+    <button class="btn btn-default pull-left" ng-click="buttonCancel()">Cancel</button>
     <button class="btn btn-primary" ng-if="newMode" ng-click="buttonNew()">Add</button>
     <button class="btn btn-primary" ng-if="!newMode" ng-click="buttonSave()">Save</button>
 </div>

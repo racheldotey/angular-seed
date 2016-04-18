@@ -23,7 +23,7 @@ class TeamData {
                     . "v.city AS venueCity, v.state AS stateVenue, v.zip AS venueZip, v.phone AS venuePhone, v.website AS venueWebsite, "
                     . "CONCAT(h.name_first, ' ', h.name_last) AS host, h.id AS hostId "
                     . "FROM " . DBConn::prefix() . "games AS g "
-                    . "LEFT JOIN " . DBConn::prefix() . "game_scores AS s ON g.id = s.game_id "
+                    . "LEFT JOIN " . DBConn::prefix() . "game_score_teams AS s ON g.id = s.game_id "
                     . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = g.venue_id "
                     . "LEFT JOIN " . DBConn::prefix() . "users AS h ON h.id = g.host_user_id "
                     . "WHERE s.team_id = :id;");
@@ -36,8 +36,22 @@ class TeamData {
         }
         return $team;
     }
-  
+    
+    static function selectUserIdByEmail($email) {
+        return DBConn::selectColumn("SELECT id FROM " . DBConn::prefix() . "users WHERE email = :email LIMIT 1;", 
+                array(':email' => $email));
+    }
+
+
     static function insertTeam($validTeam) {
+        $find = $validTeam[':name'] . '%';
+        $num = DBConn::selectColumn("SELECT count(id) AS num FROM " . DBConn::prefix() . "teams WHERE name LIKE :name;", 
+                array(':name' => $find));
+        
+        if($num > 0) {
+            $validTeam[':name'] = $validTeam[':name'] . ' ' . $num;
+        }
+        
         return DBConn::insert("INSERT INTO " . DBConn::prefix() . "teams(name, created_user_id, last_updated_by) "
                 . "VALUES (:name, :created_user_id, :last_updated_by);", $validTeam);
     }

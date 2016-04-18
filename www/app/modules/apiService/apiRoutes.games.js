@@ -131,6 +131,24 @@ angular.module('apiRoutes.games', [])
         }
         return API.post('venue/update/' + venue.id, venue, 'Could not save venue.');
     };
+
+
+    // Team Admin Functions
+    
+    api.addTeam = function(team) {
+        if(!team.name) {
+            return API.reject('Invalid team please verify your information and try again.');
+        }
+        return API.post('team/insert', team, 'Could not insert team.');
+    };
+    
+    api.saveTeam = function(team) {
+        if(!team.id || 
+                !team.name) {
+            return API.reject('Invalid team please verify your information and try again.');
+        }
+        return API.post('team/update/' + team.id, team, 'Could not save team.');
+    };
     
     return api;
 }]);
