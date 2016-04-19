@@ -166,9 +166,46 @@ app.config(['$stateProvider', 'USER_ROLES',
             url: '/login',
             views: {
                 'content@app.auth': {
-                    templateUrl: 'app/views/auth/login/login.html',
+                    templateUrl: 'app/views/auth/login/login.html'
+                },
+                'loginform@app.auth.login': {
+                    templateUrl: 'app/views/auth/login/loginForm.html',
                     controller: 'AuthLoginCtrl'
                 }
+            },
+            resolve: {
+                $q: '$q',
+                $rootScope: '$rootScope',
+                $state: '$state',
+                alreadyLoggedIn: function($rootScope, $state, $q, AuthService) {
+                    return $q(function(resolve, reject) {  
+                        if(AuthService.getUser()) {
+                            $rootScope.$evalAsync(function () {
+                                $state.go('app.member.dashboard');
+                            });
+                            reject(false);
+                        } else {
+                            resolve(true);
+                        }
+                    });
+                }
+            }
+        });
+        
+        $stateProvider.state('app.auth.login.iframe', {
+            bodyClass: 'auth login iframe-compatible',
+            title: 'Login',
+            url: '/iframe',
+            views: {
+                'header@app.auth': {},
+                'content@app.auth': {
+                    templateUrl: 'app/views/auth/login/loginiFrame.html'
+                },
+                'loginform@app.auth.login.iframe': {
+                    templateUrl: 'app/views/auth/login/loginForm.html',
+                    controller: 'AuthLoginCtrl'
+                },
+                'footer@app.auth': {}
             },
             resolve: {
                 $q: '$q',

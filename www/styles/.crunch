@@ -21,6 +21,7 @@
 				"base-tables.less",
 				"base-typography.less",
 				"game-scoreboard.less",
+				"iframe.less",
 				"main.less",
 				"page-footer.less",
 				"page-header.less",

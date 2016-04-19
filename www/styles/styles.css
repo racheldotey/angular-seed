@@ -735,6 +735,10 @@ body.admin .pagination > li span {
   background-color: #a20000;
   border-color: #bb0000;
 }
+body.iframe-compatible {
+  background-image: none;
+  background-color: transparent;
+}
 /*
  * Layout(s) Styles
  * 
