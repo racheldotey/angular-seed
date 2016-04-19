@@ -1,6 +1,6 @@
 <?php namespace API;
 require_once dirname(__FILE__) . '/teams.data.php';
-require_once dirname(dirname(dirname(__FILE__))) . '/services/api.auth.php';
+require_once dirname(dirname(dirname(__FILE__))) . '/services/api.mailer.php';
 
 use \Respect\Validation\Validator as v;
 
@@ -19,51 +19,59 @@ class TeamController {
         }
     }
     
-    static function addTeam($app) {
+    static function addTeam($app) {        
         if(!v::key('name', v::stringType())->validate($app->request->post())) {
             return $app->render(400, array('msg' => 'Insert failed. Check your parameters and try again.'));
         }
         
-        $teamId = TeamData::insertTeam(array(
-            ':name' => $app->request->post('name'),
+        $teamName = $app->request->post('name');
+        $teamId = 22;/*TeamData::insertTeam(array(
+            ':name' => $teamId,
             ":created_user_id" => APIAuth::getUserId(),
             ":last_updated_by" => APIAuth::getUserId()
-        ));
+        ));*/
         
         if($teamId) {
-            $team = TeamData::getTeam($teamId);
             $results = array();
             if(v::key('players', v::arrayType())->validate($app->request->post())) {
-                $results = self::addPlayers($teamId, $app->request->post('players'));
+                $results = self::addPlayers($teamId, $teamName, $app->request->post('players'));
             }
+            $team = TeamData::getTeam($teamId);
             return $app->render(200, array('team' => $team, 'adds' => $results));
         } else {
             return $app->render(400,  array('msg' => 'Could not add team.'));
         }
     }
     
-    private static function addPlayers($teamId, $players) {
+    private static function addPlayers($teamId, $teamName, $players) {
         $results = array();
-        foreach($players AS $player) {
-            if (isset($player['email']) && !isset($player['id'])) {
-                $found = TeamData::selectUserIdByEmail($player['email']);
-                if($found) {
-                    $player['id'] = $found;
-                }
-            }
+        foreach($players AS $player) {      
             
             if(isset($player['id'])) {
-                $results[] = TeamData::addTeamMember(array(
-                        ':user_id' => $player['id'],
-                        ":team_id" => $teamId,
-                        ":added_by" => APIAuth::getUserId()
-                ));
-            }  else {
+                $results[] = 'id';// self::addPlayerById($teamId, $teamName, $player['id']);
+            }  else if (isset($player['email'])) {
+                $results[] = self::addPlayerByEmail($teamId, $teamName, $player['email']);
+            } else {
                 $results[] = false;
                 $results[] = $player;
             }
         }
         return $results;
+    }
+    
+    private static function addPlayerByEmail($teamId, $teamName, $email) {
+        $found = TeamData::selectUserIdByEmail($email);
+        return ($found) ? self::addPlayerById($teamId, $teamName, $found) : 
+                            self::sendTeamInvite($teamId, $teamName, $email);
+    }
+    
+    private static function addPlayerById($teamId, $teamName, $id) {
+        $found = TeamData::selectUserById($id);
+        return ($found) ? self::sendTeamInvite($teamId, $teamName, $found->email, $found->displayName) : false;
+    }
+    
+    private static function sendTeamInvite($teamId, $teamName, $playerEmail, $playerName = '') {
+        return ApiMailer::sendTeamInvite($teamId, $teamName, $playerEmail, $playerName);
     }
     
     static function saveTeam($app, $teamId) {

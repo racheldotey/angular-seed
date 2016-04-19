@@ -41,6 +41,12 @@ class TeamData {
         return DBConn::selectColumn("SELECT id FROM " . DBConn::prefix() . "users WHERE email = :email LIMIT 1;", 
                 array(':email' => $email));
     }
+    
+    static function selectUserById($userId) {
+        return DBConn::selectOne("SELECT id, email, CONCAT(name_first, ' ', name_last) AS displayName "
+                . "FROM " . DBConn::prefix() . "users WHERE id = :id LIMIT 1;", 
+                array(':id' => $userId));
+    }
 
 
     static function insertTeam($validTeam) {

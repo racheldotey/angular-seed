@@ -54,12 +54,12 @@ angular.module('app.modal.trivia.editTeam', [])
     } else {
         $scope.setMode('new');
         $scope.editing.name = "A " + moment().format('dddd') + " Team in " + moment().format('MMMM');
-        $scope.editing.players = [ { email : 'rachellcarbone@gmail.com' } ];
+        $scope.editing.players = [ { email : 'rachel.dotey@gmail.com' } ];
     }
     
     /* Click event for the Add Email Input */
     $scope.buttonNewEmailField = function() {
-        $scope.editing.players.push({ email : 'rachellcarbone@gmail.com' });
+        $scope.editing.players.push({ email : 'rachellcarbone+' + $scope.editing.players.length + '@gmail.com' });
     };
     
         
@@ -72,8 +72,10 @@ angular.module('app.modal.trivia.editTeam', [])
     $scope.buttonNew = function() {
         ApiRoutesGames.addTeam($scope.editing).then(function(result) {
             console.log(result);
+            $scope.alertProxy.success("Team added");
         }, function(error) {
             console.log(error);
+            $scope.alertProxy.error(error);
         });
     };
         
