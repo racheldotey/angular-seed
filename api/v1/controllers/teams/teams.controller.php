@@ -25,11 +25,11 @@ class TeamController {
         }
         
         $teamName = $app->request->post('name');
-        $teamId = 22;/*TeamData::insertTeam(array(
-            ':name' => $teamId,
+        $teamId = TeamData::insertTeam(array(
+            ':name' => $teamName,
             ":created_user_id" => APIAuth::getUserId(),
             ":last_updated_by" => APIAuth::getUserId()
-        ));*/
+        ));
         
         if($teamId) {
             $results = array();
@@ -52,8 +52,7 @@ class TeamController {
             }  else if (isset($player['email'])) {
                 $results[] = self::addPlayerByEmail($teamId, $teamName, $player['email']);
             } else {
-                $results[] = false;
-                $results[] = $player;
+                $results[] = "Could not send team invite to " . $player;
             }
         }
         return $results;
