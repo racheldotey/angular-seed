@@ -4,6 +4,7 @@ namespace API;
 
 require_once dirname(__FILE__) . '/auth.data.php';
 require_once dirname(__FILE__) . '/auth.additionalInfo.data.php';
+require_once dirname(dirname(__FILE__)) . '/system-variables/config.data.php';
 
 use \Respect\Validation\Validator as v;
 
@@ -23,7 +24,6 @@ class AuthControllerNative {
                 !v::key('apiToken', v::stringType())->validate($post)) {
             return array('authenticated' => false, 'msg' => 'Unauthenticated: Invalid request. Check your parameters and try again.');
         }
-
         $user = AuthData::selectUserByIdentifierToken($post['apiKey']);
 
         if (!$user) {
@@ -31,17 +31,17 @@ class AuthControllerNative {
             return array('authenticated' => false, 'msg' => 'Unauthenticated: No User');
         } else if (!password_verify($post['apiToken'], $user->apiToken)) {
             // Validate Password
-            return array('authenticated' => false, 'msg' => 'Unauthenticated: Invalid API Token');
-        } else {
-            // Go now. Be free little brother.
-            if (isset($user->apiKey)) {
-                unset($user->apiKey);
-            }
-            if (isset($user->apiToken)) {
-                unset($user->apiToken);
-            }
-            return array('authenticated' => true, 'user' => $user);
+            return array('authenticated' => false, 'msg' => 'Unauthenticated: Invalid Cookie');
         }
+
+        // Go now. Be free little brother.
+        if (isset($user->apiKey)) {
+            unset($user->apiKey);
+        }
+        if (isset($user->apiToken)) {
+            unset($user->apiToken);
+        }
+        return array('authenticated' => true, 'user' => $user);
     }
 
     // Signup Function
@@ -129,13 +129,125 @@ class AuthControllerNative {
     ///// 
     ///// Login
     ///// 
+    static function forgotpassword($app) {
+        $post = $app->request->post();
+        // Validate input parameters
+        if (!v::key('email', v::email())->validate($post)) {
+            return array('frgtauthenticated' => false, 'msg' => 'Forgot password failed. Check your parameters and try again.');
+        }
+        // Validate the user email and password
+        $found = self::forgotpassword_validateFoundUser($post, $app);
+        return $found;
+    }
+
+    static function resetpassword($app) {
+        $post = $app->request->post();
+        $found = self::getresetpassword_validateFoundUser($post);
+        return $found;
+    }
+
+    private static function getresetpassword_validateFoundUser($post) {
+        $user = AuthData::selectUsertokenExpiry($post['email']);
+        if (!$user) {
+            // Validate existing user
+            return array('resetpasswordauthenticated' => false, 'msg' => 'User failed. A user with that email id could not be found.');
+        } else {
+            $strtotime1 = strtotime($user->fortgotpassword_duration);
+            $date = date("d M Y H:i:s");
+            $strtotime = strtotime($date);
+            $diff = $strtotime - $strtotime1;
+            $diff_in_hrs = round($diff / 3600);
+            if ($diff_in_hrs > 1) {
+                return array('resetpasswordauthenticated' => false, 'msg' => 'Your reset password token is expired. 
+          Please try again to request forgot password.');
+            } else {
+                $userUpdate = AuthData::resetUserPassword(array(':email' => $post['email'], ':password' => password_hash($post['password'], PASSWORD_DEFAULT), ':usertoken' => '', ':fortgotpassword_duration' => ''));
+                if (!$userUpdate) {
+                    return array('resetpasswordauthenticated' => false, 'msg' => 'Some error occured while updating password. 
+           please try again.');
+                }
+                return array('resetpasswordauthenticated' => true, 'msg' => 'Your password has been reset successfully. Please login');
+            }
+        }
+    }
+
+    static function getforgotpasswordemail($app) {
+        $post = $app->request->post();
+        $found = self::getforgotpasswordemail_validateFoundUser($post);
+        return $found;
+    }
+
+    private static function getforgotpasswordemail_validateFoundUser($post) {
+        $user = AuthData::selectUserByUsertoken($post['usertoken']);
+        if (!$user) {
+            // Validate existing user
+            return array('frgtauthenticatedemail' => false, 'msg' => 'Usertoken failed. A user with that usertoken could not be found.');
+        }
+        return array('frgtauthenticatedemail' => true, 'user' => $user);
+    }
+
+    private static function forgotpassword_validateFoundUser($post, $app) {
+        $user = AuthData::selectUserByEmail($post['email']);
+        if (!$user) {
+            // Validate existing user
+            return array('frgtauthenticated' => false, 'msg' => 'Forgotpassword failed. A user with that email could not be found.');
+        }
+        $usertoken = md5(date('Y-m-d H:i:s') * rand(9, 99999));
+        $fortgotpassword_duration = date('Y-m-d H:i:s');
+        $userforgotupdate = AuthData::updateforgotpassworddata(array(':email' => $post['email'], ':usertoken' => $usertoken, ':fortgotpassword_duration' => $fortgotpassword_duration));
+        $mail = new \PHPMailer;
+        $mail->IsSMTP();
+        $mail_variables = array(
+            "SMTP_SERVER_HOST" => "Host",
+            "SMTP_SERVER_PORT" => "Port",
+            "SMTP_SERVER_USERNAME" => "Username",
+            "SMTP_SERVER_PASSWORD" => "Password",
+            "SMTP_SMTP_DEBUG" => 'SMTPDebug',
+            "SMTP_DEBUGOUTPUT" => 'Debugoutput',
+            "SMTP_SECURE" => "SMTPSecure",
+            "SMTP_AUTH" => "SMTPAuth"
+        );
+        foreach ($mail_variables as $name => $value) {
+            $config_data = ConfigData::getVariableByName($name);
+
+            if (!empty($config_data) && $config_data->disabled != 1) {
+                $mail->{$value} = $config_data->value;
+            }
+        }
+        $config = new APIConfig();
+
+        $mail->From = "from@yourdomain.com";
+        $mail->FromName = "triviajoint";
+        $mail->addAddress($user->email, $user->nameFirst . " " . $user->nameLast);
+        $mail->isHTML(true);
+        $mail->Subject = "Triviajoint forgot password";
+        $mailbody = '<table>
+   <tr>
+    <td>Dear, ' . $user->nameFirst . ' ' . $user->nameLast . '</td>
+</tr>   
+<tr>
+    <td>Click on the below link to reset password</td>
+</tr>   
+<tr>
+    <td>
+     <a href="' . $config->get('websiteUrl') . 'reset_password/' . $usertoken . '">
+        ' . $config->get('websiteUrl') . 'reset_password/' . $usertoken . '
+    </a>
+</td>
+</tr>   
+</table>';
+        $mail->Body = $mailbody;
+        if (!$mail->send()) {
+            return array('frgtauthenticated' => false, 'msg' => 'Email could not be sent for reset password. Please try again later.');
+        } else {
+            return array('frgtauthenticated' => true, 'msg' => 'Email has been sent to your email address for reset password.');
+        }
+    }
 
     static function login($app) {
         $post = $app->request->post();
-
         // If anone is logged in currently, log them out
         self::login_logoutCurrentAccount($post);
-
         // Validate input parameters
         if (!v::key('email', v::email())->validate($post) ||
                 !v::key('password', v::stringType())->validate($post)) {
@@ -236,6 +348,44 @@ class AuthControllerNative {
             return true;
         }
         return false;
+    }
+
+    ///// 
+    ///// Password Managment
+    ///// 
+
+    static function updateUserPassword($app) {
+        $post = $app->request->post();
+        $currentPassword = AuthData::selectUserPasswordById($post['userId']);
+
+        if ($currentPassword != '') {
+            if (!v::key('userId', v::stringType())->validate($post) ||
+                    !v::key('current', v::stringType())->validate($post) ||
+                    !v::key('new', v::stringType())->validate($post)) {
+                return array('validated' => false, 'msg' => "Password could not be changed. Check your parameters and try again.");
+            } else if (!self::validatePasswordRequirements($post, 'new')) {
+                /* Validate that the password is valid */
+                return array('validated' => false, 'msg' => self::$passwordRules);
+            } else if (!password_verify($post['current'], $currentPassword)) {
+                /* Validate Password */
+                return array('validated' => false, 'msg' => 'Your current password is wrong.');
+            } else {
+                $data = array(
+                    ':id' => $post['userId'],
+                    ':password' => password_hash($post['new'], PASSWORD_DEFAULT)
+                );
+
+                $passwordChanged = AuthData::updateUserPassword($data);
+                if (!$passwordChanged) {
+                    return array('validated' => false, 'msg' => "Password could not be changed. Check your parameters and try again.");
+                } else {
+                    self::login_logoutCurrentAccount($app->request->post());
+                    return array('validated' => true, 'msg' => "Password successfully changed.");
+                }
+            }
+        } else {
+            return array('validated' => false, 'msg' => "Password could not be changed. Check your parameters and try again.");
+        }
     }
 
 }
