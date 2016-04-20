@@ -9,12 +9,13 @@ class APIConfig {
             'debugMode' => true,
             
             'dbHost' => 'localhost',
+            'dbUnixSocket' => false,
             'db' => 'angular_seed',
             'dbUser' => 'root',
             'dbPass' => 'toot',
             'dbTablePrefix' => 'as_',
             
-            'systemPath' => 'C:/xampp/htdocs/webdev/angular-seed/',
+            'systemPath' => 'C:/xampp/htdocs/angular-seed/',
             'dirPublic' => 'public/',
             'dirSystem' => 'api/system/',
             'dirLogs' => 'api/system/logs/',

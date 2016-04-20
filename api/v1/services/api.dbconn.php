@@ -53,8 +53,9 @@ class DBConn {
             );
 
             try {
-                // Connect to an MySQL database using driver invocation
-                self::$pdo = new \PDO("mysql:host={$c['dbHost']};dbname={$c['db']}", $c["dbUser"], $c["dbPass"], $options);
+                $invocation = ($c['dbHost']) ? "host={$c['dbHost']}" : "unix_socket={$c['dbUnixSocket']}";
+                self::$pdo = new \PDO("mysql:{$invocation};dbname={$c['db']}", $c["dbUser"], $c["dbPass"], $options);
+                self::logError("I have successfully connected to the DB from api.dbconn.php");
             } catch (\PDOException $e) {
                 // If we cant connect to the database die
                 die('Could not connect to the database:<br/>' . $e);
@@ -76,6 +77,19 @@ class DBConn {
         }
         // Write the error arry to the log file
         self::$logger->write($pdo->errorInfo());
+    }
+    
+    /*
+     * Log the last PDO error
+     */
+    private static function logError($error) {
+        // If the logger hasnt been instantiated
+        if(!self::$logger) {
+            // Create a new instance of the system Logging class
+            self::$logger = new Logging('pdo_exception');
+        }
+        // Write the error arry to the log file
+        self::$logger->write($error);
     }
     
     /* 
