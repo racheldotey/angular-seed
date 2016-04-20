@@ -95,7 +95,7 @@ class AuthHooks {
     private static function data_logHotSalsaResults($curlResult, $app, $apiResponse) {
         $logData = array(
             ':user_id' => $apiResponse['user']->id,
-            ':salsa_call_status' => isset($curlResult['callStatus']) ? $curlResult['callStatus'] : 'No response',
+            ':salsa_call_status' => isset($curlResult['status']) ? $curlResult['status'] : 'No response',
             ':salsa_user_id' => (isset($curlResult['userData']) && isset($curlResult['userData']['userId'])) ? $curlResult['userData']['userId'] : NULL,
             ':salsa_user_data' => (isset($curlResult['userData'])) ? json_encode($curlResult['userData']) : NULL,
             ':salsa_error_message' => (isset($curlResult['errorMessage'])) ? $curlResult['errorMessage'] : NULL
