@@ -66,7 +66,7 @@ class TeamController {
     
     private static function addPlayerById($teamId, $teamName, $id) {
         $found = TeamData::selectUserById($id);
-        return ($found) ? self::sendTeamInvite($teamId, $teamName, $found->email, $found->displayName) : false;
+        return ($found) ? self::sendTeamInvite($teamId, $teamName, $found->email, $found->displayName) : "User could not be found.";
     }
     
     private static function sendTeamInvite($teamId, $teamName, $playerEmail, $playerName = '') {

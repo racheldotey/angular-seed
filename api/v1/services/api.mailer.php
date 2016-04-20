@@ -48,8 +48,8 @@ class ApiMailer {
         // Retrieve template
         $emailTemplate = self::selectEmailTemplate($templateId);
         if (!$emailTemplate) {
-            self::logMailError(LOG_ERR, "ERROR RETRIEVING EMAIL TEMPLATE, templateId <" . $templateId . ">");
-            return false;
+            self::logMailError(LOG_ERR, "ERROR RETRIEVING EMAIL TEMPLATE, templateId <{$templateId}>");
+            return "ERROR RETRIEVING EMAIL TEMPLATE, templateId <{$templateId}>";
         }                                // Set email format to HTML
 
         // If a from email is set
@@ -88,12 +88,12 @@ class ApiMailer {
         
         if ($mail->send()) {
             // log the success
-            self::logMailError(LOG_INFO, "EMAIL SUCCESS");//\n Template Id:<{$templateId}> Sender: <{$emailTemplate->replyEmail}, {$emailTemplate->replyName}> Recipient: <{$recipientEmail}, {$recipientName}> Subject: <{$subject}> Body: <{$bodyPlain}>");
-            return true;
+            self::logMailError(LOG_INFO, "EMAIL SUCCESS\n Template Id:<{$templateId}> Sender: <{$emailTemplate->replyEmail}, {$emailTemplate->replyName}> Recipient: <{$recipientEmail}, {$recipientName}> Subject: <{$subject}> Body: <{$bodyPlain}>");
+            return "EMAIL SUCCESS: Template Id:<{$templateId}> Sender: <{$emailTemplate->replyEmail}, {$emailTemplate->replyName}> Recipient: <{$recipientEmail}, {$recipientName}> Subject: <{$subject}> Body: <{$bodyPlain}>";
         } else {
             // log the error
-            self::logMailError(LOG_ERR, "EMAIL FAILURE");//\nError <{$mail->ErrorInfo}>/n Template Id:<{$templateId}> Sender: <{$emailTemplate->replyEmail}, {$emailTemplate->replyName}> Recipient: <{$recipientEmail}, {$recipientName}> Subject: <{$subject}> Body: <{$bodyPlain}>");
-            return false;
+            self::logMailError(LOG_ERR, "EMAIL FAILURE\nError <{$mail->ErrorInfo}>/n Template Id:<{$templateId}> Sender: <{$emailTemplate->replyEmail}, {$emailTemplate->replyName}> Recipient: <{$recipientEmail}, {$recipientName}> Subject: <{$subject}> Body: <{$bodyPlain}>");
+            return "EMAIL FAILURE: Error <{$mail->ErrorInfo}> - Template Id:<{$templateId}> Sender: <{$emailTemplate->replyEmail}, {$emailTemplate->replyName}> Recipient: <{$recipientEmail}, {$recipientName}> Subject: <{$subject}> Body: <{$bodyPlain}>";
         }
     }
 
@@ -139,7 +139,8 @@ class ApiMailer {
     private static function selectEmailTemplate($templateId) {
         $template = DBConn::selectOne("SELECT id, identifier, from_email AS fromEmail, from_name AS fromName, "
                 . "reply_email AS replyEmail, reply_name AS replyName, subject, body_html AS bodyHtml, body_plain AS bodyPlain "
-                . "FROM as_email_templates WHERE identifier = :identifier LIMIT 1;", array(':identifier' => $templateId));
+                . "FROM " . DBConn::prefix() . "email_templates WHERE identifier = :identifier LIMIT 1;", 
+                array(':identifier' => $templateId));
         if (!$template) {
         self::logMailError(LOG_ERR, "ERROR RETRIEVING EMAIL TEMPLATE, templateId <{$templateId}>");
             return false;
