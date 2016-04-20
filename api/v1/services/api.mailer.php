@@ -29,7 +29,8 @@ class ApiMailer {
     }
     
     public static function sendTeamInvite($teamId, $teamName, $playerEmail, $playerName) {
-        return self::sendEmailFromTemplate('TEAM_INVITE', $playerEmail, $playerName);
+        $url = $teamId;
+        return self::sendEmailFromTemplate('TEAM_INVITE', $playerEmail, $playerName, [], [$teamName, $url]);
     }
     
     private static function sendEmailFromTemplate($templateId, $recipientEmail, $recipientName = '', $bodyParams = [], $subjectParams = []) {

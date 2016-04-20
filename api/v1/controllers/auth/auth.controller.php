@@ -189,7 +189,7 @@ class AuthController {
         } else if (!password_verify($post['current'], $savedPassword)) {
             return $app->render(401, array('msg' => "Invalid user password. Unable to verify request." ));
         } else {
-            if(AuthData::updateUserPassword($post['userId'], password_hash($post['new'], PASSWORD_DEFAULT))) {
+            if(AuthData::updateUserPassword(array(':id' => $post['userId'], ':password' => password_hash($post['new'], PASSWORD_DEFAULT)))) {
                 return $app->render(200, array('msg' => "Password successfully changed." ));
             } else {
                 return $app->render(400, array('msg' => "Password could not be changed. Try again later." ));
