@@ -24,6 +24,8 @@ angular.module('api.v1', [
     
     // API URL Base
     api.apiUrl = 'http://api.seed.dev/';
+    //api.apiUrl = 'https://api-dot-triviajoint-prod2.appspot.com/'; // PROD
+    //api.apiUrl = 'https://api-dot-triviajoint-qa2.appspot.com/'; // QA
     
     // Default Error Message 
     // Used when no other message is available.
