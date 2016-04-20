@@ -41,7 +41,6 @@ angular.module('AuthService', [
                             if (!UserSession.create(data.user)) {
                                 $log.error('[authInit] Credentials found but session Couldn\'t be Created', data);
                             }
-                    console.log("AuthService Init - Happy true ness - ", data);
                             return resolve(UserSession.get());
                         }, function (error) {
                             CookieService.destroyAuthCookie();
@@ -154,6 +153,54 @@ angular.module('AuthService', [
                             $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
                         });
             });
+        };
+
+        factory.forgotpassword = function (credentials) {
+            return $q(function (resolve, reject) {
+                API.postForgotpassword(credentials)
+                        .then(function (data) {
+
+
+
+                        }, function (error) {
+                            reject(error);
+                            $rootScope.$broadcast(AUTH_EVENTS.forgotpasswordFailed);
+                        });
+            });
+
+
+        };
+
+        factory.forgotemailaddress = function (credentials) {
+            return $q(function (resolve, reject) {
+                API.getforgotemailaddress(credentials)
+                        .then(function (data) {
+                            resolve(data);
+
+
+                        }, function (error) {
+                            reject(error);
+                            //$rootScope.$broadcast(AUTH_EVENTS.getforgotemailaddressFailed);
+                        });
+            });
+
+
+        };
+
+        factory.resetpassword = function (credentials) {
+            return $q(function (resolve, reject) {
+                API.postResetpassword(credentials)
+                        .then(function (data) {
+                            resolve(data);
+
+
+                        }, function (error) {
+                            reject(error);
+                            //$rootScope.$broadcast(AUTH_EVENTS.getforgotemailaddressFailed);
+                        });
+            });
+
+
         };
 
         factory.logout = function () {
