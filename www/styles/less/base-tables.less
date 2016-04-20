@@ -45,11 +45,10 @@ table.dataTable {
             /* Responsive sub table */
             &.child {
                 padding: 0;
-                border-left: 2px solid #e3e3e3;
-                border-right: 2px solid #e3e3e3;
                 td.child {
-                    padding: 0;
+                    padding: 5px 25px;
                     table.sub-table {
+                        border: 1px solid @brick-red;
                         margin: 0;
                     }
                 }
@@ -96,8 +95,11 @@ table, table.dataTable {
                 
                 /* Responsive sub table */
                 &.child {
-                    border-left: 2px solid darken(@brick-red, 5%);
-                    border-right: 2px solid darken(@brick-red, 5%);
+                    padding: 5px 25px;
+                    table.sub-table {
+                        border: 2px solid @brick-red;
+                        margin: 0;
+                    }
                 }
             }
         }

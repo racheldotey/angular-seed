@@ -12,7 +12,7 @@
     
     <div class="alert alert-warning" role="alert" ng-repeat="game in hostActiveGames">
         <p class="pull-left">
-            <strong>Active Game:</strong> {{game.name}}
+            <strong>Active Game:</strong> <a data-ui-sref="app.host.game({'gameId' :{{game.id}}, 'roundNumber' : 1 })">{{game.name}}</a>
         </p>
         <div class="pull-right">
             <button data-ui-sref="app.host.game({'gameId' :{{game.id}}, 'roundNumber' : 1 })" class="btn btn-primary btn-sm">Edit Scores</button>
