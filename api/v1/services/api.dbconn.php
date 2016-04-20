@@ -51,12 +51,14 @@ class DBConn {
                 // Error Mode: Throw Exceptions
                 \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
             );
+            
+            // 
+            $invocation = ($c['dbHost']) ? "host={$c['dbHost']}" : "unix_socket={$c['dbUnixSocket']}";
 
             try {
-                $invocation = ($c['dbHost']) ? "host={$c['dbHost']}" : "unix_socket={$c['dbUnixSocket']}";
                 self::$pdo = new \PDO("mysql:{$invocation};dbname={$c['db']}", $c["dbUser"], $c["dbPass"], $options);
-                self::logError("I have successfully connected to the DB from api.dbconn.php");
             } catch (\PDOException $e) {
+                self::logError("Could not connect to the DB \"mysql:{$invocation};dbname={$c['db']}\" from 'api.dbconn'.");
                 // If we cant connect to the database die
                 die('Could not connect to the database:<br/>' . $e);
             }
