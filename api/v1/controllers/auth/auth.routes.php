@@ -14,10 +14,88 @@ class AuthRoutes {
         $app->map("/admin/auth/delete/expired-tokens/", $authenticateForRole('admin'), function () use ($app) {
             AuthController::deleteExpiredAuthTokens($app);
         })->via(['DELETE', 'POST']);
-
-        /*
-         * id, nameFirst, nameLast, email
-         */
+        
+            /**
+             * @api {post} /user/update/password Manage user password.
+             * @apiName ChangeUserPassword
+             * @apiGroup Auth
+             *
+             * @apiParam {Integer} userId User id.
+             * @apiParam {String} current Current user password.
+             * @apiParam {String} new New password for the user to change it too.
+             *
+             * @apiSuccessExample {json} Success-Response:
+             *      HTTP/1.1 200: OK
+             *      {
+             *          "data": {
+             *              "msg": "Password successfully changed."
+             *          },
+             *          "meta": {
+             *              "error": false,
+             *              "status": 200
+             *          }
+             *      }
+             * 
+             * @apiErrorExample {json} Error-Missing-Parameters:
+             *      HTTP/1.1 400: Bad Request
+             *      {
+             *          "data": {
+             *              "msg": "Password could not be changed. Check your parameters and try again."
+             *          },
+             *          "meta": {
+             *              "error": true,
+             *              "status": 400
+             *          }
+             *      }
+             * 
+             * @apiErrorExample {json} Error-Invalid-New-Password:
+             *      HTTP/1.1 400: Bad Request
+             *      {
+             *          "data": {
+             *              "msg": "Invalid Password. Check your parameters and try again."
+             *          },
+             *          "meta": {
+             *              "error": true,
+             *              "status": 400
+             *          }
+             *      }
+             * 
+             * @apiErrorExample {json} Error-User-Id-Not-Found:
+             *      HTTP/1.1 400: Bad Request
+             *      {
+             *          "data": {
+             *              "msg": "User not found. Check your parameters and try again."
+             *          },
+             *          "meta": {
+             *              "error": true,
+             *              "status": 400
+             *          }
+             *      }
+             * 
+             * @apiErrorExample {json} Error-Unauthorized:
+             *      HTTP/1.1 401: Unauthorized
+             *      {
+             *          "data": {
+             *              "msg": "Invalid user password. Unable to verify request."
+             *          },
+             *          "meta": {
+             *              "error": true,
+             *              "status": 401
+             *          }
+             *      }
+             * 
+             * @apiErrorExample {json} Error-Unknown-DB-Update:
+             *      HTTP/1.1 400: Bad Request
+             *      {
+             *          "data": {
+             *              "msg": "Password could not be changed. Try again later."
+             *          },
+             *          "meta": {
+             *              "error": true,
+             *              "status": 400
+             *          }
+             *      }
+             */
         $app->post("/user/update/password/", $authenticateForRole('member'), function () use ($app) {
             AuthController::changeUserPassword($app);
         });

@@ -175,10 +175,25 @@ class AuthController {
     }
         
     static function changeUserPassword($app) {
-        if(AuthControllerNative::updateUserPassword($app)) {
-            return $app->render(200, array('msg' => "Password successfully changed." ));
-        } else {
+        $post = $app->request->post();
+        if(!v::key('userId', v::stringType())->validate($post) || 
+            !v::key('current', v::stringType())->validate($post)) {
             return $app->render(400, array('msg' => "Password could not be changed. Check your parameters and try again." ));
+        } else if (!AuthControllerNative::validatePasswordRequirements($post, 'new')) {
+            return $app->render(400, array('msg' => "Invalid Password. Check your parameters and try again."));
+        }
+        
+        $savedPassword = AuthData::selectUserPasswordById($post['userId']);
+        if (!$savedPassword) {
+            return $app->render(400, array('msg' => "User not found. Check your parameters and try again." ));
+        } else if (!password_verify($post['current'], $savedPassword)) {
+            return $app->render(401, array('msg' => "Invalid user password. Unable to verify request." ));
+        } else {
+            if(AuthData::updateUserPassword($post['userId'], password_hash($post['new'], PASSWORD_DEFAULT))) {
+                return $app->render(200, array('msg' => "Password successfully changed." ));
+            } else {
+                return $app->render(400, array('msg' => "Password could not be changed. Try again later." ));
+            }
         }
     }
 

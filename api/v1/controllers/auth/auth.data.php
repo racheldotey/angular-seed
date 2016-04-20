@@ -95,7 +95,14 @@ class AuthData {
         return $user;
     }
     
+    /* Password Updating */
+    
     static function selectUserPasswordById($userId) {
         return DBConn::selectColumn("SELECT password FROM " . DBConn::prefix() . "users WHERE id = :id LIMIT 1;", array(':id' => $userId));
+    }
+    
+    static function updateUserPassword($userId, $password) {
+        return DBConn::update("UPDATE " . DBConn::prefix() . "users SET password = :password WHERE id = :id LIMIT 1;", 
+                array(':id' => $userId, ':password' => $password));
     }
 }
