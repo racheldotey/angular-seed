@@ -13,7 +13,8 @@ angular.module('ModalService', [
     'app.modal.editRole',
     'app.modal.editRole',
     'app.modal.editUser',
-    'app.modal.editVisibilityField'
+    'app.modal.editVisibilityField',
+    'app.modal.forgotPassword'
 ])
 .factory('ModalService', ['$uibModal', function($uibModal) {
         
@@ -176,6 +177,28 @@ angular.module('ModalService', [
             }
         });
     };
+
+    /*
+    * Open Forgot Password Modal
+    * 
+    * @return uibModalInstance
+    */
+    api.openForgotPassword = function (emailAddress) {
+        return api.openModal({
+            templateUrl: templatePath + 'auth/forgotPassword/forgotPassword.html',
+            controller: 'ForgotPasswordCtrl',
+            resolve: {
+                ForgotEmailAddress: function () {
+                    if (angular.isDefined(emailAddress)) {
+                        return emailAddress;
+                    } else {
+                        return '';
+                    }
+                }
+            }
+        });
+    };
+
 
     return api;
 }]);
