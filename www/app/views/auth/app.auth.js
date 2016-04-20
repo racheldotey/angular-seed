@@ -12,5 +12,6 @@ angular.module('app.auth', [
     'app.auth.footer',
     'app.auth.login',
     'app.auth.signup',
-    'app.auth.signupVenue'
+    'app.auth.signupVenue',
+    'app.auth.resetPassword'
 ]);
