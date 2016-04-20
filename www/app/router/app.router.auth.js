@@ -254,4 +254,35 @@ app.config(['$stateProvider', 'USER_ROLES',
             url: '/logout'
         });
 
+        $stateProvider.state('app.auth.resetPassword', {
+            title: 'Reset Password',
+            url: '/reset_password/:usertoken',
+            views: {
+                'content@app.auth': {
+                    templateUrl: 'app/views/auth/resetPassword/resetPassword.html',
+                    controller: 'ResetPasswordCtrl'
+                },
+                'signupform@app.auth.resetPassword': {
+                    templateUrl: 'app/views/auth/resetPassword/resetPasswordForm.html'
+                }
+            },
+            resolve: {
+                $q: '$q',
+                $rootScope: '$rootScope',
+                $state: '$state',
+                alreadyLoggedIn: function ($rootScope, $state, $q, AuthService) {
+                    return $q(function (resolve, reject) {
+                        if (AuthService.getUser()) {
+                            $rootScope.$evalAsync(function () {
+                                $state.go('app.member.dashboard');
+                            });
+                            reject(false);
+                        } else {
+                            resolve(true);
+                        }
+                    });
+                }
+            }
+        });
+
     }]);
