@@ -3,6 +3,13 @@
 
 class VenueData {
   
+    public static function getVenueByUser($userid) {
+        $venue = DBConn::selectOne("SELECT *"
+                . "FROM " . DBConn::prefix() . "venues AS r WHERE r.created_user_id = :id;", array(':id' => $userid));
+        return $venue;
+    }
+  
+
     public static function getVenue($id) {
         $venue = DBConn::selectOne("SELECT r.id, r.venue, r.desc, r.created, r.last_updated AS lastUpdated, "
                 . "CONCAT(u1.name_first, ' ', u1.name_last) AS createdBy, "
@@ -40,6 +47,15 @@ class VenueData {
         return DBConn::insert("INSERT INTO " . DBConn::prefix() . "venue_roles(venue_id, user_id, role) "
                 . "VALUES (:venue_id, :user_id, :role)", $assignment);
     }
+	
+	public static function updatedataVenue($validVenueData, $venueId){
+		
+		  DBConn::update("UPDATE " . DBConn::prefix() . "venues SET name=:name, address=:address, address_b=:address_b, city=:city, state=:state, zip=:zip, phone=:phone, website=:website, facebook_url=:facebook_url,logo=:logo, hours=:hours , referral=:referral, last_updated=:last_updated, last_updated_by=:last_updated_by WHERE created_user_id = :created_user_id;", $validVenueData);
+		  
+		  $venue= DBConn::selectOne("SELECT * "
+                . "FROM " . DBConn::prefix() . "venues WHERE created_user_id = :created_user_id LIMIT 1;", array(':created_user_id' => $venueId));
+	return $venue;
+	}
     
     public static function updateVenue($validVenue) {
         return DBConn::update("UPDATE " . DBConn::prefix() . "venues SET name=:name, address=:address, address_b=:address_b, "

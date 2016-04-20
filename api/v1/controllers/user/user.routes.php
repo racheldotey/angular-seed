@@ -14,7 +14,7 @@ class UserRoutes {
         /*
          * id, nameFirst, nameLast, email
          */
-        $app->post("/update/:userId/", $authenticateForRole('member'), function ($userId) use ($app) {
+        $app->post("/user/update/:userId/", $authenticateForRole('member'), function ($userId) use ($app) {
             UserController::updateUser($app, $userId);
         });
             

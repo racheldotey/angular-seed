@@ -149,6 +149,33 @@ class AuthController {
             return $app->render(401, $result);
         }
     }
+	
+	 static function forgotpassword($app) {
+        $result = AuthControllerNative::forgotpassword($app);
+        if($result['frgtauthenticated']) {
+            return $app->render(200, $result);
+        } else {
+            return $app->render(400, $result);
+        }
+    }
+	
+	 static function getforgotpasswordemail($app) {
+        $result = AuthControllerNative::getforgotpasswordemail($app);
+        if($result['frgtauthenticatedemail']) {
+            return $app->render(200, $result);
+        } else {
+            return $app->render(400, $result);
+        }
+    }
+	 static function resetpassword($app) {
+        $result = AuthControllerNative::resetpassword($app);
+        if($result['resetpasswordauthenticated']) {
+            return $app->render(200, $result);
+        } else {
+            return $app->render(400, $result);
+        }
+    }
+	
     
     static function facebookLogin($app) {
         $result = AuthControllerFacebook::login($app);

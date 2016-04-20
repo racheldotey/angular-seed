@@ -44,6 +44,14 @@ class AuthData {
         return DBConn::update("UPDATE " . DBConn::prefix() . "users SET facebook_id = :facebook_id WHERE id = :id;", $validUser);
     }
     
+    static function updateforgotpassworddata($forgotpwdperms) {
+        return DBConn::update("UPDATE " . DBConn::prefix() . "users SET usertoken = :usertoken,fortgotpassword_duration = :fortgotpassword_duration WHERE email = :email;", $forgotpwdperms);
+    }
+        
+    static function updateUserPassword($validUser) {
+        return DBConn::update("UPDATE " . DBConn::prefix() . "users SET password = :password WHERE id = :id;", $validUser);
+    }
+        
     static function selectUserById($id) {
         $user = DBConn::selectOne("SELECT id, name_first as nameFirst, name_last as nameLast, email "
                 . "FROM " . DBConn::prefix() . "users WHERE id = :id LIMIT 1;", array(':id' => $id));
@@ -79,6 +87,24 @@ class AuthData {
         }
         return $user;
     }
+
+    static function selectUserByUsertoken($usertoken) {
+        $user = DBConn::selectOne("SELECT email "
+                        . "FROM " . DBConn::prefix() . "users WHERE usertoken = :usertoken LIMIT 1;", array(':usertoken' => $usertoken));
+
+        return $user;
+    }
+
+    static function selectUsertokenExpiry($email) {
+        $user = DBConn::selectOne("SELECT fortgotpassword_duration "
+                        . "FROM " . DBConn::prefix() . "users WHERE email = :email LIMIT 1;", array(':email' => $email));
+
+        return $user;
+    }
+
+    static function resetUserPassword($resetpwdperms) {
+        return DBConn::update("UPDATE " . DBConn::prefix() . "users SET password = :password, usertoken = :usertoken,fortgotpassword_duration = :fortgotpassword_duration  WHERE email = :email;", $resetpwdperms);
+    }
     
     static function selectUserByIdentifierToken($identifier) {
         $user = DBConn::selectOne("SELECT u.id, name_first AS nameFirst, name_last AS nameLast, email, token AS apiToken, identifier AS apiKey "
@@ -100,9 +126,4 @@ class AuthData {
     static function selectUserPasswordById($userId) {
         return DBConn::selectColumn("SELECT password FROM " . DBConn::prefix() . "users WHERE id = :id LIMIT 1;", array(':id' => $userId));
     }
-    
-     static function updateUserPassword($validUser) {
-        return DBConn::update("UPDATE " . DBConn::prefix() . "users SET password = :password WHERE id = :id;", $validUser);
-    }
-
 }

@@ -7,6 +7,11 @@ class VenueRoutes {
             
         //* /venue/ routes - registered users only
         
+		$app->post("/venuesdata/update/:userId/",$authenticateForRole('registered-user'), function ($venueId) use ($app) {
+            VenueController::updateVenueData($app, $venueId);
+        });
+		
+	
         $app->group('/venue', $authenticateForRole('registered-user'), function () use ($app) {
             
             /*
@@ -29,6 +34,7 @@ class VenueRoutes {
             $app->post("/update/:venueId/", function ($venueId) use ($app) {
                 VenueController::saveVenue($app, $venueId);
             });
+			
 
             /*
              * id
@@ -36,6 +42,13 @@ class VenueRoutes {
             $app->map("/delete/:venueId/", function ($venueId) use ($app) {
                 VenueController::deleteVenue($app, $venueId);
             })->via('DELETE', 'POST');
+
+			 /*
+             * id
+             */
+            $app->map("/getbyuser/:userId/", function ($userId) use ($app) {
+                VenueController::getVenueByUser($app, $userId);
+            })->via('GET', 'POST');
             
         });
     }

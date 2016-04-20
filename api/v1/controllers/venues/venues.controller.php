@@ -18,6 +18,14 @@ class VenueController {
             return $app->render(400,  array('msg' => 'Could not select venue.'));
         }
     }
+    static function getVenueByUser($app, $userId) {
+        $venue = VenueData::getVenueByUser($userId);
+        if($venue) {
+            return $app->render(200, array('venue' => $venue));
+        } else {
+            return $app->render(400,  array('msg' => 'Could not select venue.'));
+        }
+    }
     
     static function addVenue($app) {
         $post = $app->request->post();
@@ -54,6 +62,65 @@ class VenueController {
         }
     }
     
+    static function updateVenueData($app, $userId) {
+        $post=$app->request->post();
+        $isValid=true;
+        if(v::key('password', v::stringType())->validate($post) && 
+           v::key('passwordB', v::stringType())->validate($post) && $post['password']!='' && $post['passwordB']!='')
+        {
+            if(!AuthControllerNative::validatePasswordRequirements($post, 'password'))
+            {
+                $isValid=false;
+            }
+            else{
+                $data = array(
+                    ':id' => $userId,
+                    ':password' => password_hash($post['password'], PASSWORD_DEFAULT)
+                    );
+
+                $passwordChanged=AuthData::updateUserPassword($data);
+                if(!$passwordChanged) {
+                    $isValid=false;
+                }
+            }
+        }
+        if($isValid){
+            $venuedata = array(
+                ':created_user_id' => $userId,
+                ':name' => $app->request->post('venueName'),
+                ':address' => $app->request->post('address'),
+                ':address_b' => $app->request->post('addressb'),
+                ':city' => $app->request->post('city'),
+                ':state' => $app->request->post('state'),
+                ':zip' => $app->request->post('zip'),
+                ':phone' => $app->request->post('phone'),
+                ':website' => $app->request->post('website'),
+                ':facebook_url' => $app->request->post('facebook'),
+                ':hours' => $app->request->post('hours'),
+                ':logo' => $app->request->post('logoUrl'),
+                ':referral' => $app->request->post('referralCode'),
+                ':last_updated' => date('Y-m-d H:i:s'),
+                ':last_updated_by' => $userId
+                );
+
+            $userdata = array(
+             ':id' => $userId,
+             ':name_first' => $app->request->post('nameFirst'),
+             ':name_last' => $app->request->post('nameLast'),
+             ':email' => $app->request->post('email')
+             );
+            $user =  UserData::updateUser($userdata);
+            $venue = VenueData::updatedataVenue($venuedata, $userId);
+        }
+
+        if( $isValid && isset($user) && $user ) {
+            $user = UserData::selectUserById($userId);
+            return $app->render(200, array('user' => $user, 'venue' => $venue));
+        } else {
+            return $app->render(400,  array('msg' => 'Could not update venue.'));
+        }
+    }
+
     static function saveVenue($app, $venueId) {
         $post = $app->request->post();
         
@@ -88,7 +155,7 @@ class VenueController {
             return $app->render(400,  array('msg' => 'Could not update venue.'));
         }
     }
-    
+
     static function deleteVenue($app, $venueId) {
         if(VenueData::deleteVenue($venueId)) {
             return $app->render(200,  array('msg' => 'Venue has been deleted.'));

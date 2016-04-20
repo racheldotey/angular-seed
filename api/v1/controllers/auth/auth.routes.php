@@ -104,6 +104,7 @@ class AuthRoutes {
         //* /auth/ routes - publicly accessable        
             
         $app->group('/auth', $authenticateForRole('public'), function () use ($app) {
+			
             
             /**
              * @api {post} /auth/authenticate Confirm api key and token pair represents an active user login session.
@@ -327,8 +328,19 @@ class AuthRoutes {
              *          }
              *      }
              */
+			
             $app->post("/login/", function () use ($app) {
                 AuthController::login($app);
+            });
+			
+			 $app->post("/forgotpassword/", function () use ($app) {
+				AuthController::forgotpassword($app);
+            });
+			 $app->post("/getforgotpasswordemail/", function () use ($app) {
+				AuthController::getforgotpasswordemail($app);
+            });
+			 $app->post("/resetpassword/", function () use ($app) {
+				AuthController::resetpassword($app);
             });
             
             /* email, nameFirst, nameLast, facebookId, accessToken */
