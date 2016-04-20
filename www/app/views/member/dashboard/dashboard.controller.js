@@ -25,8 +25,18 @@ angular.module('app.member.dashboard', [])
             }),
             DTColumnBuilder.newColumn('venue').withTitle('Joint'),
             DTColumnBuilder.newColumn('host').withTitle('Host'),
-            DTColumnBuilder.newColumn('scheduled').withTitle('Scheduled').renderWith(function (data, type, full, meta) {
-                return moment(data, 'YYYY-MM-DD HH:mm:ss').format('M/D/YYYY h:mm a');
+            DTColumnBuilder.newColumn(null).withTitle('Status').renderWith(function (data, type, full, meta) {
+                var scheduled = moment(data.scheduled, 'YYYY-MM-DD HH:mm:ss').format('h:mm a on M/D/YYYY ');
+                var started = moment(data.started, 'YYYY-MM-DD HH:mm:ss').format('h:mm a on M/D/YYYY ');
+                var ended = moment(data.ended, 'YYYY-MM-DD HH:mm:ss').format('h:mm a on M/D/YYYY ');
+                    
+                if(data.ended) {
+                    return '<span title="Scheduled: ' + scheduled + ' Started: ' + started +  ' Ended: ' + ended +  '">Ended at  ' + ended + '</span>';
+                } else if(data.started) {
+                    return '<span title="Scheduled: ' + scheduled + ' Started: ' + started +  '">In progress, started at  ' + started + '</span>';
+                } else {
+                    return '<span title="Scheduled: ' + scheduled + '">Scheduled for  ' + scheduled + '</span>';
+                }
             }),
             DTColumnBuilder.newColumn('scoreboard').withTitle('Scoreboard').notSortable().withClass('none')
         ];
