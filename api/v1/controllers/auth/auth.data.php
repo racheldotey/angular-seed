@@ -126,4 +126,8 @@ class AuthData {
     static function selectUserPasswordById($userId) {
         return DBConn::selectColumn("SELECT password FROM " . DBConn::prefix() . "users WHERE id = :id LIMIT 1;", array(':id' => $userId));
     }
+    
+    static function selectUserPasswordByEmail($email) {
+        return DBConn::selectColumn("SELECT password FROM " . DBConn::prefix() . "users WHERE email = :email LIMIT 1;", array(':email' => $email));
+    }
 }

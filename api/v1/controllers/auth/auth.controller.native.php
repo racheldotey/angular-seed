@@ -222,20 +222,20 @@ class AuthControllerNative {
         $mail->isHTML(true);
         $mail->Subject = "Triviajoint forgot password";
         $mailbody = '<table>
-   <tr>
-    <td>Dear, ' . $user->nameFirst . ' ' . $user->nameLast . '</td>
-</tr>   
-<tr>
-    <td>Click on the below link to reset password</td>
-</tr>   
-<tr>
-    <td>
-     <a href="' . $config->get('websiteUrl') . 'reset_password/' . $usertoken . '">
-        ' . $config->get('websiteUrl') . 'reset_password/' . $usertoken . '
-    </a>
-</td>
-</tr>   
-</table>';
+            <tr>
+             <td>Dear, ' . $user->nameFirst . ' ' . $user->nameLast . '</td>
+         </tr>   
+         <tr>
+             <td>Click on the below link to reset password</td>
+         </tr>   
+         <tr>
+             <td>
+              <a href="' . $config->get('websiteUrl') . 'reset_password/' . $usertoken . '">
+                 ' . $config->get('websiteUrl') . 'reset_password/' . $usertoken . '
+             </a>
+         </td>
+         </tr>   
+         </table>';
         $mail->Body = $mailbody;
         if (!$mail->send()) {
             return array('frgtauthenticated' => false, 'msg' => 'Email could not be sent for reset password. Please try again later.');
