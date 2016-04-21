@@ -10,11 +10,11 @@ class AuthHooks {
     private static function hookCallHotSalsa($app, $apiResponse) {
         $vars = self::data_hookConfigVars('HOT_SALSA_');
         
-        if(!isset($vars['HOT_SALSA_ENABLED']) || ($vars['HOT_SALSA_ENABLED'] !== 'true' && $vars['HOT_SALSA_ENABLED'] !== '1')) {
+        if(!isset($vars['HOT_SALSA_PLAYER_REGISTRATION_ENABLED']) || ($vars['HOT_SALSA_PLAYER_REGISTRATION_ENABLED'] !== 'true' && $vars['HOT_SALSA_PLAYER_REGISTRATION_ENABLED'] !== '1')) {
             return;
         }
         
-        if(!isset($vars['HOT_SALSA_URL']) || 
+        if(!isset($vars['HOT_SALSA_PLAYER_REGISTRATION_URL']) || 
             !isset($vars['HOT_SALSA_APP_VERSION']) || 
             !isset($vars['HOT_SALSA_URL_CODE']) || 
             !isset($vars['HOT_SALSA_AUTH_KEY']) || 
@@ -50,7 +50,7 @@ class AuthHooks {
         $ch = curl_init(); 
 
         // set url 
-        curl_setopt($ch, CURLOPT_URL, $vars['HOT_SALSA_URL']); 
+        curl_setopt($ch, CURLOPT_URL, $vars['HOT_SALSA_PLAYER_REGISTRATION_URL']); 
         curl_setopt($ch, CURLOPT_POST, true); 
         curl_setopt($ch, CURLOPT_POSTFIELDS, $params); 
 
