@@ -9,6 +9,7 @@
 angular.module('api.v1', [
     'apiRoutes.auth',
     'apiRoutes.datatables',
+    'apiRoutes.emails',
     'apiRoutes.games',
     'apiRoutes.groups',
     'apiRoutes.lists',

@@ -3,8 +3,8 @@
 /* @author  Rachel Carbone */
 
 angular.module('app.modal.trivia.invitePlayer', [])        
-    .controller('TriviaInvitePlayerModalCtrl', ['$scope', '$uibModalInstance', '$filter', 'AlertConfirmService', 'editing',
-    function($scope, $uibModalInstance, editing) {        
+    .controller('TriviaInvitePlayerModalCtrl', ['$scope', '$uibModalInstance', 'ApiRoutesEmails',
+    function($scope, $uibModalInstance, ApiRoutesEmails) {        
     /* Used to restrict alert bars */
     $scope.alertProxy = {};
     
@@ -18,6 +18,11 @@ angular.module('app.modal.trivia.invitePlayer', [])
     
     /* Click event for the Add Team button */
     $scope.buttonInvite = function() {
+        ApiRoutesEmails.sendInviteNewPlayerEmail($scope.invite).then(function(response) {
+            console.log(response);
+        }, function(error) {
+            console.log(error);
+        });
     };
         
     /* Click event for the Cancel button */

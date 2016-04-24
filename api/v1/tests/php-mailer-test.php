@@ -5,9 +5,6 @@ require_once dirname(dirname(__FILE__)) . '/vendor/autoload.php';   // Composer 
 /**
  * This example shows settings to use when sending via Google's Gmail servers.
  */
-//SMTP needs accurate times, and the PHP time zone MUST be set
-//This should be done in your php.ini, but this is how to do it if you don't have access to that
-date_default_timezone_set('Etc/UTC');
 
 
 //Create a new PHPMailer instance
@@ -21,8 +18,11 @@ $mail->isSMTP();
 $mail->SMTPDebug = 2;
 //Ask for HTML-friendly debug output
 $mail->Debugoutput = 'html';
+
+
+
 //Set the hostname of the mail server
-$mail->Host = 'smtp.gmail.com';
+$mail->Host = 'mail.triviaculture.com';
 // use
 // $mail->Host = gethostbyname('smtp.gmail.com');
 // if your network does not support SMTP over IPv6
@@ -33,22 +33,26 @@ $mail->SMTPSecure = 'tls';
 //Whether to use SMTP authentication
 $mail->SMTPAuth = true;
 //Username to use for SMTP authentication - use full email address for gmail
-$mail->Username = "rachellcarbone@gmail.com";
+$mail->Username = 'communications@triviajoint.com';
 //Password to use for SMTP authentication
-$mail->Password = "tnfnbotwntnhalwf";
+$mail->Password = 'Tr1v1@#1';
 //Set who the message is to be sent from
-$mail->setFrom('rachellcarbone@gmail.com', 'Rachel TrivaJoint-C');
+//$mail->setFrom('communications@triviajoint.com', 'TriviaJoint.com');
 //Set an alternative reply-to address
-$mail->addReplyTo('rachel@rachellcarbone.com', 'Rachel TrivaJoint-R');
+//$mail->addReplyTo('communications@triviajoint.com', 'TrivaJoint Communications');
 //Set who the message is to be sent to
-$mail->addAddress('rachel.dotey@gmail.com', 'Rachel TrivaJoint-D');
+$mail->addAddress('james.morgenstein@vistrada.com', 'James TrivaJoint-Email-Test');
+$mail->addAddress('rachel.dotey@gmail.com', 'Rachel TrivaJoint-Email-Test');
 //Set the subject line
-$mail->Subject = 'PHPMailer GMail SMTP test';
+
+
+
+$mail->Subject = 'PHPMailer TriviaJoint.com SMTP test';
 //Read an HTML message body from an external file, convert referenced images to embedded,
 //convert HTML into a basic plain-text alternative body
-$mail->msgHTML('<p>This is a <b>html-text</b> message body.</p>');
+$mail->msgHTML('<h1>If you can read this the test worked!</h1><p>This is a <b>html-text</b> message body.</p>');
 //Replace the plain text body with one created manually
-$mail->AltBody = 'This is a plain-text message body';
+$mail->AltBody = 'If you can read this the test worked! This is a plain-text message body';
 
 //send the message, check for errors
 if (!$mail->send()) {
