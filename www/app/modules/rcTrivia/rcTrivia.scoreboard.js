@@ -152,14 +152,21 @@ angular.module('rcTrivia.scoreboard', ['rcTrivia.game'])
             });          
         };
         
-        api.addTeamToGame = function(teamId) {
+        api.addTeamToGame = function(teamId, gameId) {
             return $q(function (resolve, reject) {
                 var loadedGame = api.getGame();
                 if(loadedGame) {
-                    ApiRoutesGames.addTeamToGame(loadedGame.id, loadedGame.currentRoundNumber, teamId).then(
+                    ApiRoutesGames.addTeamToGame(loadedGame.id, teamId).then(
                         function (result) {
                             TriviaGame.update(result.game);
                             resolve(api.getGame());
+                        }, function (error) {
+                            reject(error);
+                        });
+                } else if (angular.isDefined(gameId)) {
+                    ApiRoutesGames.addTeamToGame(gameId, teamId).then(
+                        function (result) {
+                            resolve(result);
                         }, function (error) {
                             reject(error);
                         });

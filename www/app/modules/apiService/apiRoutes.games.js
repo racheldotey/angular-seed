@@ -84,11 +84,11 @@ angular.module('apiRoutes.games', [])
     
 
     /* Add team to game */
-    api.addTeamToGame = function(gameId, roundNumber, teamId) {
-        if(angular.isUndefined(gameId) || angular.isUndefined(roundNumber) || angular.isUndefined(teamId)) {
+    api.addTeamToGame = function(gameId, teamId) {
+        if(angular.isUndefined(gameId) || angular.isUndefined(teamId)) {
             return API.reject('Invalid team or game please check your parameters and try again.');
         }
-        return API.post('trivia/checkin-team/' + gameId + '/' + roundNumber, { 'teamId' : teamId }, 'Could not check team into game.');
+        return API.post('trivia/checkin-team/' + gameId, { 'teamId' : teamId }, 'Could not check team into game.');
     };
 
     /* Start game */

@@ -22,7 +22,7 @@ angular.module('app.modal.trivia.addTeamToGame', [])
             $scope.form.addTeam.$setDirty();
             $scope.alertProxy.error('Please select a team to sign into your game.');
         } else {
-            TriviaScoreboard.addTeamToGame($scope.addTeam.id).then(
+            TriviaScoreboard.addTeamToGame($scope.addTeam.id, $scope.game.id).then(
                 function (result) {
                     $uibModalInstance.close(result);
                 }, function (error) {

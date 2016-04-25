@@ -81,8 +81,8 @@ angular.module('TriviaModalService', [
                 game: function() {
                     return game;
                 },
-                venuesList: function(ApiRoutesSimpleLists) {
-                    return ApiRoutesSimpleLists.simpleVenuesList();
+                teamsList: function(ApiRoutesSimpleLists) {
+                    return ApiRoutesSimpleLists.simpleTeamsList();
                 }
             }
         });

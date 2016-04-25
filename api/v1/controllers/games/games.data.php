@@ -4,7 +4,7 @@
 
 class GameData {
   
-    static function selectGame($gameId, $roundNumber = 1) {
+    static function selectGame($gameId) {
         $game = DBConn::selectOne("SELECT g.id, g.name, g.scheduled, g.venue_id AS venueId, g.host_user_id AS hostId, "
                 . "game_started AS started, game_ended AS ended, max_points maxPoints, v.name AS venue, "
                 . "CONCAT(u.name_first, ' ', u.name_last) AS updatedBy, "

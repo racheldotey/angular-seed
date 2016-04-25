@@ -23,7 +23,7 @@ class GameController {
         if(!v::intVal()->validate($gameId)) {
             return $app->render(400,  array('msg' => 'Invalid game. Check your parameters and try again.'));
         }
-        $game = GameData::selectGame($gameId, $roundNumber);
+        $game = GameData::selectGame($gameId);
         if($game) {
             return $app->render(200, array('game' => $game));
         } else {
@@ -195,7 +195,7 @@ class GameController {
         }
     }
 
-    static function checkTeamIntoGame($app, $gameId, $roundNumber) {
+    static function checkTeamIntoGame($app, $gameId) {
         if(!v::intVal()->validate($gameId) || 
             !v::key('teamId', v::intVal())->validate($app->request->post())) {
             return $app->render(400,  array('msg' => 'Invalid game or team. Check your parameters and try again.'));
@@ -209,7 +209,7 @@ class GameController {
         );        
         $saved = GameData::insertTeamIntoGame($validTeam);
         if($saved) {
-            $game = GameData::selectGame($gameId, $roundNumber);
+            $game = GameData::selectGame($gameId);
             return $app->render(200, array('game' => $game));
         } else {
             return $app->render(400,  array('msg' => 'Could not check team into game.'));
@@ -315,7 +315,7 @@ class GameController {
         );        
         $questionId = GameData::insertQuestion($validQuestion);
         if($questionId) {
-            $saved = GameData::selectGame($app->request->post('gameId'), $app->request->post('roundId'));
+            $saved = GameData::selectGame($app->request->post('gameId'));
             return $app->render(200, array('game' => $saved));
         } else {
             return $app->render(400,  array('msg' => 'Could not add question.'));
@@ -354,7 +354,7 @@ class GameController {
         );        
         $updated = GameData::updateQuestion($validQuestion);
         if($updated) {
-            $saved = GameData::selectGame($app->request->post('gameId'), $app->request->post('roundId'));
+            $saved = GameData::selectGame($app->request->post('gameId'));
             return $app->render(200, array('game' => $saved));
         } else {
             return $app->render(400,  array('msg' => 'Could not edit question.'));
@@ -375,7 +375,7 @@ class GameController {
         );        
         $deleted = GameData::deleteQuestion($validQuestion);
         if($deleted) {
-            $saved = GameData::selectGame($app->request->post('gameId'), $app->request->post('roundId'));
+            $saved = GameData::selectGame($app->request->post('gameId'));
             return $app->render(200, array('game' => $saved));
         } else {
             return $app->render(400,  array('msg' => 'Could not delete question.'));

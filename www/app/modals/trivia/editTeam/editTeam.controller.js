@@ -57,12 +57,12 @@ angular.module('app.modal.trivia.editTeam', [])
     } else {
         $scope.setMode('new');
         $scope.editing.name = "A " + moment().format('dddd') + " Team in " + moment().format('MMMM');
-        $scope.editing.players = [ { email : 'rachel.dotey@gmail.com' } ];
+        $scope.editing.players = [ { email : '' } ];
     }
     
     /* Click event for the Add Email Input */
     $scope.buttonNewEmailField = function() {
-        $scope.editing.players.push({ email : 'rachellcarbone+' + $scope.editing.players.length + '@gmail.com' });
+        $scope.editing.players.push({ email : '' });
     };
     
         

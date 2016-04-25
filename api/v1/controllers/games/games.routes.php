@@ -91,10 +91,10 @@ class GameRoutes {
             /////
             
             /*
-             * gameId, roundNumber, teamId
+             * gameId, teamId
              */
-            $app->post("/checkin-team/:gameId/:roundNumber/", function ($gameId, $roundNumber) use ($app) {
-                GameController::checkTeamIntoGame($app, $gameId, $roundNumber);
+            $app->post("/checkin-team/:gameId/", function ($gameId) use ($app) {
+                GameController::checkTeamIntoGame($app, $gameId);
             });
             
             /////

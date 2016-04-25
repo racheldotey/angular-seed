@@ -108,7 +108,7 @@ angular.module('app.host.dashboard', [])
         };
         
         $scope.buttonCreateTeam = function(gameId) {
-            var game = $filter('filter')($scope.dtGames.data, {id: gameId}, true);
+            var game = (angular.isDefined($scope.dtGames.rows[gameId])) ? $scope.dtGames.rows[gameId] : {};
             var modalInstance = TriviaModalService.openEditTeam(game);
             modalInstance.result.then(function (result) {
                 for(var i = 0; i < result.invites.length; i++) {
@@ -118,10 +118,10 @@ angular.module('app.host.dashboard', [])
         };
         
         $scope.buttonCheckinTeam = function(gameId) {
-            var game = $filter('filter')($scope.dtGames.data, {id: gameId}, true);
+            var game = (angular.isDefined($scope.dtGames.rows[gameId])) ? $scope.dtGames.rows[gameId] : {};
             var modalInstance = TriviaModalService.openAddTeam(game);
             modalInstance.result.then(function (result) {
-                $scope.alertProxy.success(result);
+                $scope.alertProxy.success("Team successfully checked in to current game.");
             }, function () {});
         };
         
