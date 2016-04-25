@@ -45,11 +45,11 @@
 
                     <td class="question-score" ng-repeat="teamScore in team.rounds[game.currentRoundNumber].questions" data-question-id="{{teamScore.questionId}}">
                         <div ng-if="getQuestionType(teamScore.number) === 'wager'">
-                            <p><strong>Wager</strong> - {{teamScore.teamWager| numberEx}}</p>
-                            <p><strong>Answer</strong> - "{{teamScore.answer}}"</p>
-                            <p><strong>{{(teamScore.questionScore === teamScore.teamWager) ? 'Correct' : 'Incorrect'}}</strong></p>
+                            <p><strong>Answer</strong>: "{{teamScore.answer}}"</p>
+                            <strong>Wager</strong>: {{teamScore.teamWager| numberEx}}<br/>
+                            <strong>{{(teamScore.questionScore === teamScore.teamWager) ? 'Correct' : 'Incorrect'}}</strong><br/>
                         </div>
-                        <p><strong>Score</strong> - {{teamScore.questionScore| numberEx}}</p>
+                        <strong>Score</strong>: {{teamScore.questionScore| numberEx}}
                     </td>
                 </tr>
             </tbody>

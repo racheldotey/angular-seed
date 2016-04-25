@@ -61,11 +61,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 .withOption('scrollCollapse', true)
                 .withOption('deferRender', true)
                 .withOption('paging', false)
-                .withFixedColumns({ leftColumns: 1 })
-                .withOption('responsive', false)
-                .withOption('drawCallback', function() {
-                    $scope.setScoreboardHeight();
-                });
+                .withFixedColumns({ leftColumns: 1 });
                 
             $scope.dtScoreboard.columns = [
                 DTColumnDefBuilder.newColumnDef(0),
@@ -98,8 +94,25 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 // Set the datatables wrapper to that height
                 $('.dataTables_scrollBody').css('height', tableHeight + 'px');
             };
+                
+            $scope.setScoreboardHeight = function() {
+                // Get the height of everything that is not the table
+                var otherWidth = $('body').width() - $('.dataTables_wrapper').width();
+                // Subtract the height of everything but the table from the
+                // height of the window to get whats left for the table
+                var tableWidth = $(window).width() - otherWidth - 1;
+
+                // Max height on table
+                var scoreboardTable = $('table#scoreboard').width();
+                tableWidth = (tableWidth < scoreboardTable) ? tableWidth : scoreboardTable;
+
+                // Set the datatables wrapper to that height
+                $('.dataTables_scrollBody').css('width', tableWidth + 'px');
+            };
+
             angular.element($window).on('resize', function () {
                 $scope.setScoreboardHeight();
+                $('table#scoreboard').css('width', '100%');
             });
             
             $scope.buttonStartGame = function() {
@@ -291,6 +304,7 @@ app.directive('rcTriviaScoreboardReadonly', function(THIS_DIRECTORY) {
                 .withOption('responsive', false)
                 .withOption('drawCallback', function() {
                     $scope.setScoreboardHeight();
+                    $scope.setScoreboardWidth();
                 });
                 
                 // Responsive table height
@@ -311,8 +325,14 @@ app.directive('rcTriviaScoreboardReadonly', function(THIS_DIRECTORY) {
                     // Set the datatables wrapper to that height
                     $('.dataTables_scrollBody').css('height', tableHeight + 'px');
                 };
+                
+                $scope.setScoreboardHeight = function() {
+                    
+                };
+                
                 angular.element($window).on('resize', function () {
                     $scope.setScoreboardHeight();
+                    $scope.setScoreboardWidth();
                 });
             
             $scope.getQuestionType = function(questionNumber) {
