@@ -115,7 +115,7 @@
 <div ng-if="editMode" class="modal-footer">
     <button class="btn btn-warning pull-left" ng-if="!newMode && (saved.locked === '0' && saved.indestructible === '0')" ng-click="buttonDelete()">Delete</button>
         
-    <button class="btn btn-info" ng-click="buttonCancel()">Cancel</button>
+    <button class="btn btn-info pull-left" ng-click="buttonCancel()">Cancel</button>
     <button class="btn btn-primary" ng-if="newMode" ng-click="buttonNew()">Add</button>
     <button class="btn btn-primary" ng-if="!newMode && (saved.locked === '0')" ng-click="buttonSave()">Save</button>
 </div>
