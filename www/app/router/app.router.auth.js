@@ -5,7 +5,7 @@
  * 
  * Set up the states for auth routes, such as the 
  * login page, forgot password and other auth states.
- * Ueses ui-roter's $stateProvider.
+ * Uses ui-roter's $stateProvider.
  * 
  * Set each state's title (used in the config for the html <title>).
  * 
@@ -58,16 +58,14 @@ app.config(['$stateProvider', 'USER_ROLES',
             resolve: {
                 $q: '$q',
                 $rootScope: '$rootScope',
-                $state: '$state',
-                alreadyLoggedIn: function(initUser, $rootScope, $state, $q, AuthService) {
+                AUTH_EVENTS: 'AUTH_EVENTS',
+                alreadyLoggedIn: function(initUser, $rootScope, AUTH_EVENTS, $q, AuthService) {
                     return $q(function(resolve, reject) {  
                         if(AuthService.getUser()) {
-                            $rootScope.$evalAsync(function () {
-                                // $state.go('app.member.dashboard');
-                            });
-                            reject(false);
-                        } else {
+                            $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
                             resolve(true);
+                        } else {
+                            resolve(false);
                         }
                     });
                 }
@@ -88,11 +86,6 @@ app.config(['$stateProvider', 'USER_ROLES',
                     templateUrl: 'app/views/auth/signup/signupForm.html'
                 },
                 'footer@app.auth': {}
-            },
-            resolve: {
-                alreadyLoggedIn: function() {
-                    return true;
-                }
             }
         });
 
@@ -112,16 +105,14 @@ app.config(['$stateProvider', 'USER_ROLES',
             resolve: {
                 $q: '$q',
                 $rootScope: '$rootScope',
-                $state: '$state',
-                alreadyLoggedIn: function(initUser, $rootScope, $state, $q, AuthService) {
+                AUTH_EVENTS: 'AUTH_EVENTS',
+                alreadyLoggedIn: function(initUser, $rootScope, AUTH_EVENTS, $q, AuthService) {
                     return $q(function(resolve, reject) {  
                         if(AuthService.getUser()) {
-                            $rootScope.$evalAsync(function () {
-                                // $state.go('app.member.dashboard');
-                            });
-                            reject(false);
-                        } else {
+                            $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
                             resolve(true);
+                        } else {
+                            resolve(false);
                         }
                     });
                 }
@@ -142,11 +133,6 @@ app.config(['$stateProvider', 'USER_ROLES',
                     templateUrl: 'app/views/auth/signupVenue/signupVenueForm.html'
                 },
                 'footer@app.auth': {}
-            },
-            resolve: {
-                alreadyLoggedIn: function() {
-                    return true;
-                }
             }
         });
 
@@ -176,16 +162,14 @@ app.config(['$stateProvider', 'USER_ROLES',
             resolve: {
                 $q: '$q',
                 $rootScope: '$rootScope',
-                $state: '$state',
-                alreadyLoggedIn: function(initUser, $rootScope, $state, $q, AuthService) {
+                AUTH_EVENTS: 'AUTH_EVENTS',
+                alreadyLoggedIn: function(initUser, $rootScope, AUTH_EVENTS, $q, AuthService) {
                     return $q(function(resolve, reject) {  
                         if(AuthService.getUser()) {
-                            $rootScope.$evalAsync(function () {
-                                // $state.go('app.member.dashboard');
-                            });
-                            reject(false);
-                        } else {
+                            $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
                             resolve(true);
+                        } else {
+                            resolve(false);
                         }
                     });
                 }
@@ -210,19 +194,7 @@ app.config(['$stateProvider', 'USER_ROLES',
             resolve: {
                 $q: '$q',
                 $rootScope: '$rootScope',
-                $state: '$state',
-                alreadyLoggedIn: function(initUser, $rootScope, $state, $q, AuthService) {
-                    return $q(function(resolve, reject) {  
-                        if(AuthService.getUser()) {
-                            $rootScope.$evalAsync(function () {
-                                // $state.go('app.member.dashboard');
-                            });
-                            reject(false);
-                        } else {
-                            resolve(true);
-                        }
-                    });
-                }
+                $state: '$state'
             }
         });
         
@@ -269,19 +241,7 @@ app.config(['$stateProvider', 'USER_ROLES',
             resolve: {
                 $q: '$q',
                 $rootScope: '$rootScope',
-                $state: '$state',
-                alreadyLoggedIn: function (initUser, $rootScope, $state, $q, AuthService) {
-                    return $q(function (resolve, reject) {
-                        if (AuthService.getUser()) {
-                            $rootScope.$evalAsync(function () {
-                                // $state.go('app.member.dashboard');
-                            });
-                            reject(false);
-                        } else {
-                            resolve(true);
-                        }
-                    });
-                }
+                $state: '$state'
             }
         });
 

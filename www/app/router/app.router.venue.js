@@ -5,7 +5,7 @@
  * 
  * Set up the states for logged in user routes, such as the 
  * user profile page and other authenticated states.
- * Ueses ui-roter's $stateProvider.
+ * Uses ui-roter's $stateProvider.
  * 
  * Set each state's title (used in the config for the html <title>).
  * 

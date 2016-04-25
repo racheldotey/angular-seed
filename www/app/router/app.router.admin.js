@@ -5,7 +5,7 @@
  * 
  * Set up the states for admin routes, such as the 
  * system settings page and other admin states.
- * Ueses ui-roter's $stateProvider.
+ * Uses ui-roter's $stateProvider.
  * 
  * Set each state's title (used in the config for the html <title>).
  * 

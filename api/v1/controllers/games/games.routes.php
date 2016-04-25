@@ -4,6 +4,17 @@
 class GameRoutes {
     
     static function addRoutes($app, $authenticateForRole) {
+        
+        /*
+         * id
+         */
+        $app->map("/trivia/game/get/:gameId/", $authenticateForRole('public'), function ($gameId) use ($app) {
+            GameController::getGame($app, $gameId);
+        })->via('GET', 'POST');
+
+        $app->map("/trivia/game/get/:gameId/:roundNumber/", $authenticateForRole('public'), function ($gameId, $roundNumber) use ($app) {
+            GameController::getGame($app, $gameId, $roundNumber);
+        })->via('GET', 'POST');
             
         //* /game/ routes - for registered users
         
@@ -12,17 +23,6 @@ class GameRoutes {
             /////
             ///// GAMES
             /////
-            
-            /*
-             * id
-             */
-            $app->map("/game/get/:gameId/", function ($gameId) use ($app) {
-                GameController::getGame($app, $gameId);
-            })->via('GET', 'POST');
-
-            $app->map("/game/get/:gameId/:roundNumber/", function ($gameId, $roundNumber) use ($app) {
-                GameController::getGame($app, $gameId, $roundNumber);
-            })->via('GET', 'POST');
             
             /*
              * name, venueId, hostId, scheduled, defaultQuestionPoints
