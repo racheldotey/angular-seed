@@ -18,9 +18,6 @@
         <li ng-if="userDisplayName" data-uib-dropdown data-is-open="userNavDropdownIsOpen">
             <a data-uib-dropdown-toggle>Hi {{userDisplayName}} <b class="caret"></b></a>
             <ul data-uib-dropdown-menu>
-                <li rc-auth-visible-if="user" data-ui-sref-active="active"><a data-ui-sref="app.member.dashboard">Player Dashboard</a></li>
-                <li rc-auth-visible-if="host" data-ui-sref-active="active"><a data-ui-sref="app.host.dashboard">Host Dashboard</a></li>
-                <li rc-auth-visible-if="venue" data-ui-sref-active="active"><a data-ui-sref="app.venue.dashboard">Joint Dashboard</a></li>
                 <li rc-auth-visible-if="admin" data-ui-sref-active="active"><a data-ui-sref="app.admin.dashboard">Admin Area</a></li>
                 <li class="divider"></li>
                 <li data-ui-sref-active="active"><a data-ui-sref="app.member.profile">Profile</a></li>
