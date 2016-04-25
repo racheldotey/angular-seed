@@ -13,15 +13,25 @@ angular.module('app.modal.trivia.invitePlayer', [])
     
     /* Item to display and edit */
     $scope.invite = {
-        'email' : ''
+        'email' : '',
+        'phone' : '',
+        'nameFirst' : '',
+        'nameLast' : ''
+    };
+    $scope.invite = {
+        'email' : 'rachellcarbone@gmail.com',
+        'phone' : '123-456-7890',
+        'nameFirst' : 'TestPerson',
+        'nameLast' : 'StillTesting'
     };
     
     /* Click event for the Add Team button */
     $scope.buttonInvite = function() {
         ApiRoutesEmails.sendInviteNewPlayerEmail($scope.invite).then(function(response) {
+            $uibModalInstance.close(response.msg);
             console.log(response);
         }, function(error) {
-            console.log(error);
+            $scope.alertProxy.error(error);
         });
     };
         

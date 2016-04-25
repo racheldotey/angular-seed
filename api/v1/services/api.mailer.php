@@ -24,8 +24,10 @@ class ApiMailer {
         return;
     }
     
-    public static function sendWebsiteSignupInvite($playerEmail) {
-        return self::sendEmailFromTemplate('SIGNUP_INVITE_PLAYER', $playerEmail);
+    public static function sendWebsiteSignupInvite($playerEmail, $token, $name) {
+        $websiteUrl = APIConfig::get('websiteUrl');
+        $inviteLink = "{$websiteUrl}signup/{$token}";
+        return self::sendEmailFromTemplate('SIGNUP_INVITE_PLAYER', $playerEmail, $name, array($inviteLink, $inviteLink));
     }
     
     public static function sendTeamInvite($teamId, $teamName, $playerEmail, $playerName) {
@@ -68,17 +70,16 @@ class ApiMailer {
         // Subject Substituion
         $subject = $emailTemplate->subject;
         $index = 0;
-        foreach ($bodyParams AS $sParam) {
+        foreach ($subjectParams AS $sParam) {
             $subject = str_replace('!@' . $index . '@!', $sParam, $subject);
             $index++;
         }
         $mail->Subject = $subject;
-
         // Body Substitution
         $bodyHtml = $emailTemplate->bodyHtml;
         $bodyPlain = $emailTemplate->bodyPlain;
         $index = 0;
-        foreach ($subjectParams AS $bParam) {
+        foreach ($bodyParams AS $bParam) {
             $bodyHtml = str_replace('!@' . $index . '@!', $bParam, $bodyHtml);
             $bodyPlain = str_replace('!@' . $index . '@!', $bParam, $bodyPlain);
             $index++;

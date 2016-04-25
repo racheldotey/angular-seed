@@ -96,14 +96,14 @@ angular.module('app.host.dashboard', [])
         $scope.buttonInviteFriend = function() {
             var modalInstance = TriviaModalService.openInviteFriend(false);
             modalInstance.result.then(function(result) {
-                $scope.alertProxy.success('Invite sent.');
+                $scope.alertProxy.success(result);
             });
         };
         
         $scope.buttonSignupPlayer = function() {
             var modalInstance = ModalService.openSignup(false);
             modalInstance.result.then(function(result) {
-                $scope.alertProxy.success('New player added.');
+                $scope.alertProxy.success(result);
             });
         };
         
@@ -111,7 +111,7 @@ angular.module('app.host.dashboard', [])
             var game = $filter('filter')($scope.dtGames.data, {id: gameId}, true);
             var modalInstance = TriviaModalService.openEditTeam(game);
             modalInstance.result.then(function (result) {
-                console.log(result);
+                $scope.alertProxy.success(result);
             }, function () {});
         };
         
@@ -119,7 +119,7 @@ angular.module('app.host.dashboard', [])
             var game = $filter('filter')($scope.dtGames.data, {id: gameId}, true);
             var modalInstance = TriviaModalService.openAddTeam(game);
             modalInstance.result.then(function (result) {
-                console.log(result);
+                $scope.alertProxy.success(result);
             }, function () {});
         };
         
@@ -129,7 +129,7 @@ angular.module('app.host.dashboard', [])
                         AlertConfirmService.confirm('Are you sure you positive you would like to close this game? It will finalize team scores.', 'Warning! Closing Game.')
                             .result.then(function () {
                                 ApiRoutesGames.endGame(gameId).then(function (result) {
-                                    console.log(result);
+                                    $scope.alertProxy.success(result);
                                 }, function (error) {
                                     reject(error);
                                 });

@@ -12,17 +12,8 @@ class DBConn {
      */
     static $logger;
     
-    /*
-     * DB Table Prefix
-     */
-    static $dbTablePrefix;
-    
     public static function prefix() {
-        if(!self::$dbTablePrefix) {
-            $config = new APIConfig();
-            self::$dbTablePrefix = $config->get('dbTablePrefix');
-        }
-        return self::$dbTablePrefix;
+        return APIConfig::get('dbTablePrefix');
     }
     
     /*
