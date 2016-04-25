@@ -164,8 +164,8 @@ class GameController {
         foreach($questions as $question) {
             $questionScores[] = array(
                 ':game_id' => $gameId, 
-                ':team_id' => $question['teamId'], 
                 ':round_id' => $question['roundId'],
+                ':team_id' => $question['teamId'], 
                 ':question_id' => $question['questionId'],
                 ':created_user_id' => $currentUser,
                 ':last_updated_by' => $currentUser,

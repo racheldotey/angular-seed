@@ -59,11 +59,11 @@ app.config(['$stateProvider', 'USER_ROLES',
                 $q: '$q',
                 $rootScope: '$rootScope',
                 $state: '$state',
-                alreadyLoggedIn: function($rootScope, $state, $q, AuthService) {
+                alreadyLoggedIn: function(initUser, $rootScope, $state, $q, AuthService) {
                     return $q(function(resolve, reject) {  
                         if(AuthService.getUser()) {
                             $rootScope.$evalAsync(function () {
-                                $state.go('app.member.dashboard');
+                                // $state.go('app.member.dashboard');
                             });
                             reject(false);
                         } else {
@@ -113,11 +113,11 @@ app.config(['$stateProvider', 'USER_ROLES',
                 $q: '$q',
                 $rootScope: '$rootScope',
                 $state: '$state',
-                alreadyLoggedIn: function($rootScope, $state, $q, AuthService) {
+                alreadyLoggedIn: function(initUser, $rootScope, $state, $q, AuthService) {
                     return $q(function(resolve, reject) {  
                         if(AuthService.getUser()) {
                             $rootScope.$evalAsync(function () {
-                                $state.go('app.member.dashboard');
+                                // $state.go('app.member.dashboard');
                             });
                             reject(false);
                         } else {
@@ -177,11 +177,11 @@ app.config(['$stateProvider', 'USER_ROLES',
                 $q: '$q',
                 $rootScope: '$rootScope',
                 $state: '$state',
-                alreadyLoggedIn: function($rootScope, $state, $q, AuthService) {
+                alreadyLoggedIn: function(initUser, $rootScope, $state, $q, AuthService) {
                     return $q(function(resolve, reject) {  
                         if(AuthService.getUser()) {
                             $rootScope.$evalAsync(function () {
-                                $state.go('app.member.dashboard');
+                                // $state.go('app.member.dashboard');
                             });
                             reject(false);
                         } else {
@@ -211,11 +211,11 @@ app.config(['$stateProvider', 'USER_ROLES',
                 $q: '$q',
                 $rootScope: '$rootScope',
                 $state: '$state',
-                alreadyLoggedIn: function($rootScope, $state, $q, AuthService) {
+                alreadyLoggedIn: function(initUser, $rootScope, $state, $q, AuthService) {
                     return $q(function(resolve, reject) {  
                         if(AuthService.getUser()) {
                             $rootScope.$evalAsync(function () {
-                                $state.go('app.member.dashboard');
+                                // $state.go('app.member.dashboard');
                             });
                             reject(false);
                         } else {
@@ -270,11 +270,11 @@ app.config(['$stateProvider', 'USER_ROLES',
                 $q: '$q',
                 $rootScope: '$rootScope',
                 $state: '$state',
-                alreadyLoggedIn: function ($rootScope, $state, $q, AuthService) {
+                alreadyLoggedIn: function (initUser, $rootScope, $state, $q, AuthService) {
                     return $q(function (resolve, reject) {
                         if (AuthService.getUser()) {
                             $rootScope.$evalAsync(function () {
-                                $state.go('app.member.dashboard');
+                                // $state.go('app.member.dashboard');
                             });
                             reject(false);
                         } else {

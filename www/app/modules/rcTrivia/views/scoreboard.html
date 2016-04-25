@@ -118,8 +118,7 @@
                             </div>
                             <br/>
                             <input 
-                                ng-model="teamScore.answer" 
-                                data-string-to-number 
+                                ng-model="teamScore.answer"
                                 type="text" 
                                 maxlength="255"
                                 placeholder="Answer"
@@ -130,12 +129,13 @@
                                     <input 
                                         type="checkbox" 
                                         ng-model="teamScore.wagerChecked"
+                                        ng-init="teamScore.wagerChecked = (teamScore.questionScore === teamScore.teamWager)"
                                         ng-change="checkboxCorrectWagerQuestion(team.teamId, teamScore.number)"> Answered Correct
                                 </label>
                             </div>
                         </div>
                         
-                        <div ng-show="displayQuickScoreButtons && getQuestionType(teamScore.number) === 'default'" class="input-group input-group-sm">
+                        <div ng-if="getQuestionType(teamScore.number) === 'default'" ng-show="displayQuickScoreButtons" class="input-group input-group-sm">
                             <span class="input-group-btn">
                                 <button 
                                     ng-click="buttonQuestionWrong(team.teamId, teamScore.number)"
@@ -154,7 +154,7 @@
                                     type="button"><i class="fa fa-plus"></i></button>
                             </span>
                         </div>
-                        <div ng-hide="displayQuickScoreButtons" class="form-group form-group-sm">
+                        <div ng-if="getQuestionType(teamScore.number) === 'default'" ng-hide="displayQuickScoreButtons" class="form-group form-group-sm">
                             <input 
                                 ng-model="teamScore.questionScore" 
                                 data-string-to-number 

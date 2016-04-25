@@ -102,8 +102,11 @@ angular.module('apiRoutes.games', [])
     };
 
     /* End game */
-    api.saveScoreboard = function(gameId, questions) {
-        return API.post('trivia/save/scoreboard/' + gameId, { 'questions' : questions }, 'Could not save game.');
+    api.saveScoreboard = function(gameId, data) {
+        if(!data.questions) {
+            return API.reject('Invalid scoreboard please verify your information and try again.');
+        }
+        return API.post('trivia/save/scoreboard/' + gameId, data, 'Could not save game.');
     };
 
 

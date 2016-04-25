@@ -52,7 +52,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
             resolve: {
                 $q: '$q',
                 ApiRoutesGames: 'ApiRoutesGames',
-                HostData: function($q, ApiRoutesGames, initUser) {
+                HostData: function(initUser, $q, ApiRoutesGames) {
                     return $q(function (resolve, reject) {
                         ApiRoutesGames.getGameHost(initUser.id).then(function (result) {
                             console.log('HOST Resolve Success: ' + result);
@@ -98,7 +98,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
                 $state: '$state',
                 TriviaScoreboard: 'TriviaScoreboard',
                 AlertConfirmService: 'AlertConfirmService',
-                currentGame: function(AlertConfirmService, TriviaScoreboard, $stateParams, $rootScope, $state, $q) {
+                currentGame: function(initUser, AlertConfirmService, TriviaScoreboard, $stateParams, $rootScope, $state, $q) {
                     $stateParams.roundNumber = (parseInt($stateParams.roundNumber)) ? $stateParams.roundNumber : 1;
                     return $q(function (resolve, reject) {
                         TriviaScoreboard.loadGame($stateParams.gameId, $stateParams.roundNumber).then(function (result) {

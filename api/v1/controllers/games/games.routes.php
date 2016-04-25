@@ -49,7 +49,13 @@ class GameRoutes {
             ///// SCOREBOARD
             /////
             /*
-             * questions [] { teamId, roundId, questionId, teamWager, teamAnswer, questionScore }
+             * questions [] { questionId, questionScore, roundId, teamAnswer, teamId, teamWager }
+             * questions[questions][0][questionId]:41
+             * questions[questions][0][questionScore]:20
+             * questions[questions][0][roundId]:31
+             * questions[questions][0][teamAnswer]:adsasd
+             * questions[questions][0][teamId]:12
+             * questions[questions][0][teamWager]:20
              */
             $app->post("/save/scoreboard/:gameId/", function ($gameId) use ($app) {
                 GameController::saveScoreboard($app, $gameId);

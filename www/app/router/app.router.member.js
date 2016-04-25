@@ -91,7 +91,7 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
                 $state: '$state',
                 TriviaScoreboard: 'TriviaScoreboard',
                 AlertConfirmService: 'AlertConfirmService',
-                currentGame: function(TriviaScoreboard, AlertConfirmService, $stateParams, $rootScope, $state, $q) {
+                currentGame: function(initUser, TriviaScoreboard, AlertConfirmService, $stateParams, $rootScope, $state, $q) {
                     $stateParams.roundNumber = (parseInt($stateParams.roundNumber)) ? $stateParams.roundNumber : 1;
                     return $q(function (resolve, reject) {
                         TriviaScoreboard.loadGame($stateParams.gameId, $stateParams.roundNumber).then(function (result) {

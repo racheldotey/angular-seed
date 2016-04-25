@@ -28,6 +28,15 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 die();
             }
             
+            
+            var values = {name: 'misko', gender: 'male'};
+            var log = [];
+            angular.forEach(values, function(value, key) {
+              this.push(key + ': ' + value);
+            }, log);
+            expect(log).toEqual(['name: misko', 'gender: male']);
+            
+
             $scope.updateTeamRankings = function(teamId) {
                 $scope.unsavedState = true;
                 TriviaScoreboard.updateTeamRankings(teamId);
@@ -305,7 +314,15 @@ app.directive('rcTriviaScoreboardReadonly', function(THIS_DIRECTORY) {
                 angular.element($window).on('resize', function () {
                     $scope.setScoreboardHeight();
                 });
-                
+            
+            $scope.getQuestionType = function(questionNumber) {
+                var question = $scope.game.rounds[$scope.game.currentRoundNumber].questions[questionNumber];
+                if(question.wager === '1') {
+                    return 'wager';
+                } else {
+                    return 'default';
+                }
+            };
             
         }]
     };
