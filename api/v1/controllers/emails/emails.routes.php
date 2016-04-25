@@ -8,10 +8,24 @@ class EmailRoutes {
         $app->group('/send-email', $authenticateForRole('public'), function () use ($app) {
             
             /*
-             * email
+             * token
+             */
+            $app->map("/validate-token/:token", function ($token) use ($app) {
+                EmailController::validateInviteToken($app, $token);
+            })->via('GET', 'POST');
+            
+            /*
+             * email, nameFirst (optional), nameLast (optional), phone (optional)
              */
             $app->map("/invite-player/", function () use ($app) {
                 EmailController::sendPlayerInviteEmail($app);
+            })->via('GET', 'POST');
+            
+            /*
+             * teamId, email, nameFirst (optional), nameLast (optional), phone (optional)
+             */
+            $app->map("/team-invite/", function () use ($app) {
+                EmailController::sendTeamInviteEmail($app);
             })->via('GET', 'POST');
             
         });

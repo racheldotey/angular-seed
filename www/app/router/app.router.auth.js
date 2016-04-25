@@ -54,19 +54,35 @@ app.config(['$stateProvider', 'USER_ROLES',
                 'signupform@app.auth.signup': {
                     templateUrl: 'app/views/auth/signup/signupForm.html'
                 }
+            }
+        });
+
+        $stateProvider.state('app.auth.signup.invite', {
+            bodyClass: 'auth signup',
+            title: 'You have been invited!',
+            url: '/:token',
+            views: {
+                'content@app.auth': {
+                    templateUrl: 'app/views/auth/playerInvite/playerInvite.html',
+                    controller: 'AuthPlayerInviteCtrl'
+                },
+                'signupform@app.auth.signup.invite': {
+                    templateUrl: 'app/views/auth/signup/signupForm.html'
+                }
             },
             resolve: {
                 $q: '$q',
-                $rootScope: '$rootScope',
-                AUTH_EVENTS: 'AUTH_EVENTS',
-                alreadyLoggedIn: function(initUser, $rootScope, AUTH_EVENTS, $q, AuthService) {
+                ApiRoutesEmails: 'ApiRoutesEmails',
+                $stateParams: '$stateParams',
+                InvitationData: function($q, $stateParams, ApiRoutesEmails) {
                     return $q(function(resolve, reject) {  
-                        if(AuthService.getUser()) {
-                            $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
-                            resolve(true);
-                        } else {
-                            resolve(false);
-                        }
+                        ApiRoutesEmails.validateInviteToken($stateParams.token).then(function (result) {
+                            resolve(result.invite);
+                            console.log(result);
+                        }, function(error) {
+                            console.log(error);
+                            reject(error);
+                        });
                     });
                 }
             }

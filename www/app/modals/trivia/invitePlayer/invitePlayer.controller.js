@@ -18,12 +18,6 @@ angular.module('app.modal.trivia.invitePlayer', [])
         'nameFirst' : '',
         'nameLast' : ''
     };
-    $scope.invite = {
-        'email' : 'rachellcarbone@gmail.com',
-        'phone' : '123-456-7890',
-        'nameFirst' : 'TestPerson',
-        'nameLast' : 'StillTesting'
-    };
     
     /* Click event for the Add Team button */
     $scope.buttonInvite = function() {

@@ -12,6 +12,20 @@ class EmailController {
         return hash('sha1', uniqid());
     }
     
+    static function validateInviteToken($app, $token) {       
+        $savedVist = EmailData::updateInviteLastVisited($token);
+        if(!$savedVist) {
+            return $app->render(400, array('msg' => 'Token is invalid.'));
+        }
+        
+        $invite = EmailData::selectInviteByToken($token);
+        if($invite) {
+            return $app->render(200, array("invite" => $invite));
+        } else {
+            return $app->render(400, array('msg' => 'Token has expired.'));
+        }
+    }
+    
     static function sendPlayerInviteEmail($app) {
         $post = $app->request->post();
         if(!v::key('email', v::email())->validate($post)) {
@@ -42,4 +56,7 @@ class EmailController {
         }
     }
     
+    static function sendTeamInviteEmail($app) {
+        
+    }
 }

@@ -1,14 +1,14 @@
 'use strict';
 
 /* 
- * Login Page
+ * Player Invite Signup Page
  * 
- * Controller for the login page.
+ * Controller for the sinup page accessed by a player invite.
  */
 
-angular.module('app.auth.signup', [])
-        .controller('AuthSignupCtrl', ['$scope', '$state', '$log', '$window', '$timeout', 'AuthService', 'AlertConfirmService',
-        function ($scope, $state, $log, $window, $timeout, AuthService, AlertConfirmService) {
+angular.module('app.auth.playerInvite', [])
+        .controller('AuthPlayerInviteCtrl', ['$scope', '$state', '$log', '$window', '$timeout', 'AuthService', 'AlertConfirmService', 'InvitationData',
+        function ($scope, $state, $log, $window, $timeout, AuthService, AlertConfirmService, InvitationData) {
         
         $scope.$state = $state;
         $scope.form = {};
@@ -20,13 +20,13 @@ angular.module('app.auth.signup', [])
 
         $scope.newUser = {
             'userGroup' : 'player',
-            'nameFirst' : '',
-            'nameLast' : '',
-            'email' : '',
-            'phone' : '',
+            'nameFirst' : InvitationData.nameFirst || '',
+            'nameLast' : InvitationData.nameFirst || '',
+            'email' : InvitationData.email,
+            'phone' : InvitationData.phone || '',
             'password' : '',
             'passwordB' : '',
-            'referrer' : '',
+            'referrer' : "Invited by user - " + InvitationData.invitedBy,
             'acceptTerms' : false
         };
 

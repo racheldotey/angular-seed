@@ -5,8 +5,8 @@ class AuthData {
     
   
     static function insertUser($validUser) {
-        $userId = DBConn::insert("INSERT INTO " . DBConn::prefix() . "users(name_first, name_last, email, password) "
-                . "VALUES (:name_first, :name_last, :email, :password);", $validUser);
+        $userId = DBConn::insert("INSERT INTO " . DBConn::prefix() . "users(name_first, name_last, email, phone, password) "
+                . "VALUES (:name_first, :name_last, :email, :phone, :password);", $validUser);
         if($userId) {
             GroupData::addDefaultGroupToUser($userId);
         }

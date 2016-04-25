@@ -65,8 +65,9 @@ class AuthControllerNative {
         // Create and insert a new user
         $validUser = array(
             ':email' => $post['email'],
-            ':name_first' => $post['nameFirst'],
-            ':name_last' => $post['nameLast'],
+            ':name_first' => (v::key('nameFirst', v::stringType())->validate($post)) ? $post['nameFirst'] : '',
+            ':name_last' => (v::key('nameLast', v::stringType())->validate($post)) ? $post['nameLast'] : '',
+            ':phone' => (v::key('phone', v::stringType())->validate($post)) ? $post['phone'] : NULL,
             ':password' => password_hash($post['password'], PASSWORD_DEFAULT)
         );
         $userId = AuthData::insertUser($validUser);
@@ -114,8 +115,6 @@ class AuthControllerNative {
 
     private static function signup_validateSentParameters($post) {
         if (!v::key('email', v::email())->validate($post) ||
-                !v::key('nameFirst', v::stringType())->validate($post) ||
-                !v::key('nameLast', v::stringType())->validate($post) ||
                 !v::key('password', v::stringType())->validate($post)) {
             return 'Signup failed. Check your parameters and try again.';
         } else if (!self::validatePasswordRequirements($post, 'password')) {

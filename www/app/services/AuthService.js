@@ -43,12 +43,9 @@ angular.module('AuthService', [
                         }, function (error) {
                             CookieService.destroyAuthCookie();
                             $log.info('[authInit]', error);
-                            /// Why is this silent? 
                             return resolve(false);
                         });
                 } else {
-                    console.log("AuthService Init - No idea what the hell is going on");
-                    /// Why is this silent? 
                     return resolve(false);
                 }
             });

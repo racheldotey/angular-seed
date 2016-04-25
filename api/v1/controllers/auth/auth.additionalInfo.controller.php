@@ -73,7 +73,7 @@ class InfoController {
         
         $userId = (!$userId && v::key('userId', v::stringType())->validate($post)) ? $post['userId'] : $userId;
         
-        if($userId && v::key('referrer', v::stringType())->validate($post)) {
+        if($userId && v::key('referrer', v::stringType()->length(1, 255))->validate($post)) {
             
             $data = array(
                 ':user_id' => $userId,
@@ -85,7 +85,7 @@ class InfoController {
             
         } 
         
-        if($userId && v::key('triviaLove', v::stringType())->validate($post)) {
+        if($userId && v::key('triviaLove', v::stringType()->length(1, 255))->validate($post)) {
             
             $data = array(
                 ':user_id' => $userId,

@@ -3,6 +3,20 @@
 
 class EmailData {
     
+    static function updateInviteLastVisited($token) {
+        return DBConn::update("UPDATE " . DBConn::prefix() . "tokens_player_invites SET "
+                . "last_visited=NOW() WHERE token = :token LIMIT 1;", array(':token' => $token));
+    }
+    
+    
+    static function selectInviteByToken($token) {
+        return DBConn::selectOne("SELECT token, team_id AS teamId, user_id AS userId, "
+                . "name_first AS nameFirst, name_last AS nameLast, email, phone, "
+                . "created, created_user_id AS invitedBy, expires, last_visited AS lastVisited "
+                . "FROM " . DBConn::prefix() . "tokens_player_invites "
+                . "WHERE token = :token AND expires >= NOW()LIMIT 1;", array(':token' => $token));
+    }
+    
     static function insertTeamInvite($validInvite) {
         return DBConn::insert("INSERT INTO " . DBConn::prefix() . "tokens_player_invites"
                 . "(token, team_id, user_id, name_first, name_last, email, "
