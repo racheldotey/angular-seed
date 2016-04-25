@@ -4,11 +4,12 @@
  * DataTable and standard Table style overrides.
  */
 
-table.dataTable {
+table.table.dataTable {
     border-bottom: 1px solid #e3e3e3;
     word-wrap: break-word;
     word-break: break-word;
-    white-space: normal;
+    white-space: norma;
+    width: 100% !important;
     thead {
 
         tr th {
@@ -74,7 +75,7 @@ body:not(.admin) {
         border-color: lighten(@medium-brown, 15%);
     }
 }
-table, table.dataTable {
+table, table.table.dataTable {
     &.table-dark,  
     &.table-dark table.sub-table {
         border-color: darken(@brick-red, 5%);

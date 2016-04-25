@@ -88,10 +88,8 @@ angular.module('app.member.dashboard', [])
         };
         
         $scope.buttonCreateTeam = function() {
-            var modalInstance = TriviaModalService.openEditGame(false);
-            modalInstance.result.then(function(result) {
-                $state.go('app.host.game', {'gameId' : result.id, 'roundNumber': 1});
-            });
+            var modalInstance = TriviaModalService.openCreateTeam(false);
+            
         };
 
     }]);

@@ -239,13 +239,14 @@ img.img-thumbnail.no-margin {
  * 
  * DataTable and standard Table style overrides.
  */
-table.dataTable {
+table.table.dataTable {
   border-bottom: 1px solid #e3e3e3;
   word-wrap: break-word;
   word-break: break-word;
-  white-space: normal;
+  white-space: norma;
+  width: 100% !important;
 }
-table.dataTable thead tr th {
+table.table.dataTable thead tr th {
   background-color: #f5f5f5;
   border-color: #e3e3e3;
   font-size: .9em;
@@ -253,42 +254,42 @@ table.dataTable thead tr th {
   /* Sorting Icon */
   /* End: Sorting Icon */
 }
-table.dataTable thead tr th.sorting,
-table.dataTable thead tr th.sorting_asc,
-table.dataTable thead tr th.sorting_desc,
-table.dataTable thead tr th.sorting_asc_disabled,
-table.dataTable thead tr th.sorting_desc_disabled {
+table.table.dataTable thead tr th.sorting,
+table.table.dataTable thead tr th.sorting_asc,
+table.table.dataTable thead tr th.sorting_desc,
+table.table.dataTable thead tr th.sorting_asc_disabled,
+table.table.dataTable thead tr th.sorting_desc_disabled {
   padding-right: 25px;
 }
-table.dataTable thead tr th.sorting:after,
-table.dataTable thead tr th.sorting_asc:after,
-table.dataTable thead tr th.sorting_desc:after,
-table.dataTable thead tr th.sorting_asc_disabled:after,
-table.dataTable thead tr th.sorting_desc_disabled:after {
+table.table.dataTable thead tr th.sorting:after,
+table.table.dataTable thead tr th.sorting_asc:after,
+table.table.dataTable thead tr th.sorting_desc:after,
+table.table.dataTable thead tr th.sorting_asc_disabled:after,
+table.table.dataTable thead tr th.sorting_desc_disabled:after {
   bottom: 4px;
   right: 8px;
 }
-table.dataTable tbody tr {
+table.table.dataTable tbody tr {
   /* Responsive Controls */
   /* Responsive sub table */
 }
-table.dataTable tbody tr td.responsive-control i.fa:before {
+table.table.dataTable tbody tr td.responsive-control i.fa:before {
   content: "\f105";
 }
-table.dataTable tbody tr.parent td.responsive-control i.fa:before {
+table.table.dataTable tbody tr.parent td.responsive-control i.fa:before {
   content: "\f107";
 }
-table.dataTable tbody tr.child {
+table.table.dataTable tbody tr.child {
   padding: 0;
 }
-table.dataTable tbody tr.child td.child {
+table.table.dataTable tbody tr.child td.child {
   padding: 5px 25px;
 }
-table.dataTable tbody tr.child td.child table.sub-table {
+table.table.dataTable tbody tr.child td.child table.sub-table {
   border: 1px solid #880000;
   margin: 0;
 }
-table.dataTable tbody tr td {
+table.table.dataTable tbody tr td {
   font-size: .9em;
   padding: 4px;
 }
@@ -304,21 +305,21 @@ body:not(.admin) .dataTables_length select {
   border-color: #71685c;
 }
 table.table-dark,
-table.dataTable.table-dark,
+table.table.dataTable.table-dark,
 table.table-dark table.sub-table,
-table.dataTable.table-dark table.sub-table {
+table.table.dataTable.table-dark table.sub-table {
   border-color: #6f0000;
 }
 table.table-dark tr,
-table.dataTable.table-dark tr,
+table.table.dataTable.table-dark tr,
 table.table-dark table.sub-table tr,
-table.dataTable.table-dark table.sub-table tr {
+table.table.dataTable.table-dark table.sub-table tr {
   border-color: #6f0000;
 }
 table.table-dark tr th,
-table.dataTable.table-dark tr th,
+table.table.dataTable.table-dark tr th,
 table.table-dark table.sub-table tr th,
-table.dataTable.table-dark table.sub-table tr th {
+table.table.dataTable.table-dark table.sub-table tr th {
   background-color: #880000;
   color: #fff;
   border-bottom-color: #d40000;
@@ -327,29 +328,29 @@ table.dataTable.table-dark table.sub-table tr th {
   border-right-color: #6f0000;
 }
 table.table-dark tr td,
-table.dataTable.table-dark tr td,
+table.table.dataTable.table-dark tr td,
 table.table-dark table.sub-table tr td,
-table.dataTable.table-dark table.sub-table tr td {
+table.table.dataTable.table-dark table.sub-table tr td {
   border-color: #6f0000;
   /* Responsive sub table */
 }
 table.table-dark tr td.child,
-table.dataTable.table-dark tr td.child,
+table.table.dataTable.table-dark tr td.child,
 table.table-dark table.sub-table tr td.child,
-table.dataTable.table-dark table.sub-table tr td.child {
+table.table.dataTable.table-dark table.sub-table tr td.child {
   padding: 5px 25px;
 }
 table.table-dark tr td.child table.sub-table,
-table.dataTable.table-dark tr td.child table.sub-table,
+table.table.dataTable.table-dark tr td.child table.sub-table,
 table.table-dark table.sub-table tr td.child table.sub-table,
-table.dataTable.table-dark table.sub-table tr td.child table.sub-table {
+table.table.dataTable.table-dark table.sub-table tr td.child table.sub-table {
   border: 2px solid #880000;
   margin: 0;
 }
 table.table-dark.table-striped > thead th,
-table.dataTable.table-dark.table-striped > thead th,
+table.table.dataTable.table-dark.table-striped > thead th,
 table.table-dark table.sub-table.table-striped > thead th,
-table.dataTable.table-dark table.sub-table.table-striped > thead th {
+table.table.dataTable.table-dark table.sub-table.table-striped > thead th {
   background-color: #880000;
   color: #fff;
   border-bottom-color: #d40000;
@@ -358,15 +359,15 @@ table.dataTable.table-dark table.sub-table.table-striped > thead th {
   border-right-color: #6f0000;
 }
 table.table-dark.table-striped > tbody,
-table.dataTable.table-dark.table-striped > tbody,
+table.table.dataTable.table-dark.table-striped > tbody,
 table.table-dark table.sub-table.table-striped > tbody,
-table.dataTable.table-dark table.sub-table.table-striped > tbody {
+table.table.dataTable.table-dark table.sub-table.table-striped > tbody {
   background-color: #8d0000;
 }
 table.table-dark.table-striped > tbody > tr:nth-of-type(odd),
-table.dataTable.table-dark.table-striped > tbody > tr:nth-of-type(odd),
+table.table.dataTable.table-dark.table-striped > tbody > tr:nth-of-type(odd),
 table.table-dark table.sub-table.table-striped > tbody > tr:nth-of-type(odd),
-table.dataTable.table-dark table.sub-table.table-striped > tbody > tr:nth-of-type(odd) {
+table.table.dataTable.table-dark table.sub-table.table-striped > tbody > tr:nth-of-type(odd) {
   background-color: #7e0000;
 }
 /*
