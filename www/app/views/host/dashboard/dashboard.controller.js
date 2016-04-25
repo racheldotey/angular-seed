@@ -7,8 +7,11 @@
  */
 
 angular.module('app.host.dashboard', [])
-    .controller('HostDashboardCtrl', ['$scope', '$state', '$compile', '$filter', 'TriviaModalService', 'DataTableHelper', 'DTOptionsBuilder', 'DTColumnBuilder', 'UserSession', 'HostData', 'AlertConfirmService', 'ApiRoutesGames',
-        function($scope, $state, $compile, $filter, TriviaModalService, DataTableHelper, DTOptionsBuilder, DTColumnBuilder, UserSession, HostData, AlertConfirmService, ApiRoutesGames) {
+    .controller('HostDashboardCtrl', ['$scope', '$state', '$compile', '$filter', 'ModalService', 'TriviaModalService', 'DataTableHelper', 'DTOptionsBuilder', 'DTColumnBuilder', 'UserSession', 'HostData', 'AlertConfirmService', 'ApiRoutesGames',
+        function($scope, $state, $compile, $filter, ModalService, TriviaModalService, DataTableHelper, DTOptionsBuilder, DTColumnBuilder, UserSession, HostData, AlertConfirmService, ApiRoutesGames) {
+
+        /* Used to restrict alert bars */
+        $scope.alertProxy = {};
 
         $scope.hostActiveGames = HostData.activeGames || [];
 
@@ -94,6 +97,13 @@ angular.module('app.host.dashboard', [])
             var modalInstance = TriviaModalService.openInviteFriend(false);
             modalInstance.result.then(function(result) {
                 $scope.alertProxy.success('Invite sent.');
+            });
+        };
+        
+        $scope.buttonSignupPlayer = function() {
+            var modalInstance = ModalService.openSignup(false);
+            modalInstance.result.then(function(result) {
+                $scope.alertProxy.success('New player added.');
             });
         };
         

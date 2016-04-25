@@ -61,10 +61,10 @@ angular.module('apiRoutes.auth', [])
     };
 
     api.postSignup = function (newUser) {
-        if (!newUser.password ||
-                !newUser.nameLast ||
-                !newUser.nameLast ||
-                !newUser.email) {
+        if (angular.isUndefined(newUser.password)||
+            angular.isUndefined(newUser.email)||
+            angular.isUndefined(newUser.nameFirst)||
+            angular.isUndefined(newUser.nameLast)) {
             return API.reject('Invalid user please verify your information and try again.');
         }
         return API.post('auth/signup/', newUser, 'System unable to register new user.');

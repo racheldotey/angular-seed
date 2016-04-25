@@ -3,12 +3,15 @@
     <div class="host-controls pull-right">
         <button ng-click="buttonNewGame()" class="btn btn-primary">Start New Game</button> 
         <button ng-click="buttonInviteFriend()" class="btn btn-primary">Invite Player</button> 
+        <button ng-click="buttonSignupPlayer()" class="btn btn-primary">Signup Player</button> 
         <button ng-click="buttonCreateTeam()" class="btn btn-primary">Create Team</button>
     </div>
     
     <div class="page-header">
         <h1>Host Dashboard</h1>
     </div>
+    
+    <div data-rc-bootstrap-alerts="alertProxy"></div>
     
     <div class="alert alert-warning" role="alert" ng-repeat="game in hostActiveGames">
         <p class="pull-left">

@@ -1,14 +1,14 @@
 'use strict';
 
 /* 
- * Login Page
+ * Modal Signup Form
  * 
- * Controller for the login page.
+ * Controller for the modal version of the signup form.
  */
 
-angular.module('app.auth.signup', [])
-        .controller('AuthSignupCtrl', ['$scope', '$state', '$log', '$window', '$timeout', 'AuthService', 'AlertConfirmService',
-        function ($scope, $state, $log, $window, $timeout, AuthService, AlertConfirmService) {
+angular.module('app.modal.signup', [])
+        .controller('SignupModalCtrl', ['$scope', '$uibModalInstance', '$state', '$log', '$window', '$timeout', 'AuthService', 'AlertConfirmService',
+        function ($scope, $uibModalInstance, $state, $log, $window, $timeout, AuthService, AlertConfirmService) {
         
         $scope.$state = $state;
         $scope.form = {};
@@ -28,25 +28,30 @@ angular.module('app.auth.signup', [])
             'referrer' : '',
             'acceptTerms' : false
         };
+        $scope.newUserB = {
+            'userGroup' : 'player',
+            'nameFirst' : 'Ra',
+            'nameLast' : 'Carbone',
+            'email' : 'r@gmail.com',
+            'password' : 'password1',
+            'passwordB' : 'password1',
+            'referrer' : 'Google',
+            'acceptTerms' : true
+        };
 
         $scope.signup = function() {
             if(!$scope.form.signup.$valid) {
                 $scope.form.signup.$setDirty();
-                $scope.signupAlerts.error('Please agree to our terms of service and fill in the Email, and Password fields.');
+                $scope.signupAlerts.error('Please fill in the Email, and Password fields.');
             } else if($scope.newUser.password !== $scope.newUser.passwordB) {
                 $scope.form.signup.$setDirty();
                 $scope.signupAlerts.error('Passwords do not match.');
             } else if(!$scope.newUser.acceptTerms) {
                 AlertConfirmService.confirm('Do you agree to our <a href="http://www.triviajoint.com/terms-and-conditions/" target="_blank">Terms of Service</a>?', 'Terms of Service Agreement').result.then(function (resp) {
                     $scope.newUser.acceptTerms = true;
-                    AuthService.signup($scope.newUser).then(function (results) {
+                    AuthService.signup($scope.newUser, true).then(function (results) {
                         $log.debug(results);
-
-                        $scope.signupAlerts.success("Signup successful!  Please wait for confirmation page", 'signup');
-
-                        $timeout(function () {
-                            $window.top.location.href = 'http://www.triviajoint.com/registration-thank-you-page/';
-                        }, 1000);
+                        $uibModalInstance.close("Signup successful!");
                     }, function (error) {
                         $scope.signupAlerts.error(error);
                     });
@@ -54,14 +59,9 @@ angular.module('app.auth.signup', [])
                     $scope.facebookAlerts.error('Please accept the Terms of Service to signup.');
                 });
             } else {
-                AuthService.signup($scope.newUser).then(function (results) {
+                AuthService.signup($scope.newUser, true).then(function (results) {
                     $log.debug(results);
-                    
-                    $scope.signupAlerts.success("Signup successful!  Please wait for confirmation page", 'signup');
-
-                    $timeout(function () {
-                        $window.top.location.href = 'http://www.triviajoint.com/registration-thank-you-page/';
-                    }, 1000);
+                    $uibModalInstance.close("Signup successful!  Please wait for confirmation page.");
                 }, function (error) {
                     $scope.signupAlerts.error(error);
                 });
@@ -76,11 +76,7 @@ angular.module('app.auth.signup', [])
                         $log.debug(resp);
                         $scope.newUser = resp;
                         
-                        $scope.facebookAlerts.success("Facebook signup Successful!  Please wait for confirmation page", 'terms');
-
-                        $timeout(function () {
-                            $window.top.location.href = 'http://www.triviajoint.com/registration-thank-you-page/';
-                        }, 1000);
+                        $uibModalInstance.close("Facebook signup Successful!");
                     }, function (err) {
                         $scope.facebookAlerts.error(err);
                     });
@@ -92,11 +88,7 @@ angular.module('app.auth.signup', [])
                     $log.debug(resp);
                     $scope.newUser = resp;
 
-                    $scope.facebookAlerts.success("Facebook signup Successful!  Please wait for confirmation page", 'terms');
-
-                    $timeout(function () {
-                        $window.top.location.href = 'http://www.triviajoint.com/registration-thank-you-page/';
-                    }, 3000);
+                    $uibModalInstance.close("Facebook signup Successful!");
                 }, function (err) {
                     $scope.facebookAlerts.error(err);
                 });
@@ -111,5 +103,10 @@ angular.module('app.auth.signup', [])
         
         $scope.onChangeValidateConfirmPassword = function() {
             $scope.showPasswordMissmatch = ($scope.newUser.password !== $scope.newUser.passwordB);
+        };
+
+        /* Click event for the Cancel button */
+        $scope.buttonCancel = function() {
+            $uibModalInstance.dismiss(false);
         };
     }]);

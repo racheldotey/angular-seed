@@ -10,6 +10,8 @@ angular.module('app.admin.users', [])
     .controller('AdminUsersCtrl', ['$scope', '$compile', '$filter', 'DTOptionsBuilder', 'DTColumnBuilder', 'DataTableHelper', 'ModalService', 
         function($scope, $compile, $filter, DTOptionsBuilder, DTColumnBuilder, DataTableHelper, ModalService) {
 
+        $scope.alertProxy = {};
+        
         /* Modal triggers */
         // Edit User Modal
         $scope.buttonOpenEditUserModal = function (id) {
@@ -20,6 +22,14 @@ angular.module('app.admin.users', [])
                     $scope.dtUsers.reloadData();
                 }, function () {});
             }
+        };
+        
+        $scope.buttonSignupPlayer = function() {
+            var modalInstance = ModalService.openSignup(false);
+            modalInstance.result.then(function(result) {
+                $scope.alertProxy.success('New player added.');
+                $scope.dtUsers.reloadData();
+            });
         };
 
         // DataTable Setup

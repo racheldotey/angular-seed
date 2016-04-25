@@ -14,6 +14,7 @@ angular.module('ModalService', [
     'app.modal.editRole',
     'app.modal.editUser',
     'app.modal.editVisibilityField',
+    'app.modal.signup',
     'app.modal.forgotPassword'
 ])
 .factory('ModalService', ['$uibModal', function($uibModal) {
@@ -172,6 +173,27 @@ angular.module('ModalService', [
                                 ApiRoutesSystemVisibility.getField(field);
                     } else {
                         return {};
+                    }
+                }
+            }
+        });
+    };
+
+    /*
+    * Open Signup Modal
+    * 
+    * @return uibModalInstance
+    */
+    api.openSignup = function (emailAddress) {
+        return api.openModal({
+            templateUrl: templatePath + 'auth/signup/signup.html',
+            controller: 'SignupModalCtrl',
+            resolve: {
+                ForgotEmailAddress: function () {
+                    if (angular.isDefined(emailAddress)) {
+                        return emailAddress;
+                    } else {
+                        return '';
                     }
                 }
             }

@@ -1,10 +1,10 @@
-﻿'use strict';
+'use strict';
 
 /* @author  Kapil Akhia */
 
 angular.module('app.modal.forgotPassword', [])
-    .controller('ForgotPasswordCtrl', ['$scope', '$uibModalInstance', '$filter', 'AlertConfirmService', 'ForgotEmailAddress', 'AuthService',
-    function ($scope, $uibModalInstance, $filter, AlertConfirmService, ForgotEmailAddress, AuthService) {
+    .controller('ForgotPasswordCtrl', ['$scope', '$uibModalInstance', 'ForgotEmailAddress', 'AuthService',
+    function ($scope, $uibModalInstance, ForgotEmailAddress, AuthService) {
 
         /* Used to restrict alert bars */
         $scope.alertProxy = {};
@@ -13,7 +13,7 @@ angular.module('app.modal.forgotPassword', [])
         $scope.form = {};
 
         $scope.forgotpasswordEmail = {
-            'email': ForgotEmailAddress,
+            'email': ForgotEmailAddress
         };
 
         /* Click event for the Cancel button */

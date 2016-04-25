@@ -10,6 +10,8 @@ angular.module('app.member.dashboard', [])
     .controller('MemberDashboardCtrl', ['$scope', '$state', '$compile', '$filter', 'TriviaModalService', 'DataTableHelper', 'DTOptionsBuilder', 'DTColumnBuilder',
         function($scope, $state, $compile, $filter, TriviaModalService, DataTableHelper, DTOptionsBuilder, DTColumnBuilder) {
 
+        /* Used to restrict alert bars */
+        $scope.alertProxy = {};
 
         // DataTable Setup
         $scope.dtScoreboard = {};
