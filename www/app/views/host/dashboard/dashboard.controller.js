@@ -111,7 +111,9 @@ angular.module('app.host.dashboard', [])
             var game = $filter('filter')($scope.dtGames.data, {id: gameId}, true);
             var modalInstance = TriviaModalService.openEditTeam(game);
             modalInstance.result.then(function (result) {
-                $scope.alertProxy.success(result);
+                for(var i = 0; i < result.invites.length; i++) {
+                    $scope.alertProxy.success(result.invites[i]);
+                }
             }, function () {});
         };
         

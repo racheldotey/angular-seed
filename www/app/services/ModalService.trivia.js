@@ -81,8 +81,8 @@ angular.module('TriviaModalService', [
                 game: function() {
                     return game;
                 },
-                teamsList: function(ApiRoutesSimpleLists) {
-                    return ApiRoutesSimpleLists.simpleTeamsList();
+                venuesList: function(ApiRoutesSimpleLists) {
+                    return ApiRoutesSimpleLists.simpleVenuesList();
                 }
             }
         });
@@ -103,8 +103,8 @@ angular.module('TriviaModalService', [
                 editing: function(ApiRoutesGames) {
                     return { 'gameId' : gameId };
                 },
-                gameList: function(ApiRoutesSimpleLists) {
-                    return ApiRoutesSimpleLists.simpleGamesList();
+                venuesList: function(ApiRoutesSimpleLists) {
+                    return ApiRoutesSimpleLists.simpleVenuesList();
                 }
             }
         });

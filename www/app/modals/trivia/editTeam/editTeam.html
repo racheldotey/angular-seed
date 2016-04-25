@@ -41,6 +41,20 @@
         
         <div class="row">
             <div class="col-xs-12">
+                <div class="form-group">
+                    <label>Home Joint</label>
+                    <select 
+                        ng-options="venue.label for venue in venuesList" 
+                        ng-model="editing.venue"
+                        class="form-control" required>
+                        <option value="">Select a Home Venue</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-xs-12">
                 <label>Invite Team Members</label>
                 <div class="form-group" ng-repeat="player in editing.players">
                     <input ng-model="player.email" class="form-control" type="email" maxlength="255" />
@@ -66,6 +80,6 @@
     <button class="btn btn-warning pull-left" ng-if="!newMode" ng-click="buttonDelete()">Delete</button>
     
     <button class="btn btn-default pull-left" ng-click="buttonCancel()">Cancel</button>
-    <button class="btn btn-primary" ng-if="newMode" ng-click="buttonNew()">Add</button>
+    <button class="btn btn-primary" ng-if="newMode" ng-click="buttonNew()">New Team</button>
     <button class="btn btn-primary" ng-if="!newMode" ng-click="buttonSave()">Save</button>
 </div>

@@ -39,7 +39,6 @@ angular.module('apiRoutes.lists', [])
         return getList('/simple-list/visibility-fields');
     };
     
-    
     api.simpleVenuesList = function() { 
         return getList('/simple-list/venues');
     };

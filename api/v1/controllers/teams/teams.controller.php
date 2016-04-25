@@ -19,14 +19,16 @@ class TeamController {
         }
     }
     
-    static function addTeam($app) {        
-        if(!v::key('name', v::stringType())->validate($app->request->post())) {
+    static function addTeam($app) {
+        if(!v::key('name', v::stringType())->validate($app->request->post()) ||
+           !v::key('venueId', v::intVal())->validate($app->request->post())) {
             return $app->render(400, array('msg' => 'Insert failed. Check your parameters and try again.'));
         }
         
         $teamName = $app->request->post('name');
         $teamId = TeamData::insertTeam(array(
             ':name' => $teamName,
+            ':home_venue_id' => $app->request->post('venueId'),
             ":created_user_id" => APIAuth::getUserId(),
             ":last_updated_by" => APIAuth::getUserId()
         ));
@@ -37,7 +39,7 @@ class TeamController {
                 $results = self::addPlayers($teamId, $teamName, $app->request->post('players'));
             }
             $team = TeamData::getTeam($teamId);
-            return $app->render(200, array('team' => $team, 'adds' => $results));
+            return $app->render(200, array('team' => $team, 'invites' => $results));
         } else {
             return $app->render(400,  array('msg' => 'Could not add team.'));
         }
@@ -48,7 +50,7 @@ class TeamController {
         foreach($players AS $player) {      
             
             if(isset($player['id'])) {
-                $results[] = 'id';// self::addPlayerById($teamId, $teamName, $player['id']);
+                $results[] = self::addPlayerById($teamId, $teamName, $player['id']);
             }  else if (isset($player['email'])) {
                 $results[] = self::addPlayerByEmail($teamId, $teamName, $player['email']);
             } else {
@@ -60,17 +62,17 @@ class TeamController {
     
     private static function addPlayerByEmail($teamId, $teamName, $email) {
         $found = TeamData::selectUserIdByEmail($email);
-        return ($found) ? self::addPlayerById($teamId, $teamName, $found) : 
+        return ($found) ? self::addPlayerById($teamId, $teamName, $found->id) : 
                             self::sendTeamInvite($teamId, $teamName, $email);
     }
     
     private static function addPlayerById($teamId, $teamName, $id) {
         $found = TeamData::selectUserById($id);
-        return ($found) ? self::sendTeamInvite($teamId, $teamName, $found->email, $found->displayName) : "User could not be found.";
+        return ($found) ? self::sendTeamInvite($teamId, $teamName, $found->email, $id, $found->displayName) : "User could not be found.";
     }
     
-    private static function sendTeamInvite($teamId, $teamName, $playerEmail, $playerName = '') {
-        return ApiMailer::sendTeamInvite($teamId, $teamName, $playerEmail, $playerName);
+    private static function sendTeamInvite($teamId, $teamName, $playerEmail, $playerId = NULL, $playerName = '') {
+        return EmailController::silentlySendTeamInviteEmail($teamId, $teamName, $playerEmail, $playerId, $playerName);
     }
     
     static function saveTeam($app, $teamId) {

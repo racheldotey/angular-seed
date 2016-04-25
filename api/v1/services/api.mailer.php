@@ -24,15 +24,18 @@ class ApiMailer {
         return;
     }
     
-    public static function sendWebsiteSignupInvite($playerEmail, $token, $name) {
+    public static function sendWebsiteSignupInvite($token, $playerEmail, $playerName = '') {
+        $websiteTitle = APIConfig::get('websiteTitle');
         $websiteUrl = APIConfig::get('websiteUrl');
         $inviteLink = "{$websiteUrl}signup/{$token}";
-        return self::sendEmailFromTemplate('SIGNUP_INVITE_PLAYER', $playerEmail, $name, array($inviteLink, $inviteLink));
+        return self::sendEmailFromTemplate('SIGNUP_INVITE_PLAYER', $playerEmail, $playerName, [$websiteTitle, $inviteLink], [$websiteTitle]);
     }
     
-    public static function sendTeamInvite($teamId, $teamName, $playerEmail, $playerName) {
-        $url = $teamId;
-        return self::sendEmailFromTemplate('TEAM_INVITE', $playerEmail, $playerName, [], [$teamName, $url]);
+    public static function sendTeamInvite($token, $teamName, $playerEmail, $playerName = '') {
+        $websiteTitle = APIConfig::get('websiteTitle');
+        $websiteUrl = APIConfig::get('websiteUrl');
+        $inviteLink = "{$websiteUrl}join-team/{$token}";
+        return self::sendEmailFromTemplate('TEAM_INVITE', $playerEmail, $playerName, [$websiteTitle, $inviteLink, $teamName], [$websiteTitle]);
     }
     
     private static function sendEmailFromTemplate($templateId, $recipientEmail, $recipientName = '', $bodyParams = [], $subjectParams = []) {
@@ -150,3 +153,13 @@ class ApiMailer {
         return $template;
     }
 }
+
+/*
+[LOCAL] Team Up! You've been invited to a Trivia Team.
+<p>A player at <a href='!@1@!' target='_blank'>!@0@!</a> would like you to join their team!</p><p>Click the link above or paste the following URL into your browser to join team '!@2@!':</p><p>!@1@!</p>
+A player at !@0@! would like you to join their team! Paste the following URL into your browser to join team '!@2@!': !@1@!
+    
+[LOCAL] A friend has invited you to join !@0@!
+<p>A player at <a href='!@1@!' target='_blank'>!@0@!</a> would like you to join in on the fun!</p><p>Click the link above or paste the following URL into your browser to signup:</p><p>!@1@!</p>
+A player at !@0@! would like you to join in on the fun!\n\rPaste the following URL into your browser to signup:\n\r!@1@!
+ */

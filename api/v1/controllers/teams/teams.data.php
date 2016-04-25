@@ -58,8 +58,8 @@ class TeamData {
             $validTeam[':name'] = $validTeam[':name'] . ' ' . $num;
         }
         
-        return DBConn::insert("INSERT INTO " . DBConn::prefix() . "teams(name, created_user_id, last_updated_by) "
-                . "VALUES (:name, :created_user_id, :last_updated_by);", $validTeam);
+        return DBConn::insert("INSERT INTO " . DBConn::prefix() . "teams(name, home_venue_id, created_user_id, last_updated_by) "
+                . "VALUES (:name, :home_venue_id, :created_user_id, :last_updated_by);", $validTeam);
     }
     
     static function updateTeam($validTeam) {

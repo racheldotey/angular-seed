@@ -20,6 +20,7 @@ class APIConfig {
             'dirSystem' => 'api/system/',
             'dirLogs' => 'api/system/logs/',
             
+            'websiteTitle' => 'AngularSeed.com',
             'websiteUrl' => 'http://www.seed.dev/'
         );
 
@@ -34,6 +35,7 @@ class APIConfig {
                 'dbPass' => 'angular_seed',
                 'dbTablePrefix' => 'as_',
                 'systemPath' => 'C:/xampp/htdocs/webdev/angular-seed/',
+                'websiteTitle' => 'AngularSeed.com',
                 'websiteUrl' => 'http://www.seed.dev/'
             ));
         }

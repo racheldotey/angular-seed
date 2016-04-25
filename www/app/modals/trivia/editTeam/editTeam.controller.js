@@ -3,13 +3,16 @@
 /* @author  Rachel Carbone */
 
 angular.module('app.modal.trivia.editTeam', [])        
-    .controller('TriviaEditTeamModalCtrl', ['ApiRoutesGames', '$scope', '$uibModalInstance', 'editing',
-    function(ApiRoutesGames, $scope, $uibModalInstance, editing) {        
+    .controller('TriviaEditTeamModalCtrl', ['ApiRoutesGames', '$scope', '$uibModalInstance', 'editing', 'venuesList',
+    function(ApiRoutesGames, $scope, $uibModalInstance, editing, venuesList) {        
     /* Used to restrict alert bars */
     $scope.alertProxy = {};
     
     /* Holds the add / edit form on the modal */
     $scope.form = {};
+    
+    /* List of Venues */
+    $scope.venuesList = venuesList;
     
     /* Save for resetting purposes */
     $scope.saved = (angular.isDefined(editing.id)) ? angular.copy(editing) : { };
@@ -70,9 +73,11 @@ angular.module('app.modal.trivia.editTeam', [])
     
     /* Click event for the Add New Team button */
     $scope.buttonNew = function() {
+        $scope.editing.venueId = $scope.editing.venue.id;
         ApiRoutesGames.addTeam($scope.editing).then(function(result) {
             console.log(result);
-            $scope.alertProxy.success("Team added");
+            $scope.alertProxy.success("Team '" + result.team.name + "'added");
+            $uibModalInstance.close(result);
         }, function(error) {
             console.log(error);
             $scope.alertProxy.error(error);
