@@ -26,16 +26,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
             if(!$scope.game) {
                 console.log("Error loading game.");
                 die();
-            }
-            
-            
-            var values = {name: 'misko', gender: 'male'};
-            var log = [];
-            angular.forEach(values, function(value, key) {
-              this.push(key + ': ' + value);
-            }, log);
-            expect(log).toEqual(['name: misko', 'gender: male']);
-            
+            }            
 
             $scope.updateTeamRankings = function(teamId) {
                 $scope.unsavedState = true;

@@ -144,10 +144,7 @@ class GameController {
                 // TODO: Implement cusitom boolean Respect\Validator
                 // Converting to boolean did not work well, 
                 // This allows a wider range of true false values
-                $saved = GameData::updateEndGame(array(
-                    ":id" => $gameId,
-                    ":last_updated_by" => APIAuth::getUserId()
-                ));
+                $saved = GameData::updateEndGame($gameId, APIAuth::getUserId());
             }
             
             $game = GameData::selectGame($gameId);
