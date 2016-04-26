@@ -47,10 +47,10 @@ class APIConfig {
             'websiteUrl' => 'https://app-dot-triviajoint-qa2.appspot.com/'
         ));
 
-        if($_SERVER['HTTP_HOST'] === 'api.seed.dev' || $_SERVER['SERVER_ADDR'] === '127.0.0.1') {
+        if($_SERVER['HTTP_HOST'] === 'api.seed.dev') {
             // Localhost
             self::$config = $default;
-        } else if($_SERVER['HTTP_HOST'] === 'api-dot-triviajoint-qa2.appspot.com' || $_SERVER['SERVER_ADDR'] === '24.235.64.136') {
+        } else if($_SERVER['HTTP_HOST'] === 'api-dot-triviajoint-qa2.appspot.com') {
             // QA on Google Cloud
             self::$config = $qa;
         }  else if($_SERVER['HTTP_HOST'] === 'api-dot-triviajoint-prod2.appspot.com' || $_SERVER['HTTP_HOST'] === 'app.triviajoint.com') {
