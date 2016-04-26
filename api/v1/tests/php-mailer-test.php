@@ -44,7 +44,6 @@ $mail->addReplyTo("communications@triviajoint.com", "TrivaJoint Communications")
 //Set who the message is to be sent to
 $mail->addAddress("james.morgenstein@vistrada.com", "James TrivaJoint-Email-Test");
 $mail->addAddress("rachel.dotey@gmail.com", "Rachel TrivaJoint-Email-Test");
-$mail->addAddress("rachellcarbone@gmail.com", "Rachel TrivaJoint-Email-Test");
 //Set the subject line
 
 
