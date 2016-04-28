@@ -6,9 +6,6 @@
 
 table.table.dataTable {
     border-bottom: 1px solid #e3e3e3;
-    word-wrap: break-word;
-    word-break: break-word;
-    white-space: normal;
     width: 100% !important;
     thead {
 
@@ -55,19 +52,35 @@ table.table.dataTable {
                 }
             }
             td {
+                word-wrap: break-word;
+                word-break: break-word;
+                white-space: normal;
                 font-size: .9em;
                 padding: 4px; // Thin out normal bootstrap padding
             }
         }
     }
 }
+dataTables_filter {
+    .dataTables_filter {
+        text-align: right !important;
+    }
+    .dataTables_info {
+        font-size: .8em;
+    }
+    .dataTables_length {
+        font-size: .8em;
+    }
+}
+@media (min-width: 768px) {
+    .dataTables_info {
+        text-align: right !important;
+    }
+    .dataTables_paginate {
+        text-align: center !important;
+    }
+}
 
-.dataTables_info {
-    font-size: .8em;
-}
-.dataTables_length {
-    font-size: .8em;
-}
 body:not(.admin) {
     .dataTables_length select {
         color: #fff;
