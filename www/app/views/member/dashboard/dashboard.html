@@ -1,6 +1,18 @@
 <div class="page member dashboard">
     
-    <div class="host-controls pull-right">
+    <div class="host-controls visible-xs-block visible-xs-block pull-right">
+        <div class="btn-group" uib-dropdown is-open="status.isopen">
+            <button id="single-button" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
+                <i class="fa fa-bars" aria-hidden="true"></i>
+            </button>
+            <ul class="dropdown-menu pull-right" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+                <li role="menuitem"><a ng-click="buttonInviteFriend()">Invite Friend</a></li>
+                <li role="menuitem"><a ng-click="buttonCreateTeam()">Create Team</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="host-controls hidden-xs hidden-xs pull-right">
         <button ng-click="buttonInviteFriend()" class="btn btn-primary">Invite Friend</button> 
         <button ng-click="buttonCreateTeam()" class="btn btn-primary">Create Team</button>
     </div>
