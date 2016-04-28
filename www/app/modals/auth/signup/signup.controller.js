@@ -23,20 +23,11 @@ angular.module('app.modal.signup', [])
             'nameFirst' : '',
             'nameLast' : '',
             'email' : '',
+            'phone' : '',
             'password' : '',
             'passwordB' : '',
             'referrer' : '',
             'acceptTerms' : false
-        };
-        $scope.newUserB = {
-            'userGroup' : 'player',
-            'nameFirst' : 'Ra',
-            'nameLast' : 'Carbone',
-            'email' : 'r@gmail.com',
-            'password' : 'password1',
-            'passwordB' : 'password1',
-            'referrer' : 'Google',
-            'acceptTerms' : true
         };
 
         $scope.signup = function() {
