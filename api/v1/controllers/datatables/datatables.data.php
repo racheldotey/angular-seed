@@ -122,7 +122,7 @@ class DatatablesData {
                 . "CONCAT(u.name_first, ' ', u.name_last) AS host, v.name AS venue "
                 . "FROM as_games AS g LEFT JOIN as_users AS u ON u.id = g.host_user_id "
                 . "LEFT JOIN as_venues AS v ON v.id = g.venue_id "
-                . "WHERE g.game_started IS NOT NULL AND g.game_ended IS NOT NULL;");
+                . "WHERE g.game_started IS NOT NULL AND g.game_ended IS NULL;");
         return self::selectGameScoreboard($qGames);
     }
         

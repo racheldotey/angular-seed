@@ -17,14 +17,7 @@
         
         <div class="form-group">
             <label class="col-xs-5 col-sm-4 col-md-3 control-label">Teams</label>
-            <div class="col-xs-7 col-sm-8 col-md-9">
-                <select 
-                    ng-options="'(#' + team.id + ') ' + team.label for team in teamsList" 
-                    ng-model="addTeam"
-                    class="form-control" required>
-                    <option value="">Select a Team to Checkin</option>
-                </select>
-            </div>
+            <div class="col-xs-7 col-sm-8 col-md-9" rc-trivia-select-list-venue="addTeam" teams-list-data="teamsList"></div>
         </div>
     </form>
 

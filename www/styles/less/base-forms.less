@@ -25,6 +25,22 @@ form {
 }
 
 
+    /* Ui-Select list */
+    .ui-select-bootstrap .ui-select-choices-row {
+        &.active>a {
+            color: #fff;
+            background-color: @brick-red;
+        }
+        &>a:hover,
+        &>a:focus,
+        &:hover,
+        &:focus {
+            background-color: lighten(@brick-red, 5%);
+        }
+    } 
+    
+
+
 // UI Bootstrap Timepicker
 .uib-timepicker {
     .btn-link {

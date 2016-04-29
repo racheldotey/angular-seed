@@ -327,23 +327,28 @@ app.directive('rcTriviaScoreboardReadonly', function(THIS_DIRECTORY) {
     };
 });
 
-app.directive('rcVenueSelectList', function(THIS_DIRECTORY) {
+app.directive('rcTriviaSelectListVenue', function(THIS_DIRECTORY) {
     return {
         restrict: 'A',          // Must be a element attribute
-        templateUrl: THIS_DIRECTORY + 'views/scoreboard.roundNavigation.html',
+        templateUrl: THIS_DIRECTORY + '/views/selectList.teams.html',
+        scope: {
+            selected: '=rcTriviaSelectListVenue',    // $scope object REQUIRED
+            dataArray: '=teamsListData',             // Data Array REQUIRED
+            placeholderText: '@placeholderText'
+        },
         link: function ($scope, element, attributes) {
             // Link - Programmatically modify resulting DOM element instances, 
             // add event listeners, and set up data binding. 
+            $scope.selected = {};
+            $scope.selected.value =  angular.isObject($scope.selected) ? $scope.selected : {};
             
-            $scope.currentRoundNumber = (angular.isDefined($scope.game.currentRoundNumber)) ? parseInt($scope.game.currentRoundNumber) : 1;
-            $scope.totalRounds = (angular.isDefined($scope.game.numberOfRounds)) ? parseInt($scope.game.numberOfRounds) : 1;
+            $scope.dataArray = angular.isArray($scope.dataArray) ? $scope.dataArray : new Array();
+            
+            $scope.placeholderText = angular.isString($scope.placeholderText) ? $scope.placeholderText : "Search for Trivia Joint";
         },
-        controller: ["$scope", '$state', function ($scope, $state) {
+        controller: ["$scope", function ($scope) {
             // Controller - Create a controller which publishes an API for 
             // communicating across directives.
-            $scope.paginationChange = function() {
-                $state.go($state.$current, {gameId: $scope.game.id, roundNumber: $scope.currentRoundNumber});
-            };
         }]
     };
 });

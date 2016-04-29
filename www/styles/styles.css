@@ -163,6 +163,17 @@ form fieldset[disabled] .form-control {
   background-color: #ccc;
   opacity: .5;
 }
+/* Ui-Select list */
+.ui-select-bootstrap .ui-select-choices-row.active > a {
+  color: #fff;
+  background-color: #880000;
+}
+.ui-select-bootstrap .ui-select-choices-row > a:hover,
+.ui-select-bootstrap .ui-select-choices-row > a:focus,
+.ui-select-bootstrap .ui-select-choices-row:hover,
+.ui-select-bootstrap .ui-select-choices-row:focus {
+  background-color: #a20000;
+}
 .uib-timepicker .btn-link {
   padding: 1px 12px;
 }
