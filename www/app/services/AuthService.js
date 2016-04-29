@@ -24,14 +24,12 @@ angular.module('AuthService', [
             /* Returns promise that always resolves true */
             return $q(function (resolve, reject) {
                 if (UserSession.get()) {
-                    console.log("AuthService Init - User already set - ", UserSession.get());
                     return resolve(true);
                 }
 
                 var credentials = CookieService.getAuthCookie();
 
                 if (credentials) {
-                    console.log("AuthService Init - credentials - ", credentials);
                     API.getAuthenticatedUser(credentials)
                         .then(function (data) {
                             data.user.apiKey = credentials.apiKey;
