@@ -104,7 +104,7 @@ angular.module('app.member.dashboard', [])
             if($scope.currentPlayer.teams.length > 0) {
                 AlertConfirmService.confirm('Warning, if you create a new team you will be removed from your current team, "' + $scope.currentPlayer.teams[0].name + '". Would you like to contine?', 'Warning, Leaving Team!')
                 .result.then(function () {
-                    var modalInstance = TriviaModalService.openEditTeam({}, $scope.currentPlayer.id);
+                    var modalInstance = TriviaModalService.openEditTeam(false, $scope.currentPlayer.id);
                     modalInstance.result.then(function (result) {
                         
                         AuthService.reloadUser().then(function (result) {
@@ -117,7 +117,7 @@ angular.module('app.member.dashboard', [])
                     }, function () {});
                 }, function (declined) {});
             } else {
-                var modalInstance = TriviaModalService.openEditTeam({}, $scope.currentPlayer.id);
+                var modalInstance = TriviaModalService.openEditTeam(false, $scope.currentPlayer.id);
                 modalInstance.result.then(function (result) {
                         
                     AuthService.reloadUser().then(function (result) {

@@ -107,7 +107,7 @@ angular.module('app.admin.venues', [])
         };
         
         $scope.buttonOpenNewTeamModal = function() {
-            var modalInstance = TriviaModalService.openEditTeam(false);
+            var modalInstance = TriviaModalService.openEditTeam();
             modalInstance.result.then(function(result) { });
         };
         

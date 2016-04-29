@@ -107,9 +107,8 @@ angular.module('app.host.dashboard', [])
             });
         };
         
-        $scope.buttonCreateTeam = function(gameId) {
-            var game = (angular.isDefined($scope.dtGames.rows[gameId])) ? $scope.dtGames.rows[gameId] : {};
-            var modalInstance = TriviaModalService.openEditTeam(game);
+        $scope.buttonCreateTeam = function() {
+            var modalInstance = TriviaModalService.openEditTeam();
             modalInstance.result.then(function (result) {
                 for(var i = 0; i < result.invites.length; i++) {
                     $scope.alertProxy.success(result.invites[i]);

@@ -94,7 +94,7 @@ angular.module('app.admin.games', [])
         };
         
         $scope.buttonOpenNewTeamModal = function() {
-            var modalInstance = TriviaModalService.openEditTeam(false);
+            var modalInstance = TriviaModalService.openEditTeam();
             modalInstance.result.then(function(result) { });
         };
         

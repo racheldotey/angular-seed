@@ -23,11 +23,10 @@ angular.module('app.admin.teams', [])
         };
 
         // DataTable Setup
-        $scope.dtUserGroups = {};
-        $scope.dtUserGroups.options = DTOptionsBuilder.newOptions();
+        $scope.dtTeamMembers = {};
+        $scope.dtTeamMembers.options = DTOptionsBuilder.newOptions();
 
         $scope.dtTeams = DataTableHelper.getDTStructure($scope, 'adminTeamsList');
-        /*
         $scope.dtTeams.options.withOption('responsive', {
             details: {
                 type: 'column',
@@ -39,25 +38,26 @@ angular.module('app.admin.teams', [])
                         if(value.title == 'ID') {
                             id = value.data;
                         }
-                        if(value.title == 'User Groups') {
+                        if(value.title == 'Members') {
                             data = value.data;
                         }
                     });
 
-                    var header = '<table datatable="" dt-options="dtUserGroups.options" class="table table-hover sub-table">\n\
+                    var header = '<table datatable="" dt-options="dtTeamMembers.options" class="table table-hover sub-table">\n\
                         <thead><tr>\n\
                         <td>ID</td>\n\
-                        <td>Group</td>\n\
-                        <td>Description</td>\n\
+                        <td>Team Member</td>\n\
+                        <td>Joined Date</td>\n\
                         </tr></thead><tbody>';
 
                     var body = '';
                     $.each(data, function(index, value) {
-                        body += '<tr><td>' + value.id + '</td><td>' + value.group + '</td><td>' + value.desc + '</td></tr>\n';
+                        var joined = moment(value.joined, 'YYYY-MM-DD HH:mm:ss').format('M/D/YYYY h:mm a');
+                        body += '<tr><td>' + value.id + '</td><td>' + value.name + '</td><td>' + joined + '</td></tr>\n';
                     });
 
                     // Create angular table element
-                    body = (body) ? body : '<tr><td colspan="3"><p>This user has not been assigned to any groups.</p></td></tr>';
+                    body = (body) ? body : '<tr><td colspan="3"><p>This team does not have any players.</p></td></tr>';
 
                     var table = angular.element(header + body + '</tbody></table>');
 
@@ -68,14 +68,17 @@ angular.module('app.admin.teams', [])
                 }
             }
         });
-        */
        
         $scope.dtTeams.columns = [
-            /*DTColumnBuilder.newColumn(null).withTitle('Members').withClass('responsive-control text-right noclick').renderWith(function(data, type, full, meta) {
+            DTColumnBuilder.newColumn(null).withTitle('Team Members').withClass('responsive-control text-right noclick').renderWith(function(data, type, full, meta) {
                 return '<a><small>(' + data.members.length +')</small> <i class="fa"></i></a>';
-            }).notSortable(),*/
+            }).notSortable(),
             DTColumnBuilder.newColumn('id').withTitle('ID'),
             DTColumnBuilder.newColumn('team').withTitle('Team'),
+            DTColumnBuilder.newColumn('homeVenue').withTitle('Home Joint'),
+            DTColumnBuilder.newColumn(null).withTitle('Last Game').renderWith(function (data, type, full, meta) {
+                return (!data.lastGameName) ? 'None' : '<a data-ui-sref="app.member.game({gameId :' + data.lastGameId + ', roundNumber : 1 })">' + data.lastGameName + '</a>';
+            }),
             DTColumnBuilder.newColumn('createdBy').withTitle('Created By'),
             DTColumnBuilder.newColumn('created').withTitle('Created').renderWith(function (data, type, full, meta) {
                 return moment(data, 'YYYY-MM-DD HH:mm:ss').format('M/D/YYYY h:mm a');
@@ -83,7 +86,7 @@ angular.module('app.admin.teams', [])
             DTColumnBuilder.newColumn(null).withTitle('').renderWith(function(data, type, full, meta) {
                 return '<button ng-click="buttonOpenEditTeamModal(\'' + data.id + '\')" type="button" class="btn btn-default btn-xs pull-right">View</button>';
             }).notSortable(),
-            //DTColumnBuilder.newColumn('members').withTitle('Team Members').withClass('none').notSortable()
+            DTColumnBuilder.newColumn('members').withTitle('Members').withClass('none').notSortable()
         ];
         
         $scope.buttonOpenNewGameModal = function() {
@@ -92,7 +95,7 @@ angular.module('app.admin.teams', [])
         };
         
         $scope.buttonOpenNewTeamModal = function() {
-            var modalInstance = TriviaModalService.openEditTeam(false);
+            var modalInstance = TriviaModalService.openEditTeam();
             modalInstance.result.then(function(result) { 
                 $scope.dtVenues.reloadData();
             });
