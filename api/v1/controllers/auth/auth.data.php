@@ -110,9 +110,10 @@ class AuthData {
                     . "FROM " . DBConn::prefix() . "teams AS t "
                     . "JOIN " . DBConn::prefix() . "team_members AS m ON m.team_id = t.id "
                     . "WHERE m.user_id = :user_id ORDER BY t.name;", array(':user_id' => $user->id));
+            
             $user->notices = array('teamInvites' => 
                     DBConn::selectAll("SELECT i.token, i.created, i.expires, "
-                            . "i.team_id AS teamId, t.name, i.user_id AS userId, "
+                            . "i.team_id AS teamId, t.name AS teamName, i.user_id AS userId, "
                             . "CONCAT(u.name_first, ' ', u.name_last) AS fromPlayer, u.id AS fromPlayerId "
                             . "FROM " . DBConn::prefix() . "tokens_player_invites AS i "
                             . "JOIN " . DBConn::prefix() . "teams AS t ON t.id = i.team_id "

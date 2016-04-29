@@ -7,9 +7,22 @@
  */
 
 angular.module('app.member.dashboard', [])
-    .controller('MemberDashboardCtrl', ['$scope', '$state', '$compile', '$filter', 'TriviaModalService', 'DataTableHelper', 'DTOptionsBuilder', 'DTColumnBuilder',
-        function($scope, $state, $compile, $filter, TriviaModalService, DataTableHelper, DTOptionsBuilder, DTColumnBuilder) {
-
+    .controller('MemberDashboardCtrl', ['$scope', '$state', '$compile', '$filter', 'TriviaModalService', 'DataTableHelper', 'DTOptionsBuilder', 'DTColumnBuilder', 'AuthService',
+        function($scope, $state, $compile, $filter, TriviaModalService, DataTableHelper, DTOptionsBuilder, DTColumnBuilder, AuthService) {
+        
+        $scope.currentPlayer = AuthService.getUser();
+        
+        $scope.playerGreeting = '';
+        
+        ($scope.updateGreeting = function() {
+            $scope.playerGreeting = 'Welcome back ' + $scope.currentPlayer.displayName + '!';
+            
+            for(var i = 0; i < $scope.currentPlayer.teams.length; i++) {
+                $scope.playerGreeting = $scope.playerGreeting + ' You have been a member of team "' + $scope.currentPlayer.teams[i].name + '" since ' + moment($scope.currentPlayer.teams[i].joined, 'YYYY-MM-DD HH:mm:ss').format('MMMM');
+            }
+            
+        })();
+        
         /* Used to restrict alert bars */
         $scope.alertProxy = {};
 
@@ -88,7 +101,17 @@ angular.module('app.member.dashboard', [])
         };
         
         $scope.buttonCreateTeam = function() {
-            var modalInstance = TriviaModalService.openCreateTeam(false);
+            var modalInstance = TriviaModalService.openEditTeam({});
+            modalInstance.result.then(function (result) {
+                console.log('result');
+            }, function () {});
+        };
+        
+        $scope.buttonAcceptInvitation = function(token) {
+            
+        };
+        
+        $scope.buttonDeclineInvitation = function(token) {
             
         };
 

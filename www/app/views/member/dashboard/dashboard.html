@@ -15,13 +15,29 @@
     <div class="host-controls hidden-xs hidden-xs pull-right">
         <button ng-click="buttonInviteFriend()" class="btn btn-primary">Invite Friend</button> 
         <button ng-click="buttonCreateTeam()" class="btn btn-primary">Create Team</button>
-    </div>
+    </div>   
     
     <div class="page-header">
         <h1>Player Dashboard</h1>
     </div>
     
     <div data-rc-bootstrap-alerts="alertProxy"></div>
+    
+    <p class="lead">{{playerGreeting}}</p>
+    
+    <hr/>
+    
+    <div class="alert alert-warning" role="alert" ng-repeat="invite in currentPlayer.notices.teamInvites">
+        
+        <p class="pull-left">
+            <strong>You're Invited!</strong> {{invite.fromPlayer}} has invited you to join the team "{{invite.teamName}}".
+        </p>
+        
+        <div class="pull-right">
+            <button ng-click="buttonDeclineInvitation(invite.token)" class="btn btn-primary btn-sm">Decline</button>
+            <button ng-click="buttonAcceptInvitation(invite.token)" class="btn btn-primary btn-sm">Accept</button>
+        </div>
+    </div>
     
     <table
         data-datatable=""

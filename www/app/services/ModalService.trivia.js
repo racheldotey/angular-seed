@@ -72,7 +72,7 @@ angular.module('TriviaModalService', [
      * 
      * @return uibModalInstance
      */
-    api.openAddTeam = function(game) {
+    api.openAddTeam = function(game, addUserId) {
         return api.openModal({
             templateUrl: templatePath + 'addTeamToGame/addTeamToGame.html',
             controller: 'TriviaAddTeamToGameModalCtrl',
@@ -80,6 +80,9 @@ angular.module('TriviaModalService', [
                 ApiRoutesSimpleLists: 'ApiRoutesSimpleLists',
                 game: function() {
                     return game;
+                },
+                addUserId: function() {
+                    return addUserId || false;
                 },
                 teamsList: function(ApiRoutesSimpleLists) {
                     return ApiRoutesSimpleLists.simpleTeamsList();

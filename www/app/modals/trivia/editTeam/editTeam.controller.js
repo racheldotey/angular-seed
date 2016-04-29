@@ -3,8 +3,11 @@
 /* @author  Rachel Carbone */
 
 angular.module('app.modal.trivia.editTeam', [])        
-    .controller('TriviaEditTeamModalCtrl', ['ApiRoutesGames', '$scope', '$uibModalInstance', 'editing', 'venuesList',
-    function(ApiRoutesGames, $scope, $uibModalInstance, editing, venuesList) {        
+    .controller('TriviaEditTeamModalCtrl', ['ApiRoutesGames', '$scope', '$uibModalInstance', 'editing', 'venuesList', 'addUserId',
+    function(ApiRoutesGames, $scope, $uibModalInstance, editing, venuesList, addUserId) {
+    
+    $scope.automaticallyAddUserId = addUserId || false;
+    
     /* Used to restrict alert bars */
     $scope.alertProxy = {};
     
