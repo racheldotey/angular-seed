@@ -116,12 +116,14 @@ class DatatablesData {
     
     // Admin Trivia
         
-    static function selectTriviaGames() {
-        return DBConn::selectAll("SELECT g.id, g.name, g.scheduled, g.venue_id AS venueId, g.host_user_id AS hostId, "
-                . "game_started AS started, game_ended AS ended, max_points maxPoints, "
+    static function selectCurrentGames() {
+        $qGames = DBConn::executeQuery("SELECT g.id, g.name, g.scheduled, g.venue_id AS venueId, g.host_user_id AS hostId, "
+                . "g.game_started AS started, g.game_ended AS ended, g.max_points maxPoints, "
                 . "CONCAT(u.name_first, ' ', u.name_last) AS host, v.name AS venue "
                 . "FROM as_games AS g LEFT JOIN as_users AS u ON u.id = g.host_user_id "
-                . "LEFT JOIN as_venues AS v ON v.id = g.venue_id;");
+                . "LEFT JOIN as_venues AS v ON v.id = g.venue_id "
+                . "WHERE g.game_started IS NOT NULL AND g.game_ended IS NOT NULL;");
+        return self::selectGameScoreboard($qGames);
     }
         
     static function selectTriviaTeams() {

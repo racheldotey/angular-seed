@@ -34,8 +34,8 @@ class DatatablesController {
     
     // Admin Trivia
     
-    static function getTriviaGames($app) {
-        $data = DatatablesData::selectTriviaGames();
+    static function getCurrentGames($app) {
+        $data = DatatablesData::selectCurrentGames();
         $table = ($data) ? $data : array();
         return $app->render(200, array('table' => $table ));
     }

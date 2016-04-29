@@ -131,10 +131,10 @@ angular.module('app.modal.trivia.editTeam', [])
         
     /* Click event for the Cancel button */
     $scope.buttonCancel = function() {
-        if($scope.getMode() === 'new') {
-            $uibModalInstance.dismiss(false);
-        } else {
+        if($scope.getMode() === 'edit') {
             $scope.setMode('view');
+        } else {
+            $uibModalInstance.dismiss(false);
         }
     };
         

@@ -30,7 +30,7 @@ class DatatableRoutes {
             });
 
             $app->post("/trivia-games", function () use ($app) {
-                DatatablesController::getTriviaGames($app);
+                DatatablesController::getCurrentGames($app);
             });
 
             $app->post("/trivia-teams", function () use ($app) {

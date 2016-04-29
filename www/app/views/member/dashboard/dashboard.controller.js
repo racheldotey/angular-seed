@@ -77,7 +77,8 @@ angular.module('app.member.dashboard', [])
                     $.each(data, function(index, value) {
                         //var winner = (value.gameWinner === '1') ? '' : '';
                         var score = $filter('numberEx')(value.gameScore);
-                        body += '<tr><td>' + value.gameRank + '</td><td>' + score + '</td><td>' + value.teamName + '</td></tr>\n';
+                        var name = (!value.teamName) ? "Team ID #" + value.teamId : value.teamName;
+                        body += '<tr><td>' + value.gameRank + '</td><td>' + score + '</td><td>' + name + '</td></tr>\n';
                     });
 
                     // Create angular table element
