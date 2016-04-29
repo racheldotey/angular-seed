@@ -27,10 +27,8 @@
                             <span ng-show="game.round.name"> -<br/>"{{game.round.name}}"</span></p>
                         <p>Team Name</p>
                     </th>
-                    <th><p class="text-center">Round Score</p></th>
-                    <th><p class="text-center">Round Rank</p></th>
-                    <th><p class="text-center">Game Score</p></th>
-                    <th><p class="text-center">Game Rank</p></th>
+                    <th><p class="text-center">Game<br/>Score / Rank</p></th>
+                    <th><p class="text-center">Round #{{game.round.number}}<br/>Score / Rank</p></th>
 
                     <th class="question" ng-repeat="question in game.rounds[game.currentRoundNumber].questions">
                         <p class="text-center"><strong>#{{question.number}} - {{question.maxPoints | numberEx}} pts</strong></p>
@@ -41,10 +39,8 @@
             <tbody>
                 <tr ng-repeat="team in game.teams track by $index" data-team-id="{{team.teamId}}">
                     <th class="team"><p>{{team.name}}</p></th>
-                    <th class="round-score"><p class="text-center">{{team.rounds[game.currentRoundNumber].roundScore | numberEx}}</p></th>
-                    <th class="round-rank"><p class="text-center">{{team.rounds[game.currentRoundNumber].roundRank}}</p></th>
-                    <th class="game-score"><p class="text-center">{{team.gameScore | numberEx}}</p></th>
-                    <th class="game-rank"><p class="text-center">{{team.gameRank}}</p></th>
+                    <th class="game-score text-center">{{team.gameScore | numberEx}} / {{team.gameRank}}</th>
+                    <th class="round-score text-center">{{team.rounds[game.currentRoundNumber].roundScore | numberEx}} / {{team.rounds[game.currentRoundNumber].roundRank}}</th>
 
                     <td class="question-score" ng-repeat="teamScore in team.rounds[game.currentRoundNumber].questions" data-question-id="{{teamScore.questionId}}">
                         <div ng-if="getQuestionType(teamScore.number) === 'wager'">

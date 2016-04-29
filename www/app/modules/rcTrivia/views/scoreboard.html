@@ -66,10 +66,8 @@
             <thead>
                 <tr>
                     <th><p>Team Names</p></th>
-                    <th><p class="text-center">Round Score</p></th>
-                    <th><p class="text-center">Round Rank</p></th>
-                    <th><p class="text-center">Game Score</p></th>
-                    <th><p class="text-center">Game Rank</p></th>
+                    <th><p class="text-center">Game<br/>Score / Rank</p></th>
+                    <th><p class="text-center">Round #{{game.round.number}}<br/>Score / Rank</p></th>
 
                     <th class="question" ng-repeat="question in game.rounds[game.currentRoundNumber].questions">
                         <a href="" ng-click="buttonEditQuestion(question.number)">
@@ -82,17 +80,15 @@
             <tbody>
                 <tr ng-repeat="team in game.teams track by $index" data-team-id="{{team.teamId}}">
                     <th class="team"><p>{{team.name}}</p></th>
-                    <th class="round-score"><p class="text-center">{{team.rounds[game.currentRoundNumber].roundScore | numberEx}}</p></th>
-                    <th class="round-rank"><p class="text-center">{{team.rounds[game.currentRoundNumber].roundRank}}</p></th>
-                    <th class="game-score"><p class="text-center">{{team.gameScore | numberEx}}</p></th>
-                    <th class="game-rank"><p class="text-center">{{team.gameRank}}</p></th>
+                    <th class="game-score text-center">{{team.gameScore | numberEx}} / {{team.gameRank}}</th>
+                    <th class="round-score text-center">{{team.rounds[game.currentRoundNumber].roundScore | numberEx}} / {{team.rounds[game.currentRoundNumber].roundRank}}</th>
 
                     <td class="question-score" ng-repeat="teamScore in team.rounds[game.currentRoundNumber].questions">
                         <div ng-if="getQuestionType(teamScore.number) === 'wager'">
                             <div ng-show="displayQuickScoreButtons" class="input-group input-group-sm" title="Teams Wager">
                                 <span class="input-group-btn">
                                     <button 
-                                        class="btn btn-warning" 
+                                        class="btn btn-sm btn-warning" 
                                         ng-click="buttonDecreaseTeamWager(team.teamId, teamScore.number)"
                                         type="button"><i class="fa fa-minus"></i></button>
                                 </span>
@@ -101,10 +97,10 @@
                                     data-string-to-number 
                                     type="number"
                                     placeholder="Wager?"
-                                    class="form-control">
+                                    class="form-control input-sm">
                                 <span class="input-group-btn">
                                     <button 
-                                        class="btn btn-success" 
+                                        class="btn btn-sm btn-success" 
                                         ng-click="buttonIncreaseTeamWager(team.teamId, teamScore.number)"
                                         type="button"><i class="fa fa-plus"></i></button>
                                 </span>
@@ -114,7 +110,7 @@
                                     ng-model="teamScore.teamWager" 
                                     data-string-to-number 
                                     type="number" 
-                                    class="form-control">
+                                    class="form-control input-sm">
                             </div>
                             <br/>
                             <input 
@@ -122,35 +118,47 @@
                                 type="text" 
                                 maxlength="255"
                                 placeholder="Answer"
-                                class="form-control">
+                                class="form-control input-sm">
                             <br/>
+                            
+                            <button type="button" 
+                                    class="btn btn-primary btn-sm btn-block" 
+                                    ng-model="teamScore.wagerChecked" 
+                                    ng-init="teamScore.wagerChecked = (teamScore.teamWager && teamScore.teamWager > 0 && teamScore.questionScore === teamScore.teamWager)"
+                                    ng-change="checkboxCorrectWagerQuestion(team.teamId, teamScore.number)"
+                                    uib-btn-checkbox btn-checkbox-true="1" btn-checkbox-false="0">
+                                {{teamScore.wagerChecked ? 'Incorrect Answer' : 'Correct Answer'}}
+                            </button>
+                            
+                            <!--
                             <div class="checkbox">
                                 <label>
                                     <input 
                                         type="checkbox" 
                                         ng-model="teamScore.wagerChecked"
-                                        ng-init="teamScore.wagerChecked = (teamScore.questionScore === teamScore.teamWager)"
-                                        ng-change="checkboxCorrectWagerQuestion(team.teamId, teamScore.number)"> Answered Correct
+                                        ng-init="teamScore.wagerChecked = (teamScore.teamWager && teamScore.teamWager > 0 && teamScore.questionScore === teamScore.teamWager)"
+                                        ng-change="checkboxCorrectWagerQuestion(team.teamId, teamScore.number)"> Answered Correctly
                                 </label>
                             </div>
+                            -->
                         </div>
                         
                         <div ng-if="getQuestionType(teamScore.number) === 'default'" ng-show="displayQuickScoreButtons" class="input-group input-group-sm">
                             <span class="input-group-btn">
                                 <button 
                                     ng-click="buttonQuestionWrong(team.teamId, teamScore.number)"
-                                    class="btn btn-warning" 
+                                    class="btn btn-sm btn-warning" 
                                     type="button"><i class="fa fa-minus"></i></button>
                             </span>
                             <input 
                                 ng-model="teamScore.questionScore" 
                                 data-string-to-number 
                                 type="number"
-                                class="form-control">
+                                class="form-control input-sm">
                             <span class="input-group-btn">
                                 <button 
                                     ng-click="buttonQuestionCorrect(team.teamId, teamScore.number)"
-                                    class="btn btn-success" 
+                                    class="btn btn-sm btn-success" 
                                     type="button"><i class="fa fa-plus"></i></button>
                             </span>
                         </div>
@@ -159,7 +167,7 @@
                                 ng-model="teamScore.questionScore" 
                                 data-string-to-number 
                                 type="number" 
-                                class="form-control">
+                                class="form-control input-sm">
                         </div>
 
                     </td>

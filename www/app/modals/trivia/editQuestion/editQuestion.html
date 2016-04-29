@@ -83,7 +83,7 @@
             </div>
         </div>
 
-        <div class="form-group" ng-if="editing.wager === '0'">
+        <div class="form-group" ng-if="!editing.wager || editing.wager === '0'">
             <label class="col-xs-5 col-sm-4 col-md-3 control-label">Default Points</label>
             <div class="col-xs-7 col-sm-2">
                 <input class="form-control" name="maxPoints" ng-model="editing.maxPoints" type="number" maxlength="9" />
