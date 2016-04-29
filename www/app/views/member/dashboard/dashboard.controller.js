@@ -7,8 +7,8 @@
  */
 
 angular.module('app.member.dashboard', [])
-    .controller('MemberDashboardCtrl', ['$scope', '$state', '$compile', '$filter', 'TriviaModalService', 'DataTableHelper', 'DTOptionsBuilder', 'DTColumnBuilder', 'AuthService',
-        function($scope, $state, $compile, $filter, TriviaModalService, DataTableHelper, DTOptionsBuilder, DTColumnBuilder, AuthService) {
+    .controller('MemberDashboardCtrl', ['$scope', '$state', '$compile', '$filter', 'TriviaModalService', 'AlertConfirmService', 'DataTableHelper', 'DTOptionsBuilder', 'DTColumnBuilder', 'AuthService',
+        function($scope, $state, $compile, $filter, TriviaModalService, AlertConfirmService, DataTableHelper, DTOptionsBuilder, DTColumnBuilder, AuthService) {
         
         $scope.currentPlayer = AuthService.getUser();
         
@@ -101,10 +101,22 @@ angular.module('app.member.dashboard', [])
         };
         
         $scope.buttonCreateTeam = function() {
-            var modalInstance = TriviaModalService.openEditTeam({});
-            modalInstance.result.then(function (result) {
-                console.log('result');
-            }, function () {});
+            if($scope.currentPlayer.teams.length > 0) {
+                AlertConfirmService.confirm('Warning, if you create a new team you will be removed from your current team, "' + $scope.currentPlayer.teams[0].name + '". Would you like to contine?', 'Warning, Leaving Team!')
+                .result.then(function () {
+                    var modalInstance = TriviaModalService.openEditTeam({}, $scope.currentPlayer.id);
+                    modalInstance.result.then(function (result) {
+                        console.log('result');
+                        $state.reload();
+                    }, function () {});
+                }, function (declined) {});
+            } else {
+                var modalInstance = TriviaModalService.openEditTeam({}, $scope.currentPlayer.id);
+                modalInstance.result.then(function (result) {
+                    console.log('result');
+                    $state.reload();
+                }, function () {});
+            }
         };
         
         $scope.buttonAcceptInvitation = function(token) {

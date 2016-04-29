@@ -3,8 +3,8 @@
 /* @author  Rachel Carbone */
 
 angular.module('app.modal.trivia.editTeam', [])        
-    .controller('TriviaEditTeamModalCtrl', ['ApiRoutesGames', '$scope', '$uibModalInstance', 'editing', 'venuesList', 'addUserId',
-    function(ApiRoutesGames, $scope, $uibModalInstance, editing, venuesList, addUserId) {
+    .controller('TriviaEditTeamModalCtrl', ['ApiRoutesGames', 'AlertConfirmService', '$scope', '$uibModalInstance', 'editing', 'venuesList', 'addUserId',
+    function(ApiRoutesGames, AlertConfirmService, $scope, $uibModalInstance, editing, venuesList, addUserId) {
     
     $scope.automaticallyAddUserId = addUserId || false;
     
@@ -86,18 +86,41 @@ angular.module('app.modal.trivia.editTeam', [])
                     players.push({ 'email' : $scope.editing.players[i].email });
                 }
             }
-            ApiRoutesGames.addTeam({ 
-                'name' : $scope.editing.name,  
-                'venueId' : $scope.editing.venue.id,  
-                'players' : players }).then(function(result) {
+            if($scope.automaticallyAddUserId) {
+                players.push({ 'userId' : $scope.automaticallyAddUserId });
+                
+                
+                AlertConfirmService.confirm('Are you really sure that you would like to leave your current team and join this new team?', 'Warning, Leaving Team!')
+                .result.then(function () {
+                    ApiRoutesGames.addTeam({ 
+                        'name' : $scope.editing.name,  
+                        'venueId' : $scope.editing.venue.id,  
+                        'players' : players }).then(function(result) {
 
-                console.log(result);
-                $scope.alertProxy.success("Team '" + result.team.name + "'added");
-                $uibModalInstance.close(result);
-            }, function(error) {
-                console.log(error);
-                $scope.alertProxy.error(error);
-            });
+                        console.log(result);
+                        $scope.alertProxy.success("Team '" + result.team.name + "'added");
+                        $uibModalInstance.close(result);
+                    }, function(error) {
+                        console.log(error);
+                        $scope.alertProxy.error(error);
+                    });
+                }, function (declined) {
+                    $scope.alertProxy.info('No changes were saved. Close the window to remain in the same Team.');
+                });
+            } else {
+                ApiRoutesGames.addTeam({ 
+                    'name' : $scope.editing.name,  
+                    'venueId' : $scope.editing.venue.id,  
+                    'players' : players }).then(function(result) {
+
+                    console.log(result);
+                    $scope.alertProxy.success("Team '" + result.team.name + "'added");
+                    $uibModalInstance.close(result);
+                }, function(error) {
+                    console.log(error);
+                    $scope.alertProxy.error(error);
+                });
+            }
         }
     };
         

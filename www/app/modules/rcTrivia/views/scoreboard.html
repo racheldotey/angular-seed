@@ -124,23 +124,11 @@
                             <button type="button" 
                                     class="btn btn-primary btn-sm btn-block" 
                                     ng-model="teamScore.wagerChecked" 
-                                    ng-init="teamScore.wagerChecked = (teamScore.teamWager && teamScore.teamWager > 0 && teamScore.questionScore === teamScore.teamWager)"
+                                    ng-init="teamScore.wagerChecked = (teamScore.teamWager && teamScore.teamWager > 0 && teamScore.questionScore === teamScore.teamWager) ? '1' : '0'"
                                     ng-change="checkboxCorrectWagerQuestion(team.teamId, teamScore.number)"
                                     uib-btn-checkbox btn-checkbox-true="1" btn-checkbox-false="0">
                                 {{teamScore.wagerChecked ? 'Incorrect Answer' : 'Correct Answer'}}
                             </button>
-                            
-                            <!--
-                            <div class="checkbox">
-                                <label>
-                                    <input 
-                                        type="checkbox" 
-                                        ng-model="teamScore.wagerChecked"
-                                        ng-init="teamScore.wagerChecked = (teamScore.teamWager && teamScore.teamWager > 0 && teamScore.questionScore === teamScore.teamWager)"
-                                        ng-change="checkboxCorrectWagerQuestion(team.teamId, teamScore.number)"> Answered Correctly
-                                </label>
-                            </div>
-                            -->
                         </div>
                         
                         <div ng-if="getQuestionType(teamScore.number) === 'default'" ng-show="displayQuickScoreButtons" class="input-group input-group-sm">

@@ -67,6 +67,9 @@ class TeamData {
     }
     
     static function addTeamMember($validTeam) {
+        DBConn::delete("DELETE FROM " . DBConn::prefix() . "team_members WHERE user_id = :user_id;", 
+                array(':user_id' => $validTeam[':user_id']));
+        
         return DBConn::insert("INSERT INTO " . DBConn::prefix() . "team_members(user_id, team_id, added_by) "
                 . "VALUES (:user_id, :team_id, :added_by);", $validTeam);
     }
