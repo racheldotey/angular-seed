@@ -84,7 +84,7 @@ angular.module('rcTrivia.game', [])
             };
             
             // Setup update totals event            
-            self.updateTotals = function(teamId) {                
+            self.updateTotals = function(teamId) {           
                 // Find and update the team who's score has been changed
                 if(angular.isDefined(_game.teams[teamId])) {
                     

@@ -80,7 +80,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="team in game.teams" data-team-id="{{team.teamId}}">
+                <tr ng-repeat="team in game.teams track by $index" data-team-id="{{team.teamId}}">
                     <th class="team"><p>{{team.name}}</p></th>
                     <th class="round-score"><p class="text-center">{{team.rounds[game.currentRoundNumber].roundScore | numberEx}}</p></th>
                     <th class="round-rank"><p class="text-center">{{team.rounds[game.currentRoundNumber].roundRank}}</p></th>

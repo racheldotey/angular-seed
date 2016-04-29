@@ -16,7 +16,10 @@
             <div data-rc-trivia-scoreboard-round-navigation class="game-round-navigation"></div>
         </div>
         
-        <table id="scoreboard" data-datatable="ng" data-dt-options="dtScoreboard.options" data-dt-instance="dtScoreboard.instance">
+        <table id="scoreboard" 
+               data-datatable="ng" 
+               data-dt-options="dtScoreboard.options" 
+               data-dt-instance="dtScoreboard.instance">
             <thead>
                 <tr>
                     <th>
@@ -36,7 +39,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="team in game.teams" data-team-id="{{team.teamId}}">
+                <tr ng-repeat="team in game.teams track by $index" data-team-id="{{team.teamId}}">
                     <th class="team"><p>{{team.name}}</p></th>
                     <th class="round-score"><p class="text-center">{{team.rounds[game.currentRoundNumber].roundScore | numberEx}}</p></th>
                     <th class="round-rank"><p class="text-center">{{team.rounds[game.currentRoundNumber].roundRank}}</p></th>
