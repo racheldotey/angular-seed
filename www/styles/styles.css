@@ -283,7 +283,7 @@ table.table.dataTable tbody tr.child td.child {
   padding: 5px 25px;
 }
 table.table.dataTable tbody tr.child td.child table.sub-table {
-  border: 1px solid #880000;
+  border: 1px solid #ccc;
   margin: 0;
 }
 table.table.dataTable tbody tr td {
@@ -293,21 +293,38 @@ table.table.dataTable tbody tr td {
   font-size: .9em;
   padding: 4px;
 }
-dataTables_filter .dataTables_filter {
-  text-align: right !important;
+div.dataTables_wrapper div.row div.dataTables_filter {
+  text-align: right;
 }
-dataTables_filter .dataTables_info {
+div.dataTables_wrapper div.row div.dataTables_info {
+  font-size: .8em;
+  text-align: center;
+}
+div.dataTables_wrapper div.row div.dataTables_length {
   font-size: .8em;
 }
-dataTables_filter .dataTables_length {
-  font-size: .8em;
+div.dataTables_wrapper div.row div.dataTables_paginate {
+  text-align: right;
 }
-@media (min-width: 768px) {
-  .dataTables_info {
-    text-align: right !important;
+@media screen and (max-width: 767px) {
+  div.dataTables_wrapper div.row div.dataTables_filter {
+    text-align: right;
   }
-  .dataTables_paginate {
-    text-align: center !important;
+  div.dataTables_wrapper div.row div.dataTables_paginate {
+    text-align: center;
+  }
+}
+@media screen and (min-width: 768px) {
+  div.dataTables_wrapper div.row div.dataTables_info {
+    text-align: right;
+  }
+  div.dataTables_wrapper div.row div.dataTables_paginate {
+    text-align: center;
+  }
+}
+@media screen and (min-width: 992px) {
+  div.dataTables_wrapper div.row div.dataTables_info {
+    text-align: left;
   }
 }
 body:not(.admin) .dataTables_length select {
@@ -315,21 +332,20 @@ body:not(.admin) .dataTables_length select {
   background-color: #47413a;
   border-color: #71685c;
 }
-table.table-dark,
 table.table.dataTable.table-dark,
-table.table-dark table.sub-table,
 table.table.dataTable.table-dark table.sub-table {
   border-color: #6f0000;
+  /* Responsive sub table */
 }
-table.table-dark tr,
+table.table.dataTable.table-dark tbody tr.child td.child table.sub-table,
+table.table.dataTable.table-dark table.sub-table tbody tr.child td.child table.sub-table {
+  border: 2px solid #880000;
+}
 table.table.dataTable.table-dark tr,
-table.table-dark table.sub-table tr,
 table.table.dataTable.table-dark table.sub-table tr {
   border-color: #6f0000;
 }
-table.table-dark tr th,
 table.table.dataTable.table-dark tr th,
-table.table-dark table.sub-table tr th,
 table.table.dataTable.table-dark table.sub-table tr th {
   background-color: #880000;
   color: #fff;
@@ -338,29 +354,11 @@ table.table.dataTable.table-dark table.sub-table tr th {
   border-left-color: #6f0000;
   border-right-color: #6f0000;
 }
-table.table-dark tr td,
 table.table.dataTable.table-dark tr td,
-table.table-dark table.sub-table tr td,
 table.table.dataTable.table-dark table.sub-table tr td {
   border-color: #6f0000;
-  /* Responsive sub table */
 }
-table.table-dark tr td.child,
-table.table.dataTable.table-dark tr td.child,
-table.table-dark table.sub-table tr td.child,
-table.table.dataTable.table-dark table.sub-table tr td.child {
-  padding: 5px 25px;
-}
-table.table-dark tr td.child table.sub-table,
-table.table.dataTable.table-dark tr td.child table.sub-table,
-table.table-dark table.sub-table tr td.child table.sub-table,
-table.table.dataTable.table-dark table.sub-table tr td.child table.sub-table {
-  border: 2px solid #880000;
-  margin: 0;
-}
-table.table-dark.table-striped > thead th,
 table.table.dataTable.table-dark.table-striped > thead th,
-table.table-dark table.sub-table.table-striped > thead th,
 table.table.dataTable.table-dark table.sub-table.table-striped > thead th {
   background-color: #880000;
   color: #fff;
@@ -369,15 +367,11 @@ table.table.dataTable.table-dark table.sub-table.table-striped > thead th {
   border-left-color: #6f0000;
   border-right-color: #6f0000;
 }
-table.table-dark.table-striped > tbody,
 table.table.dataTable.table-dark.table-striped > tbody,
-table.table-dark table.sub-table.table-striped > tbody,
 table.table.dataTable.table-dark table.sub-table.table-striped > tbody {
   background-color: #8d0000;
 }
-table.table-dark.table-striped > tbody > tr:nth-of-type(odd),
 table.table.dataTable.table-dark.table-striped > tbody > tr:nth-of-type(odd),
-table.table-dark table.sub-table.table-striped > tbody > tr:nth-of-type(odd),
 table.table.dataTable.table-dark table.sub-table.table-striped > tbody > tr:nth-of-type(odd) {
   background-color: #7e0000;
 }

@@ -30,5 +30,8 @@
     "grunt-contrib-watch": "^0.6.1",
     "grunt-nodestatic": "^0.1.2",
     "jit-grunt": "^0.9.1"
+  },
+  "dependencies": {
+    "angular-sanitize": "^1.5.5"
   }
 }

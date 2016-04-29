@@ -46,7 +46,7 @@ table.table.dataTable {
                 td.child {
                     padding: 5px 25px;
                     table.sub-table {
-                        border: 1px solid @brick-red;
+                        border: 1px solid #ccc;
                         margin: 0;
                     }
                 }
@@ -61,23 +61,48 @@ table.table.dataTable {
         }
     }
 }
-dataTables_filter {
-    .dataTables_filter {
-        text-align: right !important;
+div.dataTables_wrapper div.row {
+    div.dataTables_filter {
+        text-align: right;
     }
-    .dataTables_info {
+    div.dataTables_info {
+        font-size: .8em;
+        text-align: center;
+    }
+    div.dataTables_length {
         font-size: .8em;
     }
-    .dataTables_length {
-        font-size: .8em;
+    div.dataTables_paginate {
+        text-align: right;
     }
 }
-@media (min-width: 768px) {
-    .dataTables_info {
-        text-align: right !important;
+@media screen and (max-width: 767px) {
+    div.dataTables_wrapper div.row {
+        div.dataTables_filter {
+            text-align: right;
+        }
+        div.dataTables_info {
+        }
+        div.dataTables_paginate {
+            text-align: center;
+        }
     }
-    .dataTables_paginate {
-        text-align: center !important;
+}
+@media screen and (min-width: 768px) {
+    div.dataTables_wrapper div.row {
+        div.dataTables_info {
+            text-align: right;
+        }
+        div.dataTables_paginate {
+            text-align: center;
+        }
+    }
+}
+@media screen and (min-width: 992px) {
+    div.dataTables_wrapper div.row {
+        div.dataTables_info {
+            text-align: left;
+        }
     }
 }
 
@@ -88,10 +113,16 @@ body:not(.admin) {
         border-color: lighten(@medium-brown, 15%);
     }
 }
-table, table.table.dataTable {
+table.table.dataTable {
     &.table-dark,  
     &.table-dark table.sub-table {
         border-color: darken(@brick-red, 5%);
+        
+        /* Responsive sub table */
+        tbody tr.child td.child table.sub-table {
+            border: 2px solid @brick-red;
+        }
+        
         tr {
             border-color: darken(@brick-red, 5%);
 
@@ -106,15 +137,6 @@ table, table.table.dataTable {
 
             td {
                 border-color: darken(@brick-red, 5%);
-                
-                /* Responsive sub table */
-                &.child {
-                    padding: 5px 25px;
-                    table.sub-table {
-                        border: 2px solid @brick-red;
-                        margin: 0;
-                    }
-                }
             }
         }
 

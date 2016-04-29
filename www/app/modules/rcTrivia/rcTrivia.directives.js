@@ -326,3 +326,24 @@ app.directive('rcTriviaScoreboardReadonly', function(THIS_DIRECTORY) {
         }]
     };
 });
+
+app.directive('rcVenueSelectList', function(THIS_DIRECTORY) {
+    return {
+        restrict: 'A',          // Must be a element attribute
+        templateUrl: THIS_DIRECTORY + 'views/scoreboard.roundNavigation.html',
+        link: function ($scope, element, attributes) {
+            // Link - Programmatically modify resulting DOM element instances, 
+            // add event listeners, and set up data binding. 
+            
+            $scope.currentRoundNumber = (angular.isDefined($scope.game.currentRoundNumber)) ? parseInt($scope.game.currentRoundNumber) : 1;
+            $scope.totalRounds = (angular.isDefined($scope.game.numberOfRounds)) ? parseInt($scope.game.numberOfRounds) : 1;
+        },
+        controller: ["$scope", '$state', function ($scope, $state) {
+            // Controller - Create a controller which publishes an API for 
+            // communicating across directives.
+            $scope.paginationChange = function() {
+                $state.go($state.$current, {gameId: $scope.game.id, roundNumber: $scope.currentRoundNumber});
+            };
+        }]
+    };
+});

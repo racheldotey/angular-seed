@@ -10,11 +10,13 @@
 angular.module('theApp', [
     'ui.bootstrap',
     'ui.bootstrap.showErrors',
+    'ui.select', 
     'datatables',
     'datatables.bootstrap',
     'datatables.fixedcolumns',
     'ngCookies',
     'ngMessages',
+    'ngSanitize',
     'angular-md5',
     'api.v1',
     'rcDirectives',
