@@ -194,23 +194,33 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
             
             $scope.buttonIncreaseTeamWager = function(teamId, questionNumber) {
                 var teamScore = $scope.game.teams[teamId].rounds[$scope.game.currentRoundNumber].questions[questionNumber];
-                teamScore.teamWager = parseFloat(teamScore.teamWager) + 10;
-                $scope.checkboxCorrectWagerQuestion(teamId, questionNumber);
+                teamScore.teamWager = parseFloat(teamScore.teamWager) + 10;         
+                $scope.calculateWagerScore(teamId, questionNumber);
             }; 
             
             $scope.buttonDecreaseTeamWager = function(teamId, questionNumber) {
                 var teamScore = $scope.game.teams[teamId].rounds[$scope.game.currentRoundNumber].questions[questionNumber];
                 teamScore.teamWager = parseFloat(teamScore.teamWager) - 10;
-                $scope.checkboxCorrectWagerQuestion(teamId, questionNumber);
+                $scope.calculateWagerScore(teamId, questionNumber);
             };
             
-            $scope.checkboxCorrectWagerQuestion = function(teamId, questionNumber) {
+            $scope.calculateWagerScore = function(teamId, questionNumber) {
                 var teamScore = $scope.game.teams[teamId].rounds[$scope.game.currentRoundNumber].questions[questionNumber];
+                
+                if(teamScore.teamWager > $scope.game.teams[teamId].gameScore) {
+                    teamScore.teamWager = $scope.game.teams[teamId].gameScore;
+                    $scope.alertProxy.error("Teams cannot wager more points than they have.");
+                }
+                
+                if (teamScore.teamWager < 0) {
+                    teamScore.teamWager = 0;
+                }
+                
                 var correct = (angular.isDefined(teamScore.wagerChecked) && teamScore.wagerChecked);
                 var wager = parseFloat(teamScore.teamWager);
                 teamScore.questionScore =  (correct) ? wager : (wager* -1);
                 $scope.updateTeamRankings(teamId);
-            };  
+            };
             
             $scope.getQuestionType = function(questionNumber) {
                 var question = $scope.game.rounds[$scope.game.currentRoundNumber].questions[questionNumber];
@@ -279,7 +289,6 @@ app.directive('rcTriviaScoreboardReadonly', function(THIS_DIRECTORY) {
                 .withOption('responsive', false)
                 .withOption('drawCallback', function() {
                     $scope.setScoreboardHeight();
-                    $scope.setScoreboardWidth();
                 });
                 
                 // Responsive table height

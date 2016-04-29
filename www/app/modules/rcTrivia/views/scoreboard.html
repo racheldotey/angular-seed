@@ -96,7 +96,8 @@
                                     ng-model="teamScore.teamWager" 
                                     data-string-to-number 
                                     type="number"
-                                    placeholder="Wager?"
+                                    min="0"
+                                    ng-change="calculateWagerScore(team.teamId, teamScore.number)"
                                     class="form-control input-sm">
                                 <span class="input-group-btn">
                                     <button 
@@ -110,6 +111,8 @@
                                     ng-model="teamScore.teamWager" 
                                     data-string-to-number 
                                     type="number" 
+                                    min="0"
+                                    ng-change="calculateWagerScore(team.teamId, teamScore.number)"
                                     class="form-control input-sm">
                             </div>
                             <br/>
@@ -124,10 +127,10 @@
                             <button type="button" 
                                     class="btn btn-primary btn-sm btn-block" 
                                     ng-model="teamScore.wagerChecked" 
-                                    ng-init="teamScore.wagerChecked = (teamScore.teamWager && teamScore.teamWager > 0 && teamScore.questionScore === teamScore.teamWager) ? '1' : '0'"
-                                    ng-change="checkboxCorrectWagerQuestion(team.teamId, teamScore.number)"
-                                    uib-btn-checkbox btn-checkbox-true="1" btn-checkbox-false="0">
-                                {{teamScore.wagerChecked ? 'Incorrect Answer' : 'Correct Answer'}}
+                                    ng-init="teamScore.wagerChecked = (teamScore.teamWager && teamScore.teamWager > 0 && teamScore.questionScore === teamScore.teamWager)"
+                                    ng-click="calculateWagerScore(team.teamId, teamScore.number)"
+                                    uib-btn-checkbox>
+                                {{teamScore.wagerChecked ? 'Correct Answer' : 'Incorrect Answer'}}
                             </button>
                         </div>
                         
@@ -142,6 +145,7 @@
                                 ng-model="teamScore.questionScore" 
                                 data-string-to-number 
                                 type="number"
+                                ng-change="updateTeamRankings(team.teamId)"
                                 class="form-control input-sm">
                             <span class="input-group-btn">
                                 <button 
@@ -155,6 +159,7 @@
                                 ng-model="teamScore.questionScore" 
                                 data-string-to-number 
                                 type="number" 
+                                ng-change="updateTeamRankings(team.teamId)"
                                 class="form-control input-sm">
                         </div>
 
