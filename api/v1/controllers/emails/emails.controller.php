@@ -57,11 +57,16 @@ class EmailController {
     }
     
     static function silentlySendTeamInviteEmail($teamId, $teamName, $playerEmail, $playerId = NULL, $playerName = '') {
+        
+        // Try to set the players user id if the email exists in the DB
+        $foundId = (is_null($playerId)) ? EmailData::selectUserIdByEmail($playerEmail) : $playerId;
+        $userId = (!$foundId) ? NULL : $foundId;
+        
         $token = self::makeInviteToken();
         $saved = EmailData::insertTeamInvite(array(
             ":token" => $token, 
             ":team_id" => $teamId, 
-            ":user_id" => $playerId, 
+            ":user_id" => $userId, 
             ":name_first" => NULL, 
             ":name_last" => NULL, 
             ":email" => $playerEmail,
@@ -73,11 +78,10 @@ class EmailController {
             return 'Could not create invite. Check your parameters and try again.';
         }
         
-        $sent = ApiMailer::sendTeamInvite($token, $teamName, $playerEmail, $playerName);
-        if($sent) {
-            return "Player invite sent to '{$playerEmail}'.";
+        if(is_null($userId)) {
+            return ApiMailer::sendTeamInviteNewUser($token, $teamName, $playerEmail);
         } else {
-            return 'Could not send player invite.';
+            return ApiMailer::sendTeamInviteRegisteredUser($token, $teamName, $playerEmail, $playerName);
         }
     }
     

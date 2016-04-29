@@ -27,18 +27,28 @@ class ApiMailer {
     public static function sendWebsiteSignupInvite($token, $playerEmail, $playerName = '') {
         $websiteTitle = APIConfig::get('websiteTitle');
         $websiteUrl = APIConfig::get('websiteUrl');
-        $inviteLink = "{$websiteUrl}signup/{$token}";
+        $inviteLink = "{$websiteUrl}signup/{$token}/";
         return self::sendEmailFromTemplate('SIGNUP_INVITE_PLAYER', $playerEmail, $playerName, [$websiteTitle, $inviteLink], [$websiteTitle]);
     }
     
-    public static function sendTeamInvite($token, $teamName, $playerEmail, $playerName = '') {
+    public static function sendTeamInviteNewUser($token, $teamName, $playerEmail) {
         $websiteTitle = APIConfig::get('websiteTitle');
         $websiteUrl = APIConfig::get('websiteUrl');
-        $inviteLink = "{$websiteUrl}join-team/{$token}";
-        return self::sendEmailFromTemplate('TEAM_INVITE', $playerEmail, $playerName, [$websiteTitle, $inviteLink, $teamName], [$websiteTitle]);
+        $inviteLink = "{$websiteUrl}signup/{$token}/";
+        return self::sendEmailFromTemplate('SIGNUP_TEAM_INVITE', $playerEmail, '', [$websiteTitle, $inviteLink, $teamName], [$websiteTitle]);
+    }
+    
+    public static function sendTeamInviteRegisteredUser($token, $teamName, $playerEmail, $playerName = '') {
+        $websiteTitle = APIConfig::get('websiteTitle');
+        $websiteUrl = APIConfig::get('websiteUrl');
+        $inviteLink = "{$websiteUrl}login/";
+        return self::sendEmailFromTemplate('TEAM_INVITE_USER', $playerEmail, $playerName, [$websiteTitle, $inviteLink, $teamName], [$websiteTitle]);
     }
     
     private static function sendEmailFromTemplate($templateId, $recipientEmail, $recipientName = '', $bodyParams = [], $subjectParams = []) {
+        if (!filter_var($recipientEmail, FILTER_VALIDATE_EMAIL)) {
+            return array('error' => true, 'msg' => "The following email address is invalid: '{$recipientEmail}'.");
+        }
         
         // Setup mailer for sending message
         $mail = self::getPhpMailer();
@@ -55,8 +65,8 @@ class ApiMailer {
         $emailTemplate = self::selectEmailTemplate($templateId);
         if (!$emailTemplate) {
             self::logMailError(LOG_ERR, "ERROR RETRIEVING EMAIL TEMPLATE, templateId <{$templateId}>");
-            return "ERROR RETRIEVING EMAIL TEMPLATE, templateId <{$templateId}>";
-        }                                // Set email format to HTML
+            return array('error' => true, 'msg' => "Error generating email <{$templateId}>");
+        }
 
         // If a from email is set
         if($emailTemplate->fromEmail) {
@@ -94,11 +104,11 @@ class ApiMailer {
         if ($mail->send()) {
             // log the success
             self::logMailError(LOG_INFO, "EMAIL SUCCESS\n Template Id:<{$templateId}> Sender: <{$emailTemplate->replyEmail}, {$emailTemplate->replyName}> Recipient: <{$recipientEmail}, {$recipientName}> Subject: <{$subject}> Body: <{$bodyPlain}>");
-            return "EMAIL SUCCESS: Template Id:<{$templateId}> Sender: <{$emailTemplate->replyEmail}, {$emailTemplate->replyName}> Recipient: <{$recipientEmail}, {$recipientName}> Subject: <{$subject}> Body: <{$bodyPlain}>";
+            return array('error' => false, 'msg' => "Success! Email Sent to <{$recipientEmail}, {$recipientName}>");
         } else {
             // log the error
             self::logMailError(LOG_ERR, "EMAIL FAILURE\nError <{$mail->ErrorInfo}>/n Template Id:<{$templateId}> Sender: <{$emailTemplate->replyEmail}, {$emailTemplate->replyName}> Recipient: <{$recipientEmail}, {$recipientName}> Subject: <{$subject}> Body: <{$bodyPlain}>");
-            return "EMAIL FAILURE: Error <{$mail->ErrorInfo}> - Template Id:<{$templateId}> Sender: <{$emailTemplate->replyEmail}, {$emailTemplate->replyName}> Recipient: <{$recipientEmail}, {$recipientName}> Subject: <{$subject}> Body: <{$bodyPlain}>";
+            return array('error' => true, 'msg' => "Unknown Error: Error sending email to <{$recipientEmail}, {$recipientName}>");
         }
     }
 
@@ -147,7 +157,7 @@ class ApiMailer {
                 . "FROM " . DBConn::prefix() . "email_templates WHERE identifier = :identifier LIMIT 1;", 
                 array(':identifier' => $templateId));
         if (!$template) {
-        self::logMailError(LOG_ERR, "ERROR RETRIEVING EMAIL TEMPLATE, templateId <{$templateId}>");
+            self::logMailError(LOG_ERR, "ERROR RETRIEVING EMAIL TEMPLATE, templateId <{$templateId}>");
             return false;
         }
         return $template;

@@ -73,15 +73,29 @@ angular.module('app.modal.trivia.editTeam', [])
     
     /* Click event for the Add New Team button */
     $scope.buttonNew = function() {
-        $scope.editing.venueId = $scope.editing.venue.id;
-        ApiRoutesGames.addTeam($scope.editing).then(function(result) {
-            console.log(result);
-            $scope.alertProxy.success("Team '" + result.team.name + "'added");
-            $uibModalInstance.close(result);
-        }, function(error) {
-            console.log(error);
-            $scope.alertProxy.error(error);
-        });
+        if(!$scope.form.modalForm.$valid) {
+            $scope.form.modalForm.$setDirty();
+            $scope.alertProxy.error('Please select a home venue and name for your team.');
+        } else {
+            var players = new Array();
+            for(var i = 0; i < $scope.editing.players.length; i++) {
+                if($scope.editing.players[i].email.length > 0) {
+                    players.push({ 'email' : $scope.editing.players[i].email });
+                }
+            }
+            ApiRoutesGames.addTeam({ 
+                'name' : $scope.editing.name,  
+                'venueId' : $scope.editing.venue.id,  
+                'players' : players }).then(function(result) {
+
+                console.log(result);
+                $scope.alertProxy.success("Team '" + result.team.name + "'added");
+                $uibModalInstance.close(result);
+            }, function(error) {
+                console.log(error);
+                $scope.alertProxy.error(error);
+            });
+        }
     };
         
     /* Click event for the Save Team button */

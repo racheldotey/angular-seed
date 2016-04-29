@@ -51,77 +51,80 @@ class AuthData {
     static function updateUserPassword($validUser) {
         return DBConn::update("UPDATE " . DBConn::prefix() . "users SET password = :password WHERE id = :id;", $validUser);
     }
-        
+
+    /* Select User */
+
     static function selectUserById($id) {
-        $user = DBConn::selectOne("SELECT id, name_first as nameFirst, name_last as nameLast, email "
-                . "FROM " . DBConn::prefix() . "users WHERE id = :id LIMIT 1;", array(':id' => $id));
-        if($user) {
-            $user->displayName = $user->nameFirst;
-            $user->roles = DBConn::selectAll("SELECT DISTINCT(gr.auth_role_id) FROM " . DBConn::prefix() . "auth_lookup_user_group AS ug "
-                    . "JOIN " . DBConn::prefix() . "auth_lookup_group_role AS gr ON ug.auth_group_id = gr.auth_group_id "
-                    . "WHERE ug.user_id = :id;", array(':id' => $id), \PDO::FETCH_COLUMN);
-        }
-        return $user;
+        return self::selectUserWhere('id = :id', array(':id' => $id));
     }
     
     static function selectUserByFacebookId($facebookId) {
-        $user = DBConn::selectOne("SELECT id, name_first as nameFirst, name_last as nameLast, email "
-                . "FROM " . DBConn::prefix() . "users WHERE facebook_id = :facebook_id LIMIT 1;", array(':facebook_id' => $facebookId));
-        if($user) {
-            $user->displayName = $user->nameFirst;
-            $user->roles = DBConn::selectAll("SELECT DISTINCT(gr.auth_role_id) FROM " . DBConn::prefix() . "auth_lookup_user_group AS ug "
-                    . "JOIN " . DBConn::prefix() . "auth_lookup_group_role AS gr ON ug.auth_group_id = gr.auth_group_id "
-                    . "WHERE ug.user_id = :id;", array(':id' => $user->id), \PDO::FETCH_COLUMN);
-        }
-        return $user;
+        return self::selectUserWhere('facebook_id = :facebook_id', array(':facebook_id' => $facebookId));
     }
     
     static function selectUserByEmail($email) {
-        $user = DBConn::selectOne("SELECT id, name_first as nameFirst, name_last as nameLast, email, password "
-                . "FROM " . DBConn::prefix() . "users WHERE email = :email LIMIT 1;", array(':email' => $email));
-        if($user) {
-            $user->displayName = $user->nameFirst;
-            $user->roles = DBConn::selectAll("SELECT DISTINCT(gr.auth_role_id) FROM " . DBConn::prefix() . "auth_lookup_user_group AS ug "
-                    . "JOIN " . DBConn::prefix() . "auth_lookup_group_role AS gr ON ug.auth_group_id = gr.auth_group_id "
-                    . "WHERE ug.user_id = :id;", array(':id' => $user->id), \PDO::FETCH_COLUMN);
-        }
-        return $user;
+        return self::selectUserWhere('email = :email', array(':email' => $email));
     }
 
     static function selectUserByUsertoken($usertoken) {
-        $user = DBConn::selectOne("SELECT email "
-                        . "FROM " . DBConn::prefix() . "users WHERE usertoken = :usertoken LIMIT 1;", array(':usertoken' => $usertoken));
-
-        return $user;
+        return DBConn::selectOne("SELECT email FROM " . DBConn::prefix() . "users "
+                . "WHERE usertoken = :usertoken LIMIT 1;", array(':usertoken' => $usertoken));
     }
 
     static function selectUsertokenExpiry($email) {
-        $user = DBConn::selectOne("SELECT fortgotpassword_duration "
-                        . "FROM " . DBConn::prefix() . "users WHERE email = :email LIMIT 1;", array(':email' => $email));
-
-        return $user;
+        return DBConn::selectOne("SELECT fortgotpassword_duration FROM " . DBConn::prefix() . "users "
+                . "WHERE email = :email LIMIT 1;", array(':email' => $email));
     }
-
-    static function resetUserPassword($resetpwdperms) {
-        return DBConn::update("UPDATE " . DBConn::prefix() . "users SET password = :password, usertoken = :usertoken,fortgotpassword_duration = :fortgotpassword_duration  WHERE email = :email;", $resetpwdperms);
+    
+    private static function selectUserWhere($where, $params) {
+        $user = DBConn::selectOne("SELECT id, name_first as nameFirst, name_last as nameLast, email "
+                        . "FROM " . DBConn::prefix() . "users WHERE {$where} LIMIT 1;", $params);
+        if ($user) {
+            $user = self::selectUserData($user);
+        }
+        return $user;
     }
     
     static function selectUserByIdentifierToken($identifier) {
-        $user = DBConn::selectOne("SELECT u.id, name_first AS nameFirst, name_last AS nameLast, email, token AS apiToken, identifier AS apiKey "
+        $user = DBConn::selectOne("SELECT u.id, name_first AS nameFirst, "
+                . "name_last AS nameLast, email, token AS apiToken, identifier AS apiKey "
                 . "FROM " . DBConn::prefix() . "tokens_auth AS t "
                 . "JOIN " . DBConn::prefix() . "users AS u ON u.id = t.user_id "
                 . "WHERE identifier = :identifier AND t.expires > NOW() "
                 . "AND u.disabled IS NULL;", array(':identifier' => $identifier));
         if($user) {
+            $user = self::selectUserData($user);
+        }
+        return $user;
+    }
+    
+    private static function selectUserData($user) {
+        if ($user) {
             $user->displayName = $user->nameFirst;
-            $user->roles = DBConn::selectAll("SELECT DISTINCT(gr.auth_role_id) FROM " . DBConn::prefix() . "auth_lookup_user_group AS ug "
+            $user->roles = DBConn::selectAll("SELECT DISTINCT(gr.auth_role_id) "
+                    . "FROM " . DBConn::prefix() . "auth_lookup_user_group AS ug "
                     . "JOIN " . DBConn::prefix() . "auth_lookup_group_role AS gr ON ug.auth_group_id = gr.auth_group_id "
                     . "WHERE ug.user_id = :id;", array(':id' => $user->id), \PDO::FETCH_COLUMN);
+            
+            $user->teams = DBConn::selectAll("SELECT t.id, t.name, m.joined "
+                    . "FROM " . DBConn::prefix() . "teams AS t "
+                    . "JOIN as_team_members AS m ON m.team_id = t.id "
+                    . "WHERE m.user_id = :user_id ORDER BY t.name;", array(':id' => $user->id));
+            /*
+            $user->notices = array('teamInvites' => 
+                    DBConn::selectAll("SELECT DISTINCT(gr.auth_role_id) FROM " . DBConn::prefix() . "auth_lookup_user_group AS ug "
+                            . "JOIN " . DBConn::prefix() . "auth_lookup_group_role AS gr ON ug.auth_group_id = gr.auth_group_id "
+                            . "WHERE ug.user_id = :id;", array(':id' => $user->id))
+                    );*/
         }
         return $user;
     }
     
     /* Password Updating */
+
+    static function resetUserPassword($resetpwdperms) {
+        return DBConn::update("UPDATE " . DBConn::prefix() . "users SET password = :password, usertoken = :usertoken,fortgotpassword_duration = :fortgotpassword_duration  WHERE email = :email;", $resetpwdperms);
+    }
     
     static function selectUserPasswordById($userId) {
         return DBConn::selectColumn("SELECT password FROM " . DBConn::prefix() . "users WHERE id = :id LIMIT 1;", array(':id' => $userId));

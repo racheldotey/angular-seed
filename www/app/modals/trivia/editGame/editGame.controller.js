@@ -162,10 +162,4 @@ angular.module('app.modal.trivia.editGame', [])
         }
     };    
     
-    
-    
-    
-    
-    
-    
 }]);

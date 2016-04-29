@@ -37,22 +37,21 @@ class TeamData {
         return $team;
     }
     
-    static function selectUserIdByEmail($email) {
-        return DBConn::selectColumn("SELECT id FROM " . DBConn::prefix() . "users WHERE email = :email LIMIT 1;", 
-                array(':email' => $email));
+    static function selectUserByEmail($email) {
+        return DBConn::selectOne("SELECT id, email, CONCAT(name_first, ' ', name_last) AS displayName "
+                . "FROM " . DBConn::prefix() . "users WHERE email = :email LIMIT 1;", array(':email' => $email));
     }
     
     static function selectUserById($userId) {
         return DBConn::selectOne("SELECT id, email, CONCAT(name_first, ' ', name_last) AS displayName "
-                . "FROM " . DBConn::prefix() . "users WHERE id = :id LIMIT 1;", 
-                array(':id' => $userId));
+                . "FROM " . DBConn::prefix() . "users WHERE id = :id LIMIT 1;", array(':id' => $userId));
     }
 
 
     static function insertTeam($validTeam) {
         $find = $validTeam[':name'] . '%';
-        $num = DBConn::selectColumn("SELECT count(id) AS num FROM " . DBConn::prefix() . "teams WHERE name LIKE :name;", 
-                array(':name' => $find));
+        $num = DBConn::selectColumn("SELECT count(id) AS num FROM " . DBConn::prefix() . "teams "
+                . "WHERE name LIKE :name;", array(':name' => $find));
         
         if($num > 0) {
             $validTeam[':name'] = $validTeam[':name'] . ' ' . $num;
@@ -73,11 +72,13 @@ class TeamData {
     }
     
     static function deleteTeamMember($validTeam) {
-        return DBConn::delete("DELETE FROM " . DBConn::prefix() . "team_members WHERE user_id = :user_id AND team_id = :team_id;", $validTeam);
+        return DBConn::delete("DELETE FROM " . DBConn::prefix() . "team_members "
+                . "WHERE user_id = :user_id AND team_id = :team_id;", $validTeam);
     }
     
     static function isUserATeamMember($validTeam) {
-        return DBConn::selectAll("SELECT id FROM " . DBConn::prefix() . "team_members WHERE user_id = :user_id AND team_id = :team_id;", $validTeam);
+        return DBConn::selectAll("SELECT id FROM " . DBConn::prefix() . "team_members "
+                . "WHERE user_id = :user_id AND team_id = :team_id;", $validTeam);
     }
     
     static function deleteTeam($id) {
