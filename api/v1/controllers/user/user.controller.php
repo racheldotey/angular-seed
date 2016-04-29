@@ -54,6 +54,7 @@ class UserController {
         if(!v::intVal()->validate($userId) ||
             !v::key('nameFirst', v::stringType()->length(0,255))->validate($app->request->post()) ||
             !v::key('nameLast', v::stringType()->length(0,255), false)->validate($app->request->post()) || 
+            !v::key('phone', v::stringType()->length(0,20), false)->validate($app->request->post()) || 
             !v::key('email', v::email())->validate($app->request->post())) {
             return $app->render(400,  array('msg' => 'Invalid user. Check your parameters and try again.'));
         } 
@@ -67,7 +68,8 @@ class UserController {
                 ':id' => $userId,
                 ':name_first' => $app->request->post('nameFirst'),
                 ':name_last' => $app->request->post('nameLast'),
-                ':email' => $app->request->post('email')
+                ':email' => $app->request->post('email'),
+                ':phone' => $app->request->post('phone')
             );
             UserData::updateUser($data);
             $user = UserData::selectUserById($userId);

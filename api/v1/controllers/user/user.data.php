@@ -5,7 +5,7 @@ require_once dirname(dirname(__FILE__)) . '/groups/groups.data.php';
 class UserData {
     
     static function selectUsers() {
-        $qUsers = DBConn::executeQuery("SELECT id, name_first as nameFirst, name_last as nameLast, email, email_verified, password, created, last_updated AS updated "
+        $qUsers = DBConn::executeQuery("SELECT id, name_first as nameFirst, name_last as nameLast, email, phone, email_verified, password, created, last_updated AS updated "
                 . "FROM " . DBConn::prefix() . "users;");
         
         $qGroups = DBConn::preparedQuery("SELECT grp.id, grp.group, grp.desc "
@@ -28,7 +28,7 @@ class UserData {
     }
     
     static function selectUserById($id) {
-        $user = DBConn::selectOne("SELECT id, name_first as nameFirst, name_last as nameLast, email "
+        $user = DBConn::selectOne("SELECT id, name_first as nameFirst, name_last as nameLast, email, phone "
                 . "FROM " . DBConn::prefix() . "users WHERE id = :id LIMIT 1;", array(':id' => $id));
         if($user) {
             $user->displayName = $user->nameFirst;
@@ -40,7 +40,7 @@ class UserData {
     }
     
     static function selectUserByIdentifierToken($identifier) {
-        $user = DBConn::selectOne("SELECT u.id, name_first AS nameFirst, name_last AS nameLast, email, token AS apiToken, identifier AS apiKey "
+        $user = DBConn::selectOne("SELECT u.id, name_first AS nameFirst, name_last AS nameLast, email, phone, token AS apiToken, identifier AS apiKey "
                 . "FROM " . DBConn::prefix() . "tokens_auth AS t "
                 . "JOIN " . DBConn::prefix() . "users AS u ON u.id = t.user_id "
                 . "WHERE identifier = :identifier AND t.expires > NOW() "
@@ -64,7 +64,8 @@ class UserData {
     }
     
     static function updateUser($validUser) {
-        return DBConn::update("UPDATE " . DBConn::prefix() . "users SET name_first=:name_first, name_last=:name_last, email=:email WHERE id = :id;", $validUser);
+        return DBConn::update("UPDATE " . DBConn::prefix() . "users SET name_first=:name_first, "
+                . "name_last=:name_last, email=:email, phone=:phone WHERE id = :id;", $validUser);
     }
     
     static function deleteUser($userId) {

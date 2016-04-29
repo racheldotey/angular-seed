@@ -12,7 +12,7 @@ class UserRoutes {
         })->via('GET', 'POST');
 
         /*
-         * id, nameFirst, nameLast, email
+         * id, nameFirst, nameLast, email, phone
          */
         $app->post("/user/update/:userId/", $authenticateForRole('member'), function ($userId) use ($app) {
             UserController::updateUser($app, $userId);

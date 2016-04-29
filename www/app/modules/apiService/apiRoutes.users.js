@@ -20,7 +20,7 @@ angular.module('apiRoutes.users', [])
 
     api.addUser = function (user) {
         if (angular.isUndefined(user.nameFirst) || angular.isUndefined(user.nameLast) ||
-                angular.isUndefined(user.email) || angular.isUndefined(user.password)) {
+                angular.isUndefined(user.email) || angular.isUndefined(user.password) || angular.isUndefined(user.phone)) {
             return API.reject('Invalid user please verify your information and try again.');
         }
 
@@ -29,7 +29,7 @@ angular.module('apiRoutes.users', [])
     
     api.saveUser = function (user) {
         if (angular.isUndefined(user.nameFirst) || angular.isUndefined(user.nameLast) ||
-                angular.isUndefined(user.email) || angular.isUndefined(user.id)) {
+                angular.isUndefined(user.email) || angular.isUndefined(user.id) || angular.isUndefined(user.phone)) {
             return API.reject('Invalid user. Please check your parameters and try again.');
         }
 
