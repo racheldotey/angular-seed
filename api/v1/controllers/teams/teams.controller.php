@@ -39,7 +39,7 @@ class TeamController {
                 $results = self::addPlayers($teamId, $post['name'], $post['players']);
             }            
             $team = TeamData::getTeam($teamId);
-            return $app->render(400, array('team' => $team, 'invites' => $results));
+            return $app->render(200, array('team' => $team, 'invites' => $results));
         } else {
             return $app->render(400,  array('msg' => 'Could not add team.'));
         }
