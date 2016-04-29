@@ -116,10 +116,10 @@ class AuthData {
                             . "i.team_id AS teamId, t.name AS teamName, i.user_id AS userId, "
                             . "CONCAT(u.name_first, ' ', u.name_last) AS fromPlayer, u.id AS fromPlayerId "
                             . "FROM " . DBConn::prefix() . "tokens_player_invites AS i "
-                            . "JOIN " . DBConn::prefix() . "teams AS t ON t.id = i.team_id "
+                            . "LEFT JOIN " . DBConn::prefix() . "teams AS t ON t.id = i.team_id "
                             . "LEFT JOIN " . DBConn::prefix() . "users AS u ON u.id = i.created_user_id "
                             . "WHERE user_id = :id AND response IS NULL AND expires > NOW() "
-                            . "AND i.team_id != (SELECT m.team_id FROM " . DBConn::prefix() . "team_members AS m WHERE i.user_id = m.user_id);", 
+                            . "AND i.team_id NOT IN (SELECT m.team_id FROM " . DBConn::prefix() . "team_members AS m WHERE i.user_id = m.user_id);", 
                             array(':id' => $user->id))
                     );
         }

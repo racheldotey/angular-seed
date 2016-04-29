@@ -35,4 +35,23 @@ class EmailData {
         return DBConn::selectColumn("SELECT id FROM " . DBConn::prefix() . "users "
                 . "WHERE email = :email LIMIT 1;", array(':email' => $email));
     }
+    
+    static function updateAcceptInvite($validInvite) {
+        DBConn::delete("DELETE FROM " . DBConn::prefix() . "team_members WHERE user_id = :user_id;", 
+                array(':user_id' => $validInvite[':user_id']));
+        
+        DBConn::insert("INSERT INTO " . DBConn::prefix() . "team_members(user_id, team_id, added_by) "
+                . "VALUES (:user_id, :team_id, :added_by);", array(':user_id' => $validInvite[':user_id'], 
+                    ':team_id' => $validInvite[':team_id'], ':added_by' => $validInvite[':user_id']));
+        
+        return DBConn::update("UPDATE " . DBConn::prefix() . "tokens_player_invites SET "
+                . "response='accepted' WHERE token = :token AND user_id = :user_id "
+                . "AND team_id = :team_id AND expires > NOW() LIMIT 1;", $validInvite);
+    }
+    
+    static function updateDeclineInvite($validInvite) {
+        return DBConn::update("UPDATE " . DBConn::prefix() . "tokens_player_invites SET "
+                . "response='declined' WHERE token = :token AND user_id = :user_id "
+                . "AND team_id = :team_id AND expires > NOW() LIMIT 1;", $validInvite);
+    }
 }

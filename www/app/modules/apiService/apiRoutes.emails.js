@@ -32,5 +32,23 @@ angular.module('apiRoutes.emails', [])
         return API.post('/send-email/team-invite', newPlayer, 'Could not send team invite.');
     };
     
+    api.acceptTeamInvite = function(token, userId, teamId) { 
+        if(angular.isUndefined(token) || 
+            angular.isUndefined(userId) || 
+            angular.isUndefined(teamId)) {
+            return API.reject('Invalid invite token please check your parameters and try again.');
+        }
+        return API.post('/send-email/team-invite/accept', { 'inviteToken' : token, 'teamId' : teamId, 'userId' : userId }, 'Could not accept team invite.');
+    };
+    
+    api.declineTeamInvite = function(token, userId, teamId) { 
+        if(angular.isUndefined(token) || 
+            angular.isUndefined(userId) || 
+            angular.isUndefined(teamId)) {
+            return API.reject('Invalid invite token please check your parameters and try again.');
+        }
+        return API.post('/send-email/team-invite/decline', { 'inviteToken' : token, 'teamId' : teamId, 'userId' : userId }, 'Could not decline team invite.');
+    };
+    
     return api;
 }]);

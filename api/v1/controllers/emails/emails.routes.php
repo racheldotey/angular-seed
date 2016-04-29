@@ -28,6 +28,20 @@ class EmailRoutes {
                 EmailController::sendTeamInviteEmail($app);
             })->via('GET', 'POST');
             
+            /*
+             * teamId, userId, inviteToken
+             */
+            $app->map("/team-invite/accept/", function () use ($app) {
+                EmailController::acceptTeamInvite($app);
+            })->via('GET', 'POST');
+            
+            /*
+             * teamId, userId, inviteToken
+             */
+            $app->map("/team-invite/decline/", function () use ($app) {
+                EmailController::declineTeamInvite($app);
+            })->via('GET', 'POST');
+            
         });
     }
 }

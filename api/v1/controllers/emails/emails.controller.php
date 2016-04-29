@@ -85,7 +85,43 @@ class EmailController {
         }
     }
     
-    static function sendTeamInviteEmail($app) {
+    static function acceptTeamInvite($app) {
+        $post = $app->request->post();
+        if(!v::key('inviteToken', v::stringType())->validate($post) ||
+            !v::key('userId', v::intVal())->validate($post) ||
+            !v::key('teamId', v::intVal())->validate($post)) {
+            return $app->render(400,  array('msg' => 'Invalid token. Check your parameters and try again.'));
+        }
         
+        $sent = EmailData::updateAcceptInvite(array(
+            ':token' => $post['inviteToken'], 
+            ':team_id' => $post['teamId'], 
+            ':user_id' => $post['userId']
+        ));
+        if($sent) {
+            return $app->render(200, array('msg' => "Team invitation has been accepted."));
+        } else {
+            return $app->render(400, array('msg' => 'Could not update team invite.'));
+        }
+    }
+    
+    static function declineTeamInvite($app) {
+        $post = $app->request->post();
+        if(!v::key('inviteToken', v::stringType())->validate($post) ||
+            !v::key('userId', v::intVal())->validate($post) ||
+            !v::key('teamId', v::intVal())->validate($post)) {
+            return $app->render(400,  array('msg' => 'Invalid token. Check your parameters and try again.'));
+        }
+        
+        $sent = EmailData::updateDeclineInvite(array(
+            ':token' => $post['inviteToken'], 
+            ':team_id' => $post['teamId'], 
+            ':user_id' => $post['userId']
+        ));
+        if($sent) {
+            return $app->render(200, array('msg' => "Team invitation has been declined."));
+        } else {
+            return $app->render(400, array('msg' => 'Could not update team invite.'));
+        }
     }
 }

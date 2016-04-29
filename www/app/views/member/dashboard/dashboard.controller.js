@@ -7,8 +7,8 @@
  */
 
 angular.module('app.member.dashboard', [])
-    .controller('MemberDashboardCtrl', ['$scope', '$state', '$compile', '$filter', 'TriviaModalService', 'AlertConfirmService', 'DataTableHelper', 'DTOptionsBuilder', 'DTColumnBuilder', 'AuthService',
-        function($scope, $state, $compile, $filter, TriviaModalService, AlertConfirmService, DataTableHelper, DTOptionsBuilder, DTColumnBuilder, AuthService) {
+    .controller('MemberDashboardCtrl', ['$scope', '$state', '$compile', '$filter', 'TriviaModalService', 'AlertConfirmService', 'DataTableHelper', 'DTOptionsBuilder', 'DTColumnBuilder', 'AuthService', 'ApiRoutesEmails',
+        function($scope, $state, $compile, $filter, TriviaModalService, AlertConfirmService, DataTableHelper, DTOptionsBuilder, DTColumnBuilder, AuthService, ApiRoutesEmails) {
         
         $scope.currentPlayer = AuthService.getUser();
         
@@ -106,25 +106,76 @@ angular.module('app.member.dashboard', [])
                 .result.then(function () {
                     var modalInstance = TriviaModalService.openEditTeam({}, $scope.currentPlayer.id);
                     modalInstance.result.then(function (result) {
-                        console.log('result');
-                        $state.reload();
+                        
+                        AuthService.reloadUser().then(function (result) {
+                            $scope.currentPlayer = result;
+                            $scope.updateGreeting();
+                        }, function () {
+                            console.log("Couldnt reload user");
+                        });
+                    
                     }, function () {});
                 }, function (declined) {});
             } else {
                 var modalInstance = TriviaModalService.openEditTeam({}, $scope.currentPlayer.id);
                 modalInstance.result.then(function (result) {
-                    console.log('result');
-                    $state.reload();
+                        
+                    AuthService.reloadUser().then(function (result) {
+                        $scope.currentPlayer = result;
+                        $scope.updateGreeting();
+                    }, function () {
+                        console.log("Couldnt reload user");
+                    });
+                        
                 }, function () {});
             }
         };
         
-        $scope.buttonAcceptInvitation = function(token) {
-            
+        $scope.buttonAcceptInvitation = function(token, teamName, teamId) {
+            if($scope.currentPlayer.teams.length > 0) {
+                AlertConfirmService.confirm('Warning, if you accept this invite team you will be removed from your current team, "' + $scope.currentPlayer.teams[0].name + '" and added to the new team. Would you like to contine?', 'Warning, Leaving Team!')
+                .result.then(function () {
+                    AlertConfirmService.confirm('Wait, are you absolutely sure that you want to leave "' + $scope.currentPlayer.teams[0].name + '" and join "' + teamName + '"?', 'Warning, Leaving Team!')
+                    .result.then(function () {
+
+                        ApiRoutesEmails.acceptTeamInvite(token, $scope.currentPlayer.id, teamId).then(function (result) {
+
+                            AuthService.reloadUser().then(function (result) {
+                                $scope.currentPlayer = result;
+                                $scope.updateGreeting();
+                            }, function () {
+                                console.log("Couldnt reload user");
+                            });
+
+                        }, function () {});
+
+                    }, function (declined) {});
+                }, function (declined) {});
+            } else {
+                ApiRoutesEmails.acceptTeamInvite(token, $scope.currentPlayer.id, teamId).then(function (result) {
+
+                    AuthService.reloadUser().then(function (result) {
+                        $scope.currentPlayer = result;
+                        $scope.updateGreeting();
+                    }, function () {
+                        console.log("Couldnt reload user");
+                    });
+
+                }, function () {});
+            }
         };
         
-        $scope.buttonDeclineInvitation = function(token) {
-            
+        $scope.buttonDeclineInvitation = function(token, teamName, teamId) {
+            ApiRoutesEmails.declineTeamInvite(token, $scope.currentPlayer.id, teamId).then(function (result) {
+                        
+                AuthService.reloadUser().then(function (result) {
+                    $scope.currentPlayer = result;
+                    $scope.updateGreeting();
+                }, function () {
+                    console.log("Couldnt reload user");
+                });
+                        
+            }, function () {});
         };
 
     }]);

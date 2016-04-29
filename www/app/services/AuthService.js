@@ -54,6 +54,31 @@ angular.module('AuthService', [
         factory.getUser = function () {
             return UserSession.get();
         };
+        
+        factory.reloadUser = function () {
+            /* Returns promise that always resolves true */
+            return $q(function (resolve, reject) {
+                var credentials = CookieService.getAuthCookie();
+
+                if (credentials) {
+                    API.getAuthenticatedUser(credentials)
+                        .then(function (data) {
+                            data.user.apiKey = credentials.apiKey;
+                            data.user.apiToken = credentials.apiToken;
+                            if (!UserSession.create(data.user)) {
+                                $log.error('[authInit] Credentials found but session Couldn\'t be Created', data);
+                            }
+                            return resolve(UserSession.get());
+                        }, function (error) {
+                            CookieService.destroyAuthCookie();
+                            $log.info('[authInit]', error);
+                            return resolve(false);
+                        });
+                } else {
+                    return resolve(false);
+                }
+            });
+        };
 
         /* Signup */
         
