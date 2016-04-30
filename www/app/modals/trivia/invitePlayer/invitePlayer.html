@@ -6,7 +6,13 @@
     
     <div data-rc-bootstrap-alerts="alertProxy"></div>
     
-    <p>Invite your friends to play on your team.</p>
+    <div ng-if="invitingPlayer">
+        <p>Invite a friend to play on your team.</p>
+    </div>
+    
+    <div ng-if="!invitingPlayer">
+        <p>Invite a friend to signup to TriviaJoint.com and join in on the fun!</p>
+    </div>
         
     <form name="form.modalForm" role="form" novalidate>
         

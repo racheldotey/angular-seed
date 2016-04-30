@@ -56,6 +56,50 @@ class EmailController {
         }
     }
     
+    static function sendTeamInviteEmail($app) {
+        $post = $app->request->post();
+        if((!v::key('email', v::email())->validate($post) && !v::key('userId', v::intVal())->validate($post)) ||
+           !v::key('teamId', v::intVal())->validate($post) ||
+           !v::key('teamName', v::stringType())->validate($post) ||
+           !v::key('invitedById', v::intVal())->validate($post)) {
+            return $app->render(400,  array('msg' => 'Invalid email. Check your parameters and try again.'));
+        }
+            
+        // Try to set the players user id if the email exists in the DB
+        $foundId = (v::key('userId', v::intVal())->validate($post)) ? $post['userId'] :
+                EmailData::selectUserIdByEmail($post['email']);
+        $userId = (!$foundId) ? NULL : $foundId;
+        
+        
+        $first = (!v::key('nameFirst', v::stringType())->validate($post)) ? NULL : $post['nameFirst'];
+        $last = (!v::key('nameLast', v::stringType())->validate($post)) ? NULL : $post['nameLast'];
+        $phone = (!v::key('phone', v::stringType())->validate($post)) ? NULL : $post['phone'];
+        
+        $token = self::makeInviteToken();
+        $saved = EmailData::insertTeamInvite(array(
+            ":token" => $token, 
+            ":team_id" => $post['teamId'], 
+            ":user_id" => $userId, 
+            ":name_first" => $first, 
+            ":name_last" => $last, 
+            ":email" => $post['email'],
+            ":phone" => $phone, 
+            ":created_user_id" => $post['invitedById']
+        ));
+        
+        if(!$saved) {
+            return $app->render(400,  array('msg' =>  'Could not create invite. Check your parameters and try again.'));
+        }
+        
+        $playerName = (is_null($first) || is_null($last)) ? '' : "{$first} {$last}";        
+        
+        $result = (is_null($userId)) ? ApiMailer::sendTeamInviteNewUser($token, $post['teamName'], $post['email'], $playerName) : 
+            ApiMailer::sendTeamInviteRegisteredUser($token, $post['teamName'], $post['email'], $playerName);
+        
+        return ($result['error']) ? $app->render(400, $result) : $app->render(400, $result);
+    }
+    
+    
     static function silentlySendTeamInviteEmail($teamId, $teamName, $playerEmail, $playerId = NULL, $playerName = '') {
         
         // Try to set the players user id if the email exists in the DB
@@ -79,7 +123,7 @@ class EmailController {
         }
         
         if(is_null($userId)) {
-            return ApiMailer::sendTeamInviteNewUser($token, $teamName, $playerEmail);
+            return ApiMailer::sendTeamInviteNewUser($token, $teamName, $playerEmail, $playerName);
         } else {
             return ApiMailer::sendTeamInviteRegisteredUser($token, $teamName, $playerEmail, $playerName);
         }

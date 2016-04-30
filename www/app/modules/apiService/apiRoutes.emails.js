@@ -19,14 +19,18 @@ angular.module('apiRoutes.emails', [])
     };
     
     api.sendInviteNewPlayerEmail = function(newPlayer) { 
-        if(angular.isUndefined(newPlayer.email)) {
+        if(!angular.isString(newPlayer.email)) {
             return API.reject('Invalid email please check your parameters and try again.');
         }
         return API.post('/send-email/invite-player', newPlayer, 'Could not send player invite.');
     };
     
     api.sendTeamInviteEmail = function(newPlayer) { 
-        if(angular.isUndefined(newPlayer.email)) {
+        if(!angular.isString(newPlayer.email) ||
+            !angular.isNumber(parseInt(newPlayer.invitedById)) ||
+            !angular.isNumber(parseInt(newPlayer.teamId)) ||
+            !angular.isString(newPlayer.invitedByFirstName) ||
+            !angular.isString(newPlayer.invitedByLastName)) {
             return API.reject('Invalid email please check your parameters and try again.');
         }
         return API.post('/send-email/team-invite', newPlayer, 'Could not send team invite.');

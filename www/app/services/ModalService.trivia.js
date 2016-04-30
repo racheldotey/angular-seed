@@ -193,13 +193,31 @@ angular.module('TriviaModalService', [
      * 
      * @return uibModalInstance
      */
-    api.openInviteFriend = function(currentUser) {
+    api.openInviteSiteSignup = function() {
         return api.openModal({
             templateUrl: templatePath + 'invitePlayer/invitePlayer.html',
             controller: 'TriviaInvitePlayerModalCtrl',
             resolve: {
-                editing: function() {
-                    return (angular.isDefined(currentUser)) ? currentUser : {};
+                InvitingPlayer: function() {
+                    return false;
+                }
+            }
+        });
+    };
+    
+    /*
+     * Open Invite Player to Team to Trivia Joint Modal
+     * 
+     * @return uibModalInstance
+     */
+    api.openInviteToTeam = function() {
+        return api.openModal({
+            templateUrl: templatePath + 'invitePlayer/invitePlayer.html',
+            controller: 'TriviaInvitePlayerModalCtrl',
+            resolve: {
+                AuthService: 'AuthService',
+                InvitingPlayer: function(AuthService) {
+                    return AuthService.getUser();
                 }
             }
         });

@@ -18,7 +18,9 @@ angular.module('app.member.dashboard', [])
             $scope.playerGreeting = 'Welcome back ' + $scope.currentPlayer.displayName + '!';
             
             for(var i = 0; i < $scope.currentPlayer.teams.length; i++) {
-                $scope.playerGreeting = $scope.playerGreeting + ' You have been a member of team "' + $scope.currentPlayer.teams[i].name + '" since ' + moment($scope.currentPlayer.teams[i].joined, 'YYYY-MM-DD HH:mm:ss').format('MMMM');
+                $scope.playerGreeting = $scope.playerGreeting + ' You have been a member of team "' + 
+                        $scope.currentPlayer.teams[i].name + '" since ' + 
+                        moment($scope.currentPlayer.teams[i].joined, 'YYYY-MM-DD HH:mm:ss').format('MMMM') + ".";
             }
             
         })();
@@ -94,11 +96,24 @@ angular.module('app.member.dashboard', [])
             }
         });
         
-        $scope.buttonInviteFriend = function() {
-            var modalInstance = TriviaModalService.openInviteFriend(false);
+        /* Button Click Events */
+        
+        $scope.buttonInviteSiteSignup = function() {
+            var modalInstance = TriviaModalService.openInviteSiteSignup();
             modalInstance.result.then(function(result) {
                 $scope.alertProxy.success('Invite sent.');
             });
+        };
+        
+        $scope.buttonInviteToTeam = function() {
+            var modalInstance = TriviaModalService.openInviteToTeam();
+            modalInstance.result.then(function(result) {
+                $scope.alertProxy.success('Invite sent.');
+            });
+        };
+        
+        $scope.buttonCheckinTeam = function() {
+            
         };
         
         $scope.buttonCreateTeam = function() {
@@ -131,6 +146,8 @@ angular.module('app.member.dashboard', [])
                 }, function () {});
             }
         };
+        
+        /* Team Invite Managment */
         
         $scope.buttonAcceptInvitation = function(token, teamName, teamId) {
             if($scope.currentPlayer.teams.length > 0) {

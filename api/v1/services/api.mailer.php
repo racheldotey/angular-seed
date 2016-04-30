@@ -31,11 +31,11 @@ class ApiMailer {
         return self::sendEmailFromTemplate('SIGNUP_INVITE_PLAYER', $playerEmail, $playerName, [$websiteTitle, $inviteLink], [$websiteTitle]);
     }
     
-    public static function sendTeamInviteNewUser($token, $teamName, $playerEmail) {
+    public static function sendTeamInviteNewUser($token, $teamName, $playerEmail, $playerName = '') {
         $websiteTitle = APIConfig::get('websiteTitle');
         $websiteUrl = APIConfig::get('websiteUrl');
         $inviteLink = "{$websiteUrl}signup/{$token}/";
-        return self::sendEmailFromTemplate('SIGNUP_TEAM_INVITE', $playerEmail, '', [$websiteTitle, $inviteLink, $teamName], [$websiteTitle]);
+        return self::sendEmailFromTemplate('SIGNUP_TEAM_INVITE', $playerEmail, $playerName, [$websiteTitle, $inviteLink, $teamName], [$websiteTitle]);
     }
     
     public static function sendTeamInviteRegisteredUser($token, $teamName, $playerEmail, $playerName = '') {
@@ -163,13 +163,3 @@ class ApiMailer {
         return $template;
     }
 }
-
-/*
-[LOCAL] Team Up! You've been invited to a Trivia Team.
-<p>A player at <a href='!@1@!' target='_blank'>!@0@!</a> would like you to join their team!</p><p>Click the link above or paste the following URL into your browser to join team '!@2@!':</p><p>!@1@!</p>
-A player at !@0@! would like you to join their team! Paste the following URL into your browser to join team '!@2@!': !@1@!
-    
-[LOCAL] A friend has invited you to join !@0@!
-<p>A player at <a href='!@1@!' target='_blank'>!@0@!</a> would like you to join in on the fun!</p><p>Click the link above or paste the following URL into your browser to signup:</p><p>!@1@!</p>
-A player at !@0@! would like you to join in on the fun!\n\rPaste the following URL into your browser to signup:\n\r!@1@!
- */

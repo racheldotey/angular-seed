@@ -3,8 +3,11 @@
 /* @author  Rachel Carbone */
 
 angular.module('app.modal.trivia.invitePlayer', [])        
-    .controller('TriviaInvitePlayerModalCtrl', ['$scope', '$uibModalInstance', 'ApiRoutesEmails',
-    function($scope, $uibModalInstance, ApiRoutesEmails) {        
+    .controller('TriviaInvitePlayerModalCtrl', ['$scope', '$uibModalInstance', 'ApiRoutesEmails', 'InvitingPlayer',
+    function($scope, $uibModalInstance, ApiRoutesEmails, InvitingPlayer) {   
+    
+    $scope.invitingPlayer = InvitingPlayer;
+    
     /* Used to restrict alert bars */
     $scope.alertProxy = {};
     
@@ -21,12 +24,28 @@ angular.module('app.modal.trivia.invitePlayer', [])
     
     /* Click event for the Add Team button */
     $scope.buttonInvite = function() {
-        ApiRoutesEmails.sendInviteNewPlayerEmail($scope.invite).then(function(response) {
-            $uibModalInstance.close(response.msg);
-            console.log(response);
-        }, function(error) {
-            $scope.alertProxy.error(error);
-        });
+        if($scope.invitingPlayer && $scope.invitingPlayer.teams[0].id) {
+            
+            $scope.invite.invitedById = $scope.invitingPlayer.id;
+            $scope.invite.invitedByFirstName = $scope.invitingPlayer.nameFirst;
+            $scope.invite.invitedByLastName = $scope.invitingPlayer.nameLast;
+            $scope.invite.teamId = $scope.invitingPlayer.teams[0].id;
+            $scope.invite.teamName = $scope.invitingPlayer.teams[0].name;
+            
+            ApiRoutesEmails.sendTeamInviteEmail($scope.invite).then(function(response) {
+                $uibModalInstance.close(response.msg);
+                console.log(response);
+            }, function(error) {
+                $scope.alertProxy.error(error);
+            });
+        } else {
+            ApiRoutesEmails.sendInviteNewPlayerEmail($scope.invite).then(function(response) {
+                $uibModalInstance.close(response.msg);
+                console.log(response);
+            }, function(error) {
+                $scope.alertProxy.error(error);
+            });
+        }
     };
         
     /* Click event for the Cancel button */

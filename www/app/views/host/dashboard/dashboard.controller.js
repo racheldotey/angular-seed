@@ -94,8 +94,8 @@ angular.module('app.host.dashboard', [])
             }
         };
         
-        $scope.buttonInviteFriend = function() {
-            var modalInstance = TriviaModalService.openInviteFriend(false);
+        $scope.buttonInviteSiteSignup = function() {
+            var modalInstance = TriviaModalService.openInviteSiteSignup();
             modalInstance.result.then(function(result) {
                 $scope.alertProxy.success(result);
             });
