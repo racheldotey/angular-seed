@@ -96,7 +96,7 @@ class EmailController {
         $result = (is_null($userId)) ? ApiMailer::sendTeamInviteNewUser($token, $post['teamName'], $post['email'], $playerName) : 
             ApiMailer::sendTeamInviteRegisteredUser($token, $post['teamName'], $post['email'], $playerName);
         
-        return ($result['error']) ? $app->render(400, $result) : $app->render(400, $result);
+        return ($result['error']) ? $app->render(400, $result) : $app->render(200, $result);
     }
     
     

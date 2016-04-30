@@ -7,7 +7,7 @@
     <div data-rc-bootstrap-alerts="alertProxy"></div>
     
     <div ng-if="invitingPlayer">
-        <p>Invite a friend to play on your team.</p>
+        <p>Invite a friend to play on your team, '{{invitingTeamName}}'.</p>
     </div>
     
     <div ng-if="!invitingPlayer">
@@ -49,5 +49,6 @@
 
 <div class="modal-footer">    
     <button class="btn btn-default pull-left" ng-click="buttonCancel()">Cancel</button>
-    <button class="btn btn-primary" ng-click="buttonInvite()"><span class="glyphicon glyphicon-envelope"></span>&nbsp;Send Invite</button>
+    <button ng-if="invitingPlayer" class="btn btn-primary" ng-click="buttonInvite()"><span class="glyphicon glyphicon-envelope"></span>&nbsp;Send Team Invite</button>
+    <button ng-if="!invitingPlayer" class="btn btn-primary" ng-click="buttonInvite()"><span class="glyphicon glyphicon-envelope"></span>&nbsp;Send Signup Request</button>
 </div>
