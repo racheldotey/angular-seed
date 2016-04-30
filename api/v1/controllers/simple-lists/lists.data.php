@@ -37,6 +37,7 @@ class ListsData {
     
     static function selectGames() {
         return DBConn::selectAll("SELECT g.id, g.name AS label "
-                . "FROM " . DBConn::prefix() . "games AS g ORDER BY g.name;");
+                . "FROM " . DBConn::prefix() . "games AS g "
+                . "WHERE g.game_started IS NOT NULL AND g.game_ended IS NULL ORDER BY g.name;");
     }
 }

@@ -3,13 +3,36 @@
 /* @author  Rachel Carbone */
 
 angular.module('app.modal.trivia.addTeamToGame', [])        
-    .controller('TriviaAddTeamToGameModalCtrl', ['$scope', '$uibModalInstance', 'TriviaScoreboard', 'game', 'teamsList',
-    function($scope, $uibModalInstance, TriviaScoreboard, game, teamsList) {  
+    .controller('TriviaAddTeamToGameModalCtrl', ['$scope', '$uibModalInstance', 'TriviaScoreboard', 'team', 'game', 'teamsList', 'gamesList',
+    function($scope, $uibModalInstance, TriviaScoreboard, team, game, teamsList, gamesList) {  
     
+    $scope.team = team;
     $scope.game = game;
     $scope.teamsList = teamsList;
+    $scope.gamesList = gamesList;
+    
     $scope.addTeam = {};
-        
+    if(team) {
+        for(var t = 0; t < teamsList.length; t++) {
+            if(parseInt(teamsList[t].id) === parseInt(team.id)) {
+                $scope.addTeam = teamsList[t];
+                t = teamsList.length;
+                break;
+            }
+        }
+    }
+    
+    $scope.toGame = {};
+    if(game) {
+        for(var g = 0; g < gamesList.length; g++) {
+            if(parseInt(gamesList[g].id) === parseInt(game.id)) {
+                $scope.toGame = gamesList[g];
+                g = gamesList.length;
+                break;
+            }
+        }
+    }
+    
     /* Used to restrict alert bars */
     $scope.alertProxy = {};
     

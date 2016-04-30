@@ -16,6 +16,23 @@
         </div>
         
         <div class="form-group">
+            <label class="col-xs-5 col-sm-4 col-md-3 control-label">Games</label>
+            <div class="col-xs-7 col-sm-8 col-md-9">
+                <select 
+                    class="form-control"
+                    ng-model="toGame"
+                    ng-options="game.label for game in gamesList track by game.id"></select>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="col-xs-5 col-sm-4 col-md-3 control-label">Team #{{team.id}}</label>
+            <div class="col-xs-7 col-sm-8 col-md-9">
+                <p class="form-control-static">{{team.name}}</p>
+            </div>
+        </div>
+        
+        <div class="form-group">
             <label class="col-xs-5 col-sm-4 col-md-3 control-label">Teams</label>
             <div class="col-xs-7 col-sm-8 col-md-9" rc-trivia-select-list-venue="addTeam" teams-list-data="teamsList"></div>
         </div>

@@ -113,7 +113,14 @@ angular.module('app.member.dashboard', [])
         };
         
         $scope.buttonCheckinTeam = function() {
-            
+            if($scope.currentPlayer.teams.length) {
+                var modalInstance = TriviaModalService.openAddTeam(false, $scope.currentPlayer.teams[0]);
+                modalInstance.result.then(function (result) {
+                    $scope.alertProxy.success("Team successfully checked in to current game.");
+                }, function () {});
+            } else {
+                AlertConfirmService.alert("You must be a member of a team to checkin your team.", "Cannot Checkin Team");
+            }
         };
         
         $scope.buttonCreateTeam = function() {

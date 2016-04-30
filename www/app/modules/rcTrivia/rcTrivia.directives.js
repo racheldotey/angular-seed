@@ -133,15 +133,6 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 
             };
             
-            // Add Trivia Player Modal
-            $scope.buttonAddPlayer = function() {
-                var modalInstance = TriviaModalService.openAddPlayer($scope.game.id);
-                modalInstance.result.then(function (result) {
-                    console.log(result);
-                }, function () {});
-                
-            };
-            
             // Add Trivia Round Modal
             $scope.buttonAddRound = function() {
                 var modalInstance = TriviaModalService.openEditRound($scope.game.id);
