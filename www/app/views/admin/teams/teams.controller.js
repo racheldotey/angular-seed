@@ -23,11 +23,11 @@ angular.module('app.admin.teams', [])
         };
 
         // DataTable Setup
-        $scope.dtTeamMembers = {};
-        $scope.dtTeamMembers.options = DTOptionsBuilder.newOptions();
+        $scope.dtTeamPlayers = {};
+        $scope.dtTeamPlayers.options = DTOptionsBuilder.newOptions();
 
         $scope.dtTeams = DataTableHelper.getDTStructure($scope, 'adminTeamsList');
-        $scope.dtTeams.options.withOption('responsive', {
+        $scope.dtTeams.options.withOption('order', [1, 'desc']).withOption('responsive', {
             details: {
                 type: 'column',
                 renderer: function(api, rowIdx, columns) {
@@ -38,12 +38,12 @@ angular.module('app.admin.teams', [])
                         if(value.title == 'ID') {
                             id = value.data;
                         }
-                        if(value.title == 'Members') {
+                        if(value.title == 'Players') {
                             data = value.data;
                         }
                     });
 
-                    var header = '<table datatable="" dt-options="dtTeamMembers.options" class="table table-hover sub-table">\n\
+                    var header = '<table datatable="" dt-options="dtTeamPlayers.options" class="table table-hover sub-table">\n\
                         <thead><tr>\n\
                         <td>ID</td>\n\
                         <td>Team Member</td>\n\
@@ -70,11 +70,11 @@ angular.module('app.admin.teams', [])
         });
        
         $scope.dtTeams.columns = [
-            DTColumnBuilder.newColumn(null).withTitle('Team Members').withClass('responsive-control text-right noclick').renderWith(function(data, type, full, meta) {
-                return '<a><small>(' + data.members.length +')</small> <i class="fa"></i></a>';
+            DTColumnBuilder.newColumn(null).withTitle('Team Players').withClass('responsive-control text-right noclick').renderWith(function(data, type, full, meta) {
+                return '<a><small>(' + data.players.length +')</small> <i class="fa"></i></a>';
             }).notSortable(),
             DTColumnBuilder.newColumn('id').withTitle('ID'),
-            DTColumnBuilder.newColumn('team').withTitle('Team'),
+            DTColumnBuilder.newColumn('name').withTitle('Team'),
             DTColumnBuilder.newColumn('homeVenue').withTitle('Home Joint'),
             DTColumnBuilder.newColumn(null).withTitle('Last Game').renderWith(function (data, type, full, meta) {
                 return (!data.lastGameName) ? 'None' : '<a data-ui-sref="app.member.game({gameId :' + data.lastGameId + ', roundNumber : 1 })">' + data.lastGameName + '</a>';
@@ -86,7 +86,7 @@ angular.module('app.admin.teams', [])
             DTColumnBuilder.newColumn(null).withTitle('').renderWith(function(data, type, full, meta) {
                 return '<button ng-click="buttonOpenEditTeamModal(\'' + data.id + '\')" type="button" class="btn btn-default btn-xs pull-right">View</button>';
             }).notSortable(),
-            DTColumnBuilder.newColumn('members').withTitle('Members').withClass('none').notSortable()
+            DTColumnBuilder.newColumn('players').withTitle('Players').withClass('none').notSortable()
         ];
         
         $scope.buttonOpenNewGameModal = function() {

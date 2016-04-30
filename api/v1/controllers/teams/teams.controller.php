@@ -22,13 +22,13 @@ class TeamController {
     static function addTeam($app) {
         $post = $app->request->post();
         if(!v::key('name', v::stringType())->validate($post) ||
-           !v::key('venueId', v::intVal())->validate($post)) {
+           !v::key('homeVenueId', v::intVal())->validate($post)) {
             return $app->render(400, array('msg' => 'Insert failed. Check your parameters and try again.'));
         }
         
         $teamId = TeamData::insertTeam(array(
             ':name' => $post['name'],
-            ':home_venue_id' => $post['venueId'],
+            ':home_venue_id' => $post['homeVenueId'],
             ":created_user_id" => APIAuth::getUserId(),
             ":last_updated_by" => APIAuth::getUserId()
         ));            
@@ -87,23 +87,32 @@ class TeamController {
     }
     
     static function saveTeam($app, $teamId) {
+        $post = $app->request->post();
+        
         if(!v::intVal()->validate($teamId) || 
-           !v::key('name', v::stringType())->validate($app->request->post())) {
+           !v::key('name', v::stringType())->validate($post) ||
+           !v::key('homeVenueId', v::intVal())->validate($post)) {
             return $app->render(400, array('msg' => 'Update failed. Check your parameters and try again.'));
         }
         
         $saved = TeamData::updateTeam(array(
             ':id' => $teamId, 
-            ':name' => $app->request->post('name'),
+            ':name' => $post['name'],
+            ':home_venue_id' => $post['homeVenueId'],
             ":last_updated_by" => APIAuth::getUserId()
         ));
         
         if($saved) {
+            $results = array();
+            if(v::key('players', v::arrayType())->validate($post)) {
+                $results = self::addPlayers($teamId, $post['name'], $post['players']);
+            }
             $team = TeamData::getTeam($teamId);
-            return $app->render(200, array('team' => $team));
+            return $app->render(200, array('team' => $team, 'invites' => $results));
         } else {
-            return $app->render(400,  array('msg' => 'Could not update team.'));
-        }
+            return $app->render(400,  array('msg' => 'Could not add team.'));
+        }            
+        
     }
     
     static function addTeamMember($app) {

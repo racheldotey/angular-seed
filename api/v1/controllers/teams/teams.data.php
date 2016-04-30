@@ -62,8 +62,8 @@ class TeamData {
     }
     
     static function updateTeam($validTeam) {
-        return DBConn::update("UPDATE " . DBConn::prefix() . "teams SET name=:name, last_updated_by=:last_updated_by "
-                . "WHERE id = :id;", $validTeam);
+        return DBConn::update("UPDATE " . DBConn::prefix() . "teams SET name=:name, home_venue_id=:home_venue_id, "
+                . "last_updated_by=:last_updated_by WHERE id = :id;", $validTeam);
     }
     
     static function addTeamMember($validTeam) {

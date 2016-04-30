@@ -139,15 +139,19 @@ angular.module('apiRoutes.games', [])
     // Team Admin Functions
     
     api.addTeam = function(team) {
-        if(!team.name) {
+        if(!angular.isString(team.name) || 
+            !angular.isNumber(parseInt(team.homeVenueId)) || 
+            !angular.isArray(team.players)) {
             return API.reject('Invalid team please verify your information and try again.');
         }
         return API.post('team/insert', team, 'Could not insert team.');
     };
     
     api.saveTeam = function(team) {
-        if(!team.id || 
-                !team.name) {
+        if(!angular.isNumber(parseInt(team.id)) || 
+            !angular.isString(team.name) || 
+            !angular.isNumber(parseInt(team.homeVenueId)) || 
+            !angular.isArray(team.players)) {
             return API.reject('Invalid team please verify your information and try again.');
         }
         return API.post('team/update/' + team.id, team, 'Could not save team.');

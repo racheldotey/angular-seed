@@ -17,14 +17,14 @@ class TeamRoutes {
             })->via('GET', 'POST');
 
             /*
-             * name, players[]
+             * name, players[], homeVenueId
              */
             $app->post("/insert/", function () use ($app) {
                 TeamController::addTeam($app);
             });
 
             /*
-             * id, name, players[]
+             * id, name, players[], homeVenueId
              */
             $app->post("/update/:teamId/", function ($teamId) use ($app) {
                 TeamController::saveTeam($app, $teamId);

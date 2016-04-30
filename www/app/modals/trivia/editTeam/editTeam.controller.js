@@ -3,8 +3,8 @@
 /* @author  Rachel Carbone */
 
 angular.module('app.modal.trivia.editTeam', [])        
-    .controller('TriviaEditTeamModalCtrl', ['ApiRoutesGames', 'AlertConfirmService', '$scope', '$uibModalInstance', 'editing', 'venuesList', 'addUserId',
-    function(ApiRoutesGames, AlertConfirmService, $scope, $uibModalInstance, editing, venuesList, addUserId) {
+    .controller('TriviaEditTeamModalCtrl', ['ApiRoutesGames', 'AlertConfirmService', '$scope', '$filter', '$uibModalInstance', 'editing', 'venuesList', 'addUserId',
+    function(ApiRoutesGames, AlertConfirmService, $scope, $filter, $uibModalInstance, editing, venuesList, addUserId) {
     
     $scope.automaticallyAddUserId = addUserId || false;
     
@@ -22,6 +22,8 @@ angular.module('app.modal.trivia.editTeam', [])
     
     /* Item to display and edit */
     $scope.editing = angular.copy($scope.saved);
+    $scope.editing.venue = (angular.isDefined(editing.id)) ? $filter('filter')($scope.venuesList, { 'id' : editing.homeVenueId }, true) :
+            { 'id' : '0' };
     
     /* Modal Mode */    
     $scope.setMode = function(type) {
@@ -94,7 +96,7 @@ angular.module('app.modal.trivia.editTeam', [])
                 .result.then(function () {
                     ApiRoutesGames.addTeam({ 
                         'name' : $scope.editing.name,  
-                        'venueId' : $scope.editing.venue.id,  
+                        'homeVenueId' : $scope.editing.venue.id,  
                         'players' : players }).then(function(result) {
 
                         console.log(result);
@@ -110,7 +112,7 @@ angular.module('app.modal.trivia.editTeam', [])
             } else {
                 ApiRoutesGames.addTeam({ 
                     'name' : $scope.editing.name,  
-                    'venueId' : $scope.editing.venue.id,  
+                    'homeVenueId' : $scope.editing.venue.id,  
                     'players' : players }).then(function(result) {
 
                     console.log(result);
@@ -126,7 +128,30 @@ angular.module('app.modal.trivia.editTeam', [])
         
     /* Click event for the Save Team button */
     $scope.buttonSave = function() {
-        
+        if(!$scope.form.modalForm.$valid) {
+            $scope.form.modalForm.$setDirty();
+            $scope.alertProxy.error('Please select a home venue and name for your team.');
+        } else {
+            var players = new Array();
+            for(var i = 0; i < $scope.editing.players.length; i++) {
+                if($scope.editing.players[i].email.length > 0) {
+                    players.push({ 'email' : $scope.editing.players[i].email });
+                }
+            }
+            ApiRoutesGames.saveTeam({ 
+                'id' : $scope.editing.id,  
+                'name' : $scope.editing.name,  
+                'homeVenueId' : $scope.editing.venue.id,  
+                'players' : players }).then(function(result) {
+
+                console.log(result);
+                $scope.alertProxy.success("Team '" + result.team.name + "'saved");
+                $uibModalInstance.close(result);
+            }, function(error) {
+                console.log(error);
+                $scope.alertProxy.error(error);
+            });
+        }
     };
         
     /* Click event for the Cancel button */
