@@ -41,11 +41,18 @@ angular.module('app.modal.trivia.addTeamToGame', [])
     
     /* Click event for the Add Team button */
     $scope.buttonAddTeam = function() {
-        if(!$scope.form.addTeam.$valid || !angular.isDefined($scope.addTeam.value.id)) {
+        if(!angular.isDefined($scope.addTeam.value.id) &&
+            !angular.isDefined($scope.toGame.id)) {
             $scope.form.addTeam.$setDirty();
-            $scope.alertProxy.error('Please select a team to sign into your game.');
+            $scope.alertProxy.error('Invalid checkin. A team and game are required.');
+        } else if(!angular.isDefined($scope.addTeam.value.id)) {
+            $scope.form.addTeam.$setDirty();
+            $scope.alertProxy.error('Please select a team to sign into the game.');
+        } else if(!angular.isDefined($scope.toGame.id)) {
+            $scope.form.addTeam.$setDirty();
+            $scope.alertProxy.error('Please select game to check the team into.');
         } else {
-            TriviaScoreboard.addTeamToGame($scope.addTeam.value.id, $scope.game.id).then(
+            TriviaScoreboard.addTeamToGame($scope.addTeam.value.id, $scope.toGame.id).then(
                 function (result) {
                     $uibModalInstance.close(result);
                 }, function (error) {

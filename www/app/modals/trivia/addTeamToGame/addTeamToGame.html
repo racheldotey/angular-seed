@@ -6,16 +6,29 @@
     
     <div data-rc-bootstrap-alerts="alertProxy"></div>
     
+    <p ng-show="team && !game">Select a game to check your team into.</p>
+    <p ng-show="!team && game">Select a team to check into the game.</p>
+    <p ng-show="!team && !game">Select a team and a game to check the team in for participation.</p>
+    <p ng-show="team && game">Confirm that you would like to checkin this team to participation in the the game.</p>
+    
+    
     <form name="form.addTeam" role="form" class="form-horizontal" novalidate>
         
-        <div class="form-group">
+        <div ng-show="game" class="form-group">
             <label class="col-xs-5 col-sm-4 col-md-3 control-label">Game #{{game.id}}</label>
             <div class="col-xs-7 col-sm-8 col-md-9">
                 <p class="form-control-static">{{game.name}}</p>
             </div>
         </div>
         
-        <div class="form-group">
+        <div ng-show="team" class="form-group">
+            <label class="col-xs-5 col-sm-4 col-md-3 control-label">Team #{{team.id}}</label>
+            <div class="col-xs-7 col-sm-8 col-md-9">
+                <p class="form-control-static">{{team.name}}</p>
+            </div>
+        </div>
+        
+        <div ng-hide="game" class="form-group">
             <label class="col-xs-5 col-sm-4 col-md-3 control-label">Games</label>
             <div class="col-xs-7 col-sm-8 col-md-9">
                 <select 
@@ -25,16 +38,9 @@
             </div>
         </div>
         
-        <div class="form-group">
-            <label class="col-xs-5 col-sm-4 col-md-3 control-label">Team #{{team.id}}</label>
-            <div class="col-xs-7 col-sm-8 col-md-9">
-                <p class="form-control-static">{{team.name}}</p>
-            </div>
-        </div>
-        
-        <div class="form-group">
+        <div ng-hide="team" class="form-group">
             <label class="col-xs-5 col-sm-4 col-md-3 control-label">Teams</label>
-            <div class="col-xs-7 col-sm-8 col-md-9" rc-trivia-select-list-venue="addTeam" teams-list-data="teamsList"></div>
+            <div class="col-xs-7 col-sm-8 col-md-9" rc-trivia-select-list-team="addTeam" teams-list-data="teamsList"></div>
         </div>
     </form>
 

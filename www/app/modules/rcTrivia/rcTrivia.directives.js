@@ -318,24 +318,23 @@ app.directive('rcTriviaScoreboardReadonly', function(THIS_DIRECTORY) {
     };
 });
 
-app.directive('rcTriviaSelectListVenue', function(THIS_DIRECTORY) {
+app.directive('rcTriviaSelectListTeam', function(THIS_DIRECTORY) {
     return {
         restrict: 'A',          // Must be a element attribute
         templateUrl: THIS_DIRECTORY + '/views/selectList.teams.html',
         scope: {
-            selected: '=rcTriviaSelectListVenue',    // $scope object REQUIRED
+            selected: '=rcTriviaSelectListTeam',    // $scope object REQUIRED
             dataArray: '=teamsListData',             // Data Array REQUIRED
             placeholderText: '@placeholderText'
         },
         link: function ($scope, element, attributes) {
             // Link - Programmatically modify resulting DOM element instances, 
             // add event listeners, and set up data binding. 
-            $scope.selected = {};
-            $scope.selected.value =  angular.isObject($scope.selected) ? $scope.selected : {};
+            $scope.selected = (angular.isObject($scope.selected)) ? { value : $scope.selected } : {};
             
             $scope.dataArray = angular.isArray($scope.dataArray) ? $scope.dataArray : new Array();
             
-            $scope.placeholderText = angular.isString($scope.placeholderText) ? $scope.placeholderText : "Search for Trivia Joint";
+            $scope.placeholderText = angular.isString($scope.placeholderText) ? $scope.placeholderText : "Search for Trivia Team";
         },
         controller: ["$scope", function ($scope) {
             // Controller - Create a controller which publishes an API for 
