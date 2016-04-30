@@ -7,7 +7,7 @@ angular.module('app.modal.trivia.invitePlayer', [])
     function($scope, $uibModalInstance, ApiRoutesEmails, InvitingPlayer) {   
     
     $scope.invitingPlayer = InvitingPlayer;
-    $scope.invitingTeamName = (angular.isDefined($scope.invitingPlayer.teams[0].name)) ? $scope.invitingPlayer.teams[0].name : '';
+    $scope.invitingTeamName = (InvitingPlayer && angular.isDefined(InvitingPlayer.teams[0].name)) ? InvitingPlayer.teams[0].name : '';
     
     /* Used to restrict alert bars */
     $scope.alertProxy = {};
