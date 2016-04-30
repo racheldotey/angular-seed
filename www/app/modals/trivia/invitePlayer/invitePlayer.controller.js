@@ -35,14 +35,12 @@ angular.module('app.modal.trivia.invitePlayer', [])
             
             ApiRoutesEmails.sendTeamInviteEmail($scope.invite).then(function(response) {
                 $uibModalInstance.close(response.msg);
-                console.log(response);
             }, function(error) {
                 $scope.alertProxy.error(error);
             });
         } else {
             ApiRoutesEmails.sendInviteNewPlayerEmail($scope.invite).then(function(response) {
                 $uibModalInstance.close(response.msg);
-                console.log(response);
             }, function(error) {
                 $scope.alertProxy.error(error);
             });

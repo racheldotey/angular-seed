@@ -101,14 +101,14 @@ angular.module('app.member.dashboard', [])
         $scope.buttonInviteSiteSignup = function() {
             var modalInstance = TriviaModalService.openInviteSiteSignup();
             modalInstance.result.then(function(result) {
-                $scope.alertProxy.success('Invite sent.');
+                $scope.alertProxy.success(result);
             });
         };
         
         $scope.buttonInviteToTeam = function() {
             var modalInstance = TriviaModalService.openInviteToTeam();
             modalInstance.result.then(function(result) {
-                $scope.alertProxy.success('Invite sent.');
+                $scope.alertProxy.success(result);
             });
         };
         
