@@ -21,7 +21,7 @@ angular.module('app.public.landing', [])
                 return '<a><small>Scoreboard</small> <i class="fa"></i></a>';
             }).notSortable(),
             DTColumnBuilder.newColumn(null).withTitle('Game Name').renderWith(function (data, type, full, meta) {
-                return '<a data-ui-sref="app.member.game({gameId : ' + data.id + ', pageId : 1 })">' + data.name + '</a>';
+                return '<a data-ui-sref="app.public.game({gameId : ' + data.id + ', pageId : 1 })">' + data.name + '</a>';
             }),
             DTColumnBuilder.newColumn('venue').withTitle('Joint'),
             DTColumnBuilder.newColumn('host').withTitle('Host'),
