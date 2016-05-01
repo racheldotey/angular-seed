@@ -300,21 +300,19 @@ class GameData {
         $result = array();
         $game = array(':game_id' => $gameId);
         
-        $teams = DBConn::selectColumn("SELECT team_id FROM " . DBConn::prefix() . "game_score_teams "
-                . "WHERE game_id=:game_id;", $game);
+        $teams = DBConn::selectColumn("SELECT team_id FROM " . DBConn::prefix() . "game_score_teams WHERE game_id=:game_id;", $game);
         $teams = (is_array($teams)) ? $teams : array($teams);
         
-        $rounds = DBConn::selectColumn("SELECT id FROM " . DBConn::prefix() . "game_rounds "
-                 . "WHERE game_id=:game_id;", $game);
+        $rounds = DBConn::selectColumn("SELECT id FROM " . DBConn::prefix() . "game_rounds WHERE game_id=:game_id;", $game);
         $rounds = (is_array($rounds)) ? $rounds : array($rounds);
-        
-        $saveRoundScore = DBConn::preparedQuery("INSERT INTO " . DBConn::prefix() . "game_score_rounds (game_id,round_id,team_id,created_user_id) "
-                . "VALUES (:game_id,:round_id,:team_id,:created_user_id) "
-                . "ON DUPLICATE KEY UPDATE score = 0, round_rank = 0, last_updated_by = :last_updated_by;");
         
         $saveTeamScore = DBConn::preparedQuery("INSERT INTO " . DBConn::prefix() . "game_score_teams (game_id,team_id,created_user_id) "
                 . "VALUES (:game_id,:team_id,:created_user_id) "
                 . "ON DUPLICATE KEY UPDATE score = 0, game_rank = 0, last_updated_by = :last_updated_by;");
+        
+        $saveRoundScore = DBConn::preparedQuery("INSERT INTO " . DBConn::prefix() . "game_score_rounds (game_id,round_id,team_id,created_user_id) "
+                . "VALUES (:game_id,:round_id,:team_id,:created_user_id) "
+                . "ON DUPLICATE KEY UPDATE score = 0, round_rank = 0, last_updated_by = :last_updated_by;");
         
         for($t = 0; $t < count($teams); $t++) {
             $saved = $saveTeamScore->execute(array(
@@ -335,13 +333,13 @@ class GameData {
             
                 $result[] = "Team #" . $teams[$t] . " Round #" . $rounds[$r] .  " saved = " . $saved;
                 
-            $result[] = array(
-                ':game_id' => $gameId,
+                $result[] = array(
+                    ':game_id' => $gameId,
                     ':team_id' => $teams[$t], 
                     ':round_id' => $rounds[$r],
                     ':created_user_id' => $currentUser,
                     ':last_updated_by' => $currentUser
-            );
+                );
             }
         }
         
@@ -359,11 +357,19 @@ class GameData {
                 . "ON r.round_id = q.round_id AND r.team_id = q.team_id SET r.score = q.total WHERE r.game_id = :game_id;", $game);
         
         // Update Team Totals for the Game Rounds
-        $result[] = DBConn::update("SET @lastscore = 0; SET @ordering = 0; "
-                . "UPDATE " . DBConn::prefix() . "game_score_rounds SET round_rank = "
+        $saveTeamRoundOrder = DBConn::preparedQuery("SET @lastscore = NULL; SET @ordering = 0; "
+                . "UPDATE " . DBConn::prefix() . "game_score_rounds SET last_updated_by=:last_updated_by, round_rank = "
                 . "IF(score = @lastscore, @ordering, (@ordering := @ordering + 1)), "
-                . "score = (@lastscore := score) WHERE game_id = :game_id ORDER BY score DESC;", $game);
+                . "score = (@lastscore := score) WHERE round_id = :round_id ORDER BY score DESC;");
                 
+            for($r = 0; $r < count($rounds); $r++) {
+                $result[] = $saveTeamRoundOrder->execute(array(
+                    ':round_id' => $rounds[$r],
+                    ':last_updated_by' => $currentUser
+                ));
+                $saveTeamRoundOrder->closeCursor();
+            }
+            
         // Update Max Score for Game
         $result[] = DBConn::update("UPDATE " . DBConn::prefix() . "games AS g "
                 . "INNER JOIN (SELECT rs.game_id, SUM(rs.max_points) AS maxpoints "
@@ -371,14 +377,21 @@ class GameData {
                 . "SET g.max_points = r.maxpoints WHERE g.id = :game_id;", $game);
         
         // Update Team Totals for the Game
+        
+        /*
         $result[] = DBConn::update("UPDATE " . DBConn::prefix() . "game_score_teams AS t "
                 . "INNER JOIN (SELECT rs.game_id, rs.team_id, SUM(rs.score) AS total "
                 . "FROM " . DBConn::prefix() . "game_score_rounds AS rs GROUP BY rs.team_id) AS r "
                 . "ON t.game_id = r.game_id AND t.team_id = r.team_id SET t.score = r.total WHERE t.game_id = :game_id;", $game);
-        
-        
+         */
+        $result[] = DBConn::update("UPDATE " . DBConn::prefix() . "game_score_teams AS t "
+                . "INNER JOIN (SELECT rs.game_id, rs.team_id, SUM(rs.score) AS total "
+                . "FROM " . DBConn::prefix() . "game_score_rounds AS rs "
+                . "WHERE rs.game_id = :game_id GROUP BY rs.team_id) AS r "
+                . "ON t.game_id = r.game_id AND t.team_id = r.team_id SET t.score = r.total;", $game);
+
         // Update Team Totals for the Game
-        $result[] = DBConn::update("SET @lastscore = 0; SET @ordering = 0; "
+        $result[] = DBConn::update("SET @lastscore = NULL; SET @ordering = 0; "
                 . "UPDATE " . DBConn::prefix() . "game_score_teams SET game_rank = "
                 . "IF(score = @lastscore, @ordering, (@ordering := @ordering + 1)), "
                 . "score = (@lastscore := score) WHERE game_id = :game_id ORDER BY score DESC;", $game);
