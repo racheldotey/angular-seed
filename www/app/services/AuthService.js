@@ -32,11 +32,10 @@ angular.module('AuthService', [
                 if (credentials) {
                     API.getAuthenticatedUser(credentials)
                         .then(function (data) {
-                            if (angular.isUndefined(data.user) || !angular.isDefined(data.user) && UserSession.create(data.user)) {
+                            data.user.apiKey = credentials.apiKey;
+                            data.user.apiToken = credentials.apiToken;
+                            if (!UserSession.create(data.user)) {
                                 $log.error('[authInit] Credentials found but session Couldn\'t be Created', data);
-                            } else {
-                                data.user.apiKey = credentials.apiKey;
-                                data.user.apiToken = credentials.apiToken;
                             }
                             return resolve(UserSession.get());
                         }, function (error) {
@@ -64,11 +63,10 @@ angular.module('AuthService', [
                 if (credentials) {
                     API.getAuthenticatedUser(credentials)
                         .then(function (data) {
-                            if (angular.isUndefined(data.user) || !UserSession.create(data.user)) {
+                            data.user.apiKey = credentials.apiKey;
+                            data.user.apiToken = credentials.apiToken;
+                            if (!UserSession.create(data.user)) {
                                 $log.error('[authInit] Credentials found but session Couldn\'t be Created', data);
-                            } else {
-                                data.user.apiKey = credentials.apiKey;
-                                data.user.apiToken = credentials.apiToken;
                             }
                             return resolve(UserSession.get());
                         }, function (error) {
@@ -102,7 +100,7 @@ angular.module('AuthService', [
                     // By default we want to login, so `doNotLogin` is optional
                     if (angular.isDefined(doNotLogin) && doNotLogin === true) {
                         resolve("Player added. You may now login with the following email, '" + data.user.email + "'.");
-                    } else if (angular.isDefined(data.user) && UserSession.create(data.user)) {
+                    } else if (UserSession.create(data.user)) {
                         // Save valid login apiKey and apiToken in a cookie
                         // for the sent life in hours as its expiration.
                         CookieService.setAuthCookie(data.user.apiKey, data.user.apiToken, data.sessionLifeHours);
@@ -155,7 +153,7 @@ angular.module('AuthService', [
                         // By default we want to login, so `doNotLogin` is optional
                         if (angular.isDefined(doNotLogin) && doNotLogin === true) {
                             resolve("Player added. You may now login with the following email, '" + data.user.email + "'.");
-                        } else if (angular.isDefined(data.user) && UserSession.create(data.user)) {
+                        } else if (UserSession.create(data.user)) {
                             // Save valid login apiKey and apiToken in a cookie
                             // for the sent life in hours as its expiration.
                             CookieService.setAuthCookie(data.user.apiKey, data.user.apiToken, data.sessionLifeHours);
@@ -198,7 +196,7 @@ angular.module('AuthService', [
                             // By default we want to login, so `doNotLogin` is optional
                             if (angular.isDefined(doNotLogin) && doNotLogin === true) {
                                 resolve("Player added. You may now login with the following email, '" + data.user.email + "'.");
-                            } else if (angular.isDefined(data.user) && UserSession.create(data.user)) {
+                            } else if (UserSession.create(data.user)) {
                                 // Save valid login apiKey and apiToken in a cookie
                                 // for the sent life in hours as its expiration.
                                 CookieService.setAuthCookie(data.user.apiKey, data.user.apiToken, data.sessionLifeHours);
@@ -251,7 +249,7 @@ angular.module('AuthService', [
                         // By default we want to login, so `doNotLogin` is optional
                         if (angular.isDefined(doNotLogin) && doNotLogin === true) {
                             resolve("Player added. You may now login with the following email, '" + data.user.email + "'.");
-                        } else if (angular.isDefined(data.user) && UserSession.create(data.user)) {
+                        } else if (UserSession.create(data.user)) {
                             // Save valid login apiKey and apiToken in a cookie
                             // for the sent life in hours as its expiration.
                             CookieService.setAuthCookie(data.user.apiKey, data.user.apiToken, data.sessionLifeHours);
@@ -290,7 +288,7 @@ angular.module('AuthService', [
                 API.postLogin(credentials)
                         .then(function (data) {
 
-                            if (angular.isDefined(data.user) && UserSession.create(data.user)) {
+                            if (UserSession.create(data.user)) {
                                 //put valid login creds in a cookie
                                 CookieService.setAuthCookie(data.user.apiKey, data.user.apiToken, data.sessionLifeHours);
 
@@ -342,7 +340,7 @@ angular.module('AuthService', [
                     //* Signup through our normal method
                     API.postFacebookLogin(user).then(function (data) {
 
-                        if (angular.isDefined(data.user) && UserSession.create(data.user)) {
+                        if (UserSession.create(data.user)) {
                             //put valid login creds in a cookie
                             CookieService.setAuthCookie(data.user.apiKey, data.user.apiToken, data.sessionLifeHours);
 
@@ -427,9 +425,9 @@ angular.module('AuthService', [
                 if (credentials) {
                     API.getAuthenticatedUser(credentials)
                             .then(function (data) {
+                                data.user.apiKey = credentials.apiKey;
+                                data.user.apiToken = credentials.apiToken;
                                 if (UserSession.create(data.user)) {
-                                    data.user.apiKey = credentials.apiKey;
-                                    data.user.apiToken = credentials.apiToken;
                                     return resolve(UserSession.get());
                                 } else {
                                     $log.error('[isAuthenticated] Session Couldn\'t be Created', data);
