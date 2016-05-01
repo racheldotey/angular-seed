@@ -24,7 +24,7 @@ angular.module('DataTableHelper', [])
             dt.instance = instance;
         };
 
-        dt.options = DTOptionsBuilder.fromFnPromise(ApiRoutesDatatables[method](params))
+        dt.options = DTOptionsBuilder.fromFnPromise(function() { return ApiRoutesDatatables[method](params); })
             .withBootstrap()
             .withDOM('<"row"<"col-sm-12 col-md-12"fr><"col-sm-12 col-md-12 add-space"t><"col-sm-6 col-md-4"l><"col-sm-6 col-md-4"i><"col-sm-12 col-md-4"p>>')
             .withPaginationType('full_numbers')

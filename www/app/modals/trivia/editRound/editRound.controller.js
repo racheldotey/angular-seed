@@ -53,7 +53,7 @@ angular.module('app.modal.trivia.editRound', [])
         $scope.saved.defaultQuestionPoints = parseFloat(editing.defaultQuestionPoints);
     } else {
         $scope.setMode('new');
-        $scope.saved = { defaultQuestionPoints : 10 };
+        $scope.saved = { name: '', defaultQuestionPoints : 10 };
     }
     
     /* Item to display and edit */

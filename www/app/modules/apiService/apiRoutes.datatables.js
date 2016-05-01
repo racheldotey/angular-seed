@@ -32,7 +32,9 @@ angular.module('apiRoutes.datatables', [])
     };
     
     api.adminRolesList = function() { 
-        return getPromise('/datatable/admin/group-roles');
+        var x = getPromise('/datatable/admin/group-roles');
+        console.log(x);
+        return x;
     };
     
     api.adminConfigList = function() { 
