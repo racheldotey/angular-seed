@@ -132,12 +132,22 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 }, function () {});
                 
             };
+        
+            $scope.buttonCreateTeam = function() {
+                var modalInstance = TriviaModalService.openEditTeam();
+                modalInstance.result.then(function (result) {
+                    for(var i = 0; i < result.invites.length; i++) {
+                        $scope.alertProxy.success(result.invites[i]);
+                    }
+                }, function () {});
+            };
             
             // Add Trivia Round Modal
             $scope.buttonAddRound = function() {
                 var modalInstance = TriviaModalService.openEditRound($scope.game.id);
                 modalInstance.result.then(function (result) {
                     console.log(result);
+                    $state.go('app.host.game', { 'gameId': $scope.game.id, 'roundNumber' : result.roundNumber });
                 }, function () {});
             };
             
@@ -321,7 +331,7 @@ app.directive('rcTriviaScoreboardReadonly', function(THIS_DIRECTORY) {
 app.directive('rcTriviaSelectListTeam', function(THIS_DIRECTORY) {
     return {
         restrict: 'A',          // Must be a element attribute
-        templateUrl: THIS_DIRECTORY + '/views/selectList.teams.html',
+        templateUrl: THIS_DIRECTORY + 'views/selectList.teams.html',
         scope: {
             selected: '=rcTriviaSelectListTeam',    // $scope object REQUIRED
             dataArray: '=teamsListData',             // Data Array REQUIRED

@@ -56,7 +56,8 @@ angular.module('rcTrivia.scoreboard', ['rcTrivia.game'])
                     ApiRoutesGames.addGameRound(round).then(
                         function (result) {
                             TriviaGame.update(result.game);
-                            resolve(api.getGame());
+                            result.game = api.getGame();
+                            resolve(result);
                         }, function (error) {
                             reject(error);
                         });

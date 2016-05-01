@@ -223,16 +223,17 @@ class GameController {
         $defaultPoints = (v::key('defaultQuestionPoints')->validate($app->request->post())) ? 
                 $app->request->post('defaultQuestionPoints') : 5;
         
+        $roundNumber = $count + 1;
         $roundId = GameData::insertRound(array(
             ":name" => $app->request->post('name'),
-            ":order" => $count + 1,
+            ":order" => $roundNumber,
             ":game_id" => $app->request->post('gameId'),
             ":default_question_points" => $defaultPoints,
             ":created_user_id" => APIAuth::getUserId(),
             ":last_updated_by" => APIAuth::getUserId()
         ));
         if($roundId) {
-            return $app->render(200, array('id' => $roundId, 'game' => GameData::selectGame($app->request->post('gameId'))));
+            return $app->render(200, array('id' => $roundId, 'roundNumber' => $roundNumber, 'game' => GameData::selectGame($app->request->post('gameId'))));
         } else {
             return $app->render(400,  array('msg' => 'Could not add game round.'));
         }

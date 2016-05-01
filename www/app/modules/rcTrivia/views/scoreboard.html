@@ -27,7 +27,8 @@
                     <button ng-show="!displayQuickScoreButtons" ng-click="displayQuickScoreButtons = !displayQuickScoreButtons" type="button" class="btn btn-primary btn-sm">Show Quick Buttons</button>
                     <button ng-show="displayQuickScoreButtons" ng-click="displayQuickScoreButtons = !displayQuickScoreButtons" type="button" class="btn btn-primary btn-sm">Hide Quick Buttons</button>
 
-                    <button ng-click="buttonAddTeam()" type="button" class="btn btn-primary btn-sm">Add Team</button>
+                    <button ng-click="buttonAddTeam()" type="button" class="btn btn-primary btn-sm">Checkin Team</button>
+                    <button ng-click="buttonCreateTeam()" type="button" class="btn btn-primary btn-sm">Create Team</button>
 
                     <button ng-click="buttonAddRound()" type="button" class="btn btn-primary btn-sm">Add Round</button>
                     <button ng-click="buttonAddQuestion()" type="button" class="btn btn-primary btn-sm">Add Question</button>
@@ -45,7 +46,8 @@
                         <li ng-show="!displayQuickScoreButtons" role="menuitem"><a ng-click="displayQuickScoreButtons = !displayQuickScoreButtons" href="#">Show Quick Buttons</a></li>
                         <li ng-show="displayQuickScoreButtons" role="menuitem"><a ng-click="displayQuickScoreButtons = !displayQuickScoreButtons" href="#">Hide Quick Buttons</a></li>
                         <li class="divider"></li>
-                        <li role="menuitem"><a ng-click="buttonAddTeam()" href="#">Add Team</a></li>
+                        <li role="menuitem"><a ng-click="buttonAddTeam()" href="#">Checkin Team</a></li>
+                        <li role="menuitem"><a ng-click="buttonCreateTeam()" href="#">Create Team</a></li>
                         <li class="divider"></li>
                         <li role="menuitem"><a ng-click="buttonAddRound()" href="#">Add Round</a></li>
                         <li role="menuitem"><a ng-click="buttonAddQuestion()" href="#">Add Question</a></li>

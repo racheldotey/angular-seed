@@ -131,7 +131,8 @@ angular.module('app.host.dashboard', [])
                         AlertConfirmService.confirm('Are you sure you positive you would like to close this game? It will finalize team scores.', 'Warning! Closing Game.')
                             .result.then(function () {
                                 ApiRoutesGames.endGame(gameId).then(function (result) {
-                                    $scope.alertProxy.success(result);
+                                    $scope.alertProxy.success(result.msg);
+                                    $scope.hostActiveGames = [];
                                 }, function (error) {
                                     reject(error);
                                 });
