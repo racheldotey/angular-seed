@@ -351,10 +351,21 @@ class GameData {
         
         
         // Update Team Totals for each Round
-        $result[] = DBConn::update("UPDATE " . DBConn::prefix() . "game_score_rounds AS r "
+        $saveTeamRoundScore = DBConn::preparedQuery("UPDATE " . DBConn::prefix() . "game_score_rounds AS r "
                 . "INNER JOIN (SELECT qs.round_id, qs.team_id, SUM(qs.score) AS total "
-                . "FROM " . DBConn::prefix() . "game_score_questions AS qs GROUP BY qs.round_id, qs.team_id) AS q "
-                . "ON r.round_id = q.round_id AND r.team_id = q.team_id SET r.score = q.total WHERE r.game_id = :game_id;", $game);
+                . "FROM " . DBConn::prefix() . "game_score_questions AS qs "
+                . "WHERE qs.round_id = :round_id GROUP BY qs.team_id) AS q "
+                . "ON r.round_id = q.round_id AND r.team_id = q.team_id "
+                . "SET  last_updated_by=:last_updated_by, r.score = q.total;");
+                
+            for($r = 0; $r < count($rounds); $r++) {
+                $result[] = $saveTeamRoundScore->execute(array(
+                    ':round_id' => $rounds[$r],
+                    ':last_updated_by' => $currentUser
+                ));
+                $saveTeamRoundScore->closeCursor();
+            }
+        
         
         // Update Team Totals for the Game Rounds
         $saveTeamRoundOrder = DBConn::preparedQuery("SET @lastscore = NULL; SET @ordering = 0; "
