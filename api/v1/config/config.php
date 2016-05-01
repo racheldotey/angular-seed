@@ -55,7 +55,7 @@ class APIConfig {
             self::$config = $qa;
         }  else if($_SERVER['HTTP_HOST'] === 'api-dot-triviajoint-prod2.appspot.com' || $_SERVER['HTTP_HOST'] === 'app.triviajoint.com') {
             // QA on Google Cloud
-            self::$config = $qa;
+            self::$config = $prod;
         } else {
             self::$config = false;
 		}
