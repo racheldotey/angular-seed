@@ -116,7 +116,7 @@ class AuthControllerFacebook {
         $existing = AuthData::selectUserByFacebookId($post['facebookId']);
         if(!$existing) {         
             // Look for user with that email
-            $emailExists = AuthData::selectUserByEmail($post['email']);
+            $emailExists = AuthData::selectUserAndPasswordByEmail($post['email']);
             if(!$emailExists) { 
                 /// FAIL - If a user with that email does not exist
                 return array('authenticated' => false, 'msg' => 'Login failed. No user with that Facebook account exists.');  
@@ -177,7 +177,7 @@ class AuthControllerFacebook {
          */
         
         // Look for user with that email
-        $existing = AuthData::selectUserByEmail($post['email']);
+        $existing = AuthData::selectUserAndPasswordByEmail($post['email']);
         if($existing) { 
             /// FAIL - If a user with that email already exists
             return array('registered' => false, 'msg' => 'Facebook signup failed. A user with that email already exists.');   

@@ -44,7 +44,7 @@ class AuthControllerNative {
             return array('registered' => false, 'msg' => $valid);
         }
         // Look for user with that email
-        $existing = AuthData::selectUserByEmail($post['email']);
+        $existing = AuthData::selectUserAndPasswordByEmail($post['email']);
         if($existing) { 
             /// FAIL - If a user with that email already exists
             return array('registered' => false, 'msg' => 'Signup failed. A user with that email already exists.');        
@@ -129,7 +129,7 @@ class AuthControllerNative {
             // Validate existing user
             return array('resetpasswordauthenticated' => false, 'msg' => 'User failed. A user with that email id could not be found.');
         } else{
-            $userDetail = AuthData::selectUserByEmail($post['email']);
+            $userDetail = AuthData::selectUserAndPasswordByEmail($post['email']);
             $strtotime1 =  strtotime($user->fortgotpassword_duration);
             $date = date("d M Y H:i:s");
             $strtotime =  strtotime($date);
@@ -213,7 +213,7 @@ class AuthControllerNative {
         return array('frgtauthenticatedemail' => true,  'user' => $user);
     }
     private static function forgotpassword_validateFoundUser($post,$app) {
-        $user = AuthData::selectUserByEmail($post['email']);
+        $user = AuthData::selectUserAndPasswordByEmail($post['email']);
         if(!$user) {
             // Validate existing user
             return array('frgtauthenticated' => false, 'msg' => 'Forgotpassword failed. A user with that email could not be found.');
@@ -257,6 +257,7 @@ class AuthControllerNative {
             return array('frgtauthenticated' => true,  'msg' => 'Email has been sent to your email address for reset password.');
         }
     }
+    
     static function login($app) {
         $post = $app->request->post();
         // If anone is logged in currently, log them out
@@ -284,6 +285,7 @@ class AuthControllerNative {
             return array('authenticated' => false, 'msg' => 'Login failed to create token.');   
         }
     }
+    
     static function createAuthToken($app, $userId) {
         $token = array();
         $token['apiKey'] = hash('sha512', uniqid());
@@ -305,8 +307,9 @@ class AuthControllerNative {
             ));
         return ($saved) ? $token : false;
     }
+    
     private static function login_validateFoundUser($post) {
-        $user = AuthData::selectUserByEmail($post['email']);
+        $user = AuthData::selectUserAndPasswordByEmail($post['email']);
         if(!$user) {
             // Validate existing user
             // TODO: Maxe max login a config variable
@@ -319,6 +322,7 @@ class AuthControllerNative {
         unset($user->password);
         return array('authenticated' => true, 'user' => $user);
     }
+    
     private static function login_getSessionExpirationInHours($post) {
         $remember = false;
         if (v::key('remember')->validate($post)) {

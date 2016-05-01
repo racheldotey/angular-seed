@@ -62,8 +62,13 @@ class AuthData {
         return self::selectUserWhere('facebook_id = :facebook_id', array(':facebook_id' => $facebookId));
     }
     
-    static function selectUserByEmail($email) {
-        return self::selectUserWhere('email = :email', array(':email' => $email));
+    static function selectUserAndPasswordByEmail($email) {
+        $user = DBConn::selectOne("SELECT id, name_first as nameFirst, name_last as nameLast, email, phone, password "
+                        . "FROM " . DBConn::prefix() . "users WHERE email = :email LIMIT 1;", array(':email' => $email));
+        if ($user) {
+            $user = self::selectUserData($user);
+        }
+        return $user;
     }
 
     static function selectUserByUsertoken($usertoken) {
