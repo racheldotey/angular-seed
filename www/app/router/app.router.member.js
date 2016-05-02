@@ -36,6 +36,18 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
                     templateUrl: 'app/views/member/memberFooter/memberFooter.html',
                     controller: 'MemberFooterCtrl'
                 }
+            }
+        });
+
+        $stateProvider.state('app.member.dashboard', {
+            bodyClass: 'member dashboard',
+            title: 'Member Dashboard',
+            url: '/dashboard',
+            views: {
+                'content@app.member': {
+                    templateUrl: 'app/views/member/dashboard/dashboard.html',
+                    controller: 'MemberDashboardCtrl'
+                }
             },
             resolve: {
                 $q: '$q',
@@ -52,18 +64,6 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
             }
         });
 
-        $stateProvider.state('app.member.dashboard', {
-            bodyClass: 'member dashboard',
-            title: 'Member Dashboard',
-            url: '/dashboard',
-            views: {
-                'content@app.member': {
-                    templateUrl: 'app/views/member/dashboard/dashboard.html',
-                    controller: 'MemberDashboardCtrl'
-                }
-            }
-        });
-
         $stateProvider.state('app.member.profile', {
             bodyClass: 'member profile',
             title: 'User Profile',
@@ -72,6 +72,19 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
                 'content@app.member': {
                     templateUrl: 'app/views/member/profile/profile.html',
                     controller: 'MemberProfileCtrl'
+                }
+            },
+            resolve: {
+                $q: '$q',
+                AuthService: 'AuthService',
+                initUser: function($q, AuthService) {
+                    return $q(function (resolve, reject) {
+                        AuthService.reloadUser().then(function (data) {
+                            resolve(data);
+                        }, function (error) {
+                            reject(error);
+                        });
+                    });
                 }
             }
         });
