@@ -36,6 +36,19 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
                     templateUrl: 'app/views/host/hostFooter/hostFooter.html',
                     controller: 'HostFooterCtrl'
                 }
+            },
+            resolve: {
+                $q: '$q',
+                AuthService: 'AuthService',
+                initUser: function($q, AuthService) {
+                    return $q(function (resolve, reject) {
+                        AuthService.reloadUser().then(function (data) {
+                            resolve(data);
+                        }, function (error) {
+                            reject(error);
+                        });
+                    });
+                }
             }
         });
 

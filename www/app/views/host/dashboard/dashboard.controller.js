@@ -112,7 +112,7 @@ angular.module('app.host.dashboard', [])
             var modalInstance = TriviaModalService.openEditTeam();
             modalInstance.result.then(function (result) {
                 for(var i = 0; i < result.invites.length; i++) {
-                    $scope.alertProxy.success(result.invites[i]);
+                    $scope.alertProxy.success(result.invites[i].msg);
                 }
             }, function () {});
         };

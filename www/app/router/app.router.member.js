@@ -36,6 +36,19 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
                     templateUrl: 'app/views/member/memberFooter/memberFooter.html',
                     controller: 'MemberFooterCtrl'
                 }
+            },
+            resolve: {
+                $q: '$q',
+                AuthService: 'AuthService',
+                initUser: function($q, AuthService) {
+                    return $q(function (resolve, reject) {
+                        AuthService.reloadUser().then(function (data) {
+                            resolve(data);
+                        }, function (error) {
+                            reject(error);
+                        });
+                    });
+                }
             }
         });
 
