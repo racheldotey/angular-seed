@@ -11,6 +11,7 @@
     <p ng-show="!team && !game">Select a team and a game to check the team in for participation.</p>
     <p ng-show="team && game">Confirm that you would like to checkin this team to participation in the the game.</p>
     
+    <p class="text-danger" ng-show="!game && !gamesList.length">* There are no active games to check into at this time. Please come back later.</p>
     
     <form name="form.addTeam" role="form" class="form-horizontal" novalidate>
         
@@ -28,7 +29,14 @@
             </div>
         </div>
         
-        <div ng-hide="game" class="form-group">
+        <div ng-show="!game && !gamesList.length" class="form-group">
+            <label class="col-xs-5 col-sm-4 col-md-3 control-label">Games</label>
+            <div class="col-xs-7 col-sm-8 col-md-9">
+                <label class="control-label">No active games.</label>
+            </div>
+        </div>
+        
+        <div ng-hide="game || !gamesList.length" class="form-group">
             <label class="col-xs-5 col-sm-4 col-md-3 control-label">Games</label>
             <div class="col-xs-7 col-sm-8 col-md-9">
                 <select 

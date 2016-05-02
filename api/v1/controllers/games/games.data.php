@@ -101,6 +101,10 @@ class GameData {
     }
     
     /* Team and Game interactions */
+    static function selectTeamCurrentGameId($teamId) {
+        return DBConn::selectColumn("SELECT current_game_id FROM " . DBConn::prefix() . "teams "
+                . "WHERE id = :id AND current_game_id IS NOT NULL LIMIT 1;", array(':id' => $teamId));        
+    }
     
     static function insertTeamIntoGame($validTeam) {
         $results = DBConn::insert("INSERT INTO " . DBConn::prefix() . "game_score_teams(`game_id`, `team_id`, `created_user_id`, `last_updated_by`) "
@@ -161,6 +165,9 @@ class GameData {
         
         DBConn::update("UPDATE " . DBConn::prefix() . "game_score_teams SET game_winner=1, last_updated_by=:last_updated_by "
                 . "WHERE game_id=:game_id AND game_rank = 1;", array(':game_id' => $gameId, ":last_updated_by" => $userId));
+        
+        DBConn::update("UPDATE " . DBConn::prefix() . "teams SET current_game_id=NULL, last_updated_by=:last_updated_by "
+                . "WHERE current_game_id=:current_game_id;", array(':current_game_id' => $gameId, ":last_updated_by" => $userId));
         
         return DBConn::update("UPDATE " . DBConn::prefix() . "games SET game_ended=NOW(), last_updated_by=:last_updated_by "
                 . "WHERE id=:id;", array(":id" => $gameId, ":last_updated_by" => $userId));

@@ -7,8 +7,8 @@
  */
 
 angular.module('app.member.dashboard', [])
-    .controller('MemberDashboardCtrl', ['$scope', '$sce', '$compile', '$filter', 'TriviaModalService', 'AlertConfirmService', 'DataTableHelper', 'DTOptionsBuilder', 'DTColumnBuilder', 'AuthService', 'ApiRoutesEmails',
-        function($scope, $sce, $compile, $filter, TriviaModalService, AlertConfirmService, DataTableHelper, DTOptionsBuilder, DTColumnBuilder, AuthService, ApiRoutesEmails) {
+    .controller('MemberDashboardCtrl', ['$scope', '$state', '$compile', '$filter', 'TriviaModalService', 'AlertConfirmService', 'DataTableHelper', 'DTOptionsBuilder', 'DTColumnBuilder', 'AuthService', 'ApiRoutesEmails',
+        function($scope, $state, $compile, $filter, TriviaModalService, AlertConfirmService, DataTableHelper, DTOptionsBuilder, DTColumnBuilder, AuthService, ApiRoutesEmails) {
         
         $scope.currentPlayer = AuthService.getUser();
         
@@ -123,13 +123,20 @@ angular.module('app.member.dashboard', [])
         };
         
         $scope.buttonCheckinTeam = function() {
-            if($scope.currentPlayer.teams.length) {
+            if($scope.currentPlayer.teams.length <= 0) {
+                AlertConfirmService.alert("You must be a member of a team to checkin your team.", "Cannot Checkin Team");
+            } else if(angular.isDefined($scope.currentPlayer.teams[0]) &&
+                    $scope.currentPlayer.teams[0].gameId &&
+                    parseInt($scope.currentPlayer.teams[0].gameId) > 0) {
+                AlertConfirmService.confirm("Your team is already checked into a game. Would you like to view the game scoreboard?", "Team Already Checked In")
+                    .result.then(function () {
+                        $state.go('app.member.scoreboard', { gameId: $scope.currentPlayer.teams[0].gameId, roundId: 1 });
+                    }, function (declined) {});
+            } else {
                 var modalInstance = TriviaModalService.openAddTeam(false, $scope.currentPlayer.teams[0]);
                 modalInstance.result.then(function (result) {
                     $scope.alertProxy.success("Team successfully checked in to current game.");
                 }, function () {});
-            } else {
-                AlertConfirmService.alert("You must be a member of a team to checkin your team.", "Cannot Checkin Team");
             }
         };
         

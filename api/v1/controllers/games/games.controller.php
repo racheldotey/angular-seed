@@ -198,6 +198,13 @@ class GameController {
             return $app->render(400,  array('msg' => 'Invalid game or team. Check your parameters and try again.'));
         }
         
+        $teamCurrentGameId = GameData::selectTeamCurrentGameId($app->request->post('teamId'));
+        if($teamCurrentGameId && intval($teamCurrentGameId) === intval($gameId)) {
+            return $app->render(200,  array('msg' => 'This team is already participating in this game.'));
+        } else if($teamCurrentGameId) {
+            return $app->render(400,  array('msg' => 'This team is already participating in a different game.'));
+        }
+        
         $validTeam = array(
             ":game_id" => $gameId,
             ":team_id" => $app->request->post('teamId'),
