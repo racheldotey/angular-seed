@@ -100,7 +100,7 @@ class AuthHooks {
             ':salsa_user_data' => (isset($curlResult['userData'])) ? json_encode($curlResult['userData']) : NULL,
             ':salsa_error_message' => (isset($curlResult['errorMessage'])) ? $curlResult['errorMessage'] : NULL
         );        
-        return DBConn::insert("INSERT INTO " . DBConn::prefix() . "log_hot_salsa_signup(user_id, salsa_call_status, salsa_user_id, salsa_user_data, salsa_error_message) "
+        return DBConn::insert("INSERT INTO " . DBConn::prefix() . "logs_hot_salsa_signup(user_id, salsa_call_status, salsa_user_id, salsa_user_data, salsa_error_message) "
                 . "VALUES (:user_id, :salsa_call_status, :salsa_user_id, :salsa_user_data, :salsa_error_message);", $logData);
     }
     
@@ -111,7 +111,7 @@ class AuthHooks {
             ':salsa_error_message' => json_encode($data)
         );
 
-        return DBConn::insert("INSERT INTO " . DBConn::prefix() . "log_hot_salsa_signup(user_id, salsa_call_status, salsa_error_message) "
+        return DBConn::insert("INSERT INTO " . DBConn::prefix() . "logs_hot_salsa_signup(user_id, salsa_call_status, salsa_error_message) "
                 . "VALUES (:user_id, :salsa_call_status, :salsa_error_message);", $logData);
     }
 

@@ -156,7 +156,9 @@ angular.module('rcTrivia.scoreboard', ['rcTrivia.game'])
         api.addTeamToGame = function(teamId, gameId) {
             return $q(function (resolve, reject) {
                 var loadedGame = api.getGame();
-                if(loadedGame) {
+                if(loadedGame && angular.isDefined(loadedGame.teams[teamId])) {
+                    resolve(api.getGame());
+                } else if(loadedGame) {
                     ApiRoutesGames.addTeamToGame(loadedGame.id, teamId).then(
                         function (result) {
                             TriviaGame.update(result.game);

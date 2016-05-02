@@ -112,24 +112,50 @@ class GameData {
         
         if($results) {
             self::calculateGameScores($validTeam[':game_id'], $validTeam[':created_user_id']);
-            self::updateTeamCheckedInStatus(array(
-                ':id' => $validTeam[':team_id'], 
-                ':current_game_id' => $validTeam[':game_id'], 
-                ':last_updated_by' => $validTeam[':last_updated_by']));
+            self::updateTeamCheckedInStatus($validTeam[':team_id'], $validTeam[':game_id'], $validTeam[':last_updated_by']);
         }
         
         return $results;
     }
         
-    static function updateTeamCheckedInStatus($validTeam) {
+    static function updateTeamCheckedInStatus($teamId, $gameId, $updatedBy) {
+        self::insertCheckinLog($teamId, $gameId, $updatedBy, 'Checked In');
+        
         return DBConn::update("UPDATE " . DBConn::prefix() . "teams SET current_game_id=:current_game_id, last_updated_by=:last_updated_by "
-                . "WHERE id = :id;", $validTeam);
+                . "WHERE id = :id;", 
+                array(':id' => $teamId, ':current_game_id' => $gameId, ":last_updated_by" => $updatedBy));
     }
         
     static function checkoutTeamsFromGame($gameId, $userId) {
-        return DBConn::update("UPDATE " . DBConn::prefix() . "teams SET current_game_id=0, last_updated_by=:last_updated_by "
+        self::insertCheckinLog(false, $gameId, $userId, 'Checked Out');
+        
+        return DBConn::update("UPDATE " . DBConn::prefix() . "teams SET current_game_id=NULL, last_updated_by=:last_updated_by "
                 . "WHERE current_game_id = :current_game_id;", 
                 array(':current_game_id' => $gameId, ":last_updated_by" => $userId));
+    }
+    
+    private static function insertCheckinLog($teamId, $gameId, $userId, $status) {
+        $qLog = DBConn::preparedQuery("INSERT INTO " . DBConn::prefix() . "logs_game_checkins(team_id,game_id,status,created_by) "
+                . "VALUES(:team_id,:game_id,:status,:created_by);");
+        if($teamId) {
+            $qLog->execute(array(
+                ':team_id' => $teamId,
+                ':game_id' => $gameId,
+                ':status' => $status,
+                ':created_by' => $userId,
+            ));
+        } else {
+            $qTeams = DBConn::executeQuery("SELECT team_id FROM " . DBConn::prefix() . "game_score_teams "
+                    . "WHERE game_id = :game_id", array(":game_id" => $gameId));
+            while($teamId = $qTeams->fetch(\PDO::FETCH_COLUMN)) {
+                $qLog->execute(array(
+                    ':team_id' => $teamId,
+                    ':game_id' => $gameId,
+                    ':status' => $status,
+                    ':created_by' => $userId,
+                ));
+            }
+        }
     }
     
     /* CRUD for Games */
@@ -165,9 +191,6 @@ class GameData {
         
         DBConn::update("UPDATE " . DBConn::prefix() . "game_score_teams SET game_winner=1, last_updated_by=:last_updated_by "
                 . "WHERE game_id=:game_id AND game_rank = 1;", array(':game_id' => $gameId, ":last_updated_by" => $userId));
-        
-        DBConn::update("UPDATE " . DBConn::prefix() . "teams SET current_game_id=NULL, last_updated_by=:last_updated_by "
-                . "WHERE current_game_id=:current_game_id;", array(':current_game_id' => $gameId, ":last_updated_by" => $userId));
         
         return DBConn::update("UPDATE " . DBConn::prefix() . "games SET game_ended=NOW(), last_updated_by=:last_updated_by "
                 . "WHERE id=:id;", array(":id" => $gameId, ":last_updated_by" => $userId));

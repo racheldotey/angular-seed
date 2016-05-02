@@ -12,7 +12,7 @@ angular.module('rcTrivia.game', [])
             var _origionalTeams = false;
 
             self.init = function(newGame, viewRound) {
-                if(!angular.isDefined(newGame.id)) {
+                if(angular.isUndefined(newGame) || angular.isUndefined(newGame.id)) {
                     return;
                 }
                 
@@ -42,6 +42,9 @@ angular.module('rcTrivia.game', [])
             };
 
             self.update = function(updatedGame) {
+                if(angular.isUndefined(updatedGame)) {
+                    return;
+                }
                 // Game Details
                 _game.name = updatedGame.name || _game.name;
                 _game.scheduled = updatedGame.scheduled || _game.scheduled;
