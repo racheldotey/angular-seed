@@ -40,6 +40,10 @@ class DatatableRoutes {
             $app->post("/trivia-venues", function () use ($app) {
                 DatatablesController::getTriviaVenues($app);
             });
+
+            $app->post("/game-checkins/:teamId", function ($teamId) use ($app) {
+                DatatablesController::getTeamGameCheckins($app, $teamId);
+            });
             
         });
         

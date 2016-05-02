@@ -31,10 +31,8 @@ angular.module('apiRoutes.datatables', [])
         return getPromise('/datatable/admin/user-groups');
     };
     
-    api.adminRolesList = function() { 
-        var x = getPromise('/datatable/admin/group-roles');
-        console.log(x);
-        return x;
+    api.adminRolesList = function() {
+        return getPromise('/datatable/admin/group-roles');
     };
     
     api.adminConfigList = function() { 
@@ -53,6 +51,10 @@ angular.module('apiRoutes.datatables', [])
     
     api.adminTeamsList = function() { 
         return getPromise('/datatable/admin/trivia-teams');
+    };
+    
+    api.adminTeamCheckinsList = function(teamId) { 
+        return getPromise('/datatable/admin/game-checkins/' + teamId);
     };
     
     api.adminVenuesList = function() { 

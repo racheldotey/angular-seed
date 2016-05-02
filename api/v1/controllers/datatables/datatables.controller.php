@@ -52,6 +52,12 @@ class DatatablesController {
         return $app->render(200, array('table' => $table ));
     }
     
+    static function getTeamGameCheckins($app, $teamId) {
+        $data = DatatablesData::selectTeamGameCheckins($teamId);
+        $table = ($data) ? $data : array();
+        return $app->render(200, array('table' => $table ));
+    }
+    
     // Games
     
     static function getGames($app) {

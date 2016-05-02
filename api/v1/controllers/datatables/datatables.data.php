@@ -204,6 +204,18 @@ ORDER BY v.name;");
         return self::selectGameScoreboard($qGames);
     }
     
+    static function selectTeamGameCheckins($teamId) {
+        return DBConn::selectAll("SELECT c.status, c.created, CONCAT(u.name_first, ' ', u.name_last) AS createdBy, "
+                . "g.id AS gameId, g.name AS game, t.id AS teamId, t.name AS team, "
+                . "v.id As venueId, v.name AS venue "
+                . "FROM " . DBConn::prefix() . "logs_game_checkins AS c LEFT "
+                . "JOIN " . DBConn::prefix() . "teams AS t ON t.id = c.team_id "
+                . "LEFT JOIN " . DBConn::prefix() . "users AS u ON u.id = c.created_by "
+                . "LEFT JOIN " . DBConn::prefix() . "games AS g ON g.id = c.game_id "
+                . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = g.venue_id "
+                . "WHERE c.team_id = :team_id ORDER BY c.created DESC;", array(':team_id' => $teamId));
+    }
+    
     private static function selectGameScoreboard($qGames) {
         $qScores = DBConn::preparedQuery("SELECT s.team_id AS teamId, s.score AS gameScore, "
                 . "s.game_rank AS gameRank, s.game_winner AS gameWinner, t.name AS teamName "

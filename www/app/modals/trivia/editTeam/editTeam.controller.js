@@ -3,8 +3,10 @@
 /* @author  Rachel Carbone */
 
 angular.module('app.modal.trivia.editTeam', [])        
-    .controller('TriviaEditTeamModalCtrl', ['ApiRoutesGames', 'AlertConfirmService', '$scope', '$filter', '$uibModalInstance', 'editing', 'venuesList', 'addUserId',
-    function(ApiRoutesGames, AlertConfirmService, $scope, $filter, $uibModalInstance, editing, venuesList, addUserId) {
+    .controller('TriviaEditTeamModalCtrl', ['ApiRoutesGames', 'AlertConfirmService', '$scope', '$filter', 
+        '$uibModalInstance', 'editing', 'venuesList', 'addUserId', 'DataTableHelper', 'DTColumnBuilder',
+    function(ApiRoutesGames, AlertConfirmService, $scope, $filter, 
+        $uibModalInstance, editing, venuesList, addUserId, DataTableHelper, DTColumnBuilder) {
     
     $scope.automaticallyAddUserId = addUserId || false;
     
@@ -30,6 +32,7 @@ angular.module('app.modal.trivia.editTeam', [])
         $scope.viewMode = false;
         $scope.newMode = false;
         $scope.editMode = false;
+        $scope.logMode = false;
         
         switch(type) {
             case 'new':
@@ -38,6 +41,9 @@ angular.module('app.modal.trivia.editTeam', [])
                 break;
             case 'edit':
                 $scope.editMode = true;
+                break;
+            case 'log':
+                $scope.logMode = true;
                 break;
             case 'view':
             default:
@@ -59,11 +65,25 @@ angular.module('app.modal.trivia.editTeam', [])
     /* Save for resetting purposes */
     if(angular.isDefined(editing.id) && editing.id) {
         $scope.setMode('view');
+        
+        $scope.dtTeamCheckins = DataTableHelper.getDTStructure($scope, 'adminTeamCheckinsList', editing.id);
+        $scope.dtTeamCheckins.options.withOption('order', [1, 'desc'])
+        .withDOM('<"row"<"col-sm-12 col-md-12"fr><"col-sm-12 add-space"t><"col-sm-6"l><"col-sm-6 text-right"i><"col-sm-12 text-center"p>>');
+        $scope.dtTeamCheckins.columns = [
+            DTColumnBuilder.newColumn('game').withTitle('Game'),
+            DTColumnBuilder.newColumn('venue').withTitle('Venue'),
+            DTColumnBuilder.newColumn('status').withTitle('Status'),
+            DTColumnBuilder.newColumn('createdBy').withTitle('Created By'),
+            DTColumnBuilder.newColumn('created').withTitle('Created').renderWith(function (data, type, full, meta) {
+                return moment(data, 'YYYY-MM-DD HH:mm:ss').format('M/D/YYYY h:mm a');
+            })
+        ];
     } else {
         $scope.setMode('new');
         $scope.editing.name = "A " + moment().format('dddd') + " Team in " + moment().format('MMMM');
         $scope.editing.players = [ { email : '' } ];
     }
+    
     
     /* Click event for the Add Email Input */
     $scope.buttonNewEmailField = function() {
@@ -74,6 +94,11 @@ angular.module('app.modal.trivia.editTeam', [])
     /* Click event for the Edit button */
     $scope.buttonEdit = function() {
         $scope.setMode('edit');
+    };
+        
+    /* Click event for the View Checkin Log button */
+    $scope.buttonViewCheckinLog = function() {
+        $scope.setMode('log');
     };
     
     /* Click event for the Add New Team button */
@@ -156,7 +181,7 @@ angular.module('app.modal.trivia.editTeam', [])
         
     /* Click event for the Cancel button */
     $scope.buttonCancel = function() {
-        if($scope.getMode() === 'edit') {
+        if($scope.getMode() === 'edit' || $scope.getMode() === 'log') {
             $scope.setMode('view');
         } else {
             $uibModalInstance.dismiss(false);
