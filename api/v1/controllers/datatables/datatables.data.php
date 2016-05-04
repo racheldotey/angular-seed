@@ -5,15 +5,17 @@ class DatatablesData {
     
     static function selectUsers() {
         $qUsers = DBConn::executeQuery("SELECT u.id, u.name_first AS nameFirst, u.name_last AS nameLast, "
-                . "u.email, u.email_verified AS verified, u.created, u.last_updated AS lastUpdated, "
-                . "u.disabled, CONCAT(u1.name_first, ' ', u1.name_last) AS updatedBy "
+                . "u.email, u.email_verified AS verified, u.phone, u.created, u.last_updated AS lastUpdated, "
+                . "u.disabled, CONCAT(u1.name_first, ' ', u1.name_last) AS updatedBy, t.name AS team, t.id AS teamId "
                 . "FROM " . DBConn::prefix() . "users AS u "
+                . "LEFT JOIN " . DBConn::prefix() . "team_members AS tm ON tm.user_id = u.id "
+                . "LEFT JOIN " . DBConn::prefix() . "teams AS t ON t.id = tm.team_id "
                 . "LEFT JOIN " . DBConn::prefix() . "users AS u1 ON u1.id = u.last_updated_by ORDER BY u.id;");
         
         $qGroups = DBConn::preparedQuery("SELECT grp.id, grp.group, grp.desc, look.created AS assigned "
                 . "FROM " . DBConn::prefix() . "auth_groups AS grp "
                 . "JOIN " . DBConn::prefix() . "auth_lookup_user_group AS look ON grp.id = look.auth_group_id "
-                . "WHERE look.user_id = :id ORDER BY grp.group;");
+                . "WHERE look.user_id = :id GROUP BY grp.id ORDER BY grp.group;");
 
         $users = Array();
         while($user = $qUsers->fetch(\PDO::FETCH_OBJ)) {
@@ -35,7 +37,7 @@ class DatatablesData {
         $qRoles = DBConn::preparedQuery("SELECT r.id, r.role, r.desc "
                 . "FROM " . DBConn::prefix() . "auth_roles AS r "
                 . "JOIN " . DBConn::prefix() . "auth_lookup_group_role AS look ON r.id = look.auth_role_id "
-                . "WHERE look.auth_group_id = :id ORDER BY r.role;");
+                . "WHERE look.auth_group_id = :id GROUP BY r.id ORDER BY r.role;");
 
         $groups = Array();
 
@@ -59,12 +61,12 @@ class DatatablesData {
         $qFields = DBConn::preparedQuery("SELECT e.id, e.identifier, e.desc "
                 . "FROM " . DBConn::prefix() . "auth_fields AS e "
                 . "JOIN " . DBConn::prefix() . "auth_lookup_role_field AS look ON e.id = look.auth_field_id "
-                . "WHERE look.auth_role_id = :id ORDER BY e.identifier;");
+                . "WHERE look.auth_role_id = :id GROUP BY e.id ORDER BY e.identifier;");
         
         $qGroups = DBConn::preparedQuery("SELECT g.id, g.group, g.desc "
                 . "FROM " . DBConn::prefix() . "auth_groups AS g "
                 . "JOIN " . DBConn::prefix() . "auth_lookup_group_role AS look ON g.id = look.auth_group_id "
-                . "WHERE look.auth_role_id = :id ORDER BY g.group;");
+                . "WHERE look.auth_role_id = :id GROUP BY g.id ORDER BY g.group;");
         
         $roles = Array();
 
@@ -100,7 +102,7 @@ class DatatablesData {
         $qRoles = DBConn::preparedQuery("SELECT r.id, r.role, r.desc "
                 . "FROM " . DBConn::prefix() . "auth_roles AS r "
                 . "JOIN " . DBConn::prefix() . "auth_lookup_role_field AS look ON r.id = look.auth_role_id "
-                . "WHERE look.auth_field_id = :id ORDER BY r.role;");
+                . "WHERE look.auth_field_id = :id GROUP BY r.id ORDER BY r.role;");
         
         $elements = Array();
 

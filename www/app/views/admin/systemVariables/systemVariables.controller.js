@@ -30,6 +30,7 @@ angular.module('app.admin.systemVariables', [])
 
             // DataTable Setup
             $scope.dtSystemVars = DataTableHelper.getDTStructure($scope, 'adminConfigList');
+            $scope.dtSystemVars.options.withOption('order', [1, 'desc']);
             $scope.dtSystemVars.columns = [
                 DTColumnBuilder.newColumn('id').withTitle('ID'),
                 DTColumnBuilder.newColumn('name').withTitle('Name'),

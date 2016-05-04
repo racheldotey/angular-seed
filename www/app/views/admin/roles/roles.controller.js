@@ -46,7 +46,7 @@ angular.module('app.admin.roles', [])
 
         // DataTable Setup
         $scope.dtGroupRoles = DataTableHelper.getDTStructure($scope, 'adminRolesList');
-        $scope.dtGroupRoles.options.withOption('responsive', {
+        $scope.dtGroupRoles.options.withOption('order', [1, 'desc']).withOption('responsive', {
                 details: {
                     type: 'column',
                     renderer: function(api, rowIdx, columns) {

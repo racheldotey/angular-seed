@@ -28,7 +28,7 @@ angular.module('app.admin.venues', [])
 
         $scope.dtVenues = DataTableHelper.getDTStructure($scope, 'adminVenuesList');
         /*
-        $scope.dtVenues.options.withOption('responsive', {
+        $scope.dtVenues.options.withOption('order', [1, 'desc']).withOption('responsive', {
             details: {
                 type: 'column',
                 renderer: function(api, rowIdx, columns) {

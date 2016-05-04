@@ -37,7 +37,7 @@ angular.module('app.admin.users', [])
         $scope.dtUserGroups.options = DTOptionsBuilder.newOptions();
 
         $scope.dtUsers = DataTableHelper.getDTStructure($scope, 'adminUsersList');
-        $scope.dtUsers.options.withOption('responsive', {
+        $scope.dtUsers.options.withOption('order', [2, 'desc']).withOption('responsive', {
             details: {
                 type: 'column',
                 renderer: function(api, rowIdx, columns) {
@@ -82,22 +82,23 @@ angular.module('app.admin.users', [])
             DTColumnBuilder.newColumn(null).withTitle('Groups').withClass('responsive-control text-right noclick').renderWith(function(data, type, full, meta) {
                 return '<a><small>(' + data.groups.length +')</small> <i class="fa"></i></a>';
             }).notSortable(),
+            DTColumnBuilder.newColumn(null).withTitle('').withClass('text-center').renderWith(function(data, type, full, meta) {
+                var blocked = (data.blocked === "1") ?
+                        '<span title="User has been disabled and cannot login." class="label label-danger" style="font-size: 12px; padding: 5px 8px;"><i class="fa fa-lg fa-exclamation-circle"></i></span>' :
+                        '<span title="User is enabled." class="label label-success" style="font-size: 12px; padding: 5px 8px;"><i class="fa fa-lg fa-check-circle-o"></i></span>';
+                var verified = (data.verified === null) ?
+                        '<span title="This user has not verified their email." class="label label-danger" style="font-size: 12px; padding: 5px 8px;"><i class="fa fa-lg fa-exclamation-circle"></i></span>' :
+                        '<span title="Email verified." class="label label-success" style="font-size: 12px; padding: 5px 8px;"><i class="fa fa-lg fa-check-circle-o"></i></span>';
+                return blocked+ verified;
+            }).notSortable(),
             DTColumnBuilder.newColumn('id').withTitle('ID'),
-            DTColumnBuilder.newColumn('blocked').withTitle('Enabled').renderWith(function(data, type, full, meta) {
-                return (data === "1") ?
-                        '<span class="label label-danger" style="font-size: 12px; padding: 5px 8px;"><i class="fa fa-lg fa-exclamation-circle"></i></span>' :
-                        '<span class="label label-success" style="font-size: 12px; padding: 5px 8px;"><i class="fa fa-lg fa-check-circle-o"></i></span>';
-            }),
-            DTColumnBuilder.newColumn('verified').withTitle('Verified').renderWith(function(data, type, full, meta) {
-                return (data === null) ?
-                        '<span class="label label-danger" style="font-size: 12px; padding: 5px 8px;"><i class="fa fa-lg fa-exclamation-circle"></i></span>' :
-                        '<span class="label label-success" style="font-size: 12px; padding: 5px 8px;"><i class="fa fa-lg fa-check-circle-o"></i></span>';
-            }),
             DTColumnBuilder.newColumn('nameFirst').withTitle('First'),
             DTColumnBuilder.newColumn('nameLast').withTitle('Last'),
             DTColumnBuilder.newColumn('email').withTitle('Email'),
-            DTColumnBuilder.newColumn('created').withTitle('Created').renderWith(function (data, type, full, meta) {
-                return moment(data, 'YYYY-MM-DD HH:mm:ss').format('M/D/YYYY h:mm a');
+            DTColumnBuilder.newColumn('phone').withTitle('Phone'),
+            DTColumnBuilder.newColumn('team').withTitle('Team Name'),
+            DTColumnBuilder.newColumn('created').withTitle('User Since').renderWith(function (data, type, full, meta) {
+                return moment(data, 'YYYY-MM-DD HH:mm:ss').format('M/D/YYYY');
             }),
             DTColumnBuilder.newColumn(null).withTitle('').renderWith(function(data, type, full, meta) {
                 return '<button ng-click="buttonOpenEditUserModal(\'' + data.id + '\')" type="button" class="btn btn-default btn-xs pull-right">View</button>';

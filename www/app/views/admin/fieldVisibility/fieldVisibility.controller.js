@@ -41,7 +41,7 @@ angular.module('app.admin.fieldVisibility', [])
             $scope.dtFieldRoles.options = DTOptionsBuilder.newOptions();
                     
             $scope.dtFields = DataTableHelper.getDTStructure($scope, 'adminVisibilityFieldList');
-            $scope.dtFields.options.withOption('responsive', {
+            $scope.dtFields.options.withOption('order', [1, 'desc']).withOption('responsive', {
                 details: {
                     type: 'column',
                     renderer: function(api, rowIdx, columns) {

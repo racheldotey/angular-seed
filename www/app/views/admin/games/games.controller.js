@@ -27,7 +27,7 @@ angular.module('app.admin.games', [])
         $scope.dtUserGroups.options = DTOptionsBuilder.newOptions();
 
         $scope.dtGames = DataTableHelper.getDTStructure($scope, 'adminGamesList');/*
-        $scope.dtGames.options.withOption('responsive', {
+        $scope.dtGames.options.withOption('order', [1, 'desc']).withOption('responsive', {
             details: {
                 type: 'column',
                 renderer: function(api, rowIdx, columns) {

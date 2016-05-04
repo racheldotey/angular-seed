@@ -44,13 +44,12 @@
                 <p class="form-control-static">Players may place a wager for this question.</p>
             </div>
         </div>
-
-        <div class="meta" ng-if="!newMode && saved.created">
+        
+        <div class="meta" ng-if="!newMode && (saved.created || saved.lastUpdated)">
             <hr/>
-            <p class="text-muted"><strong>Created:</strong> {{saved.created | formatMySQLDate}} by {{saved.createdBy}}</p>
-            <p class="text-muted"><strong>Updated:</strong> {{saved.lastUpdated | formatMySQLDate}} by {{saved.updatedBy}}</p>
+            <p ng-show="saved.created" class="text-muted"><strong>Created:</strong> {{saved.created | formatMySQLDate}} <span ng-show="saved.createdBy">by {{saved.createdBy}}</span></p>
+            <p ng-show="saved.lastUpdated" class="text-muted"><strong>Updated:</strong> {{saved.lastUpdated | formatMySQLDate}} <span ng-show="saved.updatedBy">by {{saved.updatedBy}}</span></p>
         </div>
-
     </form>
 
     <form ng-if="editMode" name="form.modalForm" role="form" class="form-horizontal" novalidate>

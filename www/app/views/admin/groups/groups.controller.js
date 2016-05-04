@@ -53,7 +53,7 @@ angular.module('app.admin.groups', [])
 
         // DataTable Setup
         $scope.dtUserGroups = DataTableHelper.getDTStructure($scope, 'adminGroupsList');
-        $scope.dtUserGroups.options.withOption('responsive', {
+        $scope.dtUserGroups.options.withOption('order', [1, 'desc']).withOption('responsive', {
                 details: {
                     type: 'column',
                     renderer: function(api, rowIdx, columns) {
