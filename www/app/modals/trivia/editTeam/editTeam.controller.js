@@ -4,9 +4,9 @@
 
 angular.module('app.modal.trivia.editTeam', [])        
     .controller('TriviaEditTeamModalCtrl', ['ApiRoutesGames', 'AlertConfirmService', '$scope', '$filter', 
-        '$uibModalInstance', 'editing', 'venuesList', 'addUserId', 'DataTableHelper', 'DTColumnBuilder',
+        '$uibModalInstance', 'editing', 'venuesList', 'addUserId', 'currentVenueId', 'currentGameId', 'DataTableHelper', 'DTColumnBuilder',
     function(ApiRoutesGames, AlertConfirmService, $scope, $filter, 
-        $uibModalInstance, editing, venuesList, addUserId, DataTableHelper, DTColumnBuilder) {
+        $uibModalInstance, editing, venuesList, addUserId, currentVenueId, currentGameId, DataTableHelper, DTColumnBuilder) {
     
     $scope.automaticallyAddUserId = addUserId || false;
     
@@ -19,13 +19,22 @@ angular.module('app.modal.trivia.editTeam', [])
     /* List of Venues */
     $scope.venuesList = venuesList;
     
+    $scope.currentGameId = currentGameId;
+    
     /* Save for resetting purposes */
     $scope.saved = (angular.isDefined(editing.id)) ? angular.copy(editing) : { };
+    $scope.saved.venue = {};
+    if(currentVenueId) {
+        for(var v = 0; v < venuesList.length; v++) {
+            if(venuesList[v].id == currentVenueId) {
+                $scope.saved.venue = venuesList[v];
+                break;
+            }
+        }
+    }
     
     /* Item to display and edit */
     $scope.editing = angular.copy($scope.saved);
-    $scope.editing.venue = (angular.isDefined(editing.id)) ? $filter('filter')($scope.venuesList, { 'id' : editing.homeVenueId }, true) :
-            { 'id' : '0' };
     
     /* Modal Mode */    
     $scope.setMode = function(type) {
@@ -102,7 +111,7 @@ angular.module('app.modal.trivia.editTeam', [])
     };
     
     /* Click event for the Add New Team button */
-    $scope.buttonNew = function() {
+    $scope.buttonNew = function(currentGameId) {
         if(!$scope.form.modalForm.$valid) {
             $scope.form.modalForm.$setDirty();
             $scope.alertProxy.error('Please select a home venue and name for your team.');
@@ -119,10 +128,17 @@ angular.module('app.modal.trivia.editTeam', [])
                 
                 AlertConfirmService.confirm('Are you really sure that you would like to leave your current team and join this new team?', 'Warning, Leaving Team!')
                 .result.then(function () {
-                    ApiRoutesGames.addTeam({ 
-                        'name' : $scope.editing.name,  
-                        'homeVenueId' : $scope.editing.venue.id,  
-                        'players' : players }).then(function(result) {
+                    
+                var data ={ 
+                    'name' : $scope.editing.name,  
+                    'homeVenueId' : $scope.editing.venue.id || $scope.editing.venue.value.id,
+                    'players' : players };
+                
+                if(currentGameId) {
+                    data.gameId = currentGameId;
+                }
+                
+                ApiRoutesGames.addTeam(data).then(function(result) {
 
                         console.log(result);
                         $scope.alertProxy.success("Team '" + result.team.name + "'added");
@@ -135,10 +151,16 @@ angular.module('app.modal.trivia.editTeam', [])
                     $scope.alertProxy.info('No changes were saved. Close the window to remain in the same Team.');
                 });
             } else {
-                ApiRoutesGames.addTeam({ 
+                var data ={ 
                     'name' : $scope.editing.name,  
-                    'homeVenueId' : $scope.editing.venue.id,  
-                    'players' : players }).then(function(result) {
+                    'homeVenueId' : $scope.editing.venue.id || $scope.editing.venue.value.id,
+                    'players' : players };
+                
+                if(currentGameId) {
+                    data.gameId = currentGameId;
+                }
+                
+                ApiRoutesGames.addTeam(data).then(function(result) {
 
                     console.log(result);
                     $scope.alertProxy.success("Team '" + result.team.name + "'added");
@@ -166,7 +188,7 @@ angular.module('app.modal.trivia.editTeam', [])
             ApiRoutesGames.saveTeam({ 
                 'id' : $scope.editing.id,  
                 'name' : $scope.editing.name,  
-                'homeVenueId' : $scope.editing.venue.id,  
+                'homeVenueId' : $scope.editing.venue.id || $scope.editing.venue.value.id,
                 'players' : players }).then(function(result) {
 
                 console.log(result);

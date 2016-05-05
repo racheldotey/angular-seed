@@ -1,5 +1,6 @@
 <?php namespace API;
 require_once dirname(__FILE__) . '/teams.data.php';
+require_once dirname(dirname(__FILE__)) . '/games/games.data.php';
 require_once dirname(dirname(dirname(__FILE__))) . '/services/api.mailer.php';
 
 use \Respect\Validation\Validator as v;
@@ -37,7 +38,17 @@ class TeamController {
             $results = array();
             if(v::key('players', v::arrayType())->validate($post)) {
                 $results = self::addPlayers($teamId, $post['name'], $post['players']);
-            }            
+            }
+            
+            if(v::key('gameId', v::intVal())->validate($post)) {
+                $gameInsert = GameData::insertTeamIntoGame(array(
+                    ':game_id' => $post['gameId'],
+                    ':team_id' => $teamId,
+                    ":created_user_id" => APIAuth::getUserId(),
+                    ":last_updated_by" => APIAuth::getUserId()
+                ));
+            }
+            
             $team = TeamData::getTeam($teamId);
             return $app->render(200, array('team' => $team, 'invites' => $results));
         } else {

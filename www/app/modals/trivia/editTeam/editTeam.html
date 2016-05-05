@@ -63,12 +63,7 @@
             <div class="col-xs-12">
                 <div class="form-group">
                     <label>Home Joint</label>
-                    <select 
-                        ng-options="venue.label for venue in venuesList track by venue.id" 
-                        ng-model="editing.venue"
-                        class="form-control" required>
-                        <option value="">Select a Home Venue</option>
-                    </select>
+                    <div rc-trivia-select-list-venue="editing.venue" teams-list-data="venuesList"></div>
                 </div>
             </div>
         </div>
@@ -113,6 +108,8 @@
     <button class="btn btn-warning pull-left" ng-if="false" ng-click="buttonDelete()">Delete</button>
     
     <button class="btn btn-default pull-left" ng-click="buttonCancel()">Cancel</button>
-    <button class="btn btn-primary" ng-if="newMode" ng-click="buttonNew()">New Team</button>
+    <button class="btn btn-primary" ng-if="newMode" ng-click="buttonNew()">Create Team</button>
+    <button class="btn btn-primary" ng-if="newMode && currentGameId" ng-click="buttonNew(currentGameId)">Create & Add to Game</button>
     <button class="btn btn-primary" ng-if="!newMode" ng-click="buttonSave()">Save</button>
+    <button class="btn btn-primary" ng-if="!newMode && currentGameId" ng-click="buttonSave(currentGameId)">Save & Add to Game</button>
 </div>

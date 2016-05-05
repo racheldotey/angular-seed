@@ -99,7 +99,7 @@ angular.module('TriviaModalService', [
      * 
      * @return uibModalInstance
      */
-    api.openEditTeam = function(team, addUserId) {
+    api.openEditTeam = function(team, addUserId, currentVenueId, currentGameId) {
         return api.openModal({
             templateUrl: templatePath + 'editTeam/editTeam.html',
             controller: 'TriviaEditTeamModalCtrl',
@@ -111,6 +111,12 @@ angular.module('TriviaModalService', [
                 },
                 addUserId: function() {
                     return addUserId || false;
+                },
+                currentVenueId: function() {
+                    return currentVenueId || false;
+                },
+                currentGameId: function() {
+                    return currentGameId || false;
                 },
                 venuesList: function(ApiRoutesSimpleLists) {
                     return ApiRoutesSimpleLists.simpleVenuesList();

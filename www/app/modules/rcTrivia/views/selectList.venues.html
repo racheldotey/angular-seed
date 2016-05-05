@@ -2,7 +2,7 @@
     <ui-select-match placeholder="{{placeholderText}}">
         <span ng-bind="$select.selected.label"></span>
     </ui-select-match>
-    <ui-select-choices repeat="item in (dataArray | filter: $select.search) track by $index">
+    <ui-select-choices repeat="item in (dataArray | filter: $select.search) track by item.id">
         <span>#{{item.id}} - {{item.label}}</span>
     </ui-select-choices>
 </ui-select>
