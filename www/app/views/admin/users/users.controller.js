@@ -83,9 +83,9 @@ angular.module('app.admin.users', [])
                 return '<a><small>(' + data.groups.length +')</small> <i class="fa"></i></a>';
             }).notSortable(),
             DTColumnBuilder.newColumn(null).withTitle('').withClass('text-center').renderWith(function(data, type, full, meta) {
-                var blocked = (data.blocked === "1") ?
-                        '<span title="User has been disabled and cannot login." class="label label-danger" style="font-size: 12px; padding: 5px 8px;"><i class="fa fa-lg fa-exclamation-circle"></i></span>' :
-                        '<span title="User is enabled." class="label label-success" style="font-size: 12px; padding: 5px 8px;"><i class="fa fa-lg fa-check-circle-o"></i></span>';
+                var blocked = (data.disabled === null) ?
+                        '<span title="User is enabled." class="label label-success" style="font-size: 12px; padding: 5px 8px;"><i class="fa fa-lg fa-check-circle-o"></i></span>' :
+                        '<span title="User has been disabled and cannot login." class="label label-danger" style="font-size: 12px; padding: 5px 8px;"><i class="fa fa-lg fa-exclamation-circle"></i></span>';
                 var verified = (data.verified === null) ?
                         '<span title="This user has not verified their email." class="label label-danger" style="font-size: 12px; padding: 5px 8px;"><i class="fa fa-lg fa-exclamation-circle"></i></span>' :
                         '<span title="Email verified." class="label label-success" style="font-size: 12px; padding: 5px 8px;"><i class="fa fa-lg fa-check-circle-o"></i></span>';
@@ -96,7 +96,9 @@ angular.module('app.admin.users', [])
             DTColumnBuilder.newColumn('nameLast').withTitle('Last'),
             DTColumnBuilder.newColumn('email').withTitle('Email'),
             DTColumnBuilder.newColumn('phone').withTitle('Phone'),
-            DTColumnBuilder.newColumn('team').withTitle('Team Name'),
+            DTColumnBuilder.newColumn('team').withTitle('Team Name').renderWith(function (data, type, full, meta) {
+                return (data) ? '<a data-ui-sref="app.admin.teams">' + data +'</a>' : '';
+            }),
             DTColumnBuilder.newColumn('created').withTitle('User Since').renderWith(function (data, type, full, meta) {
                 return moment(data, 'YYYY-MM-DD HH:mm:ss').format('M/D/YYYY');
             }),

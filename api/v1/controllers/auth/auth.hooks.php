@@ -114,11 +114,4 @@ class AuthHooks {
         return DBConn::insert("INSERT INTO " . DBConn::prefix() . "logs_hot_salsa_signup(user_id, salsa_call_status, salsa_error_message) "
                 . "VALUES (:user_id, :salsa_call_status, :salsa_error_message);", $logData);
     }
-
-
-
-
-    private static function data_deleteStupidUser($id) {
-        DBConn::delete("DELETE FROM " . DBConn::prefix() . "users WHERE id = :id;", array(":id" => $id));
-    }
 }
