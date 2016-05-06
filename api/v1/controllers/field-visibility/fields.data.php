@@ -47,17 +47,17 @@ class FieldData {
     }
   
     static function insertField($validField) {
-        return DBConn::insert("INSERT INTO " . DBConn::prefix() . "auth_fields(`identifier`, `type`, `desc`, `created_user_id`, `last_updated_by`) "
+        return DBConn::insert("INSERT INTO " . DBConn::prefix() . "auth_fields(identifier, type, desc, created_user_id, last_updated_by) "
                 . "VALUES (:identifier, :type, :desc, :created_user_id, :last_updated_by)", $validField);
     }
     
     static function updateFieldInitialize($validField) {
-        return DBConn::update("UPDATE " . DBConn::prefix() . "auth_fields SET `initialized`=:initialized WHERE `id`=:id;", $validField);
+        return DBConn::update("UPDATE " . DBConn::prefix() . "auth_fields SET initialized=:initialized WHERE id=:id;", $validField);
     }
     
     static function updateField($validField) {
-        return DBConn::update("UPDATE " . DBConn::prefix() . "auth_fields SET `identifier`=:identifier, `type`=:type, "
-                . "`desc`=:desc, `last_updated_by`=:last_updated_by, initialized=NULL WHERE `id`=:id;", $validField);
+        return DBConn::update("UPDATE " . DBConn::prefix() . "auth_fields SET identifier=:identifier, type=:type, "
+                . "desc=:desc, last_updated_by=:last_updated_by, initialized=NULL WHERE id=:id;", $validField);
     }
     
     static function deleteField($id) {
@@ -68,12 +68,36 @@ class FieldData {
     }
   
     static function insertRoleAssignment($data) {
-        return DBConn::insert("INSERT INTO " . DBConn::prefix() . "auth_lookup_role_field(`auth_field_id`, `auth_role_id`, `created_user_id`) "
+        return DBConn::insert("INSERT INTO " . DBConn::prefix() . "auth_lookup_role_field(auth_field_id, auth_role_id, created_user_id) "
                 . "VALUES (:auth_field_id, :auth_role_id, :created_user_id)", $data);
     }
                     
     static function deleteRoleAssignment($data) {
         return DBConn::delete("DELETE FROM " . DBConn::prefix() . "auth_lookup_role_field "
                 . "WHERE auth_field_id = :auth_field_id AND auth_role_id = :auth_role_id;", $data);
+    }
+    
+    
+    /* Element Visibility */
+    
+    static function selectVisibilityKey() {
+        
+        $qElements = DBConn::executeQuery("SELECT id, identifier, initialized "
+                . "FROM " . DBConn::prefix() . "auth_fields WHERE initialized = 1 ORDER BY identifier;");
+        
+        $qRoles = DBConn::preparedQuery("SELECT auth_role_id AS id "
+                . "FROM " . DBConn::prefix() . "auth_lookup_role_field "
+                . "WHERE auth_field_id = :auth_field_id "
+                . "GROUP BY auth_role_id ORDER BY auth_role_id;");
+
+        $elements = Array();
+
+        while ($elem = $qElements->fetch(\PDO::FETCH_OBJ)) {
+            $qRoles->execute(array(':auth_field_id' => $elem->id));
+            $elem->roles = $qRoles->fetchAll(PDO::FETCH_COLUMN);
+            array_push($elements, $elem);
+        }
+        
+        return $elements;
     }
 }

@@ -21,6 +21,7 @@ angular.module('theApp', [
     'api.v1',
     'rcDirectives',
     'rcTrivia',
+    'rcElementVisibility',
     'app.config',
     'app.router',
     'app.run',

@@ -157,4 +157,62 @@ class FieldController {
             return $app->render(400,  array('msg' => 'Could not assign role to field.'));
         }
     }
+    
+    static function getVisibilityKey($app) {
+        $data = FieldData::selectVisibilityKey();
+        $key = ($data) ? $data : array();
+        return $app->render(200, array('key' => $key));
+    }
+    
+    static function initVisibilityElement($app) {
+        if(!v::key('elementIdentifier', v::stringType())->validate($app->request->post())) {
+            return $app->render(400,  array('msg' => 'Could not assign role from field. Check your parameters and try again.'));
+        }
+        
+        /*
+        
+        
+// Parameterize Inputs
+        $pram_element = (isset($data['elementIdentifier'])) ? $data['elementIdentifier'] : false;
+
+// Validate Inputs
+        if (!$pram_element) {
+            syslog(LOG_ERR, "BAD INPUT PARAMETERS: \n" . print_r($data, true) . "\n");
+            Exit_Error_REST_API("Bad Input Parameters");
+        } else {
+            syslog(LOG_INFO, "GOOD INPUT PARAMETERS: \n" . print_r($data, true) . "\n");
+        }
+
+        $selectQuery = 'SELECT `id`, `identifier`, `desc`, `initialized` FROM `auth-element` WHERE `identifier` = ? LIMIT 1;';
+
+        $selected = ExecuteSQL($selectQuery, array($pram_element));
+
+        if ($selected && isset($selected[0])) {
+            // Initialize Element
+            $who = getCurrentUsername($data);
+            $when = getCurrentTimeInZulu();
+
+            $query = 'UPDATE `auth-element` SET `initialized`=?, `last_updated_by`=?,`last_updated_ts`=? WHERE `id` = ?;';
+            ExecuteSQL($query, array('1', $who, $when, $selected[0]->id));
+
+            $selected = ExecuteSQL($selectQuery, array($pram_element));
+
+            if ($selected[0]->initialized === "1") {
+                // Get full element roles data
+                $sthRoles = PrepareSQL('SELECT auth_role_id AS id FROM `auth-lookup-role-element` WHERE auth_element_id = ? ORDER BY auth_role_id;');
+                $sthRoles->execute($subQuery, array($selected[0]->id));
+                $selected[0]->roles = $sthRoles->fetchAll(PDO::FETCH_COLUMN);
+                $selected[0]->initialized = 1;
+
+                echo json_encode($selected[0]);
+            } else {
+                Exit_Error_REST_API("Could not initialize element with that identifier.");
+            }
+        } else {
+            syslog(LOG_ERR, "BAD REQUEST");
+            Exit_Error_REST_API("Could not find an element with that identifier. Element was not initialized.");
+        }
+        */
+        
+    }
 }

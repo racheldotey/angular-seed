@@ -65,6 +65,7 @@ angular.module('app.router.init', [])
             resolve: {
                 $q: '$q',
                 AuthService: 'AuthService',
+                ElementVisibilityKeyService: 'ElementVisibilityKeyService',
                 initUser: function($q, AuthService) {
                     return $q(function (resolve, reject) {
                         AuthService.init().then(function (data) {
@@ -80,6 +81,9 @@ angular.module('app.router.init', [])
                         siteUrl : 'triviajoint.com',
                         siteCopywrite : 'All rights reserved.'
                     };
+                },
+                InitElementVisibilityKeyService: function (initUser, ElementVisibilityKeyService) {
+                    return ElementVisibilityKeyService.getKey();
                 }
             }
         });
