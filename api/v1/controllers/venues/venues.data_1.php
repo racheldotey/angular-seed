@@ -10,7 +10,6 @@ class VenueData {
 
         return $venue;
     }
-    
     public static function getVenue($id) {
         $venue = DBConn::selectOne("SELECT r.id, r.venue, r.desc, r.created, r.last_updated AS lastUpdated, "
             . "CONCAT(u1.name_first, ' ', u1.name_last) AS createdBy, "
@@ -37,7 +36,6 @@ class VenueData {
         }
         return $venue;
     }
-    
     public static function getVenueTriviaSchedule($id) 
     {
         $venue = DBConn::selectOne("SELECT * from ".DBConn::prefix()."venues_trivia_schedules where venue_id = :id", array(':id' => $id));
@@ -65,9 +63,9 @@ class VenueData {
     
     public static function updateVenue($validVenue) {
         return DBConn::update("UPDATE " . DBConn::prefix() . "venues SET name=:name, address=:address, address_b=:address_b, "
-            . "city=:city, state=:state, zip=:zip, phone_extension=:phone_extension, phone=:phone, website=:website, facebook_url=:facebook_url, "
+            . "city=:city, state=:state, zip=:zip, phone_extension=:phone_extension,phone=:phone, website=:website, facebook_url=:facebook_url, "
             . "logo=:logo, referral=:referral, last_updated_by=:last_updated_by "
-            . "WHERE id = :id;", $validVenue);
+            . "WHERE id=:id;", $validVenue);
     }
     
     public static function updateVenueTriviaSchedules($validVenueSchedule) {

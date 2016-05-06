@@ -27,6 +27,7 @@ angular.module('app.admin.venues', [])
                 $scope.dtUserGroups.options = DTOptionsBuilder.newOptions();
 
                 $scope.dtVenues = DataTableHelper.getDTStructure($scope, 'adminVenuesList');
+                $scope.dtVenues.options.withOption('order', [0, 'desc']);
                 /*
                  $scope.dtVenues.options.withOption('order', [1, 'desc']).withOption('responsive', {
                  details: {
@@ -81,16 +82,17 @@ angular.module('app.admin.venues', [])
                     DTColumnBuilder.newColumn('venue').withTitle('Joint Name'),
                     DTColumnBuilder.newColumn('city').withTitle('City'),
                     DTColumnBuilder.newColumn('state').withTitle('State'),
+                    DTColumnBuilder.newColumn('phone').withTitle('Phone'),
                     DTColumnBuilder.newColumn('website').withTitle('Website').renderWith(function (data, type, full, meta) {
                         return (data.length <= 0) ? '' : '<a href="' + data + '" target="_blank">Website</a>';
                     }),
                     DTColumnBuilder.newColumn('facebook').withTitle('Facebook').renderWith(function (data, type, full, meta) {
                         return (data.length <= 0) ? '' : '<a href="' + data + '" target="_blank">Facebook</a>';
                     }),
-                    DTColumnBuilder.newColumn('trivia_day').withTitle('Day'),
-                    DTColumnBuilder.newColumn('trivia_time').withTitle('Hours'),
-                    DTColumnBuilder.newColumn('referral').withTitle('Referral Code').renderWith(function (data, type, full, meta) {
-                        return '<code>' + data + '</code>';
+                    DTColumnBuilder.newColumn('triviaDay').withTitle('Day'),
+                    DTColumnBuilder.newColumn('triviaTime').withTitle('Hours'),
+                    DTColumnBuilder.newColumn('referralCode').withTitle('Referral Code').renderWith(function (data, type, full, meta) {
+                        return (data && data !== null) ? '<code>' + data + '</code>' : '';
                     }),
                     DTColumnBuilder.newColumn('createdBy').withTitle('Created By'),
                     DTColumnBuilder.newColumn('created').withTitle('Created').renderWith(function (data, type, full, meta) {
@@ -98,7 +100,7 @@ angular.module('app.admin.venues', [])
                     }),
                     DTColumnBuilder.newColumn(null).withTitle('').renderWith(function (data, type, full, meta) {
                         return '<button ng-click="buttonOpenEditVenueModal(\'' + data.id + '\')" type="button" class="btn btn-default btn-xs pull-right">View</button>';
-                    }).notSortable(),
+                    }).notSortable()
                             //DTColumnBuilder.newColumn('games').withTitle('Upcoming Games').withClass('none').notSortable()
                 ];
 

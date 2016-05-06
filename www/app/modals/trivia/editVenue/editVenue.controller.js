@@ -49,13 +49,11 @@ angular.module('app.modal.trivia.editVenue', [])
             }
         };
 
-        // Hold venue logo
-        $scope.venueLogo = {};
-
         /* Save for resetting purposes */
         $scope.saved = (angular.isDefined(editing.id)) ? angular.copy(editing) : {
             'venueName': '',
             'phone': '',
+            'phoneExtension': '',
             'address': '',
             'addressb': '',
             'city': '',
@@ -63,25 +61,15 @@ angular.module('app.modal.trivia.editVenue', [])
             'zip': '',
             'website': '',
             'facebook': '',
-            'hours': '',
+            'triviaDay': '',
+            'triviaTime': '',
             'referralCode': ''
         };
-        $scope.saved = {
-            'venueName': 'New Test Venue From Admin',
-            'phone': '(123) 456 - 7890',
-            'address': '1 Main Street',
-            'addressb': 'Downstairs',
-            'city': 'Clifton Park',
-            'state': 'NY',
-            'zip': '12065',
-            'website': 'http://barngrill.com',
-            'facebook': 'http://facebook.com',
-            'hours': 'Friday and Saturday at 6pm',
-            'referralCode': 'GOTEAM'
-        };
-        if (angular.isDefined(editing.logo)) {
-            $scope.venueLogo.imageDataUrl = editing.logo;
-        }
+        
+
+        // Hold venue logo
+        $scope.venueLogo = {};
+        $scope.savedImageDataUrl = $scope.saved.logo;
 
         $scope.saved.triviaTimeDate = new Date();
 
@@ -95,25 +83,29 @@ angular.module('app.modal.trivia.editVenue', [])
                 $scope.alertProxy.error('Please fill in all fields for trivia joint.');
             }
             else {
-                if (angular.isString($scope.venueLogo.imageDataUrl) &&
-                        ($scope.venueLogo.imageDataUrl.indexOf('data:image') > -1)) {
+                if ($scope.venueLogo.file && $scope.venueLogo.imageDataUrl.indexOf('data:image') > -1) {
                     $scope.editing.logo = $scope.venueLogo.imageDataUrl;
+                } else if (angular.isString($scope.savedImageDataUrl) &&
+                        ($scope.savedImageDataUrl.indexOf('data:image') > -1)) {
+                    $scope.editing.logo = $scope.savedImageDataUrl;
                 }
                 $scope.editing.triviaTime = $filter('date')($scope.editing.triviaTimeDate, 'h:mm a');
                 ApiRoutesGames.addVenue($scope.editing).then(
                     function (result) {
                         $scope.editMode = false;
                     }, function (error) {
-                        console.log(error);
+                        $scope.alertProxy.error(error);
                     });
             }
         };
 
         /* Click event for the Save button */
         $scope.buttonSave = function () {
-            if (angular.isString($scope.venueLogo.imageDataUrl) &&
-                    ($scope.venueLogo.imageDataUrl.indexOf('data:image') > -1)) {
+            if ($scope.venueLogo.file && $scope.venueLogo.imageDataUrl.indexOf('data:image') > -1) {
                 $scope.editing.logo = $scope.venueLogo.imageDataUrl;
+            } else if (angular.isString($scope.savedImageDataUrl) &&
+                    ($scope.savedImageDataUrl.indexOf('data:image') > -1)) {
+                $scope.editing.logo = $scope.savedImageDataUrl;
             }
             $scope.editing.triviaTime = $filter('date')($scope.editing.triviaTimeDate, 'h:mm a');
 
@@ -124,19 +116,6 @@ angular.module('app.modal.trivia.editVenue', [])
                         $scope.alertProxy.error(error);
                     });
         };
-
-        /* Click event for the Delete button
-        $scope.buttonDelete = function() {
-            AlertConfirmService.confirm('Are you sure you want to disable this user? They will no longer be able to log in.')
-                .result.then(function () {
-                    ApiRoutesGames.deleteVenue($scope.editing.id).then(
-                        function (result) {
-                            $uibModalInstance.close(result);
-                        }, function (error) {
-                            $scope.alertProxy.error(error);
-                        });
-                });
-        }; */
 
         /* Click event for the Cancel button */
         $scope.buttonCancel = function () {
@@ -157,10 +136,6 @@ angular.module('app.modal.trivia.editVenue', [])
         /* Click event for the Edit button*/
         $scope.buttonEdit = function () {
             $scope.setMode('edit');
-        };
-
-        /* Click event for the Add Team button */
-        $scope.buttonAddVenue = function () {
         };
 
         /* Click event for the Cancel button */

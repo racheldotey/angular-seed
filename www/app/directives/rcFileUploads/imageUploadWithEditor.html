@@ -15,8 +15,8 @@
             <input type="text" class="form-control" value="{{imageUpload.selectedFilesLabel}}" readonly>
         </div>
     </div>
-    
-    <div class="col-md-6" ng-if="imageUpload.file" style="margin: 2em 0;">
+     
+    <div class="col-md-6" ng-show="imageUpload.file" style="margin: 2em 0;">
         <label>{{labelCropArea}}</label>
         <div class="cropArea center-block">
             <img-crop 
@@ -29,10 +29,17 @@
         </div>
     </div>
 
-    <div class="col-md-6" ng-if="imageUpload.file" style="margin: 2em 0;">
+    <div class="col-md-6" ng-show="imageUpload.file" style="margin: 2em 0;">
         <label>{{labelCropPreview}}</label>
         <div class="preview-image center-block">
-            <img ng-src="{{imageUpload.imageDataUrl}}" class="img-responsive" />
+            <img data-ng-src="{{imageUpload.imageDataUrl}}" class="img-responsive" />
+        </div>
+    </div>
+
+    <div class="col-md-6" ng-show="savedImageDataUrl && !imageUpload.file" style="margin: 2em 0;">
+        <label>{{labelSavedImage}}</label>
+        <div class="preview-image center-block">
+            <img data-ng-src="{{savedImageDataUrl}}" class="img-responsive" />
         </div>
     </div>
 </div>

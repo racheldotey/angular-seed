@@ -29,6 +29,7 @@ angular.module('rc.FileUploads', ['ngFileUpload', 'ngImgCrop'])
         restrict: 'A',          // Must be a attribute on a html tag
         scope: {
             imageUpload: '=rcImageUploadWithEditor',    // $scope object REQUIRED
+            savedImageDataUrl: '=savedImageDataUrl',    // $scope object REQUIRED
             labelInput: '@',                            // string optional
             labelBrowseButton: '@',                     // string optional
             labelCropArea: '@',                         // string optional
@@ -37,20 +38,27 @@ angular.module('rc.FileUploads', ['ngFileUpload', 'ngImgCrop'])
         templateUrl: DIRECTIVES_URL + 'rcFileUploads/imageUploadWithEditor.html',
         link: function ($scope, element, attributes) {
             
+            // Setup object to hold uploaded image
+            $scope.imageUpload = (angular.isUndefined($scope.imageUpload)) ? {} : $scope.imageUpload;
+            
+            // Be careful not to override saved image
+            $scope.imageUpload.file = $scope.imageUpload.file || false;
+            $scope.imageUpload.photostream = $scope.imageUpload.photostream || false;
+            $scope.imageUpload.imageDataUrl = $scope.imageUpload.imageDataUrl || false;
+            
+            // Selected File Label
+            $scope.imageUpload.selectedFilesLabel = (angular.isUndefined($scope.savedImageDataUrl)) ? '' : 'Saved Image';
+            
             // Set custom or default label text
             $scope.labelInput = attributes.labelInput || 'Image Upload';
             $scope.labelBrowseButton = attributes.labelBrowseButton || 'Browse';
             $scope.labelCropArea = attributes.labelCropArea || 'Crop Your Image';
             $scope.labelCropPreview = attributes.labelCropPreview || 'Preview';
+            $scope.labelSavedImage = attributes.labelSavedImage || 'Saved Image';
             
-            // Be careful not to override saved image
-            $scope.imageUpload = $scope.imageUpload || {};
-            $scope.imageUpload.file = $scope.imageUpload.file || false;
-            $scope.imageUpload.photostream = $scope.imageUpload.photostream || false;
-            $scope.imageUpload.imageDataUrl = $scope.imageUpload.imageDataUrl || false;
-            $scope.imageUpload.selectedFilesLabel = $scope.imageUpload.selectedFilesLabel || '';
+            
         },
-        controller: ["$scope", 'DIRECTIVES_URL', function ($scope, DIRECTIVES_URL) {
+        controller: ["$scope", '$timeout', function ($scope, $timeout) {
             /* File Selection Callback
              * called when files are selected, dropped, or cleared */
             $scope.fileSelectionCallback = function($files, $file, $newFiles, $duplicateFiles, $invalidFiles, $event) {

@@ -159,12 +159,15 @@ class DatatablesData {
     }
 
     static function selectTriviaVenues() {
-        return DBConn::selectAll("SELECT v.id, v.name AS venue, v.city, v.state, v.website, v.facebook_url as facebook, v.logo, v.referral, v.created, 
-            CONCAT(u.name_first, ' ', u.name_last) AS createdBy,vs.trivia_day,vs.trivia_time
-            FROM " . DBConn::prefix() . "venues AS v
-            LEFT JOIN " . DBConn::prefix() . "users AS u ON u.id = v.created_user_id
-            LEFT JOIN " . DBConn::prefix() . "venues_trivia_schedules AS vs ON vs.venue_id = v.id
-            ORDER BY v.name;");
+        return DBConn::selectAll("SELECT v.id, v.name AS venue, v.address, v.address_b AS addressb, "
+                . "v.city, v.state, v.zip, v.phone, v.phone_extension AS phoneExtension, "
+                . "v.website, v.facebook_url as facebook, v.logo, v.referral AS referralCode, v.created, "
+                . "CONCAT(u.name_first, ' ', u.name_last) AS createdBy, u.email AS createdByEmail, "
+                . "vs.trivia_day AS triviaDay, vs.trivia_time AS triviaTime "
+                . "FROM " . DBConn::prefix() . "venues AS v "
+                . "LEFT JOIN " . DBConn::prefix() . "users AS u ON u.id = v.created_user_id "
+                . "LEFT JOIN " . DBConn::prefix() . "venues_trivia_schedules AS vs ON vs.venue_id = v.id "
+                . "ORDER BY v.name;");
     }
 
     // Games    

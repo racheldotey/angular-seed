@@ -124,12 +124,14 @@ angular.module('apiRoutes.games', [])
     };
     
     api.saveVenue = function(venue) {
-        if(!venue.id || 
-                !venue.venueName || 
-                !venue.address || 
-                !venue.city || 
-                !venue.state || 
-                !venue.zip) {
+        if(!angular.isNumber(parseInt(venue.id)) || 
+                !angular.isString(venue.venue) || 
+                !angular.isString(venue.address) || 
+                !angular.isString(venue.city) || 
+                !angular.isString(venue.state) || 
+                !angular.isNumber(parseInt(venue.zip)) || 
+                !angular.isString(venue.triviaDay) || 
+                !angular.isString(venue.triviaTime)) {
             return API.reject('Invalid venue please verify your information and try again.');
         }
         return API.post('venue/update/' + venue.id, venue, 'Could not save venue.');

@@ -1,35 +1,71 @@
 <div class="modal-header">
     <h3 ng-if="newMode" class="modal-title">New Trivia Joint</h3>
-    <h3 ng-if="!newMode && editMode" class="modal-title">Edit Trivia Joint #{{saved.id}}</h3>
-    <h3 ng-if="!newMode && !editMode" class="modal-title">Trivia Joint #{{saved.id}}</h3>
+    <h3 ng-if="!newMode && editMode" class="modal-title">Edit Trivia Joint #{{saved.id}} - {{saved.venue}}</h3>
+    <h3 ng-if="!newMode && !editMode" class="modal-title">Trivia Joint #{{saved.id}} - {{saved.venue}}</h3>
 </div>
 
 <div class="modal-body">
 
     <div data-rc-bootstrap-alerts="alertProxy"></div>
 
-
     <div ng-if="!editMode">
 
         <div class="row">
+            
+            <div class="col-xs-12">
+                
+                <img ng-src="{{saved.logo}}" class="img-responsive pull-right" style="max-height: 100px; max-width: 100px;" />
+                    
+                <div class="form-group">
+                    <label>Joint Name</label>
+                    <p class="form-control-static">{{saved.venue}}</p>
+                </div>
+            </div>
+            
+            <div class="col-xs-12 col-md-6">
+                <div class="form-group">
+                    <label>Address</label>
+                    <p class="form-control-static">{{saved.address}}</p>
+                    <p ng-show="saved.addressb" class="form-control-static">{{saved.addressb}}</p>
+                    <p class="form-control-static">{{saved.city}}, {{saved.state}} {{saved.zip}}</p>
+                </div>
+            </div>
+            
+            <div class="col-xs-12 col-md-6">
+                <div class="form-group">
+                    <label>Joint Phone</label>
+                    <p class="form-control-static">{{saved.phone}}<span ng-show="saved.phoneExtension"> Ext. {{saved.phoneExtension}}</span></p>
+                </div>
+            </div>
+            
             <div class="col-xs-12">
                 <div class="form-group">
-                    <label>Group Name</label>
-                    <p class="form-control-static">{{saved.group}}</p>
+                    <label>Joint Hours</label>
+                    <p class="form-control-static">{{saved.triviaDay}} at {{saved.triviaTime}}</p>
                 </div>
             </div>
-            <div class="col-xs-12">
-                <div class="form-group" title="Unique identifier to be embedded within the system.">
-                    <label>Unique Reference Identifier</label>
-                    <p class="form-control-static"><code>{{saved.identifier}}</code></p>
+            
+            <div class="col-xs-6">
+                <div class="form-group">
+                    <label>Joint Website</label>
+                    <p class="form-control-static"><a href="{{saved.website}}" target="_blank">{{saved.website}}</a></p>
+                </div>
+            </div>
+            
+            <div class="col-xs-6">
+                <div class="form-group">
+                    <label>Joint Facebook Page</label>
+                    <p class="form-control-static"><a href="{{saved.facebook}}" target="_blank">{{saved.facebook}}</a></p>
                 </div>
             </div>
             <div class="col-xs-12">
                 <div class="form-group">
-                    <label>Description</label>
-                    <div class="form-control-static">{{saved.desc | formatParagraphsAsHtml}}</div>
+                    <label>Joint Referral Code</label>
+                    <p class="form-control-static"><code ng-show="saved.referralCode">{{saved.referralCode}}</code></p>
                 </div>
             </div>
+            
+            
         </div>
 
         <div class="meta" ng-if="!newMode && (saved.created || saved.lastUpdated)">
@@ -46,7 +82,7 @@
 
         <div class="form-group row">
             <div class="col-xs-12">
-                <input ng-model="editing.venueName" type="text" class="form-control" name="venueName" placeholder="Joint Name" maxlength="255" required>
+                <input ng-model="editing.venue" type="text" class="form-control" name="venueName" placeholder="Joint Name" maxlength="255" required>
             </div>
         </div>
 
@@ -80,7 +116,7 @@
                 <input type="text" class="form-control" placeholder="Joint Phone" ng-model="editing.phone" ui-mask="(999) 999-9999" ui-mask-placeholder ui-mask-placeholder-char="_" ui-options="{clearOnBlur: false}" ng-model-options="{ updateOn: 'blur' }" ng-change="handlePhoneChangeEvent(editing.phone)" required />
             </div>
             <div class="col-xs-4">
-                <input type="text" class="form-control" placeholder="Ext" ng-model="editing.phone_extension" ui-mask="999" ui-mask-placeholder ui-mask-placeholder-char="_" required/>
+                <input type="text" class="form-control" placeholder="Ext" ng-model="editing.phoneExtension" ui-mask="999" ui-mask-placeholder ui-mask-placeholder-char="_" />
             </div>
         </div>
         <div ng-if="showPhoneValidation" class="form-group">
@@ -117,11 +153,12 @@
         </div>
 
         <div rc-image-upload-with-editor="venueLogo"
+             saved-image-data-url="savedImageDataUrl"
              data-label-input="Upload Venue Logo"
              data-label-browse-button="Select Logo"
              data-label-crop-area="Crop Your Logo"
              data-label-crop-preview="Logo Preview"></div>
-
+        
         <div data-rc-bootstrap-alerts="alertProxy"></div>
 
     </form>

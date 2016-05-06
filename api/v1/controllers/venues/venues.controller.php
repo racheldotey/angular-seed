@@ -124,83 +124,34 @@ class VenueController {
             return $app->render(400,  array('msg' => 'Could not add venue.'));
         }
     }
+    
     static function updateVenueData($app, $userId) {
-        $post=$app->request->post();
-        $isValid=true;
-        if(v::key('password', v::stringType())->validate($post) && 
-           v::key('passwordB', v::stringType())->validate($post) && $post['password']!='' && $post['passwordB']!='')
-        {
-            if(!AuthControllerNative::validatePasswordRequirements($post, 'password'))
-            {
-                $isValid=false;
-            }
-            else{
-                $data = array(
-                    ':id' => $userId,
-                    ':password' => password_hash($post['password'], PASSWORD_DEFAULT)
-                    );
-
-                $passwordChanged=AuthData::updateUserPassword($data);
-                if(!$passwordChanged) {
-                    $isValid=false;
-                }
-            }
-        }
-        if(
-           !v::key('venueName', v::stringType())->validate($post) || 
+        $post = $app->request->post();
+        
+        $dayNames = array('sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday');
+        
+        if(!v::key('venue', v::stringType())->validate($post) || 
            !v::key('address', v::stringType())->validate($post) || 
            !v::key('city', v::stringType())->validate($post) || 
            !v::key('state', v::stringType())->validate($post) || 
-           !v::key('zip', v::stringType())->validate($post))
-        {
-            return $app->render(400, array('msg' => 'Add venue failed. Check your parameters and try again.'));
-        }
-
-        $dayNames = array(
-            'sunday',
-            'monday', 
-            'tuesday', 
-            'wednesday', 
-            'thursday', 
-            'friday', 
-            'saturday', 
-            );
-
-
-
-        if($post['triviaDay'] != '')
-        {
-            $status = in_array(strtolower($post['triviaDay']), $dayNames);
-            if(!$status)
-            {
-                $isValid=false;
-            }
-        }
-
-        if($post['triviaTime']!='')
-        {
-            if(!preg_match('/^(1[0-2]|0?[1-9]):[0-5][0-9] (AM|PM)$/i',$post['triviaTime'])) 
-            {
-                $isValid=false;
-            }
-        }
-
-        if($post['phone']!='')
-        {
-            if (!preg_match( '/^[+]?([\d]{0,3})?[\(\.\-\s]?([\d]{3})[\)\.\-\s]*([\d]{3})[\.\-\s]?([\d]{4})$/', $post["phone"] ) ) 
-            { 
-                $isValid=false;             
-            }
-        }
-
-        if(!v::url()->validate($post["website"])) 
-        {
-            $isValid=false; 
-        }
-
-        if(!preg_match('/(?:https?:\/\/)?(?:www\.)?facebook\.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[\w\-]*\/)*([\w\-\.]*)/', $post["facebook"]))
-        {
-            $isValid=false; 
+           !v::key('zip', v::stringType())->validate($post)) {
+            return $app->render(400, array('msg' => 'Venue update failed. Check your parameters and try again.'));
+        } else if(!self::venueUpdatePassword($post, $userId)) {
+            return $app->render(400, array('msg' => 'Could not update users password. Check your parameters and try again.'));
+        } else if (!v::key('triviaDay', v::stringType())->validate($post) ||
+                !in_array(strtolower($post['triviaDay']), $dayNames)) {
+            return $app->render(400, array('msg' => 'Invalid day of the week provided. Check your parameters and try again.'));
+        } else if (!v::key('triviaTime', v::stringType())->validate($post) ||
+                !preg_match('/^(1[0-2]|0?[1-9]):[0-5][0-9] (AM|PM)$/i', $post['triviaTime'])) {
+            return $app->render(400, array('msg' => 'Invalid time provided. Check your parameters and try again.'));
+        } else if (v::key('phone', v::stringType())->validate($post) &&
+                !preg_match( '/^[+]?([\d]{0,3})?[\(\.\-\s]?([\d]{3})[\)\.\-\s]*([\d]{3})[\.\-\s]?([\d]{4})$/', $post["phone"])) {
+            return $app->render(400, array('msg' => 'Invalid venue phone provided. Check your parameters and try again.'));
+        } else if (v::key('website')->validate($post) && !v::url()->validate($post["website"])) {
+            return $app->render(400, array('msg' => 'Invalid venue website url provided. Check your parameters and try again.'));
+        } else if (v::key('facebook')->validate($post) && 
+                !preg_match('/(?:https?:\/\/)?(?:www\.)?facebook\.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[\w\-]*\/)*([\w\-\.]*)/', $post["facebook"])) {
+            return $app->render(400, array('msg' => 'Invalid facebook url provided. Check your parameters and try again.'));
         } 
 
 
@@ -236,7 +187,7 @@ class VenueController {
             $venue_reponse['venue']->id= $venue->id;
             AuthHooks::venue_signup($app, $venue_reponse,true);
             
-            if($post['triviaDay']!='' && $post['triviaTime']!=''){
+            if($post['triviaDay']!='' && $post['triviaTime']!='') {
 
                 $venueScheduleId = VenueData::manageVenueTriviaShcedule(array(
                     ':trivia_day' => $post['triviaDay'], 
@@ -259,66 +210,39 @@ class VenueController {
     }
 
     static function saveVenue($app, $venueId) {
+        
         $post = $app->request->post();
-
-        if(!v::intVal()->validate($venueId) ||
-           !v::key('venueName', v::stringType())->validate($post) || 
+        
+        $dayNames = array('sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday');
+        
+        if(!v::key('venue', v::stringType())->validate($post) || 
            !v::key('address', v::stringType())->validate($post) || 
            !v::key('city', v::stringType())->validate($post) || 
            !v::key('state', v::stringType())->validate($post) || 
-           !v::key('zip', v::stringType())->validate($post))
-        {
-            return $app->render(400, array('msg' => 'Add role failed. Check your parameters and try again.'));
-        }
-
-        $dayNames = array(
-            'sunday',
-            'monday', 
-            'tuesday', 
-            'wednesday', 
-            'thursday', 
-            'friday', 
-            'saturday', 
-            );
-
-        if($post['triviaDay'] != '')
-        {
-            $status = in_array(strtolower($post['triviaDay']), $dayNames);
-            if(!$status)
-            {
-                return $app->render(400, array('msg' => 'Day is not corect.'));
-            }
-        }
-
-        if($post['triviaTime']!='')
-        {
-            if(!preg_match('/^(1[0-2]|0?[1-9]):[0-5][0-9] (AM|PM)$/i',$post['triviaTime'])) 
-            {
-                return $app->render(400, array('msg' => 'Time is not corect.'));
-            }
-        }
-
-        if($post['phone']!='')
-        {
-            if (!preg_match( '/^[+]?([\d]{0,3})?[\(\.\-\s]?([\d]{3})[\)\.\-\s]*([\d]{3})[\.\-\s]?([\d]{4})$/', $post["phone"] ) ) 
-            { 
-                return $app->render(400, array('msg' => 'This is not valid US format number.'));             
-            }
-        }
-
-        if(!v::url()->validate($post["website"])) 
-        {
-            return $app->render(400, array('msg' => $post["website"].' is not valid URL.')); 
-        }
-
-        if(!preg_match('/(?:https?:\/\/)?(?:www\.)?facebook\.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[\w\-]*\/)*([\w\-\.]*)/', $post["facebook"]))
-        {
-            return $app->render(400, array('msg' => $post["facebook"].' is not valid facebook URL.')); 
-        }    
+           !v::key('zip', v::stringType())->validate($post)) {
+            return $app->render(400, array('msg' => 'Venue update failed. Check your parameters and try again.'));
+        } else if(v::key('userId', v::stringType())->validate($post) && !self::venueUpdatePassword($post, $post['userId'])) {
+            return $app->render(400, array('msg' => 'Could not update users password. Check your parameters and try again.'));
+        } else if (!v::key('triviaDay', v::stringType())->validate($post) ||
+                !in_array(strtolower($post['triviaDay']), $dayNames)) {
+            return $app->render(400, array('msg' => 'Invalid day of the week provided. Check your parameters and try again.'));
+        } else if (!v::key('triviaTime', v::stringType())->validate($post) ||
+                !preg_match('/^(1[0-2]|0?[1-9]):[0-5][0-9] (AM|PM)$/i', $post['triviaTime'])) {
+            return $app->render(400, array('msg' => 'Invalid time provided. Check your parameters and try again.'));
+        } else if (v::key('phone', v::stringType())->validate($post) &&
+                !preg_match( '/^[+]?([\d]{0,3})?[\(\.\-\s]?([\d]{3})[\)\.\-\s]*([\d]{3})[\.\-\s]?([\d]{4})$/', $post["phone"])) {
+            return $app->render(400, array('msg' => 'Invalid venue phone provided. Check your parameters and try again.'));
+        } else if (v::key('website')->validate($post) && !v::url()->validate($post["website"])) {
+            return $app->render(400, array('msg' => 'Invalid venue website url provided. Check your parameters and try again.'));
+        } else if (v::key('facebook')->validate($post) && 
+                !preg_match('/(?:https?:\/\/)?(?:www\.)?facebook\.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[\w\-]*\/)*([\w\-\.]*)/', $post["facebook"])) {
+            return $app->render(400, array('msg' => 'Invalid facebook url provided. Check your parameters and try again.'));
+        } 
+        
         // Add the verifed venue
-        $venue = VenueData::updateVenue(array(
+        $saved = VenueData::updateVenue(array(
             ':id' => $venueId,
-            ':name' => $post['venueName'], 
+            ':name' => $post['venue'], 
             ':address' => $post['address'], 
             ':address_b' => (v::key('addressb', v::stringType())->validate($post)) ? $post['addressb'] : '', 
             ':city' => $post['city'], 
@@ -329,26 +253,27 @@ class VenueController {
             ':website' => (v::key('website', v::stringType())->validate($post)) ? $post['website'] : '', 
             ':facebook_url' => (v::key('facebook', v::stringType())->validate($post)) ? $post['facebook'] : '', 
             ':logo' => (v::key('logo', v::stringType())->validate($post)) ? $post['logo'] : '', 
+            ':referral' => (v::key('referralCode', v::stringType())->validate($post)) ? $post['referralCode'] : '', 
             ":last_updated_by" => APIAuth::getUserId()
             ));
-        if($venue) {
-            $venue_reponse['venue']= (object) [];
-            $venue_reponse['venue']->id= $venueId;
-            AuthHooks::venue_signup($app, $venue_reponse,true);
-            
-            $venueScheduleId = VenueData::manageVenueTriviaShcedule(array(                              
-                ':trivia_day' => $post['triviaDay'], 
-                ':trivia_time' => $post['triviaTime'], 
-                ":created_user_id" => APIAuth::getUserId(),
-                ":last_updated_by" => APIAuth::getUserId(),
-                ':venue_id' => $venueId 
-                ),$venueId);
-
-
-            return $app->render(200, array('venue' => $venue));
-        } else {
+        
+        if(!$saved) {
             return $app->render(400,  array('msg' => 'Could not update venue.'));
         }
+        
+        $venue_reponse['venue']= (object) [];
+        $venue_reponse['venue']->id= $venueId;
+        AuthHooks::venue_signup($app, $venue_reponse,true);
+
+        $venueScheduleId = VenueData::manageVenueTriviaShcedule(array(                              
+            ':trivia_day' => $post['triviaDay'], 
+            ':trivia_time' => $post['triviaTime'], 
+            ":created_user_id" => APIAuth::getUserId(),
+            ":last_updated_by" => APIAuth::getUserId(),
+            ':venue_id' => $venueId 
+            ),$venueId);
+
+        return $app->render(200, array('msg' => "Venue '{$post['venue']}' was successfully saved.", 'venueScheduled' => $venueScheduleId));
     }
 
     static function deleteVenue($app, $venueId) {
@@ -357,5 +282,21 @@ class VenueController {
         } else {
             return $app->render(400,  array('msg' => 'Could not delete venue. Check your parameters and try again.'));
         }
+    }
+
+    private static function venueUpdatePassword($post, $userId) {
+        $success = true;
+
+        if(v::key('password', v::stringType())->validate($post) && 
+           v::key('passwordB', v::stringType())->validate($post) && $post['password']!='' && $post['passwordB']!='') {
+            if(!AuthControllerNative::validatePasswordRequirements($post, 'password')) {
+                $success = false;
+            } else {
+                $data = array(':id' => $userId, ':password' => password_hash($post['password'], PASSWORD_DEFAULT));
+                $success = AuthData::updateUserPassword($data);
+            }
+        }
+
+        return $success;
     }
 }
