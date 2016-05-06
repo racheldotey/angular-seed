@@ -130,7 +130,7 @@ angular.module('app.member.dashboard', [])
                     $scope.currentPlayer.teams[0].gameId &&
                     parseInt($scope.currentPlayer.teams[0].gameId) > 0) {
                 AlertConfirmService.confirm("Your team is already checked into a game. Would you like to view the game scoreboard?", "Team Already Checked In")
-                    .result.then(function () {
+                    .result.then(function (result) {
                         $state.go('app.member.scoreboard', { gameId: $scope.currentPlayer.teams[0].gameId, roundId: 1 });
                     }, function (declined) {});
             } else {
@@ -147,6 +147,18 @@ angular.module('app.member.dashboard', [])
                 .result.then(function () {
                     var modalInstance = TriviaModalService.openEditTeam(false, $scope.currentPlayer.id);
                     modalInstance.result.then(function (result) {
+                        if(result.team.name) {
+                            $scope.alertProxy.success("Team " + result.team.name + " added.");
+                        }
+                        if(result.invites) {
+                            for(var i = 0; i < result.invites.length; i++) {
+                                if(result.invites[i].error === false) {
+                                    $scope.alertProxy.error(result.invites[i].msg);
+                                } else {
+                                    $scope.alertProxy.success(result.invites[i].msg);
+                                }
+                            }
+                        }
                         
                         AuthService.reloadUser().then(function (result) {
                             $scope.currentPlayer = result;
@@ -155,11 +167,14 @@ angular.module('app.member.dashboard', [])
                             console.log("Couldnt reload user");
                         });
                     
-                    }, function () {});
+                    }, function (error) {
+                        $scope.alertProxy.error(error);
+                    });
                 }, function (declined) {});
             } else {
                 var modalInstance = TriviaModalService.openEditTeam(false, $scope.currentPlayer.id);
                 modalInstance.result.then(function (result) {
+                    $scope.alertProxy.success(result);
                         
                     AuthService.reloadUser().then(function (result) {
                         $scope.currentPlayer = result;
@@ -168,7 +183,9 @@ angular.module('app.member.dashboard', [])
                         console.log("Couldnt reload user");
                     });
                         
-                }, function () {});
+                }, function (error) {
+                    $scope.alertProxy.error(error);
+                });
             }
         };
         
@@ -182,6 +199,7 @@ angular.module('app.member.dashboard', [])
                     .result.then(function () {
 
                         ApiRoutesEmails.acceptTeamInvite(token, $scope.currentPlayer.id, teamId).then(function (result) {
+                            $scope.alertProxy.success(result.msg);
 
                             AuthService.reloadUser().then(function (result) {
                                 $scope.currentPlayer = result;
@@ -190,12 +208,15 @@ angular.module('app.member.dashboard', [])
                                 console.log("Couldnt reload user");
                             });
 
-                        }, function () {});
+                        }, function (error) {
+                            $scope.alertProxy.error(error.msg);
+                        });
 
                     }, function (declined) {});
                 }, function (declined) {});
             } else {
                 ApiRoutesEmails.acceptTeamInvite(token, $scope.currentPlayer.id, teamId).then(function (result) {
+                    $scope.alertProxy.success(result.msg);
 
                     AuthService.reloadUser().then(function (result) {
                         $scope.currentPlayer = result;
@@ -204,12 +225,15 @@ angular.module('app.member.dashboard', [])
                         console.log("Couldnt reload user");
                     });
 
-                }, function () {});
+                }, function (error) {
+                    $scope.alertProxy.error(error.msg);
+                });
             }
         };
         
         $scope.buttonDeclineInvitation = function(token, teamName, teamId) {
             ApiRoutesEmails.declineTeamInvite(token, $scope.currentPlayer.id, teamId).then(function (result) {
+                $scope.alertProxy.success(result.msg);
                         
                 AuthService.reloadUser().then(function (result) {
                     $scope.currentPlayer = result;
@@ -218,7 +242,9 @@ angular.module('app.member.dashboard', [])
                     console.log("Couldnt reload user");
                 });
                         
-            }, function () {});
+            }, function (error) {
+                $scope.alertProxy.error(error.msg);
+            });
         };
 
     }]);

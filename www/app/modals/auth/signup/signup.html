@@ -3,18 +3,6 @@
 </div>
 
 <div class="modal-body">
-    
-    <form name="form.terms" role="form" novalidate>
-
-        <div data-rc-bootstrap-alerts="facebookAlerts"></div>
-
-        <div class="checkbox text-center">
-            <label>
-                <input type="checkbox" ng-model="newUser.acceptTerms" ng-true-value="true" ng-false-value="false" required> Agree to our <a href="http://www.triviajoint.com/terms-and-conditions/" target="_blank">terms of service</a>
-            </label>
-        </div>
-
-    </form>
 
     <form name="form.signup" role="form" novalidate>
         <div class="row">
@@ -24,11 +12,11 @@
             </div>
 
             <div class="form-group col-xs-6">
-                <input ng-model="newUser.nameFirst" type="text" class="form-control" name="nameFirst" placeholder="Player First Name" maxlength="255">
+                <input ng-model="newUser.nameFirst" type="text" class="form-control" name="nameFirst" placeholder="Player First Name (optional)" maxlength="255">
             </div>
 
             <div class="form-group col-xs-6">
-                <input ng-model="newUser.nameLast" type="text" class="form-control" name="nameLast" placeholder="Player Last Name" maxlength="255">
+                <input ng-model="newUser.nameLast" type="text" class="form-control" name="nameLast" placeholder="Player Last Name (optional)" maxlength="255">
             </div>
 
             <div class="form-group col-xs-12 col-sm-6">
@@ -36,7 +24,7 @@
             </div>
 
             <div class="form-group col-xs-12 col-sm-6">
-                <input ng-model="newUser.phone" type="text" class="form-control" name="phone" placeholder="Player Phone" maxlength="20">
+                <input ng-model="newUser.phone" type="text" class="form-control" name="phone" placeholder="Player Phone (optional)" maxlength="20">
             </div>
 
             <div ng-if="showPasswordRules" class="form-group">

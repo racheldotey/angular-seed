@@ -37,18 +37,6 @@ angular.module('app.modal.signup', [])
             } else if($scope.newUser.password !== $scope.newUser.passwordB) {
                 $scope.form.signup.$setDirty();
                 $scope.signupAlerts.error('Passwords do not match.');
-            } else if(!$scope.newUser.acceptTerms) {
-                AlertConfirmService.confirm('Do you agree to our <a href="http://www.triviajoint.com/terms-and-conditions/" target="_blank">Terms of Service</a>?', 'Terms of Service Agreement').result.then(function (resp) {
-                    $scope.newUser.acceptTerms = true;
-                    AuthService.signup($scope.newUser, true).then(function (results) {
-                        $log.debug(results);
-                        $uibModalInstance.close("Signup successful!");
-                    }, function (error) {
-                        $scope.signupAlerts.error(error);
-                    });
-                }, function (err) {
-                    $scope.facebookAlerts.error('Please accept the Terms of Service to signup.');
-                });
             } else {
                 AuthService.signup($scope.newUser, true).then(function (results) {
                     $log.debug(results);
@@ -60,30 +48,14 @@ angular.module('app.modal.signup', [])
         };
 
         $scope.facebookSignup = function() {
-            if(!$scope.newUser.acceptTerms) {
-                AlertConfirmService.confirm('Do you agree to our <a href="http://www.triviajoint.com/terms-and-conditions/" target="_blank">Terms of Service</a>?', 'Terms of Service Agreement').result.then(function (resp) {
-                    $scope.newUser.acceptTerms = true;
-                    AuthService.facebookSignup().then(function (resp) {
-                        $log.debug(resp);
-                        $scope.newUser = resp;
-                        
-                        $uibModalInstance.close("Facebook signup Successful!");
-                    }, function (err) {
-                        $scope.facebookAlerts.error(err);
-                    });
-                }, function (err) {
-                    $scope.facebookAlerts.error('Please accept the Terms of Service to signup.');
-                });
-            } else {
-                AuthService.facebookSignup().then(function (resp) {
-                    $log.debug(resp);
-                    $scope.newUser = resp;
+            AuthService.facebookSignup().then(function (resp) {
+                $log.debug(resp);
+                $scope.newUser = resp;
 
-                    $uibModalInstance.close("Facebook signup Successful!");
-                }, function (err) {
-                    $scope.facebookAlerts.error(err);
-                });
-            }
+                $uibModalInstance.close("Facebook signup Successful!");
+            }, function (err) {
+                $scope.facebookAlerts.error(err);
+            });
         };
         
         var passwordValidator = /^(?=.*\d)(?=.*[A-Za-z])[A-Za-z0-9_!@#$%^&*+=-]{8,55}$/;
