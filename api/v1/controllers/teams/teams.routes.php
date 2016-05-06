@@ -7,7 +7,8 @@ class TeamRoutes {
         
         //* /team/ routes - registered users only
         
-        $app->group('/team', $authenticateForRole('registered-user'), function () use ($app) {
+        
+        $app->group('/team', $authenticateForRole('public'), function () use ($app) {
             
             /*
              * id
@@ -31,10 +32,10 @@ class TeamRoutes {
             });
 
             /*
-             * id, name
+             * userId, teamId
              */
-            $app->post("/member/add/", function () use ($app) {
-                TeamController::addTeamMember($app);
+            $app->post("/add-member/:teamId/", function ($teamId) use ($app) {
+                TeamController::addTeamMember($app, $teamId);
             });
 
             /*

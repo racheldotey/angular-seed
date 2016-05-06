@@ -189,6 +189,54 @@ angular.module('app.member.dashboard', [])
             }
         };
         
+        $scope.buttonJoinTeam = function() {
+            if($scope.currentPlayer.teams.length > 0) {
+                AlertConfirmService.confirm('Warning, if you join a new team you will be removed from your current team, "' + $scope.currentPlayer.teams[0].name + '". Would you like to contine?', 'Warning, Leaving Team!')
+                .result.then(function () {
+                    var modalInstance = TriviaModalService.openJoinTeam($scope.currentPlayer.id, $scope.currentPlayer.teams[0]);
+                    modalInstance.result.then(function (result) {
+                        if(result.team.name) {
+                            $scope.alertProxy.success("You have successfully joined Team #" + result.team.id + " - '" + result.team.name + "'.");
+                        }
+                        if(result.invites) {
+                            for(var i = 0; i < result.invites.length; i++) {
+                                if(result.invites[i].error === false) {
+                                    $scope.alertProxy.error(result.invites[i].msg);
+                                } else {
+                                    $scope.alertProxy.success(result.invites[i].msg);
+                                }
+                            }
+                        }
+                        
+                        AuthService.reloadUser().then(function (result) {
+                            $scope.currentPlayer = result;
+                            $scope.updateGreeting();
+                        }, function () {
+                            console.log("Couldnt reload user");
+                        });
+                    
+                    }, function (error) {
+                        $scope.alertProxy.error(error);
+                    });
+                }, function (declined) {});
+            } else {
+                    var modalInstance = TriviaModalService.openJoinTeam($scope.currentPlayer.id, $scope.currentPlayer.teams[0]);
+                modalInstance.result.then(function (result) {
+                    $scope.alertProxy.success(result);
+                        
+                    AuthService.reloadUser().then(function (result) {
+                        $scope.currentPlayer = result;
+                        $scope.updateGreeting();
+                    }, function () {
+                        console.log("Couldnt reload user");
+                    });
+                        
+                }, function (error) {
+                    $scope.alertProxy.error(error);
+                });
+            }
+        };
+        
         /* Team Invite Managment */
         
         $scope.buttonAcceptInvitation = function(token, teamName, teamId) {

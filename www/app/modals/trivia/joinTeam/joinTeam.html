@@ -1,0 +1,39 @@
+<div class="modal-header">
+    <h3 class="modal-title">Join Team</h3>
+</div>
+
+<div class="modal-body">
+    
+    <div data-rc-bootstrap-alerts="alertProxy"></div>
+    
+    <p>Select a team to join.</p>
+    <p ng-show="currentTeam" class="text-danger">Warning, you can only be a member of one team. If you join a team you will be removed from Team #{{currentTeam.id}} - '{{currentTeam.name}}'</p>
+    
+    <form name="form.joinTeam" role="form" class="form-horizontal" novalidate>
+        
+        <div ng-show="currentTeam" class="form-group">
+            <label class="col-xs-5 col-sm-4 col-md-3 control-label">Current Team #{{currentTeam.id}}</label>
+            <div class="col-xs-7 col-sm-8 col-md-9">
+                <p class="form-control-static">{{currentTeam.name}}</p>
+            </div>
+        </div>
+        
+        <div ng-show="!teamsList.length" class="form-group">
+            <label class="col-xs-5 col-sm-4 col-md-3 control-label">Teams</label>
+            <div class="col-xs-7 col-sm-8 col-md-9">
+                <label class="control-label">No teams to join.</label>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="col-xs-5 col-sm-4 col-md-3 control-label">Teams</label>
+            <div class="col-xs-7 col-sm-8 col-md-9" rc-trivia-select-list-team="joinTeam" teams-list-data="teamsList"></div>
+        </div>
+    </form>
+
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-default pull-left" ng-click="buttonCancel()">Cancel</button>
+    <button class="btn btn-primary" ng-click="buttonJoinTeam()">Join Team</button>
+</div>

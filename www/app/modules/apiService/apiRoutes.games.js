@@ -91,6 +91,15 @@ angular.module('apiRoutes.games', [])
         return API.post('trivia/checkin-team/' + gameId, { 'teamId' : teamId }, 'Could not check team into game.');
     };
 
+
+    /* Add team member by ID */
+    api.addTeamMemberById = function(userId, teamId) {
+        if(angular.isUndefined(userId) || angular.isUndefined(teamId)) {
+            return API.reject('Invalid team or userId please check your parameters and try again.');
+        }
+        return API.post('team/add-member/' + teamId, { 'userId' : userId }, 'Could not check team into game.');
+    };
+    
     /* Start game */
     api.startGame = function(gameId) {
         return API.get('trivia/start/' + gameId, 'Could not start game.');

@@ -120,27 +120,27 @@ class TeamController {
         
     }
     
-    static function addTeamMember($app) {
-        if(!v::key('teamId', v::intVal())->validate($app->request->post()) || 
+    static function addTeamMember($app, $teamId) {
+        if(!v::intVal()->validate($teamId) || 
            !v::key('userId', v::intVal())->validate($app->request->post())) {
             return $app->render(400, array('msg' => 'Add team member failed. Check your parameters and try again.'));
         }
         
         if(TeamData::isUserATeamMember(array(
-            ':team_id' => $app->request->post('teamId'), 
+            ':team_id' => $teamId, 
             ':user_id' => $app->request->post('userId')
         ))) {
             return $app->render(400, array('msg' => 'User is already a member of this team'));
         }
         
         $saved = TeamData::addTeamMember(array(
-            ':team_id' => $app->request->post('teamId'), 
+            ':team_id' => $teamId, 
             ':user_id' => $app->request->post('userId'),
             ":added_by" => APIAuth::getUserId()
         ));
         
         if($saved) {
-            $team = TeamData::getTeam($app->request->post('teamId'));
+            $team = TeamData::getTeam($teamId);
             return $app->render(200, array('msg' => 'Team member successfully added.', 'team' => $team));
         } else {
             return $app->render(400,  array('msg' => 'Could not add team member.'));

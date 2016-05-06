@@ -15,7 +15,8 @@ angular.module('TriviaModalService', [
     'app.modal.trivia.editRound',
     'app.modal.trivia.editTeam',
     'app.modal.trivia.editVenue',
-    'app.modal.trivia.invitePlayer'
+    'app.modal.trivia.invitePlayer',
+    'app.modal.trivia.joinTeam'
 ])
 .factory('TriviaModalService', ['$uibModal', function($uibModal) {
         
@@ -89,6 +90,30 @@ angular.module('TriviaModalService', [
                 },
                 gamesList: function(ApiRoutesSimpleLists) {
                     return ApiRoutesSimpleLists.simpleActiveGamesList();
+                }
+            }
+        });
+    };
+    
+    /*
+     * Open Join Trivia Team Modal
+     * 
+     * @return uibModalInstance
+     */
+    api.openJoinTeam = function(userId, currentTeam) {
+        return api.openModal({
+            templateUrl: templatePath + 'joinTeam/joinTeam.html',
+            controller: 'TriviaJoinTeamModalCtrl',
+            resolve: {
+                ApiRoutesSimpleLists: 'ApiRoutesSimpleLists',
+                userId: function() {
+                    return userId;
+                },
+                currentTeam: function() {
+                    return currentTeam || false;
+                },
+                teamsList: function(ApiRoutesSimpleLists) {
+                    return ApiRoutesSimpleLists.simpleTeamsList();
                 }
             }
         });
