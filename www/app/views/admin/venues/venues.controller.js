@@ -18,7 +18,6 @@ angular.module('app.admin.venues', [])
                         var modalInstance = TriviaModalService.openEditVenue(found[0]);
                         modalInstance.result.then(function (selectedItem) {
                             $scope.dtVenues.reloadData();
-                        }, function () {});
                     }
                 };
 
@@ -87,7 +86,8 @@ angular.module('app.admin.venues', [])
                     DTColumnBuilder.newColumn('facebook').withTitle('Facebook').renderWith(function (data, type, full, meta) {
                         return (data.length <= 0) ? '' : '<a href="' + data + '" target="_blank">Facebook</a>';
                     }),
-                    DTColumnBuilder.newColumn('hours').withTitle('Hours'),
+                    DTColumnBuilder.newColumn('trivia_day').withTitle('Day'),
+                    DTColumnBuilder.newColumn('trivia_time').withTitle('Hours'),
                     DTColumnBuilder.newColumn('referral').withTitle('Referral Code').renderWith(function (data, type, full, meta) {
                         return '<code>' + data + '</code>';
                     }),
@@ -107,7 +107,7 @@ angular.module('app.admin.venues', [])
                 };
 
                 $scope.buttonOpenNewTeamModal = function () {
-                    var modalInstance = TriviaModalService.openEditTeam();
+                    var modalInstance = TriviaModalService.openEditTeam(false);
                     modalInstance.result.then(function (result) { });
                 };
 
