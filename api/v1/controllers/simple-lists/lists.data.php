@@ -5,7 +5,7 @@ class ListsData {
     
     static function selectUsers() {
         return DBConn::selectAll("SELECT u.id, CONCAT(u.name_last, ', ', u.name_first, '   (ID: ', u.id, ')') AS label "
-                . "FROM " . DBConn::prefix() . "users AS u ORDER BY u.name_last;");
+                . "FROM " . DBConn::prefix() . "users AS u WHERE u.disabled IS NULL ORDER BY u.name_last;");
     }
     
     static function selectGroups() {
@@ -22,12 +22,10 @@ class ListsData {
         return DBConn::selectAll("SELECT f.id, CONCAT('(', f.type, ') ', f.identifier) AS label "
                 . "FROM " . DBConn::prefix() . "auth_fields AS f ORDER BY label;");
     }
-    
-    
-    
+        
     static function selectVenues() {
         return DBConn::selectAll("SELECT `id`, `name`, CONCAT(`state`, ', ', `city`, ' - ', `name`) AS label "
-                . "FROM " . DBConn::prefix() . "venues ORDER BY label;");
+                . "FROM " . DBConn::prefix() . "venues WHERE disabled IS NULL ORDER BY label;");
     }
     
     static function selectTeams() {

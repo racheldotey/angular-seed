@@ -147,8 +147,16 @@
         </div>
 
         <div class="form-group row">
-            <div class="col-xs-12">
+            <div class="col-xs-6">
                 <input ng-model="editing.referralCode" type="text" class="form-control" name="referralCode" placeholder="Referral Code" maxlength="255">
+            </div>
+            
+            <div class="col-xs-6">
+                <div class="form-group">
+                    <label for="disabled">Disable Joint</label> {{editing.disabled}}<br/>
+                    <label class="radio-inline"><input type="radio" name="disabled" ng-click="buttonChangeDisabled()" ng-model="editing.disabled" value="false"> Enable Joint</label>
+                    <label class="radio-inline"><input type="radio" name="disabled" ng-click="buttonChangeDisabled()" ng-model="editing.disabled" value="true"> Disable Joint</label>
+                </div>
             </div>
         </div>
 
@@ -158,6 +166,11 @@
              data-label-browse-button="Select Logo"
              data-label-crop-area="Crop Your Logo"
              data-label-crop-preview="Logo Preview"></div>
+        
+        <div class="meta" ng-if="saved.disabled === 'true'">
+            <hr/>
+            <p class="text-danger">Current Saved Joint State: <strong>Disabled</strong>.</p>
+        </div>
         
         <div data-rc-bootstrap-alerts="alertProxy"></div>
 

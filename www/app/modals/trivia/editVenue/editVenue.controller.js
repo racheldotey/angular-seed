@@ -72,6 +72,7 @@ angular.module('app.modal.trivia.editVenue', [])
         $scope.savedImageDataUrl = $scope.saved.logo;
 
         $scope.saved.triviaTimeDate = new Date();
+        $scope.saved.disabled = (angular.isUndefined(editing.disabled) || editing.disabled === null || !editing.disabled) ? 'false' : 'true';
 
         /* Item to display and edit */
         $scope.editing = angular.copy($scope.saved);
@@ -148,5 +149,27 @@ angular.module('app.modal.trivia.editVenue', [])
             if ($phone === undefined || $phone.length < 10) {
                 $scope.showPhoneValidation = true;
             }
-        }
+        };
+
+        $scope.buttonChangeDisabled = function() {
+            // Changing the disable flage to a new value
+            if($scope.saved.disabled !== $scope.editing.disabled) {
+                if($scope.editing.disabled === 'true') {
+                    AlertConfirmService.confirm('Are you sure you want to disable this joint? Games will no longer be hosted at the joint. (Note - Change takes effect only after saving the joint.)')
+                        .result.then(function () { }, function (error) {
+                            $scope.editing.disabled = 'false';
+                        });
+                } else {
+                    AlertConfirmService.confirm('Are you sure you want to enable this joint? Games will now be able to be held at this joint. (Note - Change takes effect only after saving the joint.)')
+                        .result.then(function () {  }, function (error) {
+                            $scope.editing.disabled = 'true';
+                        });
+                }
+            } else {
+                var userState = ($scope.editing.disabled === 'true') ? "The joint is already disabled and will remain disabled after save. Games cannot be hosted at this joint." :
+                        "The joint is already enabled and will remain enabled after save. Games can be hosted at this joint.";
+                var alertTitle = ($scope.editing.disabled === 'true') ? "Joint is Disabled." : "Joint is Enabled.";
+                AlertConfirmService.alert(userState, alertTitle);
+            }
+        };
     }]);

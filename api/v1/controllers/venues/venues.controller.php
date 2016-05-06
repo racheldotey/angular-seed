@@ -261,6 +261,14 @@ class VenueController {
             return $app->render(400,  array('msg' => 'Could not update joint. Please try again later.'));
         }
         
+        if((v::key('disabled', v::stringType()->length(1,5))->validate($post)) && 
+                ($post['disabled'] === true || $post['disabled'] === 'true')) {
+            VenueData::disableVenue($venueId);
+        } else if((v::key('disabled', v::stringType()->length(1,5))->validate($post)) && 
+                ($post['disabled'] === false || $post['disabled'] === 'false')) {
+            VenueData::enableVenue($venueId);
+        }
+        
         $venue_reponse['venue']= (object) [];
         $venue_reponse['venue']->id= $venueId;
         AuthHooks::venue_signup($app, $venue_reponse,true);

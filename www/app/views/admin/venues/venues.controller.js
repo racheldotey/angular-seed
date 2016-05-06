@@ -79,6 +79,11 @@ angular.module('app.admin.venues', [])
                  return '<a><small>(' + data.games.length +')</small> <i class="fa"></i></a>';
                  }).notSortable(),*/
                     DTColumnBuilder.newColumn('id').withTitle('ID'),
+                    DTColumnBuilder.newColumn(null).withTitle('').withClass('text-center').renderWith(function(data, type, full, meta) {
+                        return (data.disabled === null) ?
+                                '<span title="This Trivia Joint is enabled." class="label label-success" style="font-size: 12px; padding: 5px 8px;"><i class="fa fa-lg fa-check-circle-o"></i></span>' :
+                                '<span title="This Trivia Joint has been disabled and cannot host games." class="label label-danger" style="font-size: 12px; padding: 5px 8px;"><i class="fa fa-lg fa-exclamation-circle"></i></span>';
+                    }).notSortable(),
                     DTColumnBuilder.newColumn('logo').withTitle('Logo').renderWith(function (data, type, full, meta) {
                         return '<img ng-src="' + data + '" class="img-responsive" style="max-height: 25px; max-width: 25px;" />';
                     }),
@@ -97,7 +102,9 @@ angular.module('app.admin.venues', [])
                     DTColumnBuilder.newColumn('referralCode').withTitle('Referral Code').renderWith(function (data, type, full, meta) {
                         return (data && data !== null) ? '<code>' + data + '</code>' : '';
                     }),
-                    DTColumnBuilder.newColumn('createdBy').withTitle('Created By'),
+                    DTColumnBuilder.newColumn(null).withTitle('Created By').renderWith(function (data, type, full, meta) {
+                        return (data && data.createdBy !== null) ?'<a href="mailto:' + data.createdByEmail + '">' + data.createdBy + '</a>' : '';
+                    }),
                     DTColumnBuilder.newColumn('created').withTitle('Created').renderWith(function (data, type, full, meta) {
                         return moment(data, 'YYYY-MM-DD HH:mm:ss').format('M/D/YYYY h:mm a');
                     }),

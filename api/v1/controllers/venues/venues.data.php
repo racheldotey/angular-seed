@@ -78,21 +78,27 @@ class VenueData {
             . " last_updated_by=:last_updated_by"
             . " WHERE venue_id=:venue_id;", $validVenueSchedule);
     }
-    public static function manageVenueTriviaShcedule($post_array,$venue_id = 0) 
-    {
+    
+    public static function manageVenueTriviaShcedule($post_array,$venue_id = 0) {
         $exist_venue_check = self::getVenueTriviaSchedule($venue_id);
        
-        if(!empty($exist_venue_check))
-        {
+        if(!empty($exist_venue_check)) {
             return self::updateVenueTriviaSchedules($post_array);
-               
-        }
-        else{
+        } else{
             return self::insertVenueTriviaSchedules($post_array);
         }
     }
     
     public static function deleteVenue($id) {
         return false;//DBConn::delete("DELETE FROM " . DBConn::prefix() . "venues WHERE id = :id LIMIT 1;", array('id' => $id));
+    }
+    
+    
+    static function disableVenue($venueId) {
+        return DBConn::update("UPDATE " . DBConn::prefix() . "venues SET disabled=NOW() WHERE id = :id AND disabled IS NULL;", array(':id' => $venueId));
+    }
+    
+    static function enableVenue($venueId) {
+        return DBConn::update("UPDATE " . DBConn::prefix() . "venues SET disabled=NULL WHERE id = :id AND disabled IS NOT NULL;", array(':id' => $venueId));
     }
 }
