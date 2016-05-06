@@ -146,12 +146,12 @@ app.factory('ElementVisibilityKeyService',
                         }
 
                         // If we are in edit mode then initialize the element
-                        ApiRoutesSystemVisibility.initVisibilityElement(fieldIdentifier).then(function (response) {
-                            authElementKey.push(response.data);
+                        ApiRoutesSystemVisibility.initVisibilityElement({ 'fieldIdentifier' : fieldIdentifier }).then(function (response) {
+                            authElementKey.push(response.field);
                             if (inEditMode()) {
-                                return $log.debug('Initialized ', response.data);
+                                return $log.debug('Initialized ', response.field);
                             }
-                            resolve(response.data);
+                            resolve(response.field);
                         }, function (error) {
                             return reject("Error initializing element.");
                         });

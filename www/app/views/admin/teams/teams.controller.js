@@ -10,6 +10,8 @@ angular.module('app.admin.teams', [])
     .controller('AdminTeamsCtrl', ['$scope', '$compile', '$filter', 'DTOptionsBuilder', 'DTColumnBuilder', 'DataTableHelper', 'TriviaModalService', 
         function($scope, $compile, $filter, DTOptionsBuilder, DTColumnBuilder, DataTableHelper, TriviaModalService) {
 
+        $scope.alertProxy = {};
+
         /* Modal triggers */
         // Edit User Modal
         $scope.buttonOpenEditTeamModal = function (id) {

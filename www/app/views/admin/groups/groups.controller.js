@@ -10,6 +10,8 @@ angular.module('app.admin.groups', [])
     .controller('AdminGroupsCtrl', ['$scope', '$compile', '$filter', 'DataTableHelper', 'DTColumnBuilder', 'ModalService',
         function($scope, $compile, $filter, DataTableHelper, DTColumnBuilder, ModalService) {
 
+            $scope.alertProxy = {};
+
     
             /* Modal triggers */
             // Edit Group Modal

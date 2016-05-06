@@ -10,6 +10,8 @@ angular.module('app.admin.roles', [])
     .controller('AdminRolesCtrl', ['$scope', '$compile', '$filter', 'DataTableHelper', 'DTColumnBuilder', 'ModalService',
         function($scope, $compile, $filter, DataTableHelper, DTColumnBuilder, ModalService) {
 
+        $scope.alertProxy = {};
+
         /* Modal triggers */
             // Edit Role Modal
             $scope.buttonOpenEditRoleModal = function (id) {

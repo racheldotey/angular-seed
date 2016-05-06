@@ -10,6 +10,8 @@ angular.module('app.admin.systemVariables', [])
     .controller('AdminSystemVariablesCtrl', ['$scope', '$filter', 'DataTableHelper', 'DTColumnBuilder', 'ModalService',
         function($scope, $filter, DataTableHelper, DTColumnBuilder, ModalService) {
 
+        $scope.alertProxy = {};
+
             /* Modal triggers */
             $scope.buttonOpenNewVariableModal = function () {
                 var modalInstance = ModalService.openSystemVariable();

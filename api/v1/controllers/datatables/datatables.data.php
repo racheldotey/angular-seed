@@ -34,8 +34,8 @@ class DatatablesData {
                         . "CONCAT(u1.name_first, ' ', u1.name_last) AS createdBy, "
                         . "CONCAT(u2.name_first, ' ', u2.name_last) AS updatedBy "
                         . "FROM " . DBConn::prefix() . "auth_groups AS g "
-                        . "JOIN " . DBConn::prefix() . "users AS u1 ON u1.id = g.created_user_id "
-                        . "JOIN " . DBConn::prefix() . "users AS u2 ON u2.id = g.last_updated_by ORDER BY g.group;");
+                        . "LEFT JOIN " . DBConn::prefix() . "users AS u1 ON u1.id = g.created_user_id "
+                        . "LEFT JOIN " . DBConn::prefix() . "users AS u2 ON u2.id = g.last_updated_by ORDER BY g.group;");
 
         $qRoles = DBConn::preparedQuery("SELECT r.id, r.role, r.desc "
                         . "FROM " . DBConn::prefix() . "auth_roles AS r "
