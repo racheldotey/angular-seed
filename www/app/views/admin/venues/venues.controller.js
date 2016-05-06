@@ -10,13 +10,16 @@ angular.module('app.admin.venues', [])
         .controller('AdminVenuesCtrl', ['$scope', '$compile', '$filter', 'DTOptionsBuilder', 'DTColumnBuilder', 'DataTableHelper', 'TriviaModalService',
             function ($scope, $compile, $filter, DTOptionsBuilder, DTColumnBuilder, DataTableHelper, TriviaModalService) {
 
+                $scope.alertProxy = {};
+        
                 /* Modal triggers */
                 // Edit User Modal
                 $scope.buttonOpenEditVenueModal = function (id) {
                     var found = $filter('filter')($scope.dtVenues.instance.DataTable.data(), {id: id}, true);
                     if (angular.isDefined(found[0])) {
                         var modalInstance = TriviaModalService.openEditVenue(found[0]);
-                        modalInstance.result.then(function (selectedItem) {
+                        modalInstance.result.then(function (result) {
+                            $scope.alertProxy.success(result);
                             $scope.dtVenues.reloadData();
                         });
                     }
@@ -106,17 +109,22 @@ angular.module('app.admin.venues', [])
 
                 $scope.buttonOpenNewGameModal = function () {
                     var modalInstance = TriviaModalService.openEditGame(false);
-                    modalInstance.result.then(function (result) { });
+                    modalInstance.result.then(function (result) { 
+                        $scope.alertProxy.success(result);
+                    });
                 };
 
                 $scope.buttonOpenNewTeamModal = function () {
                     var modalInstance = TriviaModalService.openEditTeam(false);
-                    modalInstance.result.then(function (result) { });
+                    modalInstance.result.then(function (result) { 
+                        $scope.alertProxy.success(result);
+                    });
                 };
 
                 $scope.buttonOpenNewVenueModal = function () {
                     var modalInstance = TriviaModalService.openEditVenue(false);
                     modalInstance.result.then(function (result) {
+                        $scope.alertProxy.success(result);
                         $scope.dtVenues.reloadData();
                     });
                 };

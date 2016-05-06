@@ -229,12 +229,12 @@ class VenueController {
         } else if (!v::key('triviaTime', v::stringType())->validate($post) ||
                 !preg_match('/^(1[0-2]|0?[1-9]):[0-5][0-9] (AM|PM)$/i', $post['triviaTime'])) {
             return $app->render(400, array('msg' => 'Invalid time provided. Check your parameters and try again.'));
-        } else if (v::key('phone', v::stringType())->validate($post) &&
+        } else if (v::key('phone', v::stringType()->length(10,20))->validate($post) &&
                 !preg_match( '/^[+]?([\d]{0,3})?[\(\.\-\s]?([\d]{3})[\)\.\-\s]*([\d]{3})[\.\-\s]?([\d]{4})$/', $post["phone"])) {
             return $app->render(400, array('msg' => 'Invalid joint phone provided. Check your parameters and try again.'));
-        } else if (v::key('website')->validate($post) && !v::url()->validate($post["website"])) {
+        } else if (v::key('website', v::stringType()->length(5,255))->validate($post) && !v::url()->validate($post["website"])) {
             return $app->render(400, array('msg' => 'Invalid joint website url provided. Check your parameters and try again.'));
-        } else if (v::key('facebook')->validate($post) && 
+        } else if (v::key('facebook', v::stringType()->length(5,255))->validate($post) && 
                 !preg_match('/(?:https?:\/\/)?(?:www\.)?facebook\.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[\w\-]*\/)*([\w\-\.]*)/', $post["facebook"])) {
             return $app->render(400, array('msg' => 'Invalid facebook url provided. Check your parameters and try again.'));
         } 

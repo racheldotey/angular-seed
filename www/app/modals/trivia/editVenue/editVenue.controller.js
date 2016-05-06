@@ -92,7 +92,7 @@ angular.module('app.modal.trivia.editVenue', [])
                 $scope.editing.triviaTime = $filter('date')($scope.editing.triviaTimeDate, 'h:mm a');
                 ApiRoutesGames.addVenue($scope.editing).then(
                     function (result) {
-                        $scope.editMode = false;
+                        $uibModalInstance.close(result.msg);
                     }, function (error) {
                         $scope.alertProxy.error(error);
                     });
@@ -111,7 +111,7 @@ angular.module('app.modal.trivia.editVenue', [])
 
             ApiRoutesGames.saveVenue($scope.editing).then(
                     function (result) {
-                        $uibModalInstance.close(result);
+                        $uibModalInstance.close(result.msg);
                     }, function (error) {
                         $scope.alertProxy.error(error);
                     });
