@@ -64,7 +64,7 @@ class AuthData {
     
     static function selectUserAndPasswordByEmail($email) {
         $user = DBConn::selectOne("SELECT id, name_first as nameFirst, name_last as nameLast, email, phone, password "
-                        . "FROM " . DBConn::prefix() . "users WHERE email = :email AND disabled = IS NULL LIMIT 1;", array(':email' => $email));
+                        . "FROM " . DBConn::prefix() . "users WHERE email = :email AND disabled IS NULL LIMIT 1;", array(':email' => $email));
         if ($user) {
             $user = self::selectUserData($user);
         }

@@ -26,5 +26,6 @@ angular.module('theApp', [
     'app.run',
     'app.run.dev',
     'app.filters',
-    'app.services'
+    'app.services',
+    'ui.mask'
 ]);

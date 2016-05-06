@@ -45,7 +45,7 @@
                         <p class="form-control-static">{{user.address}} </p>
                     </div>
                 </div>
-                  <div class="form-group">
+                <div class="form-group">
                     <label for="address" class="col-sm-3 control-label">Address 2</label>
                     <div class="col-sm-9">
                         <p class="form-control-static">{{user.addressb}} </p>
@@ -72,7 +72,7 @@
                 <div class="form-group">
                     <label for="phone" class="col-sm-3 control-label">Phone</label>
                     <div class="col-sm-9">
-                        <p class="form-control-static">{{user.phone}}   </p>
+                        <p class="form-control-static">{{user.phone}}  Ext. {{user.phone_extension}}   </p>
                     </div>
                 </div>
                 <div class="form-group">
@@ -90,7 +90,7 @@
                 <div class="form-group">
                     <label for="hours" class="col-sm-3 control-label">Trivia Days & Hours</label>
                     <div class="col-sm-9">
-                        <p class="form-control-static">{{user.hours}}   </p>
+                        <p class="form-control-static">{{user.triviaDay}} {{user.triviaTime}} </p>
                     </div>
                 </div>
                 <div class="form-group">
@@ -147,13 +147,13 @@
             <div class="col-xs-6">
                 <input ng-model="editingUser.password"
                        ng-blur="onChangeValidatePassword()"
-                       type="password" class="form-control" name="password" placeholder="Contact Password" maxlength="100" >
+                       type="password" class="form-control" name="password" placeholder="Contact Password" maxlength="100">
             </div>
 
             <div class="col-xs-6">
                 <input ng-model="editingUser.passwordB"
                        ng-change="onChangeValidateConfirmPassword()"
-                       type="password" class="form-control" name="passwordB" placeholder="Confirm Contact Password" maxlength="100" >
+                       type="password" class="form-control" name="passwordB" placeholder="Confirm Contact Password" maxlength="100">
             </div>
         </div>
         <div class="form-group row">
@@ -180,26 +180,40 @@
             </div>
         </div>
         <div class="form-group row">
+            <div class="col-xs-8">
+                <input type="text" class="form-control" placeholder="Joint Phone" ng-model="editingUser.phone" ui-mask="(999) 999-9999" ui-mask-placeholder ui-mask-placeholder-char="_"  ui-options="{clearOnBlur: false}" ng-model-options="{ updateOn: 'blur' }" ng-change="handlePhoneChangeEvent(editingUser.phone)" required />
+            </div>
+            <div class="col-xs-4">
+                <input type="text" class="form-control" placeholder="Ext" ng-model="editingUser.phone_extension" ui-mask="999" ui-mask-placeholder ui-mask-placeholder-char="_" />
+            </div>
+        </div>
+        <div ng-if="showPhoneValidation" class="form-group">
             <div class="col-xs-12">
-                <input ng-model="editingUser.phone" type="text" class="form-control" name="phone" placeholder="Joint Phone" maxlength="16" required>
+                <div class="alert alert-warning" role="alert">
+                    <p>Phone Number is Invalid.</p>
+                </div>
             </div>
         </div>
         <div class="form-group row">
             <div class="col-xs-12">
-                <input ng-model="editingUser.website" type="text" class="form-control" name="website" placeholder="Joint Website (http://...)" maxlength="255">
+                <input ng-model="editingUser.website" class="form-control" name="website" placeholder="Joint Website (http://...)" maxlength="255" type="url" url-input>
             </div>
         </div>
         <div class="form-group row">
             <div class="col-xs-12">
-                <input ng-model="editingUser.facebook" type="text" class="form-control" name="facebook" placeholder="Joint Facebook Page (http://...)" maxlength="255">
+                <input ng-model="editingUser.facebook" class="form-control" name="facebook" placeholder="Joint Facebook Page (http://...)" maxlength="255" type="url" url-input>
             </div>
         </div>
         <div class="form-group row">
-            <div class="col-xs-12">
-                <input ng-model="editingUser.hours" type="text" class="form-control" name="hours" placeholder="Trivia Days & Hours" maxlength="255">
+            <div class="col-xs-6" style="padding-top:24px;">
+                <select rc-drop-down-days ng-model="editingUser.triviaDay" class="form-control" required>
+                    <option value="">Trivia Day</option>
+                </select>
+            </div>
+            <div class="col-xs-6">
+                <uib-timepicker ng-model="editingUser.triviaTimeDate" hour-step="1" minute-step="15" show-meridian="true"></uib-timepicker>
             </div>
         </div>
-
         <div class="form-group row">
             <div class="col-xs-12">
                 <input ng-model="editingUser.referralCode" type="text" class="form-control" name="referralCode" placeholder="Referral Code" maxlength="255">

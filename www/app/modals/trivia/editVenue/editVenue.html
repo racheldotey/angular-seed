@@ -5,12 +5,12 @@
 </div>
 
 <div class="modal-body">
-    
+
     <div data-rc-bootstrap-alerts="alertProxy"></div>
-    
-    
+
+
     <div ng-if="!editMode">
-        
+
         <div class="row">
             <div class="col-xs-12">
                 <div class="form-group">
@@ -39,9 +39,9 @@
         </div>
 
     </div>
-    
+
     <form ng-if="editMode" name="form.modalForm" role="form" novalidate>
-    
+
         <div data-rc-bootstrap-alerts="alertProxy"></div>
 
         <div class="form-group row">
@@ -57,7 +57,7 @@
             <div class="col-xs-6">
                 <input ng-model="editing.addressb" type="text" class="form-control" name="addressb" placeholder="Joint Address Con't" maxlength="255">
             </div>
-            </div>
+        </div>
 
         <div class="form-group row">
             <div class="col-xs-6">
@@ -76,11 +76,28 @@
         </div>
 
         <div class="form-group row">
-            <div class="col-xs-6">
-                <input ng-model="editing.phone" type="text" class="form-control" name="phone" placeholder="Joint Phone" maxlength="16" required>
+            <div class="col-xs-8">
+                <input type="text" class="form-control" placeholder="Joint Phone" ng-model="editing.phone" ui-mask="(999) 999-9999" ui-mask-placeholder ui-mask-placeholder-char="_" ui-options="{clearOnBlur: false}" ng-model-options="{ updateOn: 'blur' }" ng-change="handlePhoneChangeEvent(editing.phone)" required />
+            </div>
+            <div class="col-xs-4">
+                <input type="text" class="form-control" placeholder="Ext" ng-model="editing.phone_extension" ui-mask="999" ui-mask-placeholder ui-mask-placeholder-char="_" required/>
+            </div>
+        </div>
+        <div ng-if="showPhoneValidation" class="form-group">
+            <div class="col-xs-12">
+                <div class="alert alert-warning" role="alert">
+                    <p>Phone Number is Invalid.</p>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-xs-6" style="padding-top:24px;">
+                <select rc-drop-down-days ng-model="editing.triviaDay" class="form-control" required>
+                    <option value="">Trivia Day</option>
+                </select>
             </div>
             <div class="col-xs-6">
-                <input ng-model="editing.hours" type="text" class="form-control" name="hours" placeholder="Trivia Days & Hours" maxlength="255">
+                <uib-timepicker ng-model="editing.triviaTimeDate" hour-step="1" minute-step="15" show-meridian="true"></uib-timepicker>
             </div>
         </div>
 
@@ -98,12 +115,12 @@
                 <input ng-model="editing.referralCode" type="text" class="form-control" name="referralCode" placeholder="Referral Code" maxlength="255">
             </div>
         </div>
-        
+
         <div rc-image-upload-with-editor="venueLogo"
-            data-label-input="Upload Venue Logo"
-            data-label-browse-button="Select Logo"
-            data-label-crop-area="Crop Your Logo"
-            data-label-crop-preview="Logo Preview"></div>
+             data-label-input="Upload Venue Logo"
+             data-label-browse-button="Select Logo"
+             data-label-crop-area="Crop Your Logo"
+             data-label-crop-preview="Logo Preview"></div>
 
         <div data-rc-bootstrap-alerts="alertProxy"></div>
 

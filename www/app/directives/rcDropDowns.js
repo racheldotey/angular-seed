@@ -98,4 +98,27 @@ angular.module('rc.DropDowns', [])
             }
         }]
     };
-});
+})
+.directive('rcDropDownDays', function () {
+    return {
+        require: 'select',
+        transclude: true,
+        template: '<option ng-repeat="(key, value) in dayList" value="{{key}}">{{key}}</option>',
+        link: function ($scope, element, attributes, ctrl, transclude) {
+            transclude(function (clone) {
+                element.prepend(clone);
+            });
+        },
+        controller: ["$scope", function ($scope) {
+            $scope.dayList = {
+                "Sunday": "Sunday",
+                "Monday": "Monday",
+                "Tuesday": "Tuesday",
+                "Wednesday": "Wednesday",
+                "Thursday": "Thursday",
+                "Friday": "Friday",
+                "Saturday": "Saturday"
+            };
+        }]
+    };
+})

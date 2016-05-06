@@ -1,4 +1,4 @@
-  <form name="form.terms" role="form" novalidate>
+<form name="form.terms" role="form" novalidate>
 
     <div data-rc-bootstrap-alerts="venueAlerts"></div>
 
@@ -7,19 +7,19 @@
             <input type="checkbox" ng-model="newUser.acceptTerms" ng-true-value="true" ng-false-value="false" required> Agree to our <a href="http://www.triviajoint.com/joint-terms-and-conditions/" target="_blank">terms of service</a>
         </label>
     </div>
-    
+
 </form>
 
 <form name="form.venue" role="form" novalidate>
-    
+
     <div data-rc-bootstrap-alerts="signupAlerts"></div>
 
     <div class="form-group row">
         <div class="col-xs-12">
             <input ng-model="newUser.venueName" type="text" class="form-control" name="venueName" placeholder="Joint Name" maxlength="255" required>
         </div>
-	</div>
-	
+    </div>
+
     <div class="form-group row">
         <div class="col-xs-6">
             <input ng-model="newUser.nameFirst" type="text" class="form-control" name="nameFirst" placeholder="Contact First Name" maxlength="255" required>
@@ -52,38 +52,38 @@
 
         <div class="col-xs-6">
             <input ng-model="newUser.password"
-                   ng-blur="onChangeValidatePassword()" 
+                   ng-blur="onChangeValidatePassword()"
                    type="password" class="form-control" name="password" placeholder="Contact Password" maxlength="55" required>
         </div>
 
         <div class="col-xs-6">
             <input ng-model="newUser.passwordB"
-                   ng-change="onChangeValidateConfirmPassword()" 
+                   ng-change="onChangeValidateConfirmPassword()"
                    type="password" class="form-control" name="passwordB" placeholder="Confirm Contact Password" maxlength="55" required>
         </div>
-        
+
     </div>
 
     <div ng-if="showPasswordMissmatch" class="form-group">
-        <div  class="col-xs-12">
+        <div class="col-xs-12">
             <div class="alert alert-warning" role="alert">
                 <p>Passwords must match</p>
             </div>
         </div>
     </div>
-    
+
     <div class="form-group row">
         <div class="col-xs-12">
             <input ng-model="newUser.address" type="text" class="form-control" name="address" placeholder="Joint Address" maxlength="255" required>
         </div>
-	</div>
+    </div>
 
     <div class="form-group row">
         <div class="col-xs-12">
             <input ng-model="newUser.addressb" type="text" class="form-control" name="addressb" placeholder="Joint Address Con't" maxlength="255">
         </div>
-	</div>
-	
+    </div>
+
     <div class="form-group row">
         <div class="col-xs-6">
             <input ng-model="newUser.city" type="text" class="form-control" name="city" placeholder="Joint City" maxlength="255" required>
@@ -99,44 +99,60 @@
             <input ng-model="newUser.zip" type="text" class="form-control" name="zip" placeholder="Zip" maxlength="255" required>
         </div>
     </div>
-	
+
+    <div class="form-group row">
+        <div class="col-xs-8">
+            <input type="text" class="form-control" placeholder="Joint Phone" ng-model="newUser.phone" ui-mask="(999) 999-9999" ui-mask-placeholder ui-mask-placeholder-char="_" ui-options="{clearOnBlur: false}" ng-model-options="{ updateOn: 'blur' }" ng-change="handlePhoneChangeEvent(newUser.phone)" required />
+        </div>
+        <div class="col-xs-4">
+            <input type="text" class="form-control" placeholder="Ext" ng-model="newUser.phone_extension" ui-mask="999" ui-mask-placeholder ui-mask-placeholder-char="_" />
+        </div>
+    </div>
+
+    <div ng-if="showPhoneValidation" class="form-group">
+        <div class="col-xs-12">
+            <div class="alert alert-warning" role="alert">
+                <p>Phone Number is Invalid.</p>
+            </div>
+        </div>
+    </div>
+
     <div class="form-group row">
         <div class="col-xs-12">
-            <input ng-model="newUser.phone" type="text" class="form-control" name="phone" placeholder="Joint Phone" maxlength="16" required>
+            <input ng-model="newUser.website" class="form-control" name="website" placeholder="Joint Website (http://...)" maxlength="255" type="url" url-input>
         </div>
-	</div>
-	
+    </div>
+
     <div class="form-group row">
         <div class="col-xs-12">
-            <input ng-model="newUser.website" type="text" class="form-control" name="website" placeholder="Joint Website (http://...)" maxlength="255">
+            <input ng-model="newUser.facebook" class="form-control" name="facebook" placeholder="Joint Facebook Page (http://...)" maxlength="255" type="url" url-input>
         </div>
-	</div>
-	
+    </div>
+
     <div class="form-group row">
-        <div class="col-xs-12">
-            <input ng-model="newUser.facebook" type="text" class="form-control" name="facebook" placeholder="Joint Facebook Page (http://...)" maxlength="255">
+        <div class="col-xs-6" style="padding-top:24px;">
+            <select rc-drop-down-days ng-model="newUser.triviaDay" class="form-control" required>
+                <option value="">Trivia Day</option>
+            </select>
         </div>
-	</div>
-	
-    <div class="form-group row">
-        <div class="col-xs-12">
-            <input ng-model="newUser.hours" type="text" class="form-control" name="hours" placeholder="Trivia Days & Hours" maxlength="255">
+        <div class="col-xs-6">
+            <uib-timepicker ng-model="newUser.triviaTimeDate" hour-step="1" minute-step="15" show-meridian="true"></uib-timepicker>
         </div>
-	</div>
+    </div>
 
     <div class="form-group row">
         <div class="col-xs-12">
             <input ng-model="newUser.referralCode" type="text" class="form-control" name="referralCode" placeholder="Referral Code" maxlength="255">
         </div>
     </div>
-    
+
     <div rc-image-upload-with-editor="venueLogo"
-            data-label-input="Upload Venue Logo"
-            data-label-browse-button="Select Logo"
-            data-label-crop-area="Crop Your Logo"
-            data-label-crop-preview="Logo Preview"></div>
-    
-    <div data-rc-bootstrap-alerts="signupAlerts"></div>
+         data-label-input="Upload Venue Logo"
+         data-label-browse-button="Select Logo"
+         data-label-crop-area="Crop Your Logo"
+         data-label-crop-preview="Logo Preview"></div>
+
+    <div data-rc-bootstrap-alerts="venueAlerts"></div>
 
     <div class="form-group row">
         <div class="form-group col-xs-12">
@@ -146,4 +162,4 @@
 
 </form>
 
-<hr/>
+<hr />

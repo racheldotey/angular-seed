@@ -22,7 +22,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
         $stateProvider.state('app.venue', {
             url: '/venue',
             abstract: true,
-            data: {authorizedRoles: USER_ROLES.venue},
+            data: {authorizedRoles: USER_ROLES.user},
             views: {
                 'header@app.venue': {
                     templateUrl: 'app/views/venue/venueHeader/venueHeader.html',

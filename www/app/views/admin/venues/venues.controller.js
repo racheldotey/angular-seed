@@ -18,6 +18,7 @@ angular.module('app.admin.venues', [])
                         var modalInstance = TriviaModalService.openEditVenue(found[0]);
                         modalInstance.result.then(function (selectedItem) {
                             $scope.dtVenues.reloadData();
+                        });
                     }
                 };
 
