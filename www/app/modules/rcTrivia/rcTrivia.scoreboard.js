@@ -157,7 +157,7 @@ angular.module('rcTrivia.scoreboard', ['rcTrivia.game'])
             return $q(function (resolve, reject) {
                 var loadedGame = api.getGame();
                 if(loadedGame && angular.isDefined(loadedGame.teams[teamId])) {
-                    resolve(api.getGame());
+                    reject("The team is already checked into the game.");
                 } else if(loadedGame) {
                     ApiRoutesGames.addTeamToGame(loadedGame.id, teamId).then(
                         function (result) {
