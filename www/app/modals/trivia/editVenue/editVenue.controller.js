@@ -80,7 +80,7 @@ angular.module('app.modal.trivia.editVenue', [])
         $scope.buttonNew = function () {
             if (!$scope.form.modalForm.$valid) {
                 $scope.form.modalForm.$setDirty();
-                $scope.alertProxy.error('Please fill in all fields for trivia joint.');
+                $scope.alertProxy.error('Please fill in all fields for the trivia joint.');
             }
             else {
                 if ($scope.venueLogo.file && $scope.venueLogo.imageDataUrl.indexOf('data:image') > -1) {

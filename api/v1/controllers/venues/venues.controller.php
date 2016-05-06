@@ -220,7 +220,7 @@ class VenueController {
            !v::key('city', v::stringType())->validate($post) || 
            !v::key('state', v::stringType())->validate($post) || 
            !v::key('zip', v::stringType())->validate($post)) {
-            return $app->render(400, array('msg' => 'Venue update failed. Check your parameters and try again.'));
+            return $app->render(400, array('msg' => 'Invalid joint parameters. Check your imput and try again.'));
         } else if(v::key('userId', v::stringType())->validate($post) && !self::venueUpdatePassword($post, $post['userId'])) {
             return $app->render(400, array('msg' => 'Could not update users password. Check your parameters and try again.'));
         } else if (!v::key('triviaDay', v::stringType())->validate($post) ||
@@ -231,9 +231,9 @@ class VenueController {
             return $app->render(400, array('msg' => 'Invalid time provided. Check your parameters and try again.'));
         } else if (v::key('phone', v::stringType())->validate($post) &&
                 !preg_match( '/^[+]?([\d]{0,3})?[\(\.\-\s]?([\d]{3})[\)\.\-\s]*([\d]{3})[\.\-\s]?([\d]{4})$/', $post["phone"])) {
-            return $app->render(400, array('msg' => 'Invalid venue phone provided. Check your parameters and try again.'));
+            return $app->render(400, array('msg' => 'Invalid joint phone provided. Check your parameters and try again.'));
         } else if (v::key('website')->validate($post) && !v::url()->validate($post["website"])) {
-            return $app->render(400, array('msg' => 'Invalid venue website url provided. Check your parameters and try again.'));
+            return $app->render(400, array('msg' => 'Invalid joint website url provided. Check your parameters and try again.'));
         } else if (v::key('facebook')->validate($post) && 
                 !preg_match('/(?:https?:\/\/)?(?:www\.)?facebook\.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[\w\-]*\/)*([\w\-\.]*)/', $post["facebook"])) {
             return $app->render(400, array('msg' => 'Invalid facebook url provided. Check your parameters and try again.'));
@@ -249,7 +249,7 @@ class VenueController {
             ':state' => $post['state'], 
             ':zip' => $post['zip'], 
             ':phone' => (v::key('phone', v::stringType())->validate($post)) ? $post['phone'] : '', 
-            ':phone_extension' => (v::key('phone_extension', v::stringType())->validate($post)) ? $post['phone_extension'] : '', 
+            ':phone_extension' => (v::key('phoneExtension', v::stringType())->validate($post)) ? $post['phoneExtension'] : '', 
             ':website' => (v::key('website', v::stringType())->validate($post)) ? $post['website'] : '', 
             ':facebook_url' => (v::key('facebook', v::stringType())->validate($post)) ? $post['facebook'] : '', 
             ':logo' => (v::key('logo', v::stringType())->validate($post)) ? $post['logo'] : '', 
@@ -258,7 +258,7 @@ class VenueController {
             ));
         
         if(!$saved) {
-            return $app->render(400,  array('msg' => 'Could not update venue.'));
+            return $app->render(400,  array('msg' => 'Could not update joint. Please try again later.'));
         }
         
         $venue_reponse['venue']= (object) [];
