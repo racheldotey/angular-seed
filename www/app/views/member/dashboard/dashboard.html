@@ -9,7 +9,7 @@
                 <li role="menuitem"><a ng-click="buttonInviteSiteSignup()">Invite Friend to Signup</a></li>
                 <li role="menuitem" ng-show="currentPlayer.teams.length"><a ng-click="buttonInviteToTeam()">Invite Friend to Team</a></li>
                 <li role="menuitem" ng-show="currentPlayer.teams.length"><a ng-click="buttonCheckinTeam()">Checkin Your Team</a></li>
-                <li role="menuitem" ng-hide="currentPlayer.teams.length"><a ng-click="buttonCreateTeam()">Create Team</a></li>
+                <li role="menuitem"><a ng-click="buttonCreateTeam()">Create Team</a></li>
             </ul>
         </div>
     </div>
@@ -18,7 +18,7 @@
         <button ng-click="buttonInviteSiteSignup()" class="btn btn-primary">Invite Friend to Signup</button> 
         <button ng-show="currentPlayer.teams.length" ng-click="buttonInviteToTeam()" class="btn btn-primary">Invite Friend to Team</button>
         <button ng-show="currentPlayer.teams.length" ng-click="buttonCheckinTeam()" class="btn btn-primary">Checkin Your Team</button>
-        <button ng-hide="currentPlayer.teams.length" ng-click="buttonCreateTeam()" class="btn btn-primary">Create Team</button>
+        <button ng-click="buttonCreateTeam()" class="btn btn-primary">Create Team</button>
     </div>   
     
     <div class="page-header">
@@ -26,9 +26,11 @@
     </div>
     
     <div data-rc-bootstrap-alerts="alertProxy"></div>
-    <p bind-html-compile="playerGreeting"></p>
     
-    <hr/>
+    <div ng-show="playerGreeting">
+        <p bind-html-compile="playerGreeting"></p>
+        <hr/>
+    </div>
     
     <div class="alert alert-warning" role="alert" ng-repeat="invite in currentPlayer.notices.teamInvites">
         

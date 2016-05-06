@@ -78,19 +78,13 @@ class TeamController {
     }
     
     private static function addPlayerById($teamId, $teamName, $id) {
-        if($id === APIAuth::getUserId()) {
-            $saved = TeamData::addTeamMember(array(
-                ':team_id' => $teamId, 
-                ':user_id' => $id,
-                ":added_by" => APIAuth::getUserId()
-            ));
-            return ($saved) ? array('error' => false, 'msg' => 'Team member added') : 
-                        array('error' => true, 'msg' => 'Could not add team member');
-        } else {
-            $found = TeamData::selectUserById($id);
-            return ($found) ? self::sendTeamInvite($teamId, $teamName, $found->email, $id, $found->displayName) : 
-                array('error' => true, 'msg' => "User could not be found.");
-        }
+        $saved = TeamData::addTeamMember(array(
+            ':team_id' => $teamId, 
+            ':user_id' => $id,
+            ":added_by" => APIAuth::getUserId()
+        ));
+        return ($saved) ? array('error' => false, 'msg' => "Team member added to '{$teamName}'.") : 
+                    array('error' => true, 'msg' => "Could not add user to team '{$teamName}'.");
     }
     
     private static function sendTeamInvite($teamId, $teamName, $playerEmail, $playerId = NULL, $playerName = '') {

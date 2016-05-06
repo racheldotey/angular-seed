@@ -42,7 +42,8 @@ angular.module('app.member.dashboard', [])
         $scope.dtScoreboard = {};
         $scope.dtScoreboard.options = DTOptionsBuilder.newOptions();
         // DataTable Setup
-        $scope.dtGames = DataTableHelper.getDTStructure($scope, 'publicGamesList');
+        var teamId = (angular.isDefined($scope.currentPlayer.teams[0])) ? $scope.currentPlayer.teams[0].id : '0';
+        $scope.dtGames = DataTableHelper.getDTStructure($scope, 'publicTeamGamesList', teamId);
         $scope.dtGames.columns = [
             DTColumnBuilder.newColumn(null).withTitle('Scoreboard').withClass('responsive-control text-center noclick').renderWith(function(data, type, full, meta) {
                 return '<a><small>Scoreboard</small> <i class="fa"></i></a>';
