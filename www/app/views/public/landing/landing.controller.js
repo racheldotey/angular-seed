@@ -21,7 +21,7 @@ angular.module('app.public.landing', [])
                 return '<a><small>Scoreboard</small> <i class="fa"></i></a>';
             }).notSortable(),
             DTColumnBuilder.newColumn(null).withTitle('Game Name').renderWith(function (data, type, full, meta) {
-                return '<a data-ui-sref="app.public.game({gameId : ' + data.id + ', pageId : 1 })">' + data.name + '</a>';
+                return (type !== 'display') ? data.name : '<a data-ui-sref="app.public.game({gameId : ' + data.id + ', pageId : 1 })">' + data.name + '</a>';
             }),
             DTColumnBuilder.newColumn('venue').withTitle('Joint'),
             DTColumnBuilder.newColumn('host').withTitle('Host'),
@@ -31,16 +31,16 @@ angular.module('app.public.landing', [])
                 var ended = moment(data.ended, 'YYYY-MM-DD HH:mm:ss').format('h:mm a on M/D/YYYY ');
                     
                 if(data.ended) {
-                    return '<span title="Scheduled: ' + scheduled + ' Started: ' + started +  ' Ended: ' + ended +  '">Ended at  ' + ended + '</span>';
+                    return (type !== 'display') ? ended : '<span title="Scheduled: ' + scheduled + ' Started: ' + started +  ' Ended: ' + ended +  '">Ended at  ' + ended + '</span>';
                 } else if(data.started) {
-                    return '<span title="Scheduled: ' + scheduled + ' Started: ' + started +  '">In progress, started at  ' + started + '</span>';
+                    return (type !== 'display') ? started : '<span title="Scheduled: ' + scheduled + ' Started: ' + started +  '">In progress, started at  ' + started + '</span>';
                 } else {
-                    return '<span title="Scheduled: ' + scheduled + '">Scheduled for  ' + scheduled + '</span>';
+                    return (type !== 'display') ? scheduled : '<span title="Scheduled: ' + scheduled + '">Scheduled for  ' + scheduled + '</span>';
                 }
             }),
             DTColumnBuilder.newColumn('scoreboard').withTitle('Scoreboard').notSortable().withClass('none')
         ];
-        $scope.dtGames.options.withOption('responsive', {
+        $scope.dtGames.options.withOption('order', [4, 'desc']).withOption('responsive', {
             details: {
                 type: 'column',
                 renderer: function(api, rowIdx, columns) {

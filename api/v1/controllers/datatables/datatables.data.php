@@ -127,7 +127,7 @@ class DatatablesData {
                         . "CONCAT(u.name_first, ' ', u.name_last) AS host, v.name AS venue "
                         . "FROM " . DBConn::prefix() . "games AS g LEFT JOIN " . DBConn::prefix() . "users AS u ON u.id = g.host_user_id "
                         . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = g.venue_id "
-                        . "WHERE g.game_started IS NOT NULL AND g.game_ended IS NULL;");
+                        . "WHERE g.game_started >= NOW() - INTERVAL 1 WEEK;");
         return self::selectGameScoreboard($qGames);
     }
 
