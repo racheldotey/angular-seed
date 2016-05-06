@@ -61,34 +61,48 @@ class AuthController {
     /* email, nameFirst, nameLast, password */
 
     static function venueSignup($app) {
-        $result = AuthControllerNative::signup($app);
-        if (!$result['registered']) {
-            return $app->render(400, $result);
+        $isValidVenue = self::addVenue($app, 0, true);
+        $venue = false;
+        if ($isValidVenue) {
+            $result = AuthControllerNative::signup($app);
+            if (!$result['registered']) {
+                return $app->render(400, $result);
+            }
+            $venue = self::addVenue($app, $result['user']->id);
         }
-        $venue = self::addVenue($app, $result['user']->id);
         if (!$venue) {
             return $app->render(400, "Could not add venue. Check your parameters and try again.");
         }
+        $venue_reponse['venue'] = (object) [];
+        $venue_reponse['venue']->id = $venue;
+        AuthHooks::venue_signup($app, $venue_reponse);
         self::addVenueGroupToUser($result['user']->id);
         self::addVenueRole($result['user']->id, $venue, 'owner');
         return $app->render(200, $result);
     }
 
     static function venueFacebookSignup($app) {
-        $result = AuthControllerFacebook::signup($app);
-        if (!$result['registered']) {
-            return $app->render(400, $result);
+        $isValidVenue = self::addVenue($app, 0, true);
+        $venue = false;
+        if ($isValidVenue) {
+            $result = AuthControllerFacebook::signup($app);
+            if (!$result['registered']) {
+                return $app->render(400, $result);
+            }
+            $venue = self::addVenue($app, $result['user']->id);
         }
-        $venue = self::addVenue($app, $result['user']->id);
         if (!$venue) {
             return $app->render(400, "Could not add venue. Check your parameters and try again.");
         }
+        $venue_reponse['venue'] = (object) [];
+        $venue_reponse['venue']->id = $venue;
+        AuthHooks::venue_signup($app, $venue_reponse);
         self::addVenueGroupToUser($result['user']->id);
         self::addVenueRole($result['user']->id, $venue, 'owner');
         return $app->render(200, $result);
     }
 
-    static function addVenue($app, $userId) {
+    static function addVenue($app, $userId, $onlyValidation = false) {
         $post = $app->request->post();
 
         if (!v::key('venueName', v::stringType())->validate($post) ||
@@ -99,23 +113,79 @@ class AuthController {
             return false;
         }
 
-        $venue = array(
-            ':name' => $post['venueName'],
-            ':address' => $post['address'],
-            ':address_b' => (v::key('addressb', v::stringType())->validate($post)) ? $post['addressb'] : '',
-            ':city' => $post['city'],
-            ':state' => $post['state'],
-            ':zip' => $post['zip'],
-            ':phone' => (v::key('phone', v::stringType())->validate($post)) ? $post['phone'] : '',
-            ':website' => (v::key('website', v::stringType())->validate($post)) ? $post['website'] : '',
-            ':facebook_url' => (v::key('facebook', v::stringType())->validate($post)) ? $post['facebook'] : '',
-            ':logo' => (v::key('logo', v::stringType())->validate($post)) ? $post['logo'] : '',
-            ':hours' => (v::key('hours', v::stringType())->validate($post)) ? $post['hours'] : '',
-            ':referral' => (v::key('referralCode', v::stringType())->validate($post)) ? $post['referralCode'] : '',
-            ":created_user_id" => $userId,
-            ":last_updated_by" => $userId
+
+        if (!v::url()->validate($post["website"])) {
+            return $app->render(400, array('msg' => $post["website"] . ' is not valid URL.'));
+        }
+
+        if (!preg_match('/(?:https?:\/\/)?(?:www\.)?facebook\.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[\w\-]*\/)*([\w\-\.]*)/', $post["facebook"])) {
+            return $app->render(400, array('msg' => $post["facebook"] . ' is not valid facebook URL.'));
+        }
+
+
+        $dayNames = array(
+            'sunday',
+            'monday',
+            'tuesday',
+            'wednesday',
+            'thursday',
+            'friday',
+            'saturday',
         );
-        return VenueData::insertVenue($venue);
+
+        if ($post['triviaDay'] != '') {
+            $status = in_array(strtolower($post['triviaDay']), $dayNames);
+            if (!$status) {
+                return $app->render(400, array('msg' => 'Day is not corect.'));
+            }
+        }
+
+        if ($post['triviaTime'] != '') {
+            if (!preg_match('/^(1[0-2]|0?[1-9]):[0-5][0-9] (AM|PM)$/i', $post['triviaTime'])) {
+                return $app->render(400, array('msg' => 'Time is not corect.'));
+            }
+        }
+
+        if (v::key('phone', v::stringType())->validate($post) && $post['phone'] != '') {
+            if (!preg_match('/^[+]?([\d]{0,3})?[\(\.\-\s]?([\d]{3})[\)\.\-\s]*([\d]{3})[\.\-\s]?([\d]{4})$/', $post["phone"])) {
+                return $app->render(400, array('msg' => 'This is not valid US format number.'));
+            }
+        }
+
+
+        if ($onlyValidation === false) {
+            $venue = array(
+                ':name' => $post['venueName'],
+                ':address' => $post['address'],
+                ':address_b' => (v::key('addressb', v::stringType())->validate($post)) ? $post['addressb'] : '',
+                ':city' => $post['city'],
+                ':state' => $post['state'],
+                ':zip' => $post['zip'],
+                ':phone_extension' => (v::key('phone_extension', v::stringType())->validate($post)) ? $post['phone_extension'] : '',
+                ':phone' => (v::key('phone', v::stringType())->validate($post)) ? $post['phone'] : '',
+                ':website' => (v::key('website', v::stringType())->validate($post)) ? $post['website'] : '',
+                ':facebook_url' => (v::key('facebook', v::stringType())->validate($post)) ? $post['facebook'] : '',
+                ':logo' => (v::key('logo', v::stringType())->validate($post)) ? $post['logo'] : '',
+                ':referral' => (v::key('referralCode', v::stringType())->validate($post)) ? $post['referralCode'] : '',
+                ":created_user_id" => $userId,
+                ":last_updated_by" => $userId
+            );
+            $venueId = VenueData::insertVenue($venue);
+            if ($venueId) {
+                if ($post['triviaDay'] != '' && $post['triviaTime'] != '') {
+                    $venueScheduleId = VenueData::manageVenueTriviaShcedule(array(
+                                ':trivia_day' => $post['triviaDay'],
+                                ':trivia_time' => $post['triviaTime'],
+                                ":created_user_id" => $userId,
+                                ":last_updated_by" => $userId,
+                                ':venue_id' => $venueId
+                                    ), $venueId);
+                }
+            }
+            return $venueId;
+        } else {
+            return true;
+        }
     }
 
     static function addVenueGroupToUser($userId) {
@@ -242,4 +312,3 @@ class AuthController {
     }
 
 }
-//
