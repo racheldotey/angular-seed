@@ -189,7 +189,7 @@ class AuthController {
     }
 
     static function addVenueGroupToUser($userId) {
-        $groupId = GroupData::selectGroupIdBySlug('venue-editor');
+        $groupId = GroupData::selectGroupIdBySlug('venue-admin');
         if (!$groupId) {
             return false;
         }

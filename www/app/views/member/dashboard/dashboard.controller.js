@@ -15,20 +15,20 @@ angular.module('app.member.dashboard', [])
         $scope.playerGreeting = '';
         
         ($scope.updateGreeting = function() {
-            $scope.playerGreeting = 'Welcome back ' + $scope.currentPlayer.displayName + '!';
+            $scope.playerGreeting = '';
             
             for(var i = 0; i < $scope.currentPlayer.teams.length; i++) {
                 if($scope.currentPlayer.teams[i].gameId &&
                     $scope.currentPlayer.teams[i].gameId > 0) {
                 
-                    $scope.playerGreeting = $scope.playerGreeting + ' Your team "' + 
+                    $scope.playerGreeting = $scope.playerGreeting + 'Your team "' + 
                         $scope.currentPlayer.teams[i].name + '" is participating in a Trivia game right now. ' + 
                         'Click to view the game: <a data-ui-sref="app.member.game({gameId : ' + $scope.currentPlayer.teams[i].gameId + ', pageId : 1 })">' + 
-                        $scope.currentPlayer.teams[i].game + '</a>';
+                        $scope.currentPlayer.teams[i].game + '</a>. ';
                 } else {
-                    $scope.playerGreeting = $scope.playerGreeting + ' You have been a member of team "' + 
+                    $scope.playerGreeting = $scope.playerGreeting + 'You have been a member of team "' + 
                             $scope.currentPlayer.teams[i].name + '" since ' + 
-                            moment($scope.currentPlayer.teams[i].joined, 'YYYY-MM-DD HH:mm:ss').format('MMMM') + ".";
+                            moment($scope.currentPlayer.teams[i].joined, 'YYYY-MM-DD HH:mm:ss').format('MMMM') + ". ";
                 }
                 //$scope.playerGreeting = $compile($scope.playerGreeting)($scope);
             }

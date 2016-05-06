@@ -43,19 +43,23 @@ class VenueData {
         $venue = DBConn::selectOne("SELECT * from ".DBConn::prefix()."venues_trivia_schedules where venue_id = :id", array(':id' => $id));
         return $venue;
     }
+    
     public static function insertVenue($validVenue) {
         return DBConn::insert("INSERT INTO " . DBConn::prefix() . "venues(name, address, address_b, city, state, zip, phone_extension, phone, website, facebook_url, logo, referral, created_user_id, last_updated_by) "
             . "VALUES (:name, :address, :address_b, :city, :state, :zip,:phone_extension, :phone, :website, :facebook_url, :logo, :referral, :created_user_id, :last_updated_by)", $validVenue);
     }
+    
     public static function insertVenueTriviaSchedules($validVenueSchedules) 
     {
         return DBConn::insert("INSERT INTO " . DBConn::prefix() . "venues_trivia_schedules(trivia_day,trivia_time,created_user_id,last_updated_by,venue_id) "
             . "VALUES (:trivia_day,:trivia_time,:created_user_id,:last_updated_by,:venue_id)", $validVenueSchedules);
-    }    
+    }
+    
     public static function insertVenueRoleAssignment($assignment) {
         return DBConn::insert("INSERT INTO " . DBConn::prefix() . "venue_roles(venue_id, user_id, role) "
             . "VALUES (:venue_id, :user_id, :role)", $assignment);
     }
+    
     public static function updatedataVenue($validVenueData, $venueId){
         DBConn::update("UPDATE " . DBConn::prefix() . "venues SET name=:name, address=:address, address_b=:address_b, city=:city, state=:state, zip=:zip,phone_extension = :phone_extension, phone=:phone, website=:website, facebook_url=:facebook_url,logo=:logo, referral=:referral, last_updated=:last_updated, last_updated_by=:last_updated_by WHERE created_user_id = :created_user_id;", $validVenueData);
         $venue= DBConn::selectOne("SELECT * "

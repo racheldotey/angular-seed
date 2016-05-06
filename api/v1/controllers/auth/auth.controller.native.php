@@ -34,6 +34,7 @@ class AuthControllerNative {
         }
         return array('authenticated' => true, 'user' => $user);
     }
+    
     // Signup Function
     static function signup($app) {
         // Get Post Data
@@ -87,9 +88,11 @@ class AuthControllerNative {
             return array('registered' => false, 'msg' => 'Signup failed to creat auth token.');    
         }
     }
+    
     static function validatePasswordRequirements($post, $key = 'password') {
         return (v::key($key, v::stringType()->length(8,255)->noWhitespace()->alnum('!@#$%^&*_+=-')->regex('/^(?=.*[a-zA-Z])(?=.*[0-9])/'))->validate($post));
     }
+    
     /*
      * return String|bool Failed message or true 
      */
@@ -104,6 +107,7 @@ class AuthControllerNative {
             return true;
         }
     }
+    
     ///// 
     ///// Login
     ///// 
@@ -117,11 +121,13 @@ class AuthControllerNative {
         $found = self::forgotpassword_validateFoundUser($post,$app);
         return $found;
     }
+    
     static function resetpassword($app){
         $post = $app->request->post();
         $found = self::getresetpassword_validateFoundUser($post);
         return $found;
     }
+    
     private static function getresetpassword_validateFoundUser($post) {
         $result_array=array();
         $user = AuthData::selectUsertokenExpiry($post['email']);
@@ -199,11 +205,13 @@ class AuthControllerNative {
             return $result_array; 
         }
     }
+    
     static function getforgotpasswordemail($app){
         $post = $app->request->post();
         $found = self::getforgotpasswordemail_validateFoundUser($post);
         return $found;
     }
+    
     private static function getforgotpasswordemail_validateFoundUser($post) {
         $user = AuthData::selectUserByUsertoken($post['usertoken']);
         if(!$user) {
@@ -212,6 +220,7 @@ class AuthControllerNative {
         } 
         return array('frgtauthenticatedemail' => true,  'user' => $user);
     }
+    
     private static function forgotpassword_validateFoundUser($post,$app) {
         $user = AuthData::selectUserAndPasswordByEmail($post['email']);
         if(!$user) {
