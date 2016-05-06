@@ -30,7 +30,7 @@ function ($scope, $log, $state, UserSession, ApiRoutesUsers, $filter) {
     $scope.editingUser = angular.copy($scope.user);
 
     ApiRoutesUsers.getVenue($scope.user).then(function (data) {
-        console.log(JSON.stringify(data));
+        //console.log(JSON.stringify(data));
         $scope.user.venueName = data.venue.name;
         $scope.user.address = data.venue.address;
         $scope.user.addressb = data.venue.address_b;
