@@ -68,44 +68,39 @@ class VenueController {
         $results = self::venue_validateVenueParams($post);
         if($results['error']) {
             return $app->render(400,  array('msg' => $results['msg']));
+        } else if(!v::key('venueId', v::intVal())->validate($post)) {
+            return $app->render(400,  array('msg' => 'Invalid venue Id.'));
         }
         
-        $isValid = true;
+        $validVenue = self::venue_getVenueArray($post);
+        $validVenue[':id'] = $post['venueId'];
+        $venue = VenueData::updateVenue($validVenue, $userId);
 
+        $user =  VenueData::updateUser(array(
+            ':id' => $userId,
+            ':name_first' => $app->request->post('nameFirst'),
+            ':name_last' => $app->request->post('nameLast'),
+            ':last_updated_by' => APIAuth::getUserId()
+        ));
 
-        if($isValid){
-            $venuedata = self::venue_getVenueArray($post);
-
-            $userdata = array(
-             ':id' => $userId,
-             ':name_first' => $app->request->post('nameFirst'),
-             ':name_last' => $app->request->post('nameLast'),
-             ':email' => $app->request->post('email')
-             );
-            $user =  UserData::updateUser($userdata);
-            $venue = VenueData::updatedataVenue($venuedata, $userId);
-
-            $venue_reponse['venue']= (object) [];
-            $venue_reponse['venue']->id= $venue->id;
-            AuthHooks::venue_signup($app, $venue_reponse,true);
-            
-            if($post['triviaDay']!='' && $post['triviaTime']!='') {
-
-                $venueScheduleId = VenueData::manageVenueTriviaShcedule(array(
-                    ':trivia_day' => $post['triviaDay'], 
-                    ':trivia_time' => $post['triviaTime'], 
-                    ':created_user_id' => $userId,
-                    ':last_updated_by' => $userId,
-                    ':venue_id' => $venue->id
-                    ),$venue->id);
-            }
-
+        $venue_reponse['venue']= (object) [];
+        $venue_reponse['venue']->id= $post['venueId'];
+        AuthHooks::venue_signup($app, $venue_reponse, true);
+ 
+        if($post['triviaDay']!=='' && $post['triviaTime']!=='') {
+            $venueScheduleId = VenueData::manageVenueTriviaShcedule(array(
+                ':trivia_day' => $post['triviaDay'], 
+                ':trivia_time' => $post['triviaTime'], 
+                ':created_user_id' => APIAuth::getUserId(),
+                ':last_updated_by' => APIAuth::getUserId(),
+                ':venue_id' => $post['venueId']
+                ), $post['venueId']);
         }
 
-        if( $isValid && isset($user) && $user ) {
+        if($user && $venue) {
             $user = UserData::selectUserById($userId);
             $venue = VenueData::getVenueByUser($userId);
-            return $app->render(200, array('user' => $user, 'venue' => $venue));
+            return $app->render(200, array('msg' => 'Venue has been saveed.', 'user' => $user, 'venue' => $venue));
         } else {
             return $app->render(400,  array('msg' => 'Could not update venue.'));
         }

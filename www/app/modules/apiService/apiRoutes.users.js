@@ -38,9 +38,9 @@ angular.module('apiRoutes.users', [])
 
 
     api.saveUserVenue = function (user) {
-        if (angular.isUndefined(user.nameFirst) || angular.isUndefined(user.nameLast) ||
+        if (angular.isUndefined(user.venueId) || angular.isUndefined(user.nameFirst) || angular.isUndefined(user.nameLast) ||
                 angular.isUndefined(user.email) || angular.isUndefined(user.id)
-                || angular.isUndefined(user.venueName) || angular.isUndefined(user.address)
+                || angular.isUndefined(user.venue) || angular.isUndefined(user.address)
                 || angular.isUndefined(user.city) || angular.isUndefined(user.state)
                 || angular.isUndefined(user.zip) || angular.isUndefined(user.phone)) {
             return API.reject('Invalid venue. Please check your parameters and try again.');

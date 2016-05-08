@@ -7,8 +7,8 @@ class VenueRoutes {
             
         //* /venue/ routes - registered users only
         
-	$app->post("/venuesdata/update/:userId/",$authenticateForRole('registered-user'), function ($venueId) use ($app) {
-            VenueController::updateVenueData($app, $venueId);
+	$app->post("/venuesdata/update/:userId/",$authenticateForRole('registered-user'), function ($userId) use ($app) {
+            VenueController::updateVenueData($app, $userId);
         });
 		
 	

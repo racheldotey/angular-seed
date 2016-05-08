@@ -11,6 +11,9 @@ angular.module('app.venue.dashboard', [])
     .controller('VenueDashboardCtrl', ['$scope', '$log', '$state', 'UserSession', 'ApiRoutesUsers', '$filter',
 function ($scope, $log, $state, UserSession, ApiRoutesUsers, $filter) {
 
+    /* Used to restrict alert bars */
+    $scope.alertProxy = {};
+        
     $scope.editGeneralMode = false;
     $scope.showPhoneValidation = false;
     /* Form Alert Proxy */
@@ -28,29 +31,31 @@ function ($scope, $log, $state, UserSession, ApiRoutesUsers, $filter) {
     /* User to display and edit */
     $scope.user = UserSession.get();
     $scope.editingUser = angular.copy($scope.user);
+    $scope.venueLogo = {};
 
     ApiRoutesUsers.getVenue($scope.user).then(function (data) {
         //console.log(JSON.stringify(data));
-        $scope.user.venueName = data.venue.name;
+        $scope.user.venueId = data.venue.id;
+        $scope.user.venue = data.venue.venue;
         $scope.user.address = data.venue.address;
         $scope.user.addressb = data.venue.address_b;
         $scope.user.city = data.venue.city;
         $scope.user.state = data.venue.state;
         $scope.user.zip = data.venue.zip;
         $scope.user.phone = data.venue.phone;
-        $scope.user.phone_extension = data.venue.phone_extension;
+        $scope.user.phoneExtension = data.venue.phoneExtension;
 
         $scope.user.website = data.venue.website;
-        $scope.user.facebook = data.venue.facebook_url;
+        $scope.user.facebook = data.venue.facebook;
         $scope.user.hours = data.venue.hours;
-        $scope.user.triviaDay = data.venue.trivia_day;
-        $scope.user.triviaTime = data.venue.trivia_time;
+        $scope.user.triviaDay = data.venue.triviaDay;
+        $scope.user.triviaTime = data.venue.triviaTime;
 
-        $scope.user.triviaTimeDate = $scope.parseTime(data.venue.trivia_time);
+        $scope.user.triviaTimeDate = $scope.parseTime(data.venue.triviaTime);
 
-        $scope.user.referralCode = data.venue.referral;
+        $scope.user.referralCode = data.venue.referralCode;
         $scope.user.venueLogo = data.venue.logo;
-        $scope.venueLogo.imageDataUrl = data.venue.logo;
+        $scope.savedImageDataUrl = data.venue.logo;
 
         $scope.editingUser = angular.copy($scope.user);
 
@@ -78,35 +83,42 @@ function ($scope, $log, $state, UserSession, ApiRoutesUsers, $filter) {
         }
         else {
 
-            if (angular.isString($scope.venueLogo.imageDataUrl) &&
-          ($scope.venueLogo.imageDataUrl.indexOf('data:image') > -1)) {
+            if ($scope.venueLogo.file && $scope.venueLogo.imageDataUrl.indexOf('data:image') > -1) {
                 $scope.editingUser.logoUrl = $scope.venueLogo.imageDataUrl;
+            } else if (angular.isString($scope.savedImageDataUrl) &&
+                    ($scope.savedImageDataUrl.indexOf('data:image') > -1)) {
+                $scope.editingUser.logoUrl = $scope.savedImageDataUrl;
             }
+                
             $scope.editingUser.triviaTime = $filter('date')($scope.editingUser.triviaTimeDate, 'h:mm a');
 
             ApiRoutesUsers.saveUserVenue($scope.editingUser).then(
                    function (data) {
+                       $scope.alertProxy.success(data.msg);
+
                        $scope.user = UserSession.updateUser(data.user);
-                       $scope.user.venueName = data.venue.name;
+                       $scope.user.venueId = data.venue.id;
+                       $scope.user.venue = data.venue.venue;
                        $scope.user.address = data.venue.address;
                        $scope.user.addressb = data.venue.address_b;
                        $scope.user.city = data.venue.city;
                        $scope.user.state = data.venue.state;
                        $scope.user.zip = data.venue.zip;
                        $scope.user.phone = data.venue.phone;
-                       $scope.user.phone_extension = data.venue.phone_extension;
+                       $scope.user.phoneExtension = data.venue.phoneExtension;
                        $scope.user.website = data.venue.website;
-                       $scope.user.facebook = data.venue.facebook_url;
-                       $scope.user.triviaDay = data.venue.trivia_day;
-                       $scope.user.triviaTime = data.venue.trivia_time;
-                       $scope.user.triviaTimeDate = $scope.parseTime(data.venue.trivia_time);
-                       $scope.user.referralCode = data.venue.referral;
+                       $scope.user.facebook = data.venue.facebook;
+                       $scope.user.triviaDay = data.venue.triviaDay;
+                       $scope.user.triviaTime = data.venue.triviaTime;
+                       $scope.user.triviaTimeDate = $scope.parseTime(data.venue.triviaTime);
+                       $scope.user.referralCode = data.venue.referralCode;
                        $scope.user.venueLogo = data.venue.logo;
                        $scope.venueLogo.imageDataUrl = data.venue.logo;
                        $scope.editingUser = angular.copy($scope.user);
                        $scope.editGeneralMode = false;
                    }, function (error) {
                        $log.info(error);
+                       $scope.alertProxy.error(error);
                    });
 
         }
@@ -157,6 +169,6 @@ function ($scope, $log, $state, UserSession, ApiRoutesUsers, $filter) {
         if ($phone === undefined || $phone.length < 10) {
             $scope.showPhoneValidation = true;
         }
-    }
+    };
 
 }]);

@@ -114,7 +114,7 @@ class AuthData {
             $user->teams = DBConn::selectAll("SELECT t.id, t.name, m.joined, IFNULL(g.id, 0) AS gameId, IFNULL(g.name, '') AS game "
                     . "FROM " . DBConn::prefix() . "teams AS t "
                     . "LEFT JOIN " . DBConn::prefix() . "team_members AS m ON m.team_id = t.id "
-                    . "LEFT JOIN as_games AS g ON t.current_game_id = g.id "
+                    . "LEFT JOIN " . DBConn::prefix() . "games AS g ON t.current_game_id = g.id "
                     . "WHERE m.user_id = :user_id ORDER BY t.name;", array(':user_id' => $user->id));
             
             $user->notices = array('teamInvites' => 
