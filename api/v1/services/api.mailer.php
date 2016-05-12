@@ -25,22 +25,22 @@ class ApiMailer {
     }
     
     public static function sendWebsiteSignupInvite($token, $playerEmail, $playerName = '') {
-        $websiteTitle = APIConfig::get('websiteTitle');
-        $websiteUrl = APIConfig::get('websiteUrl');
+        $websiteTitle = APIConfig::get('WEBSITE_TITLE');
+        $websiteUrl = APIConfig::get('WEBSITE_URL');
         $inviteLink = "{$websiteUrl}signup/{$token}/";
         return self::sendEmailFromTemplate('SIGNUP_INVITE_PLAYER', $playerEmail, $playerName, [$websiteTitle, $inviteLink], [$websiteTitle]);
     }
     
     public static function sendTeamInviteNewUser($token, $teamName, $playerEmail, $playerName = '') {
-        $websiteTitle = APIConfig::get('websiteTitle');
-        $websiteUrl = APIConfig::get('websiteUrl');
+        $websiteTitle = APIConfig::get('WEBSITE_TITLE');
+        $websiteUrl = APIConfig::get('WEBSITE_URL');
         $inviteLink = "{$websiteUrl}signup/{$token}/";
         return self::sendEmailFromTemplate('SIGNUP_TEAM_INVITE', $playerEmail, $playerName, [$websiteTitle, $inviteLink, $teamName], [$websiteTitle]);
     }
     
     public static function sendTeamInviteRegisteredUser($token, $teamName, $playerEmail, $playerName = '') {
-        $websiteTitle = APIConfig::get('websiteTitle');
-        $websiteUrl = APIConfig::get('websiteUrl');
+        $websiteTitle = APIConfig::get('WEBSITE_TITLE');
+        $websiteUrl = APIConfig::get('WEBSITE_URL');
         $inviteLink = "{$websiteUrl}login/";
         return self::sendEmailFromTemplate('TEAM_INVITE_USER', $playerEmail, $playerName, [$websiteTitle, $inviteLink, $teamName], [$websiteTitle]);
     }

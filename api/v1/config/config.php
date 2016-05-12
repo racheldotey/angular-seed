@@ -1,6 +1,8 @@
 <?php namespace API;
+ require_once dirname(dirname(__FILE__)) . '/services/api.dbconn.php';
 
 class APIConfig {
+    static $dbConfig = false;
     static $config = false;
 
     static function setAPIConfig() {
@@ -48,7 +50,7 @@ class APIConfig {
             'websiteTitle' => 'TriviaJoint.com',
             'websiteUrl' => 'https://app-dot-triviajoint-qa2.appspot.com/'
         ));
-
+        
         if($_SERVER['HTTP_HOST'] === 'api.seed.dev') {
             // Localhost
             self::$config = $default;
@@ -60,7 +62,12 @@ class APIConfig {
             self::$config = $prod;
         } else {
             self::$config = false;
-		}
+	}
+        
+        if(self::$config !== false) {
+            $dbConfig = self::selectSystemVariables();
+            self::$config = array_merge(self::$config, $dbConfig);
+        }
     }
 
     static function get($opt = false) {
@@ -72,5 +79,17 @@ class APIConfig {
             return self::$config[$opt];
         }
         return self::$config;
+    }
+
+    private static function selectSystemVariables() {
+        $qDBConfig = DBConn::executeQuery("SELECT name, value FROM " . DBConn::prefix() . "system_config WHERE disabled = 0;");
+        
+        $dbConfig = Array();
+        while($var = $qDBConfig->fetch(\PDO::FETCH_OBJ)) {  
+            $dbConfig[$var->name] = $var->value;
+        }
+        self::$dbConfig = $dbConfig;
+        
+        return self::$dbConfig;
     }
 }

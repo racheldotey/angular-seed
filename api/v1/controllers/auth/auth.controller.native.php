@@ -204,8 +204,7 @@ class AuthControllerNative {
                 }
             }
             $config_data = ConfigData::getVariableByName("PASSWORD_RESET_ROOT_URL");
-            $root_url =($config_data[0]->value=='')?$config->get('websiteUrl'):$config_data[0]->value;
-            $config = new APIConfig();
+            $root_url =($config_data[0]->value=='')?APIConfig::get('WEBSITE_URL'):$config_data[0]->value;
             $mail->setFrom($mail->From, 'Triviajoint');
             $mail->addAddress($userDetail->email, $userDetail->nameFirst." ".$userDetail->nameLast);
             $mail->isHTML(true);
@@ -263,8 +262,7 @@ class AuthControllerNative {
             }
         }
         $config_data = ConfigData::getVariableByName("PASSWORD_RESET_ROOT_URL");
-        $root_url =($config_data[0]->value=='')?$config->get('websiteUrl'):$config_data[0]->value;
-        $config = new APIConfig();
+        $root_url =($config_data[0]->value=='')?APIConfig::get('WEBSITE_URL'):$config_data[0]->value;
         $mail->setFrom($mail->From, 'Triviajoint');
         $mail->addAddress($user->email, $user->nameFirst." ".$user->nameLast);
         $mail->isHTML(true);
