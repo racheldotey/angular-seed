@@ -31,6 +31,7 @@ class APIConfig {
             'dbTablePrefix' => 'trv_',
             'debugMode' => false,
             'systemPath' => dirname(__FILE__),
+            'websiteTitle' => 'TriviaJoint.com',
             'websiteUrl' => 'http://www.triviajoint.com/'
         ));
 
@@ -44,6 +45,7 @@ class APIConfig {
             'dbTablePrefix' => 'trv_',
             'debugMode' => false,
             'systemPath' => dirname(__FILE__),
+            'websiteTitle' => 'TriviaJoint.com',
             'websiteUrl' => 'https://app-dot-triviajoint-qa2.appspot.com/'
         ));
 
