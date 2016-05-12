@@ -108,7 +108,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
         $stateProvider.state('app.host.game', {
             bodyClass: 'host scoreboard',
             title: 'Game Host Scoreboard',
-            url: '/game-scoreboard/:gameId/:roundNumber',
+            url: '/game-scoreboard/:gameId/:roundNumber?sortBy?sortDirection',
             views: {
                 'content@app.host': {
                     templateUrl: 'app/views/host/scoreboard/scoreboard.html',

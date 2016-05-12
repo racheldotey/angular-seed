@@ -16,8 +16,8 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
         scope: {
             game: '=rcTriviaScoreboard'
         },
-        controller: ['$scope', '$state', '$window', 'TriviaScoreboard', 'AlertConfirmService', 'TriviaModalService', 'DTOptionsBuilder', 'DTColumnDefBuilder',
-            function($scope, $state, $window, TriviaScoreboard, AlertConfirmService, TriviaModalService, DTOptionsBuilder, DTColumnDefBuilder) {
+        controller: ['$scope', '$state', '$stateParams', '$window', 'TriviaScoreboard', 'AlertConfirmService', 'TriviaModalService', 'DTOptionsBuilder', 'DTColumnDefBuilder',
+            function($scope, $state, $stateParams, $window, TriviaScoreboard, AlertConfirmService, TriviaModalService, DTOptionsBuilder, DTColumnDefBuilder) {
             
             /* Used to restrict alert bars */
             $scope.alertProxy = {};
@@ -26,7 +26,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
             if(!$scope.game) {
                 console.log("Error loading game.");
                 die();
-            }            
+            }
 
             $scope.updateTeamRankings = function(teamId) {
                 $scope.unsavedState = true;
@@ -54,6 +54,14 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 .withOption('paging', false)
                 .withFixedColumns({ leftColumns: 1 });
                 
+            console.log($stateParams);
+            if(angular.isDefined($stateParams.sortBy) && angular.isNumber(parseInt($stateParams.sortBy))){
+                var direction = (angular.isDefined($stateParams.sortDirection) && 
+                    $stateParams.sortDirection.toLowerCase() === 'asc') ? 'asc' : 'desc';
+            
+                $scope.dtScoreboard.options.withOption('order', [$stateParams.sortBy, direction]);
+            };
+            
             $scope.dtScoreboard.columns = [
                 DTColumnDefBuilder.newColumnDef(0),
                 DTColumnDefBuilder.newColumnDef(1),
@@ -137,9 +145,9 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 var modalInstance = TriviaModalService.openEditTeam(false, false, $scope.game.venueId, $scope.game.id);
                 modalInstance.result.then(function (result) {
                     for(var i = 0; i < result.invites.length; i++) {
-                        $scope.alertProxy.success(result.invites[i]);
+                        $scope.alertProxy.success(result.invites[i].msg);
                     }
-                    $state.go('app.host.game', { 'gameId': $scope.game.id, 'roundNumber' : $scope.game.currentRoundNumber });
+                    $state.go('app.host.game', { 'gameId': $scope.game.id, 'roundNumber' : $scope.game.currentRoundNumber }, { reload: true });
                 }, function () {});
             };
             
@@ -148,7 +156,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 var modalInstance = TriviaModalService.openEditRound($scope.game.id);
                 modalInstance.result.then(function (result) {
                     console.log(result);
-                    $state.go('app.host.game', { 'gameId': $scope.game.id, 'roundNumber' : result.roundNumber });
+                    $state.go('app.host.game', { 'gameId': $scope.game.id, 'roundNumber' : result.roundNumber }, { reload: true });
                 }, function () {});
             };
             
@@ -233,10 +241,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 }
             };
             
-        }],
-        link: function(scope, element, attrs) {
-            
-        }
+        }]
     };
     
 });
