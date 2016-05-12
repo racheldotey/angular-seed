@@ -77,7 +77,7 @@ class TeamController {
                             self::sendTeamInvite($teamId, $teamName, $email);
     }
     
-    private static function addPlayerById($teamId, $teamName, $id) {
+    public static function addPlayerById($teamId, $teamName, $id) {
         $saved = TeamData::addTeamMember(array(
             ':team_id' => $teamId, 
             ':user_id' => $id,

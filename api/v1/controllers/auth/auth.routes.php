@@ -183,6 +183,7 @@ class AuthRoutes {
              * @apiParam {String} passowrd User unencrypted password.
              * @apiParam {String} nameFirst User first name.
              * @apiParam {String} nameLast User last name.
+             * @apiParam {Integer} teamId optional Team to add the new player too.
              *
              * @apiSuccessExample {json} Success-Response:
              *      HTTP/1.1 200: OK

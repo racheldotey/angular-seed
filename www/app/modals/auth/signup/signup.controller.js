@@ -7,13 +7,27 @@
  */
 
 angular.module('app.modal.signup', [])
-        .controller('SignupModalCtrl', ['$scope', '$uibModalInstance', '$state', '$log', '$window', '$timeout', 'AuthService', 'AlertConfirmService',
-        function ($scope, $uibModalInstance, $state, $log, $window, $timeout, AuthService, AlertConfirmService) {
+        .controller('SignupModalCtrl', ['$scope', '$uibModalInstance', '$state', '$log', 'AuthService', 'currentTeam', 'teamsList',
+        function ($scope, $uibModalInstance, $state, $log, AuthService, currentTeam, teamsList) {
         
         $scope.$state = $state;
         $scope.form = {};
         $scope.facebookAlerts = {};
         $scope.signupAlerts = {};
+        
+        $scope.currentTeam = currentTeam;
+        $scope.teamsList = teamsList;
+
+        $scope.joinTeam = {};
+        if(currentTeam) {
+            for(var t = 0; t < teamsList.length; t++) {
+                if(parseInt(teamsList[t].id) === parseInt(currentTeam.id)) {
+                    $scope.joinTeam = teamsList[t];
+                    t = teamsList.length;
+                    break;
+                }
+            }
+        }
         
         $scope.showPasswordRules = false;
         $scope.showPasswordMissmatch = false;
@@ -38,6 +52,10 @@ angular.module('app.modal.signup', [])
                 $scope.form.signup.$setDirty();
                 $scope.signupAlerts.error('Passwords do not match.');
             } else {
+                if(angular.isDefined($scope.joinTeam.value.id)) {
+                    $scope.newUser.teamId = $scope.joinTeam.value.id;
+                }
+                
                 AuthService.signup($scope.newUser, true).then(function (results) {
                     $log.debug(results);
                     $uibModalInstance.close("Signup successful!  Please wait for confirmation page.");

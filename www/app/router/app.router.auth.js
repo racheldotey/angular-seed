@@ -117,7 +117,7 @@ app.config(['$stateProvider', 'USER_ROLES',
                 'signupform@app.auth.signupVenue': {
                     templateUrl: 'app/views/auth/signupVenue/signupVenueForm.html'
                 }
-            },
+            }/*,
             resolve: {
                 $q: '$q',
                 $rootScope: '$rootScope',
@@ -132,7 +132,7 @@ app.config(['$stateProvider', 'USER_ROLES',
                         }
                     });
                 }
-            }
+            }*/
         });
 
         $stateProvider.state('app.auth.signupVenue.iframe', {
@@ -174,7 +174,7 @@ app.config(['$stateProvider', 'USER_ROLES',
                     templateUrl: 'app/views/auth/login/loginForm.html',
                     controller: 'AuthLoginCtrl'
                 }
-            },
+            }/*,
             resolve: {
                 $q: '$q',
                 $rootScope: '$rootScope',
@@ -189,7 +189,7 @@ app.config(['$stateProvider', 'USER_ROLES',
                         }
                     });
                 }
-            }
+            }*/
         });
         
         $stateProvider.state('app.auth.login.iframe', {

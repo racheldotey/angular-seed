@@ -184,17 +184,17 @@ angular.module('ModalService', [
     * 
     * @return uibModalInstance
     */
-    api.openSignup = function (emailAddress) {
+    api.openSignup = function (currentTeam) {
         return api.openModal({
             templateUrl: templatePath + 'auth/signup/signup.html',
             controller: 'SignupModalCtrl',
             resolve: {
-                ForgotEmailAddress: function () {
-                    if (angular.isDefined(emailAddress)) {
-                        return emailAddress;
-                    } else {
-                        return '';
-                    }
+                ApiRoutesSimpleLists: 'ApiRoutesSimpleLists',
+                currentTeam: function() {
+                    return currentTeam || false;
+                },
+                teamsList: function(ApiRoutesSimpleLists) {
+                    return ApiRoutesSimpleLists.simpleTeamsList();
                 }
             }
         });
