@@ -80,5 +80,11 @@ angular.module('apiRoutes.datatables', [])
         return getPromise('/datatable/games/team/' + teamId);
     };
     
+    // Game Scoreboard
+    
+    api.publicGameScoreboardList = function(gameId, roundNumber) { 
+        return getPromise('/datatable/game/simple-scoreboard/' + gameId + '/' + roundNumber);
+    };
+    
     return api;
 }]);

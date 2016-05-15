@@ -149,7 +149,6 @@ angular.module('rcTrivia.game', [])
                             // Sort the scores in this round
                             allTeamRoundScores[teamRoundKey].sort(function(a, b){ 
                                 var result = b-a; 
-                                console.log("allTeamRoundScores[teamRoundKey].sort: [" + teamRoundKey + "] " + b + " - " + a + " = " + result);
                                 return b-a; 
                             });
                             ///// ROUND RANK

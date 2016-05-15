@@ -24,6 +24,7 @@
 
             <div class="host-actions">
                 <div id="wide-menu" class="visible-lg-block">
+                    <button ng-click="buttonViewScoreboardModal()" type="button" class="btn btn-primary btn-sm">View Sortable Scoreboard</button>
                     <button ng-show="!displayQuickScoreButtons" ng-click="displayQuickScoreButtons = !displayQuickScoreButtons" type="button" class="btn btn-primary btn-sm">Show Quick Buttons</button>
                     <button ng-show="displayQuickScoreButtons" ng-click="displayQuickScoreButtons = !displayQuickScoreButtons" type="button" class="btn btn-primary btn-sm">Hide Quick Buttons</button>
 
@@ -43,6 +44,7 @@
                         <i class="fa fa-bars"></i>
                     </button>
                     <ul uib-dropdown-menu role="menu" aria-labelledby="single-button">
+                        <li role="menuitem"><a ng-click="buttonViewScoreboardModal()" href="#">View Sortable Scoreboard</a></li>
                         <li ng-show="!displayQuickScoreButtons" role="menuitem"><a ng-click="displayQuickScoreButtons = !displayQuickScoreButtons" href="#">Show Quick Buttons</a></li>
                         <li ng-show="displayQuickScoreButtons" role="menuitem"><a ng-click="displayQuickScoreButtons = !displayQuickScoreButtons" href="#">Hide Quick Buttons</a></li>
                         <li class="divider"></li>

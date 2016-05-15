@@ -83,4 +83,12 @@ class DatatablesController {
         $table = ($data) ? $data : array();
         return $app->render(200, array('table' => $table ));
     }
+    
+    // Game Scoreboard
+    
+    static function getGameSimpleScoreboard($app, $gameId, $roundNumber) {
+        $data = DatatablesData::selectGameSimpleScoreboard($gameId, $roundNumber);
+        $table = ($data) ? $data : array();
+        return $app->render(200, array('table' => $table ));
+    }
 }

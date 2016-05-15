@@ -16,7 +16,8 @@ angular.module('TriviaModalService', [
     'app.modal.trivia.editTeam',
     'app.modal.trivia.editVenue',
     'app.modal.trivia.invitePlayer',
-    'app.modal.trivia.joinTeam'
+    'app.modal.trivia.joinTeam',
+    'app.modal.trivia.viewGameScoreboard'
 ])
 .factory('TriviaModalService', ['$uibModal', function($uibModal) {
         
@@ -63,6 +64,23 @@ angular.module('TriviaModalService', [
                 },
                 venueList: function(ApiRoutesSimpleLists) {
                     return ApiRoutesSimpleLists.simpleVenuesList();
+                }
+            }
+        });
+    };
+    
+    /*
+     * Open Edit Trivia Game Modal
+     * 
+     * @return uibModalInstance
+     */
+    api.openViewGameScoreboard = function(gameId, roundNumber) {
+        return api.openModal({
+            templateUrl: templatePath + 'viewGameScoreboard/viewGameScoreboard.html',
+            controller: 'TriviaViewGameScoreboardModalCtrl',
+            resolve: {
+                viewGame: function() {
+                    return { 'id' : gameId, 'roundNumber' : roundNumber };
                 }
             }
         });

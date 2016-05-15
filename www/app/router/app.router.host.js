@@ -69,7 +69,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
                             resolve(result);
                         }, function (error) {
                             console.log('HOST Resolve Error: ' + error);
-                            resolve({});
+                            reject(error);
                         });
                     });
                 }

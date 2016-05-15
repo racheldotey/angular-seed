@@ -244,4 +244,16 @@ class DatatablesData {
         return $elements;
     }
 
+    static function selectGameSimpleScoreboard($gameId, $roundNumber) {
+        return DBConn::selectAll("SELECT s.team_id AS teamId, t.name AS team, "
+                . "IFNULL(g.score, 0) AS gameScore, IFNULL(g.game_rank, 0) AS gameRank, g.game_winner AS gameWinner, "
+                . "IFNULL(s.score, 0) AS roundScore, IFNULL(s.round_rank, 0) AS roundRank "
+                . "FROM " . DBConn::prefix() . "game_rounds AS r "
+                . "LEFT JOIN " . DBConn::prefix() . "game_score_rounds AS s ON s.round_id = r.id "
+                . "LEFT JOIN " . DBConn::prefix() . "teams AS t ON t.id = s.team_id "
+                . "LEFT JOIN " . DBConn::prefix() . "game_score_teams AS g ON g.game_id = r.game_id AND g.team_id = s.team_id "
+                . "WHERE r.game_id = :game_id AND r.order = :order "
+                . "ORDER BY gameRank ASC;", array(':game_id' => $gameId, ':order' => $roundNumber));
+    }
+
 }

@@ -18,9 +18,7 @@ class APIConfig {
             'systemPath' => 'C:/xampp/htdocs/webdev/angular-seed/',
             'dirPublic' => 'public/',
             'dirSystem' => 'api/system/',
-            'dirLogs' => 'api/system/logs/',
-            'websiteTitle' => 'AngularSeed.com',
-            'websiteUrl' => 'http://www.seed.dev/'
+            'dirLogs' => 'api/system/logs/'
         );
 
         // PROD Config
@@ -32,9 +30,7 @@ class APIConfig {
             'dbPass' => '',
             'dbTablePrefix' => 'trv_',
             'debugMode' => false,
-            'systemPath' => dirname(__FILE__),
-            'websiteTitle' => 'TriviaJoint.com',
-            'websiteUrl' => 'http://www.triviajoint.com/'
+            'systemPath' => dirname(__FILE__)
         ));
 
         // QA Config
@@ -46,9 +42,7 @@ class APIConfig {
             'dbPass' => '',
             'dbTablePrefix' => 'trv_',
             'debugMode' => false,
-            'systemPath' => dirname(__FILE__),
-            'websiteTitle' => 'TriviaJoint.com',
-            'websiteUrl' => 'https://app-dot-triviajoint-qa2.appspot.com/'
+            'systemPath' => dirname(__FILE__)
         ));
         
         if($_SERVER['HTTP_HOST'] === 'api.seed.dev') {

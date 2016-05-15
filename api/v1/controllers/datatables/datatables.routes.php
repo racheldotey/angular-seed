@@ -67,6 +67,10 @@ class DatatableRoutes {
                 DatatablesController::getTeamGames($app, $teamId);
             })->via('GET', 'POST');
             
+            $app->map("/game/simple-scoreboard/:gameId/:roundNumber", function ($gameId, $roundNumber) use ($app) {
+                DatatablesController::getGameSimpleScoreboard($app, $gameId, $roundNumber);
+            })->via('GET', 'POST');
+            
         });
     }
 }

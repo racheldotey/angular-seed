@@ -199,12 +199,12 @@ class AuthControllerNative {
             $mail->IsSMTP(); 
             foreach($mail_variables as $name=>$value){
                 $config_data = ConfigData::getVariableByName($name);
-                if(!empty($config_data) && $config_data[0]->disabled!=1){
-                    $mail->{$value}=$config_data[0]->value;
+                if($config_data && $config_data->disabled!=1){
+                    $mail->{$value}=$config_data->value;
                 }
             }
             $config_data = ConfigData::getVariableByName("PASSWORD_RESET_ROOT_URL");
-            $root_url =($config_data[0]->value=='')?APIConfig::get('WEBSITE_URL'):$config_data[0]->value;
+            $root_url =($config_data->value=='')?APIConfig::get('WEBSITE_URL'):$config_data->value;
             $mail->setFrom($mail->From, 'Triviajoint');
             $mail->addAddress($userDetail->email, $userDetail->nameFirst." ".$userDetail->nameLast);
             $mail->isHTML(true);
@@ -257,12 +257,12 @@ class AuthControllerNative {
             );
         foreach($mail_variables as $name=>$value){
             $config_data = ConfigData::getVariableByName($name);
-            if(!empty($config_data) && $config_data[0]->disabled!=1){
-                $mail->{$value}=$config_data[0]->value;
+            if($config_data && $config_data->disabled!=1){
+                $mail->{$value}=$config_data->value;
             }
         }
         $config_data = ConfigData::getVariableByName("PASSWORD_RESET_ROOT_URL");
-        $root_url =($config_data[0]->value=='')?APIConfig::get('WEBSITE_URL'):$config_data[0]->value;
+        $root_url =($config_data->value=='')?APIConfig::get('WEBSITE_URL'):$config_data->value;
         $mail->setFrom($mail->From, 'Triviajoint');
         $mail->addAddress($user->email, $user->nameFirst." ".$user->nameLast);
         $mail->isHTML(true);

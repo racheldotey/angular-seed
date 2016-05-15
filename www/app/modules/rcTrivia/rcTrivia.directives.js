@@ -16,8 +16,8 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
         scope: {
             game: '=rcTriviaScoreboard'
         },
-        controller: ['$scope', '$state', '$stateParams', '$window', 'TriviaScoreboard', 'AlertConfirmService', 'TriviaModalService', 'DTOptionsBuilder', 'DTColumnDefBuilder',
-            function($scope, $state, $stateParams, $window, TriviaScoreboard, AlertConfirmService, TriviaModalService, DTOptionsBuilder, DTColumnDefBuilder) {
+        controller: ['$scope', '$state', '$stateParams', '$window', '$filter', 'TriviaScoreboard', 'AlertConfirmService', 'TriviaModalService', 'DTOptionsBuilder', 'DTColumnDefBuilder',
+            function($scope, $state, $stateParams, $window, $filter, TriviaScoreboard, AlertConfirmService, TriviaModalService, DTOptionsBuilder, DTColumnDefBuilder) {
             
             /* Used to restrict alert bars */
             $scope.alertProxy = {};
@@ -52,22 +52,80 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 .withOption('scrollCollapse', true)
                 .withOption('deferRender', true)
                 .withOption('paging', false)
+                .withOption('bSort', false)
+                .withOption('ordering', false)
                 .withFixedColumns({ leftColumns: 1 });
                 
-            console.log($stateParams);
             if(angular.isDefined($stateParams.sortBy) && angular.isNumber(parseInt($stateParams.sortBy))){
                 var direction = (angular.isDefined($stateParams.sortDirection) && 
                     $stateParams.sortDirection.toLowerCase() === 'asc') ? 'asc' : 'desc';
             
-                $scope.dtScoreboard.options.withOption('order', [$stateParams.sortBy, direction]);
+                    $scope.sortOnTeamName = '';
+                    $scope.sortOnTeamRoundRank = '';
+                    $scope.sortOnTeamGameRank = '';
+                        
+                    switch($stateParams.sortBy) {
+                        case '0':
+                            $scope.sortOnTeamName = '-' + direction;
+                            $scope.orderByThis = { 'attribute' : 'name', 'type' : 'string', 'direction' : direction };
+                            break;
+                        case '2':
+                            $scope.sortOnTeamRoundRank = '-' + direction;
+                            $scope.orderByThis = { 'attribute' : 'rounds[' + $scope.game.currentRoundNumber + '].roundRank', 'type' : 'int', 'direction' : direction };
+                            break;
+                        case '1':
+                        default:
+                            $scope.sortOnTeamGameRank = '-' + direction;
+                            $scope.orderByThis = { 'attribute' : 'gameRank', 'type' : 'int', 'direction' : direction };
+                            break;
+                    }
+                    $scope.game.teams = $filter('orderObjectBy')($scope.game.teams, $scope.orderByThis.attribute, $scope.orderByThis.type, $scope.orderByThis.direction);
+            };
+            
+            $scope.sortScoreboardColumn = function(column) {
+                var params = { 'gameId': $scope.game.id, 'roundNumber' : $scope.game.currentRoundNumber };
+                switch(column) {
+                    case 'name':
+                        var direction = (angular.isDefined($stateParams.sortBy) && 
+                                $stateParams.sortBy === '0' &&
+                                angular.isDefined($stateParams.sortDirection) && 
+                            $stateParams.sortDirection.toLowerCase() === 'desc') ? 'asc' : 'desc';
+                        params.sortBy = 0;
+                        params.sortDirection = direction;
+                        break;
+                    case 'round':
+                        var direction = (angular.isDefined($stateParams.sortBy) && 
+                                $stateParams.sortBy === '2' &&
+                                angular.isDefined($stateParams.sortDirection) && 
+                            $stateParams.sortDirection.toLowerCase() === 'desc') ? 'asc' : 'desc';
+                        params.sortBy = 2;
+                        params.sortDirection = direction;
+                        break;
+                    case 'game':
+                    default:
+                        var direction = (angular.isDefined($stateParams.sortBy) && 
+                                $stateParams.sortBy === '1' &&
+                                angular.isDefined($stateParams.sortDirection) && 
+                            $stateParams.sortDirection.toLowerCase() === 'desc') ? 'asc' : 'desc';
+                        params.sortBy = 1;
+                        params.sortDirection = direction;
+                        break;
+                }
+                TriviaScoreboard.saveScoreboard().then(function (result) {
+                        $scope.alertProxy.success("Game saved.");
+                        $state.go('app.host.game', params, { reload: true });
+                        $scope.unsavedState = false;
+                    }, function (error) {
+                        $scope.alertProxy.error(error);
+                    });
             };
             
             $scope.dtScoreboard.columns = [
-                DTColumnDefBuilder.newColumnDef(0),
-                DTColumnDefBuilder.newColumnDef(1),
-                DTColumnDefBuilder.newColumnDef(2),
-                DTColumnDefBuilder.newColumnDef(3),
-                DTColumnDefBuilder.newColumnDef(4)
+                DTColumnDefBuilder.newColumnDef(0).notSortable(),
+                DTColumnDefBuilder.newColumnDef(1).notSortable(),
+                DTColumnDefBuilder.newColumnDef(2).notSortable(),
+                DTColumnDefBuilder.newColumnDef(3).notSortable(),
+                DTColumnDefBuilder.newColumnDef(4).notSortable()
             ];
             var colNum = 5;
             for(var i = 0; i < Object.keys($scope.game.rounds[$scope.game.currentRoundNumber].questions).length; i++) {
@@ -130,6 +188,15 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                     }, function (error) {
                         $scope.alertProxy.error(error);
                     });
+            };
+            
+            // View Sortable Scoreboard Modal
+            $scope.buttonViewScoreboardModal = function() {
+                var modalInstance = TriviaModalService.openViewGameScoreboard($scope.game.id, $scope.game.currentRoundNumber);
+                modalInstance.result.then(function (result) {
+                    console.log(result);
+                }, function () {});
+                
             };
             
             // Add Trivia Team Modal
