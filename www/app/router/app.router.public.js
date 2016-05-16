@@ -39,10 +39,21 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
             }
         });
 
+        $stateProvider.state('app.public.homepage', {
+            title: 'Redirecting to Trivia Joint Homepage...',
+            url: '/',
+            resolve: {
+                $window: '$window',
+                homepageRedirect : function($window) {
+                    $window.top.location.href = 'http://www.triviajoint.com/';
+                }
+            }
+        });
+        
         $stateProvider.state('app.public.landing', {
             bodyClass: 'public landing',
             title: 'Welcome',
-            url: '/',
+            url: '/game-list',
             views: {
                 'content@app.public': {
                     templateUrl: 'app/views/public/landing/landing.html',

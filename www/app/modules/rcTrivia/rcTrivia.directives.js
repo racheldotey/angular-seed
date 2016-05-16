@@ -54,7 +54,10 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 .withOption('paging', false)
                 .withOption('bSort', false)
                 .withOption('ordering', false)
-                .withFixedColumns({ leftColumns: 1 });
+                .withFixedColumns({ leftColumns: 1 })
+                .withOption('drawCallback', function() {
+                    $scope.setScoreboardHeight();
+                });
                 
             if(angular.isDefined($stateParams.sortBy) && angular.isNumber(parseInt($stateParams.sortBy))){
                 var direction = (angular.isDefined($stateParams.sortDirection) && 
@@ -361,6 +364,8 @@ app.directive('rcTriviaScoreboardReadonly', function(THIS_DIRECTORY) {
                 .withOption('paging', false)
                 .withFixedColumns({ leftColumns: 1 })
                 .withOption('responsive', false)
+                .withOption('bSort', false)
+                .withOption('ordering', false)
                 .withOption('drawCallback', function() {
                     $scope.setScoreboardHeight();
                 });

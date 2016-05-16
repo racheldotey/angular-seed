@@ -129,9 +129,9 @@ angular.module('app.member.dashboard', [])
             } else if(angular.isDefined($scope.currentPlayer.teams[0]) &&
                     $scope.currentPlayer.teams[0].gameId &&
                     parseInt($scope.currentPlayer.teams[0].gameId) > 0) {
-                AlertConfirmService.confirm("Your team is already checked into a game. Would you like to view the game scoreboard?", "Team Already Checked In")
+                AlertConfirmService.confirm("Your team is already checked into a game. Would you like to view the game scoreboard?", "Already Checked In")
                     .result.then(function (result) {
-                        $state.go('app.member.scoreboard', { gameId: $scope.currentPlayer.teams[0].gameId, roundId: 1 });
+                        $state.go('app.member.game', { gameId: $scope.currentPlayer.teams[0].gameId, roundId: 1 });
                     }, function (declined) {});
             } else {
                 var modalInstance = TriviaModalService.openAddTeam(false, $scope.currentPlayer.teams[0]);
