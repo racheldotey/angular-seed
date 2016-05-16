@@ -1,5 +1,7 @@
 <?php namespace API;
 require_once dirname(dirname(__FILE__)) . '/config/config.php';
+require_once dirname(dirname(__FILE__)) . '/controllers/system-variables/config.data.php';
+require_once dirname(__FILE__) . '/logging.php';
 require_once dirname(__FILE__) . '/api.dbconn.php';
 
 class ApiMailer {
@@ -22,6 +24,12 @@ class ApiMailer {
         syslog($level, $error);
         self::$logger->write($error);
         return;
+    }
+    
+    public static function sendSystemTest($extraText, $playerEmail, $playerName = '') {
+        $websiteTitle = APIConfig::get('WEBSITE_TITLE');
+        $websiteUrl = APIConfig::get('WEBSITE_URL');
+        return self::sendEmailFromTemplate('SYSTEM_EMAIL_SERVICE_TEST_EMAIL', $playerEmail, $playerName, [$websiteTitle, $websiteUrl, $extraText], [$websiteTitle]);
     }
     
     public static function sendWebsiteSignupInvite($token, $playerEmail, $playerName = '') {
@@ -52,7 +60,6 @@ class ApiMailer {
         
         // Setup mailer for sending message
         $mail = self::getPhpMailer();
-        $mail->isHTML(true);
         
         // Add Recipient - include name if it was sent
         if(!$recipientName || $recipientName === '') {
@@ -82,20 +89,16 @@ class ApiMailer {
         // Template substitution is for parms named !@{NUMBER}@!, i.e., !@0@!, !@1@!, etc
         // Subject Substituion
         $subject = $emailTemplate->subject;
-        $index = 0;
-        foreach ($subjectParams AS $sParam) {
-            $subject = str_replace('!@' . $index . '@!', $sParam, $subject);
-            $index++;
+        for($index = 0; $index < count($subjectParams); $index++) {
+            $subject = str_replace("!@{$index}@!", $subjectParams[$index], $subject);
         }
         $mail->Subject = $subject;
         // Body Substitution
         $bodyHtml = $emailTemplate->bodyHtml;
         $bodyPlain = $emailTemplate->bodyPlain;
-        $index = 0;
-        foreach ($bodyParams AS $bParam) {
-            $bodyHtml = str_replace('!@' . $index . '@!', $bParam, $bodyHtml);
-            $bodyPlain = str_replace('!@' . $index . '@!', $bParam, $bodyPlain);
-            $index++;
+        for($index = 0; $index < count($bodyParams); $index++) {
+            $bodyHtml = str_replace("!@{$index}@!", $bodyParams[$index], $bodyHtml);
+            $bodyPlain = str_replace("!@{$index}@!", $bodyParams[$index], $bodyPlain);
         }
         
         $mail->Body = $bodyHtml;
@@ -104,18 +107,21 @@ class ApiMailer {
         if ($mail->send()) {
             // log the success
             self::logMailError(LOG_INFO, "EMAIL SUCCESS\n Template Id:<{$templateId}> Sender: <{$emailTemplate->replyEmail}, {$emailTemplate->replyName}> Recipient: <{$recipientEmail}, {$recipientName}> Subject: <{$subject}> Body: <{$bodyPlain}>");
-            return array('error' => false, 'msg' => "Success! Email Sent to <{$recipientEmail}, {$recipientName}>");
+            return (!$recipientName || $recipientName === '') ? array('error' => false, 'msg' => "Success! Email Sent to \"{$recipientEmail}\"") :
+                    array('error' => false, 'msg' => "Success! Email Sent to \"{$recipientEmail}, {$recipientName}\"");
         } else {
             // log the error
             self::logMailError(LOG_ERR, "EMAIL FAILURE\nError <{$mail->ErrorInfo}>/n Template Id:<{$templateId}> Sender: <{$emailTemplate->replyEmail}, {$emailTemplate->replyName}> Recipient: <{$recipientEmail}, {$recipientName}> Subject: <{$subject}> Body: <{$bodyPlain}>");
-            return array('error' => true, 'msg' => "Unknown Error: Error sending email to <{$recipientEmail}, {$recipientName}>");
+            return (!$recipientName || $recipientName === '') ? array('error' => true, 'msg' => "Unknown Error: Error sending email to \"{$recipientEmail}, {$recipientName}\"") : 
+                array('error' => true, 'msg' => "Unknown Error: Error sending email to \"{$recipientEmail}, {$recipientName}\"");
         }
     }
 
-    private static function getPhpMailer() {        
+    public static function getPhpMailer() {        
         // Setup mailer for sending message
         $mail = new \PHPMailer;
         $mail->isSMTP();
+        $mail->isHTML(true);
         
         $mailerSettings = array(
             // Enable SMTP debugging
