@@ -2,8 +2,8 @@
 
 /* @author  Rachel Carbone */
 
-angular.module('app.modal.trivia.invitePlayer', [])        
-    .controller('TriviaInvitePlayerModalCtrl', ['$scope', '$uibModalInstance', 'ApiRoutesEmails', 'InvitingPlayer',
+angular.module('app.modal.invitePlayer', [])        
+    .controller('InvitePlayerModalCtrl', ['$scope', '$uibModalInstance', 'ApiRoutesEmails', 'InvitingPlayer',
     function($scope, $uibModalInstance, ApiRoutesEmails, InvitingPlayer) {   
     
     $scope.invitingPlayer = InvitingPlayer;

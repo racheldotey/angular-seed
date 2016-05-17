@@ -7,8 +7,8 @@
  */
 
 angular.module('app.member.dashboard', [])
-    .controller('MemberDashboardCtrl', ['$scope', '$state', '$compile', '$filter', 'TriviaModalService', 'AlertConfirmService', 'DataTableHelper', 'DTOptionsBuilder', 'DTColumnBuilder', 'AuthService', 'ApiRoutesEmails',
-        function($scope, $state, $compile, $filter, TriviaModalService, AlertConfirmService, DataTableHelper, DTOptionsBuilder, DTColumnBuilder, AuthService, ApiRoutesEmails) {
+    .controller('MemberDashboardCtrl', ['$scope', '$state', '$compile', '$filter', 'ModalService', 'TriviaModalService', 'AlertConfirmService', 'DataTableHelper', 'DTOptionsBuilder', 'DTColumnBuilder', 'AuthService', 'ApiRoutesEmails',
+        function($scope, $state, $compile, $filter, ModalService, TriviaModalService, AlertConfirmService, DataTableHelper, DTOptionsBuilder, DTColumnBuilder, AuthService, ApiRoutesEmails) {
         
         $scope.currentPlayer = AuthService.getUser();
         
@@ -110,14 +110,14 @@ angular.module('app.member.dashboard', [])
         /* Button Click Events */
         
         $scope.buttonInviteSiteSignup = function() {
-            var modalInstance = TriviaModalService.openInviteSiteSignup();
+            var modalInstance = ModalService.openInviteSiteSignup();
             modalInstance.result.then(function(result) {
                 $scope.alertProxy.success(result);
             });
         };
         
         $scope.buttonInviteToTeam = function() {
-            var modalInstance = TriviaModalService.openInviteToTeam();
+            var modalInstance = ModalService.openInviteToTeam();
             modalInstance.result.then(function(result) {
                 $scope.alertProxy.success(result);
             });

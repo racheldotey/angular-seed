@@ -15,7 +15,6 @@ angular.module('TriviaModalService', [
     'app.modal.trivia.editRound',
     'app.modal.trivia.editTeam',
     'app.modal.trivia.editVenue',
-    'app.modal.trivia.invitePlayer',
     'app.modal.trivia.joinTeam',
     'app.modal.trivia.viewGameScoreboard'
 ])
@@ -213,41 +212,6 @@ angular.module('TriviaModalService', [
             resolve: {
                 editing: function() {
                     return (angular.isDefined(question)) ? question : {};
-                }
-            }
-        });
-    };
-    
-    /*
-     * Open Invite Player to Trivia Joint Modal
-     * 
-     * @return uibModalInstance
-     */
-    api.openInviteSiteSignup = function() {
-        return api.openModal({
-            templateUrl: templatePath + 'invitePlayer/invitePlayer.html',
-            controller: 'TriviaInvitePlayerModalCtrl',
-            resolve: {
-                InvitingPlayer: function() {
-                    return false;
-                }
-            }
-        });
-    };
-    
-    /*
-     * Open Invite Player to Team to Trivia Joint Modal
-     * 
-     * @return uibModalInstance
-     */
-    api.openInviteToTeam = function() {
-        return api.openModal({
-            templateUrl: templatePath + 'invitePlayer/invitePlayer.html',
-            controller: 'TriviaInvitePlayerModalCtrl',
-            resolve: {
-                AuthService: 'AuthService',
-                InvitingPlayer: function(AuthService) {
-                    return AuthService.getUser();
                 }
             }
         });

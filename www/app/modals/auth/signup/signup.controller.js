@@ -58,7 +58,7 @@ angular.module('app.modal.signup', [])
                 
                 AuthService.signup($scope.newUser, true).then(function (results) {
                     $log.debug(results);
-                    $uibModalInstance.close("Signup successful!  Please wait for confirmation page.");
+                    $uibModalInstance.close("Signup successful! A new user has been created..");
                 }, function (error) {
                     $scope.signupAlerts.error(error);
                 });
