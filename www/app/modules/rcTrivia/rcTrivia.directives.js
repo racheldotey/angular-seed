@@ -16,8 +16,30 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
         scope: {
             game: '=rcTriviaScoreboard'
         },
-        controller: ['$scope', '$state', '$stateParams', '$window', '$filter', 'TriviaScoreboard', 'AlertConfirmService', 'TriviaModalService', 'DTOptionsBuilder', 'DTColumnDefBuilder',
-            function($scope, $state, $stateParams, $window, $filter, TriviaScoreboard, AlertConfirmService, TriviaModalService, DTOptionsBuilder, DTColumnDefBuilder) {
+        controller: ['$rootScope', '$scope', '$state', '$stateParams', '$window', '$filter', 'TriviaScoreboard', 'AlertConfirmService', 'TriviaModalService', 'DTOptionsBuilder', 'DTColumnDefBuilder',
+            function($rootScope, $scope, $state, $stateParams, $window, $filter, TriviaScoreboard, AlertConfirmService, TriviaModalService, DTOptionsBuilder, DTColumnDefBuilder) {
+            
+            // Prevent leaving without saving
+            $rootScope.$on('$stateChangeStart',
+                function (event, toState, toParams, fromState, fromParams) {
+                    
+                    if(fromState.name === 'app.host.game' && $scope.unsavedState) {    
+                        event.preventDefault();
+                        AlertConfirmService.confirm('Wait! You have unsaved changes. Would you like to save the scoreboard before you leave?', 'Unsaved Changes!')
+                            .result.then(function () {
+
+                                TriviaScoreboard.saveScoreboard().then(function (result) {
+                                    $scope.alertProxy.success("Game saved.");
+                                    $scope.unsavedState = false;
+                                    $state.go(toState.name, toParams);
+                                }, function (error) {
+                                    $scope.alertProxy.error(error);
+                                });
+                            }, function (declined) {
+                                $state.go(toState.name, toParams);
+                            });
+                    }
+                });
             
             /* Used to restrict alert bars */
             $scope.alertProxy = {};

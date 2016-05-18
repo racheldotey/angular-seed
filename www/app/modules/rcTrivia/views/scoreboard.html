@@ -69,9 +69,10 @@
             <thead>
                 <tr>
                     <th><p>Team Names</p></th>
+                    <!--
                     <th><p class="text-center">Game<br/>Score / Rank</p></th>
                     <th><p class="text-center">Round #{{game.round.number}}<br/>Score / Rank</p></th>
-
+                    -->
                     <th class="question" ng-repeat="question in game.rounds[game.currentRoundNumber].questions">
                         <a href="" ng-click="buttonEditQuestion(question.number)">
                             <p class="text-center"><strong>#{{question.number}}<span ng-if="getQuestionType(question.number) === 'default'"> - {{question.maxPoints | numberEx}} pts</span></strong></p>
