@@ -38,12 +38,7 @@
         
         <div ng-hide="game || !gamesList.length" class="form-group">
             <label class="col-xs-5 col-sm-4 col-md-3 control-label">Games</label>
-            <div class="col-xs-7 col-sm-8 col-md-9">
-                <select 
-                    class="form-control"
-                    ng-model="toGame"
-                    ng-options="game.label for game in gamesList track by game.id"></select>
-            </div>
+            <div class="col-xs-7 col-sm-8 col-md-9" rc-trivia-select-list-game="toGame" teams-list-data="gamesList"></div>
         </div>
         
         <div ng-hide="team" class="form-group">
@@ -56,5 +51,5 @@
 
 <div class="modal-footer">
     <button class="btn btn-default pull-left" ng-click="buttonCancel()">Cancel</button>
-    <button class="btn btn-primary" ng-click="buttonAddTeam()">Add Team</button>
+    <button class="btn btn-primary" ng-click="buttonAddTeam()">Checkin Team</button>
 </div>

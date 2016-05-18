@@ -47,8 +47,9 @@
                             <p><strong>Answer</strong>: "{{teamScore.answer}}"</p>
                             <strong>Wager</strong>: {{teamScore.teamWager| numberEx}}<br/>
                             <strong>{{(teamScore.questionScore === teamScore.teamWager) ? 'Correct' : 'Incorrect'}}</strong><br/>
+                            <strong>Score</strong>: {{teamScore.questionScore| numberEx}}
                         </div>
-                        <strong>Score</strong>: {{teamScore.questionScore| numberEx}}
+                        <div ng-if="getQuestionType(teamScore.number) !== 'wager'">{{teamScore.questionScore| numberEx}}</div>
                     </td>
                 </tr>
             </tbody>

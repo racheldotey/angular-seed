@@ -126,11 +126,11 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
             $scope.dtScoreboard.columns = [
                 DTColumnDefBuilder.newColumnDef(0).notSortable(),
                 DTColumnDefBuilder.newColumnDef(1).notSortable(),
-                DTColumnDefBuilder.newColumnDef(2).notSortable(),
-                DTColumnDefBuilder.newColumnDef(3).notSortable(),
-                DTColumnDefBuilder.newColumnDef(4).notSortable()
+                DTColumnDefBuilder.newColumnDef(2).notSortable()//,
+                //DTColumnDefBuilder.newColumnDef(3).notSortable(),
+                //DTColumnDefBuilder.newColumnDef(4).notSortable()
             ];
-            var colNum = 5;
+            var colNum = $scope.dtScoreboard.columns.length;
             for(var i = 0; i < Object.keys($scope.game.rounds[$scope.game.currentRoundNumber].questions).length; i++) {
                 $scope.dtScoreboard.columns.push(DTColumnDefBuilder.newColumnDef(colNum).notSortable());
                 colNum++;
@@ -448,6 +448,31 @@ app.directive('rcTriviaSelectListVenue', function(THIS_DIRECTORY) {
             $scope.dataArray = angular.isArray($scope.dataArray) ? $scope.dataArray : new Array();
             
             $scope.placeholderText = angular.isString($scope.placeholderText) ? $scope.placeholderText : "Search for Trivia Joint";
+        },
+        controller: ["$scope", function ($scope) {
+            // Controller - Create a controller which publishes an API for 
+            // communicating across directives.
+        }]
+    };
+});
+
+app.directive('rcTriviaSelectListGame', function(THIS_DIRECTORY) {
+    return {
+        restrict: 'A',          // Must be a element attribute
+        templateUrl: THIS_DIRECTORY + 'views/selectList.games.html',
+        scope: {
+            selected: '=rcTriviaSelectListGame',    // $scope object REQUIRED
+            dataArray: '=teamsListData',             // Data Array REQUIRED
+            placeholderText: '@placeholderText'
+        },
+        link: function ($scope, element, attributes) {
+            // Link - Programmatically modify resulting DOM element instances, 
+            // add event listeners, and set up data binding. 
+            $scope.selected = (angular.isObject($scope.selected)) ? { value : $scope.selected } : {};
+            
+            $scope.dataArray = angular.isArray($scope.dataArray) ? $scope.dataArray : new Array();
+            
+            $scope.placeholderText = angular.isString($scope.placeholderText) ? $scope.placeholderText : "Search for Trivia Game";
         },
         controller: ["$scope", function ($scope) {
             // Controller - Create a controller which publishes an API for 

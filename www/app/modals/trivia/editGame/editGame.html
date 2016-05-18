@@ -45,14 +45,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="form-group">
-                    <label>Choose a Trivia Joint</label>
-                    <select 
-                        ng-options="venue.label for venue in venueList" 
-                        ng-model="editing.venue"
-                        ng-change="updateGameName()"
-                        class="form-control" required>
-                        <option value="">Select a Venue</option>
-                    </select>
+                    <div rc-trivia-select-list-venue="editing.venue" teams-list-data="venueList"></div>
                 </div>
             </div>
             <div class="col-xs-6">

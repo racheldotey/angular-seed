@@ -134,7 +134,9 @@ angular.module('app.member.dashboard', [])
                 AlertConfirmService.alert("You must be a member of a team to checkin your team.", "Cannot Checkin Team");
             } else if(angular.isDefined($scope.currentPlayer.teams[0]) &&
                     $scope.currentPlayer.teams[0].gameId &&
-                    parseInt($scope.currentPlayer.teams[0].gameId) > 0) {
+                    parseInt($scope.currentPlayer.teams[0].gameId) > 0 &&
+                    ($scope.currentPlayer.teams[0].gameStarted !== 'false' &&
+                    $scope.currentPlayer.teams[0].gameEnded === 'false')) {
                 AlertConfirmService.confirm("Your team is already checked into a game. Would you like to view the game scoreboard?", "Already Checked In")
                     .result.then(function (result) {
                         $state.go('app.member.game', { gameId: $scope.currentPlayer.teams[0].gameId, roundId: 1 });
@@ -142,7 +144,8 @@ angular.module('app.member.dashboard', [])
             } else {
                 var modalInstance = TriviaModalService.openAddTeam(false, $scope.currentPlayer.teams[0]);
                 modalInstance.result.then(function (result) {
-                    $scope.alertProxy.success("Team successfully checked in to current game.");
+                    $scope.alertProxy.success("Team successfully checkedin to game.");
+                    $scope.dtGames.reloadData();
                 }, function () {});
             }
         };

@@ -111,7 +111,8 @@ class AuthData {
                     . "JOIN " . DBConn::prefix() . "auth_lookup_group_role AS gr ON ug.auth_group_id = gr.auth_group_id "
                     . "WHERE ug.user_id = :id;", array(':id' => $user->id), \PDO::FETCH_COLUMN);
             
-            $user->teams = DBConn::selectAll("SELECT t.id, t.name, m.joined, IFNULL(g.id, 0) AS gameId, IFNULL(g.name, '') AS game "
+            $user->teams = DBConn::selectAll("SELECT t.id, t.name, m.joined, IFNULL(g.id, 0) AS gameId, IFNULL(g.name, '') AS game, "
+                    . "IFNULL(g.scheduled, 'false') AS gameScheduled, IFNULL(g.game_started, 'false') AS gameStarted, IFNULL(g.game_ended, 'false') AS gameEnded "
                     . "FROM " . DBConn::prefix() . "teams AS t "
                     . "LEFT JOIN " . DBConn::prefix() . "team_members AS m ON m.team_id = t.id "
                     . "LEFT JOIN " . DBConn::prefix() . "games AS g ON t.current_game_id = g.id "

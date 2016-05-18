@@ -83,9 +83,10 @@
             <tbody>
                 <tr ng-repeat="team in game.teams track by $index" data-team-id="{{team.teamId}}">
                     <th class="team"><p>{{team.name}}</p></th>
+                    <!--
                     <th class="game-score text-center">{{team.gameScore | numberEx}} / {{team.gameRank}}</th>
                     <th class="round-score text-center">{{team.rounds[game.currentRoundNumber].roundScore | numberEx}} / {{team.rounds[game.currentRoundNumber].roundRank}}</th>
-
+                    -->
                     <td class="question-score" ng-repeat="teamScore in team.rounds[game.currentRoundNumber].questions">
                         <div ng-if="getQuestionType(teamScore.number) === 'wager'">
                             <div ng-show="displayQuickScoreButtons" class="input-group input-group-sm" title="Teams Wager">

@@ -14,12 +14,6 @@ angular.module('app.modal.trivia.editGame', [])
     /* Holds the add / edit form on the modal */
     $scope.form = {};
     
-    $scope.generateGameName = function() {
-        
-    
-    //Brickhouse Pizza - January 13, 2016 @ 7:00pm
-    };
-    
     /* Modal Mode */    
     $scope.setMode = function(type) {
         $scope.viewMode = false;
@@ -74,9 +68,12 @@ angular.module('app.modal.trivia.editGame', [])
         // Brickhouse - 2016-03-08 5:00pm
         var date = moment($scope.editing.scheduledDate).format('dddd MMMM D, YYYY');
         var time = moment($scope.editing.scheduledTime).format('h:mm a');
-        var venue = (angular.isDefined($scope.editing.venue) && angular.isDefined($scope.editing.venue.name)) ? $scope.editing.venue.name : '';
+        var venue = (angular.isDefined($scope.editing.venue.value) && angular.isDefined($scope.editing.venue.value.name)) ? $scope.editing.venue.value.name : '';
         $scope.editing.gameName = venue + ' - ' + date + ' ' + time ;
     };
+    $scope.$watch("editing.venue.value", function(newValue, oldValue) {
+        $scope.updateGameName();
+    });
     $scope.$watch("editing.scheduledDate", function(newValue, oldValue) {
         $scope.updateGameName();
     });
@@ -99,7 +96,7 @@ angular.module('app.modal.trivia.editGame', [])
 
             ApiRoutesGames.addGame({ 
                 'scheduled' : scheduled.format("YYYY-MM-DD HH:mm:ss"), 
-                'venueId' : $scope.editing.venue.id , 
+                'venueId' : $scope.editing.venue.value.id , 
                 'hostId' : UserSession.id(),
                 'name' : $scope.editing.gameName,
                 'defaultQuestionPoints' : $scope.editing.defaultQuestionPoints}).then(

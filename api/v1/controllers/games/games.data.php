@@ -101,9 +101,20 @@ class GameData {
     }
     
     /* Team and Game interactions */
-    static function selectTeamCurrentGameId($teamId) {
-        return DBConn::selectColumn("SELECT current_game_id FROM " . DBConn::prefix() . "teams "
-                . "WHERE id = :id AND current_game_id IS NOT NULL LIMIT 1;", array(':id' => $teamId));        
+    static function selectTeamCurrentGameId($teamId, $userId) {
+        $team = DBConn::selectOne("SELECT current_game_id AS gameId, g.game_started AS started, g.game_ended AS ended "
+                . "FROM as_teams AS t LEFT JOIN as_games AS g ON t.current_game_id = g.id "
+                . "WHERE t.id = :id AND current_game_id IS NOT NULL LIMIT 1;", array(':id' => $teamId));
+        
+        if($team->gameId !== NULL && ($team->started === NULL || $team->ended !== NULL)) {
+            // Log User Out of Not Started, or Already Ended Game
+            DBConn::update("UPDATE " . DBConn::prefix() . "teams SET current_game_id=NULL, "
+                    . "last_updated_by=:last_updated_by WHERE id = :id;", 
+                    array(':id' => $teamId, ":last_updated_by" => $userId));
+            return NULL;
+        } else {
+            return $team->gameId;
+        }
     }
     
     static function insertTeamIntoGame($validTeam) {
