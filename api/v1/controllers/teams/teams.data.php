@@ -49,13 +49,14 @@ class TeamData {
 
 
     static function insertTeam($validTeam) {
+        /* Incriment Duplicate Team Names
         $find = $validTeam[':name'] . '%';
         $num = DBConn::selectColumn("SELECT count(id) AS num FROM " . DBConn::prefix() . "teams "
                 . "WHERE name LIKE :name;", array(':name' => $find));
         
         if($num > 0) {
             $validTeam[':name'] = $validTeam[':name'] . ' ' . $num;
-        }
+        } */
         
         return DBConn::insert("INSERT INTO " . DBConn::prefix() . "teams(name, home_venue_id, created_user_id, last_updated_by) "
                 . "VALUES (:name, :home_venue_id, :created_user_id, :last_updated_by);", $validTeam);

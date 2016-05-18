@@ -89,7 +89,7 @@ angular.module('app.modal.trivia.editTeam', [])
         ];
     } else {
         $scope.setMode('new');
-        $scope.editing.name = "A " + moment().format('dddd') + " Team in " + moment().format('MMMM');
+        $scope.editing.name = "";
         $scope.editing.players = [ { email : '' } ];
     }
     

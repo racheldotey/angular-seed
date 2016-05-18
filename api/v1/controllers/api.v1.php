@@ -35,7 +35,7 @@ class V1Controller {
          * http://docs.slimframework.com/configuration/modes/
          */
         $app = new \Slim\Slim(array(
-            'mode' => 'development'
+            'mode' => 'production'
         ));
         
         // Only invoked if mode is "production"

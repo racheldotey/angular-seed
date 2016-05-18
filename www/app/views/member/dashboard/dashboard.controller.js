@@ -54,21 +54,27 @@ angular.module('app.member.dashboard', [])
             DTColumnBuilder.newColumn('venue').withTitle('Joint'),
             DTColumnBuilder.newColumn('host').withTitle('Host'),
             DTColumnBuilder.newColumn(null).withTitle('Status').renderWith(function (data, type, full, meta) {
-                var scheduled = moment(data.scheduled, 'YYYY-MM-DD HH:mm:ss').format('h:mm a on M/D/YYYY ');
-                var started = moment(data.started, 'YYYY-MM-DD HH:mm:ss').format('h:mm a on M/D/YYYY ');
-                var ended = moment(data.ended, 'YYYY-MM-DD HH:mm:ss').format('h:mm a on M/D/YYYY ');
+                var scheduled = (type !== 'display') ? moment(data.scheduled, 'YYYY-MM-DD HH:mm:ss').format('YYMDHms') : 
+                        moment(data.scheduled, 'YYYY-MM-DD HH:mm:ss').format('h:mm a on M/D/YYYY ');
+                var started = (type !== 'display') ? moment(data.started, 'YYYY-MM-DD HH:mm:ss').format('YYMDHms') : 
+                        moment(data.started, 'YYYY-MM-DD HH:mm:ss').format('h:mm a on M/D/YYYY ');
+                var ended = (type !== 'display') ? moment(data.ended, 'YYYY-MM-DD HH:mm:ss').format('YYMDHms') : 
+                        moment(data.ended, 'YYYY-MM-DD HH:mm:ss').format('h:mm a on M/D/YYYY ');
                     
                 if(data.ended) {
-                    return '<span title="Scheduled: ' + scheduled + ' Started: ' + started +  ' Ended: ' + ended +  '">Ended at  ' + ended + '</span>';
+                    return (type !== 'display') ? ended : 
+                            '<span title="Scheduled: ' + scheduled + ' Started: ' + started +  ' Ended: ' + ended +  '">Ended at  ' + ended + '</span>';
                 } else if(data.started) {
-                    return '<span title="Scheduled: ' + scheduled + ' Started: ' + started +  '">In progress, started at  ' + started + '</span>';
+                    return (type !== 'display') ? started : 
+                            '<span title="Scheduled: ' + scheduled + ' Started: ' + started +  '">In progress, started at  ' + started + '</span>';
                 } else {
-                    return '<span title="Scheduled: ' + scheduled + '">Scheduled for  ' + scheduled + '</span>';
+                    return (type !== 'display') ? scheduled : 
+                            '<span title="Scheduled: ' + scheduled + '">Scheduled for  ' + scheduled + '</span>';
                 }
             }),
             DTColumnBuilder.newColumn('scoreboard').withTitle('Scoreboard').notSortable().withClass('none')
         ];
-        $scope.dtGames.options.withOption('responsive', {
+        $scope.dtGames.options.withOption('order', [4, 'desc']).withOption('responsive', {
             details: {
                 type: 'column',
                 renderer: function(api, rowIdx, columns) {
