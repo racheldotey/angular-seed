@@ -32,11 +32,10 @@ class EmailController {
             return $app->render(400,  array('msg' => 'Invalid email. Check your parameters and try again.'));
         }
         
-        /*
         $foundId = EmailData::selectUserIdByEmail($post['email']);
         if($foundId) {
             return $app->render(400,  array('msg' => 'This email is already registered to a player.'));
-        }*/
+        }
         
         $token = self::makeInviteToken();
         $firstName = (v::key('nameFirst', v::stringType())->validate($post)) ? $post['nameFirst'] : NULL;
