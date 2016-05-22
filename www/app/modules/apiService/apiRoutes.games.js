@@ -168,5 +168,12 @@ angular.module('apiRoutes.games', [])
         return API.post('team/update/' + team.id, team, 'Could not save team.');
     };
     
+    api.getTeam = function(teamId) {
+        if(!angular.isNumber(parseInt(teamId))) {
+            return API.reject('Invalid team please verify your information and try again.');
+        }
+        return API.get('team/get/' + teamId, 'Could not save team.');
+    };
+    
     return api;
 }]);

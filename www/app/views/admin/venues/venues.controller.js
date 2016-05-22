@@ -87,7 +87,9 @@ angular.module('app.admin.venues', [])
                     DTColumnBuilder.newColumn('logo').withTitle('Logo').renderWith(function (data, type, full, meta) {
                         return '<img ng-src="' + data + '" class="img-responsive" style="max-height: 25px; max-width: 25px;" />';
                     }),
-                    DTColumnBuilder.newColumn('venue').withTitle('Joint Name'),
+                    DTColumnBuilder.newColumn(null).withTitle('Joint Name').renderWith(function (data, type, full, meta) {
+                        return '<a ng-click="buttonOpenEditVenueModal(\'' + data.id + '\')">' + data.venue + '</a>';
+                    }),
                     DTColumnBuilder.newColumn('city').withTitle('City'),
                     DTColumnBuilder.newColumn('state').withTitle('State'),
                     DTColumnBuilder.newColumn('phone').withTitle('Phone'),

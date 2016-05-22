@@ -146,9 +146,25 @@ angular.module('TriviaModalService', [
             templateUrl: templatePath + 'editTeam/editTeam.html',
             controller: 'TriviaEditTeamModalCtrl',
             resolve: {
+                $q: '$q',
+                ApiRoutesGames: 'ApiRoutesGames',
                 ApiRoutesSimpleLists: 'ApiRoutesSimpleLists',
-                editing: function() {
-                    return (angular.isObject(team)) ? team : { };
+                editing: function($q, ApiRoutesGames) {
+                    return $q(function (resolve, reject) {
+                            if (angular.isObject(team)) {
+                                return resolve(team);
+                            } else if (angular.isNumber(parseInt(team))) {
+                                ApiRoutesGames.getTeam(team).then(function (result) {
+                                    console.log(result);
+                                    return resolve(result.team);
+                                }, function (error) {
+                                    console.log(error);
+                                    return reject(error);
+                                });
+                            } else {
+                                return resolve({});
+                            }
+                    });
                 },
                 addUserId: function() {
                     return addUserId || false;

@@ -100,8 +100,9 @@
 
 <div ng-if="!editMode" class="modal-footer">
     <button class="btn btn-default pull-left" ng-click="buttonEdit()">Edit</button>
-    <button class="btn btn-primary pull-left" ng-click="buttonViewCheckinLog()">Checkin Log</button>
-    <button class="btn btn-primary" ng-click="buttonCancel()">Done</button>
+    <button class="btn btn-primary pull-left" ng-hide="logMode" ng-click="buttonViewCheckinLog()">Checkin Log</button>
+    <button class="btn btn-primary pull-left" ng-show="logMode" ng-click="buttonCancel()">View Team</button>
+    <button class="btn btn-primary" ng-click="buttonDone()">Done</button>
 </div>
 
 <div ng-if="editMode" class="modal-footer">

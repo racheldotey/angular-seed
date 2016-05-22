@@ -13,7 +13,7 @@ angular.module('app.admin.teams', [])
         $scope.alertProxy = {};
 
         /* Modal triggers */
-        // Edit User Modal
+        // Edit Team Modal
         $scope.buttonOpenEditTeamModal = function (id) {
             var found = $filter('filter')($scope.dtTeams.instance.DataTable.data(), {id: id}, true);
             if(angular.isDefined(found[0])) {
@@ -76,7 +76,9 @@ angular.module('app.admin.teams', [])
                 return '<a><small>(' + data.players.length +')</small> <i class="fa"></i></a>';
             }).notSortable(),
             DTColumnBuilder.newColumn('id').withTitle('ID'),
-            DTColumnBuilder.newColumn('name').withTitle('Team'),
+            DTColumnBuilder.newColumn(null).withTitle('Team').renderWith(function(data, type, full, meta) {
+                return '<a ng-click="buttonOpenEditTeamModal(\'' + data.id + '\')">' + data.name + '</a>';
+            }).notSortable(),
             DTColumnBuilder.newColumn('homeVenue').withTitle('Home Joint'),
             DTColumnBuilder.newColumn(null).withTitle('Last Game').renderWith(function (data, type, full, meta) {
                 return (!data.lastGameName) ? 'None' : '<a data-ui-sref="app.member.game({gameId :' + data.lastGameId + ', roundNumber : 1 })">' + data.lastGameName + '</a>';

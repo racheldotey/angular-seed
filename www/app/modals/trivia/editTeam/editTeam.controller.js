@@ -46,7 +46,6 @@ angular.module('app.modal.trivia.editTeam', [])
         switch(type) {
             case 'new':
                 $scope.newMode = true;
-                $scope.editMode = true;
                 break;
             case 'edit':
                 $scope.editMode = true;
@@ -62,12 +61,14 @@ angular.module('app.modal.trivia.editTeam', [])
     };
     
     $scope.getMode = function() {
-        if($scope.newMode) {
-            return 'new';
-        } else if($scope.editMode) {
+        if($scope.viewMode) {
+            return 'view';
+        } else if($scope.logMode) {
+            return 'log';
+        }  else if($scope.editMode) {
             return 'edit';
         } else {
-            return 'view';
+            return 'new';
         }
     };
     
@@ -208,6 +209,10 @@ angular.module('app.modal.trivia.editTeam', [])
         } else {
             $uibModalInstance.dismiss(false);
         }
+    };
+    
+    $scope.buttonDone = function() {
+        $uibModalInstance.dismiss(false);
     };
         
     /* Click event for the Delete Team button */

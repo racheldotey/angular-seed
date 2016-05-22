@@ -6,17 +6,22 @@ class TeamData {
     static function getTeam($id) {
         $team = DBConn::selectOne("SELECT t.id, t.name, t.created, t.last_updated AS updated, "
                 . "CONCAT(u1.name_first, ' ', u1.name_last) AS createdBy, "
-                . "CONCAT(u2.name_first, ' ', u2.name_last) AS updatedBy "
+                . "CONCAT(u2.name_first, ' ', u2.name_last) AS updatedBy, "
+                . "t.home_venue_id AS homeVenueId, hv.name AS homeVenue, "
+                . "g.id AS lastGameId, g.name AS lastGameName "
+                
                 . "FROM " . DBConn::prefix() . "teams AS t "
                 . "LEFT JOIN " . DBConn::prefix() . "users AS u1 ON u1.id = t.created_user_id "
-                . "LEFT JOIN " . DBConn::prefix() . "users AS u2 ON u2.id = t.last_updated_by WHERE t.id = :id LIMIT 1;", array(':id' => $id));
+                . "LEFT JOIN " . DBConn::prefix() . "users AS u2 ON u2.id = t.last_updated_by "
+                . "LEFT JOIN " . DBConn::prefix() . "venues AS hv ON hv.id = t.home_venue_id "
+                . "LEFT JOIN " . DBConn::prefix() . "game_score_teams AS gt ON gt.team_id = t.id "
+                . "LEFT JOIN " . DBConn::prefix() . "games AS g ON gt.game_id = g.id "
+                . "WHERE t.id = :id LIMIT 1;", array(':id' => $id));
         
         if($team) {
-            $qMembers = DBConn::preparedQuery("SELECT m.joined, u.id, u.name_first AS nameFirst, u.name_last AS nameLast, "
-                    . "CONCAT(u.name_first, ' ', u.name_last) AS displayName "
-                    . "FROM " . DBConn::prefix() . "team_members AS m "
-                    . "LEFT JOIN " . DBConn::prefix() . "users AS u ON u.id = m.user_id "
-                    . "WHERE m.team_id = :id;");
+            $qPlayers = DBConn::preparedQuery("SELECT u.id, CONCAT(u.name_first, ' ', u.name_last) AS name, m.joined "
+                            . "FROM " . DBConn::prefix() . "team_members AS m JOIN " . DBConn::prefix() . "users AS u "
+                            . "ON m.user_id = u.id WHERE m.team_id = :team_id ORDER BY name;");
 
             $qGames = DBConn::preparedQuery("SELECT g.id, g.name, g.scheduled, g.max_points, s.score, s.game_winner, "
                     . "v.id AS venueId, v.name AS venue, v.address AS venueAddress, v.address_b AS venueAddressB, "
@@ -26,16 +31,17 @@ class TeamData {
                     . "LEFT JOIN " . DBConn::prefix() . "game_score_teams AS s ON g.id = s.game_id "
                     . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = g.venue_id "
                     . "LEFT JOIN " . DBConn::prefix() . "users AS h ON h.id = g.host_user_id "
-                    . "WHERE s.team_id = :id;");
+                    . "WHERE s.team_id = :team_id;");
             
-            $qMembers->execute(array(':id' => $id));
-            $team->members = $qMembers->fetchAll(\PDO::FETCH_OBJ);
+            $qPlayers->execute(array(':team_id' => $id));
+            $team->players = $qPlayers->fetchAll(\PDO::FETCH_OBJ);
             
-            $qGames->execute(array(':id' => $id));
+            $qGames->execute(array(':team_id' => $id));
             $team->games = $qGames->fetchAll(\PDO::FETCH_OBJ);
         }
         return $team;
     }
+    
     
     static function selectUserByEmail($email) {
         return DBConn::selectOne("SELECT id, email, CONCAT(name_first, ' ', name_last) AS displayName "

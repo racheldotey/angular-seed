@@ -28,11 +28,11 @@ angular.module('app.admin.dashboard', [])
                 DTColumnBuilder.newColumn('host').withTitle('Host'),
                 DTColumnBuilder.newColumn(null).withTitle('Status').renderWith(function (data, type, full, meta) {
                     var scheduled = (type !== 'display') ? moment(data.scheduled, 'YYYY-MM-DD HH:mm:ss').format('x') : 
-                            moment(data.scheduled, 'YYYY-MM-DD HH:mm:ss').format('h:mm a on M/D/YYYY ');
+                            moment(data.scheduled, 'YYYY-MM-DD HH:mm:ss').tz('America/New_York').format('h:mm a on M/D/YYYY ');
                     var started = (type !== 'display') ? moment(data.started, 'YYYY-MM-DD HH:mm:ss').format('x') : 
-                            moment(data.started, 'YYYY-MM-DD HH:mm:ss').format('h:mm a on M/D/YYYY ');
+                            moment(data.started, 'YYYY-MM-DD HH:mm:ss').tz('America/New_York').format('h:mm a on M/D/YYYY ');
                     var ended = (type !== 'display') ? moment(data.ended, 'YYYY-MM-DD HH:mm:ss').format('x') : 
-                            moment(data.ended, 'YYYY-MM-DD HH:mm:ss').format('h:mm a on M/D/YYYY ');
+                            moment(data.ended, 'YYYY-MM-DD HH:mm:ss').tz('America/New_York').format('h:mm a on M/D/YYYY ');
 
                     if(data.ended) {
                         return (type !== 'display') ? ended : 

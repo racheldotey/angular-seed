@@ -7,8 +7,8 @@
  */
 
 angular.module('app.admin.users', [])
-    .controller('AdminUsersCtrl', ['$scope', '$compile', '$filter', 'DTOptionsBuilder', 'DTColumnBuilder', 'DataTableHelper', 'ModalService', 
-        function($scope, $compile, $filter, DTOptionsBuilder, DTColumnBuilder, DataTableHelper, ModalService) {
+    .controller('AdminUsersCtrl', ['$scope', '$compile', '$filter', 'DTOptionsBuilder', 'DTColumnBuilder', 'DataTableHelper', 'ModalService', 'TriviaModalService',
+        function($scope, $compile, $filter, DTOptionsBuilder, DTColumnBuilder, DataTableHelper, ModalService, TriviaModalService) {
 
         $scope.alertProxy = {};
         
@@ -22,6 +22,14 @@ angular.module('app.admin.users', [])
                     $scope.dtUsers.reloadData();
                 }, function () {});
             }
+        };
+        
+        // Edit Team Modal
+        $scope.buttonOpenEditTeamModal = function (id) {
+            var modalInstance = TriviaModalService.openEditTeam(id);
+            modalInstance.result.then(function (selectedItem) {
+                $scope.dtTeams.reloadData();
+            }, function () {});
         };
         
         $scope.buttonSignupPlayer = function() {
@@ -94,10 +102,12 @@ angular.module('app.admin.users', [])
             DTColumnBuilder.newColumn('id').withTitle('ID'),
             DTColumnBuilder.newColumn('nameFirst').withTitle('First'),
             DTColumnBuilder.newColumn('nameLast').withTitle('Last'),
-            DTColumnBuilder.newColumn('email').withTitle('Email'),
+            DTColumnBuilder.newColumn(null).withTitle('Email').renderWith(function(data, type, full, meta) {
+                return '<a ng-click="buttonOpenEditUserModal(\'' + data.id + '\')">' + data.email + '</a>';
+            }),
             DTColumnBuilder.newColumn('phone').withTitle('Phone'),
-            DTColumnBuilder.newColumn('team').withTitle('Team Name').renderWith(function (data, type, full, meta) {
-                return (data) ? '<a data-ui-sref="app.admin.teams">' + data +'</a>' : '';
+            DTColumnBuilder.newColumn(null).withTitle('Team Name').renderWith(function (data, type, full, meta) {
+                return (data.teamId) ? '<a ng-click="buttonOpenEditTeamModal(' + data.teamId +')">' + data.team +'</a>' : '';
             }),
             DTColumnBuilder.newColumn('created').withTitle('User Since').renderWith(function (data, type, full, meta) {
                 return moment(data, 'YYYY-MM-DD HH:mm:ss').format('M/D/YYYY');
