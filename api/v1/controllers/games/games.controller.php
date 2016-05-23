@@ -200,8 +200,8 @@ class GameController {
         }
         
         $teamCurrentGameId = GameData::selectTeamCurrentGameId($post['teamId'], APIAuth::getUserId());
-        if($teamCurrentGameId && $teamCurrentGameId === intval($gameId)) {
-            return $app->render(200,  array('msg' => 'This team is already participating in this game.'));
+        if($teamCurrentGameId && intval($teamCurrentGameId) === intval($gameId)) {
+            return $app->render(400,  array('msg' => 'This team is already participating in this game.'));
         } else if($teamCurrentGameId) {
             return $app->render(400,  array('msg' => 'This team is already participating in a different game.'));
         }

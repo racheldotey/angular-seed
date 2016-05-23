@@ -153,7 +153,7 @@ angular.module('TriviaModalService', [
                     return $q(function (resolve, reject) {
                             if (angular.isObject(team)) {
                                 return resolve(team);
-                            } else if (angular.isNumber(parseInt(team))) {
+                            } else if (angular.isNumber(team)) {
                                 ApiRoutesGames.getTeam(team).then(function (result) {
                                     console.log(result);
                                     return resolve(result.team);

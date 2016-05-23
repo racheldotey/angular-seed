@@ -45,13 +45,13 @@ class EmailData {
                     ':team_id' => $validInvite[':team_id'], ':added_by' => $validInvite[':user_id']));
         
         return DBConn::update("UPDATE " . DBConn::prefix() . "tokens_player_invites SET "
-                . "response='accepted' WHERE token = :token AND user_id = :user_id "
+                . "response='accepted', last_visited=NOW() WHERE token = :token AND user_id = :user_id "
                 . "AND team_id = :team_id AND expires > NOW() LIMIT 1;", $validInvite);
     }
     
     static function updateDeclineInvite($validInvite) {
         return DBConn::update("UPDATE " . DBConn::prefix() . "tokens_player_invites SET "
-                . "response='declined' WHERE token = :token AND user_id = :user_id "
+                . "response='declined', last_visited=NOW() WHERE token = :token AND user_id = :user_id "
                 . "AND team_id = :team_id AND expires > NOW() LIMIT 1;", $validInvite);
     }
 }

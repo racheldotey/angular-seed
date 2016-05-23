@@ -3,8 +3,8 @@
 /* @author  Rachel Carbone */
 
 angular.module('app.modal.trivia.addTeamToGame', [])        
-    .controller('TriviaAddTeamToGameModalCtrl', ['$scope', '$uibModalInstance', 'TriviaScoreboard', 'team', 'game', 'teamsList', 'gamesList',
-    function($scope, $uibModalInstance, TriviaScoreboard, team, game, teamsList, gamesList) {  
+    .controller('TriviaAddTeamToGameModalCtrl', ['$scope', '$uibModalInstance', 'AlertConfirmService', 'TriviaScoreboard', 'team', 'game', 'teamsList', 'gamesList',
+    function($scope, $uibModalInstance, AlertConfirmService, TriviaScoreboard, team, game, teamsList, gamesList) {  
     
     $scope.team = team;
     $scope.game = game;
@@ -52,11 +52,17 @@ angular.module('app.modal.trivia.addTeamToGame', [])
             $scope.form.addTeam.$setDirty();
             $scope.alertProxy.error('Please select game to check the team into.');
         } else {
-            TriviaScoreboard.addTeamToGame($scope.addTeam.value.id, $scope.toGame.value.id).then(
-                function (result) {
-                    $uibModalInstance.close(result);
-                }, function (error) {
-                    $scope.alertProxy.error(error);
+            
+            AlertConfirmService.confirm('<p>Would like to check team<br/><strong>' + $scope.addTeam.value.label + '</strong><br/><br/>into the game<br/><strong>' + $scope.toGame.value.label + '</strong>?</p><p>The team will be locked in for the duration of the game after it starts.</p>', 'Checking Into Game')
+                .result.then(function(results) { 
+                    TriviaScoreboard.addTeamToGame($scope.addTeam.value.id, $scope.toGame.value.id).then(
+                            function (result) {
+                                $uibModalInstance.close(result);
+                            }, function (error) {
+                        $scope.alertProxy.error(error);
+                    });
+                }, function(declined) {
+
                 });
         }
     };
