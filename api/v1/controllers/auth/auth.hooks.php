@@ -147,7 +147,7 @@ class AuthHooks {
         // Get Post Data
         $post = $app->request->post();
         $params = array(
-            'name' => $post['venueName'],
+            'name' => $post['venue'],
             'email' => (v::key('email', v::email())->validate($post)) ? $post['email'] : '',
             'firstName' => (v::key('nameFirst', v::stringType())->validate($post)) ? $post['nameFirst'] : '',
             'lastName' => (v::key('nameLast', v::stringType())->validate($post)) ? $post['nameLast'] : '',

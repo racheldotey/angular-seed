@@ -55,7 +55,7 @@ class VenueController {
             $venue_reponse['venue']= (object) [];
             $venue_reponse['venue']->id= $venueId;
             AuthHooks::venue_signup($app, $venue_reponse);
-            return $app->render(200, array('venue' => $venueId));
+            return $app->render(200, array('msg' => 'Venue added successfully.', 'venue' => $venueId));
         } else {
             return $app->render(400,  array('msg' => 'Could not add venue.'));
         }

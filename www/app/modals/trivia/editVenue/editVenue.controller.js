@@ -51,7 +51,7 @@ angular.module('app.modal.trivia.editVenue', [])
 
         /* Save for resetting purposes */
         $scope.saved = (angular.isDefined(editing.id)) ? angular.copy(editing) : {
-            'venueName': '',
+            'venue': '',
             'phone': '',
             'phoneExtension': '',
             'address': '',

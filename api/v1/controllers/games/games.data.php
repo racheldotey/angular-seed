@@ -109,9 +109,16 @@ class GameData {
         if(!$checkedIn) {
             // Not checked in currently
             return false;
-        } else if($checkedIn->gameId !== NULL && 
-                ($checkedIn->started === NULL || $checkedIn->ended !== NULL)) {
-            // Log User Out of Not Started, or Already Ended Game
+        } else if($checkedIn->gameId !== NULL && $checkedIn->started === NULL) {
+            // Log User Out of Not Started
+            DBConn::update("UPDATE " . DBConn::prefix() . "teams SET current_game_id=NULL, "
+                    . "last_updated_by=:last_updated_by WHERE id = :id;", 
+                    array(':id' => $teamId, ":last_updated_by" => $userId));
+            DBConn::update("DELETE FROM  " . DBConn::prefix() . "game_score_teams WHERE game_id = :game_id AND team_id = :team_id;", 
+                    array(':team_id' => $teamId, ":game_id" => $checkedIn->gameId));
+            return false;
+        } else  if($checkedIn->gameId !== NULL && $checkedIn->ended !== NULL) {
+            // Log User Out if Game Already Ended Game
             DBConn::update("UPDATE " . DBConn::prefix() . "teams SET current_game_id=NULL, "
                     . "last_updated_by=:last_updated_by WHERE id = :id;", 
                     array(':id' => $teamId, ":last_updated_by" => $userId));

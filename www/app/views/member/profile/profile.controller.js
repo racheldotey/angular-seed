@@ -44,8 +44,10 @@ angular.module('app.member.profile', [])
                     function (result) {
                         $scope.user = UserSession.updateUser(result.user);
                         $scope.editGeneralMode = false;
+                        $scope.generalFormAlerts.success('Profile saved.');
                     }, function (error) {
                         $log.info(error);
+                        $scope.passwordFormAlerts.error('Invalid user. Check your parameters and try again.');
                     });
             }
         };
@@ -67,8 +69,16 @@ angular.module('app.member.profile', [])
                 ApiRoutesUsers.changePassword($scope.changePassword).then(
                     function (result) {
                         $scope.editPasswordMode = false;
+                        $scope.generalFormAlerts.success('Password saved.');
+                        $scope.changePassword = {
+                            'current' : '',
+                            'new' : '',
+                            'confirm' : ''
+                        };
                     }, function (error) {
                         $log.info(error);
+                        $scope.changePassword.current = '';
+                        $scope.passwordFormAlerts.error('Invalid current password. Could not update user password.');
                     });
             }
         };

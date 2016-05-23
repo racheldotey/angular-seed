@@ -122,7 +122,7 @@ angular.module('apiRoutes.games', [])
     // Trivia Admin Functions
     
     api.addVenue = function(venue) {
-        if(!venue.venueName || 
+        if(!venue.venue || 
                 !venue.address || 
                 !venue.city || 
                 !venue.state || 

@@ -244,14 +244,14 @@ class AuthRoutes {
                 AuthController::facebookSignup($app);
             });
             
-            /* email, nameFirst, nameLast, password, venueName, address, city, state, zip */
+            /* email, nameFirst, nameLast, password, venue, address, city, state, zip */
             /* OPTIONAL: addressb, phone, website, facebook, logo, hours, referralCode */
                     
             $app->post("/venue/signup/", function () use ($app) {
                 AuthController::venueSignup($app);
             });
 
-            /* email, nameFirst, nameLast, facebookId, accessToken, venueName, address, city, state, zip */
+            /* email, nameFirst, nameLast, facebookId, accessToken, venue, address, city, state, zip */
             /* OPTIONAL: addressb, phone, website, facebook, logo, hours, referralCode */
                     
             $app->post("/venue/signup/facebook/", function () use ($app) {

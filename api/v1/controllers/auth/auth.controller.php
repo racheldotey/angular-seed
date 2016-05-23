@@ -105,7 +105,7 @@ class AuthController {
     static function addVenue($app, $userId, $onlyValidation = false) {
         $post = $app->request->post();
 
-        if (!v::key('venueName', v::stringType())->validate($post) ||
+        if (!v::key('venue', v::stringType())->validate($post) ||
                 !v::key('address', v::stringType())->validate($post) ||
                 !v::key('city', v::stringType())->validate($post) ||
                 !v::key('state', v::stringType())->validate($post) ||
@@ -155,7 +155,7 @@ class AuthController {
 
         if ($onlyValidation === false) {
             $venue = array(
-                ':name' => $post['venueName'],
+                ':name' => $post['venue'],
                 ':address' => $post['address'],
                 ':address_b' => (v::key('addressb', v::stringType())->validate($post)) ? $post['addressb'] : '',
                 ':city' => $post['city'],
@@ -291,7 +291,7 @@ class AuthController {
         if (!$savedPassword) {
             return $app->render(400, array('msg' => "User not found. Check your parameters and try again."));
         } else if (!password_verify($post['current'], $savedPassword)) {
-            return $app->render(401, array('msg' => "Invalid user password. Unable to verify request."));
+            return $app->render(400, array('msg' => "Invalid user password. Unable to verify request."));
         } else {
             if (AuthData::updateUserPassword(array(':id' => $post['userId'], ':password' => password_hash($post['new'], PASSWORD_DEFAULT)))) {
                 return $app->render(200, array('msg' => "Password successfully changed."));

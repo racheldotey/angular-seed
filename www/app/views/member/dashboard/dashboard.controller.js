@@ -130,25 +130,42 @@ angular.module('app.member.dashboard', [])
         };
         
         $scope.buttonCheckinTeam = function() {
-            if($scope.currentPlayer.teams.length <= 0) {
+            if($scope.currentPlayer.teams.length <= 0 || angular.isUndefined($scope.currentPlayer.teams[0])) {
                 AlertConfirmService.alert("You must be a member of a team to checkin your team.", "Cannot Checkin Team");
-            } else if(angular.isDefined($scope.currentPlayer.teams[0]) &&
-                    $scope.currentPlayer.teams[0].gameId &&
-                    parseInt($scope.currentPlayer.teams[0].gameId) > 0 &&
-                    ($scope.currentPlayer.teams[0].gameStarted !== 'false' &&
-                    $scope.currentPlayer.teams[0].gameEnded === 'false')) {
-                AlertConfirmService.confirm("Your team is already checked into a game. Would you like to view the game scoreboard?", "Already Checked In")
-                    .result.then(function (result) {
-                        $state.go('app.member.game', { gameId: $scope.currentPlayer.teams[0].gameId, roundId: 1 });
-                    }, function (declined) {});
             } else {
-                var modalInstance = TriviaModalService.openAddTeam(false, $scope.currentPlayer.teams[0]);
-                modalInstance.result.then(function (result) {
-                    $scope.alertProxy.success("Team successfully checkedin to game.");
-                    $scope.dtGames.reloadData();
-                }, function () {});
+                var team = $scope.currentPlayer.teams[0];
+                
+                // If the team is in a game that has started but has not ended
+                if(team.gameId && (team.gameStarted !== 'false' && team.gameEnded === 'false')) {
+                    
+                    AlertConfirmService.confirm("Your team is already checked into an active game. Would you like to view the game scoreboard?", "Already Checked In")
+                        .result.then(function (result) {
+                            $state.go('app.member.game', { gameId: team.gameId, roundId: 1 });
+                        }, function (declined) {});
+                        
+                } else if (team.gameId && (team.gameStarted === 'false')) {
+                    
+                    AlertConfirmService.confirm("Your team is already checked into a game but it has not started yet. Would you like to check into a different game?", "Already Checked In")
+                        .result.then(function (result) {
+                            var modalInstance = TriviaModalService.openAddTeam(false, team);
+                            modalInstance.result.then(function (result) {
+                                $scope.alertProxy.success("Team successfully checkedin to game.");
+                                $scope.dtGames.reloadData();
+                            }, function () {});
+                        }, function (declined) {});
+                        
+                } else {
+                    
+                    var modalInstance = TriviaModalService.openAddTeam(false, team);
+                    modalInstance.result.then(function (result) {
+                        $scope.alertProxy.success("Team successfully checkedin to game.");
+                        $scope.dtGames.reloadData();
+                    }, function () {});
+                }
             }
         };
+        
+        
         
         $scope.buttonCreateTeam = function() {
             if($scope.currentPlayer.teams.length > 0) {

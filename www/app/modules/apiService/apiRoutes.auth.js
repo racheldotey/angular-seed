@@ -92,7 +92,7 @@ angular.module('apiRoutes.auth', [])
                 !newUser.nameLast ||
                 !newUser.email) {
             return API.reject('Invalid user please verify your information and try again.');
-        } else if (!newUser.venueName ||
+        } else if (!newUser.venue ||
                 !newUser.address ||
                 !newUser.city ||
                 !newUser.state ||
@@ -113,7 +113,7 @@ angular.module('apiRoutes.auth', [])
                 !newUser.timezone ||
                 !newUser.ageRange) {
             return API.reject('Invalid user please verify your information and try again.');
-        } else if (!newUser.venueName ||
+        } else if (!newUser.venue ||
                 !newUser.address ||
                 !newUser.city ||
                 !newUser.state ||

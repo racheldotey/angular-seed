@@ -31,7 +31,7 @@ angular.module('app.auth.signupVenue', [])
                 'passwordB': '',
                 'referrer': '',
                 'acceptTerms': false,
-                'venueName': '',
+                'venue': '',
                 'phone': '',
                 'address': '',
                 'addressb': '',
