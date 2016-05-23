@@ -3,6 +3,7 @@
 namespace API;
 
 require_once dirname(dirname(dirname(__FILE__))) . '/services/api.auth.php';
+require_once dirname(dirname(dirname(__FILE__))) . '/services/api.mailer.php';
 require_once dirname(dirname(__FILE__)) . '/venues/venues.data.php';
 require_once dirname(__FILE__) . '/auth.data.php';
 require_once dirname(__FILE__) . '/auth.additionalInfo.data.php';
@@ -40,6 +41,11 @@ class AuthController {
         $result = AuthControllerNative::signup($app);
         if ($result['registered']) {
             AuthHooks::signup($app, $result);
+            if (isset($result['user']->teams[0])) {
+                ApiMailer::sendWebsiteSignupJoinTeamConfirmation($result['user']->teams[0]->name, $result['user']->email, "{$result['user']->nameFirst} {$result['user']->nameLast}");
+            } else {
+                ApiMailer::sendWebsiteSignupConfirmation($result['user']->email, "{$result['user']->nameFirst} {$result['user']->nameLast}");
+            }
             return $app->render(200, $result);
         } else {
             return $app->render(400, $result);
@@ -52,6 +58,11 @@ class AuthController {
         $result = AuthControllerFacebook::signup($app);
         if ($result['registered']) {
             AuthHooks::signup($app, $result);
+            if (isset($result['user']->teams[0])) {
+                ApiMailer::sendWebsiteSignupJoinTeamConfirmation($result['user']->teams[0]->name, $result['user']->email, "{$result['user']->nameFirst} {$result['user']->nameLast}");
+            } else {
+                ApiMailer::sendWebsiteSignupConfirmation($result['user']->email, "{$result['user']->nameFirst} {$result['user']->nameLast}");
+            }
             return $app->render(200, $result);
         } else {
             return $app->render(400, $result);
@@ -67,6 +78,11 @@ class AuthController {
             $result = AuthControllerNative::signup($app);
             if (!$result['registered']) {
                 return $app->render(400, $result);
+            }
+            if (isset($result['user']->teams[0])) {
+                ApiMailer::sendWebsiteSignupJoinTeamConfirmation($result['user']->teams[0]->name, $result['user']->email, "{$result['user']->nameFirst} {$result['user']->nameLast}");
+            } else {
+                ApiMailer::sendWebsiteSignupConfirmation($result['user']->email, "{$result['user']->nameFirst} {$result['user']->nameLast}");
             }
             $venue = self::addVenue($app, $result['user']->id);
         }
@@ -88,6 +104,11 @@ class AuthController {
             $result = AuthControllerFacebook::signup($app);
             if (!$result['registered']) {
                 return $app->render(400, $result);
+            }
+            if (isset($result['user']->teams[0])) {
+                ApiMailer::sendWebsiteSignupJoinTeamConfirmation($result['user']->teams[0]->name, $result['user']->email, "{$result['user']->nameFirst} {$result['user']->nameLast}");
+            } else {
+                ApiMailer::sendWebsiteSignupConfirmation($result['user']->email, "{$result['user']->nameFirst} {$result['user']->nameLast}");
             }
             $venue = self::addVenue($app, $result['user']->id);
         }

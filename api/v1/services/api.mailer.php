@@ -32,6 +32,20 @@ class ApiMailer {
         return self::sendEmailFromTemplate('SYSTEM_EMAIL_SERVICE_TEST_EMAIL', $playerEmail, $playerName, [$websiteTitle, $websiteUrl, $extraText], [$websiteTitle]);
     }
     
+    public static function sendWebsiteSignupConfirmation($playerEmail, $playerName = '') {
+        $websiteTitle = APIConfig::get('WEBSITE_TITLE');
+        $websiteUrl = APIConfig::get('WEBSITE_URL');
+        $loginLink = "{$websiteUrl}login/";
+        return self::sendEmailFromTemplate('NEW_USER_SIGNED_UP', $playerEmail, $playerName, [$websiteTitle, $websiteUrl, $loginLink], [$websiteTitle]);
+    }
+    
+    public static function sendWebsiteSignupJoinTeamConfirmation($teamName, $playerEmail, $playerName = '') {
+        $websiteTitle = APIConfig::get('WEBSITE_TITLE');
+        $websiteUrl = APIConfig::get('WEBSITE_URL');
+        $loginLink = "{$websiteUrl}login/";
+        return self::sendEmailFromTemplate('NEW_USER_SIGNED_UP_ADDED_TO_TEAM', $playerEmail, $playerName, [$websiteTitle, $websiteUrl, $loginLink, $teamName], [$websiteTitle]);
+    }
+    
     public static function sendWebsiteSignupInvite($token, $playerEmail, $playerName = '') {
         $websiteTitle = APIConfig::get('WEBSITE_TITLE');
         $websiteUrl = APIConfig::get('WEBSITE_URL');
