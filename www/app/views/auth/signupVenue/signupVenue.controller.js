@@ -44,7 +44,21 @@ angular.module('app.auth.signupVenue', [])
                 'referralCode': ''
             };
 
-            $scope.newUser.triviaTimeDate = new Date();
+            // nearest quarter hour
+            var currentDateTime = new Date();
+            var minutes = currentDateTime.getMinutes();
+            var hours = currentDateTime.getHours();
+            var m = (parseInt((minutes + 7.5) / 15) * 15) % 60;
+            var h = minutes > 52 ? (hours === 23 ? 0 : ++hours) : hours;
+            currentDateTime.setHours(h);
+            currentDateTime.setMinutes(m);
+
+            $scope.newUser.triviaTimeDate = currentDateTime;
+
+            var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            var day = days[currentDateTime.getDay()];
+            $scope.newUser.triviaDay = day;
+
 
             $scope.signup = function () {
                 if (angular.isString($scope.venueLogo.imageDataUrl) &&

@@ -12,6 +12,27 @@ angular.module('app.modal.trivia.editVenue', [])
         $scope.form = {};
         $scope.showPhoneValidation = false;
 
+        $scope.parseTime = function (timeString) {
+            if (timeString == '' || timeString == undefined) return null;
+
+            var time = timeString.match(/(\d+)(:(\d\d))?\s*(p?)/i);
+            if (time == null) return null;
+
+            var hours = parseInt(time[1], 10);
+            if (hours == 12 && !time[4]) {
+                hours = 0;
+            }
+            else {
+                hours += (hours < 12 && time[4]) ? 12 : 0;
+            }
+            var d = new Date();
+            d.setHours(hours);
+            d.setMinutes(parseInt(time[3], 10) || 0);
+            d.setSeconds(0, 0);
+            return d;
+        };
+
+
         /* Modal Mode */
         $scope.setMode = function (type) {
             $scope.viewMode = false;
@@ -33,25 +54,9 @@ angular.module('app.modal.trivia.editVenue', [])
             }
         };
 
-        if (angular.isDefined(editing.id)) {
-            $scope.setMode('view');
-        } else {
-            $scope.setMode('new');
-        }
-
-        $scope.getMode = function () {
-            if ($scope.newMode) {
-                return 'new';
-            } else if ($scope.editMode) {
-                return 'edit';
-            } else {
-                return 'view';
-            }
-        };
-
         /* Save for resetting purposes */
         $scope.saved = (angular.isDefined(editing.id)) ? angular.copy(editing) : {
-            'venue': '',
+            'venueName': '',
             'phone': '',
             'phoneExtension': '',
             'address': '',
@@ -65,13 +70,45 @@ angular.module('app.modal.trivia.editVenue', [])
             'triviaTime': '',
             'referralCode': ''
         };
-        
 
+        if (angular.isDefined(editing.id)) {
+            $scope.setMode('view');
+            $scope.saved.triviaTimeDate = $scope.parseTime(editing.triviaTime);
+        } else {
+            $scope.setMode('new');
+            // nearest quarter hour
+            var currentDateTime = new Date();
+            var minutes = currentDateTime.getMinutes();
+            var hours = currentDateTime.getHours();
+            var m = (parseInt((minutes + 7.5) / 15) * 15) % 60;
+            var h = minutes > 52 ? (hours === 23 ? 0 : ++hours) : hours;
+            currentDateTime.setHours(h);
+            currentDateTime.setMinutes(m);
+
+            $scope.saved.triviaTimeDate = currentDateTime;
+
+            var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            var day = days[currentDateTime.getDay()];
+            $scope.saved.triviaDay = day;
+        }
+
+     
+
+        $scope.getMode = function () {
+            if ($scope.newMode) {
+                return 'new';
+            } else if ($scope.editMode) {
+                return 'edit';
+            } else {
+                return 'view';
+            }
+        };
+
+     
         // Hold venue logo
         $scope.venueLogo = {};
         $scope.savedImageDataUrl = $scope.saved.logo;
 
-        $scope.saved.triviaTimeDate = new Date();
         $scope.saved.disabled = (angular.isUndefined(editing.disabled) || editing.disabled === null || !editing.disabled) ? 'false' : 'true';
 
         /* Item to display and edit */
@@ -91,6 +128,7 @@ angular.module('app.modal.trivia.editVenue', [])
                     $scope.editing.logo = $scope.savedImageDataUrl;
                 }
                 $scope.editing.triviaTime = $filter('date')($scope.editing.triviaTimeDate, 'h:mm a');
+                $scope.editing.venueName = $scope.editing.venue;
                 ApiRoutesGames.addVenue($scope.editing).then(
                     function (result) {
                         $uibModalInstance.close(result.msg);
@@ -109,7 +147,7 @@ angular.module('app.modal.trivia.editVenue', [])
                 $scope.editing.logo = $scope.savedImageDataUrl;
             }
             $scope.editing.triviaTime = $filter('date')($scope.editing.triviaTimeDate, 'h:mm a');
-
+            $scope.editing.venueName = $scope.editing.venue;
             ApiRoutesGames.saveVenue($scope.editing).then(
                     function (result) {
                         $uibModalInstance.close(result.msg);
@@ -151,17 +189,17 @@ angular.module('app.modal.trivia.editVenue', [])
             }
         };
 
-        $scope.buttonChangeDisabled = function() {
+        $scope.buttonChangeDisabled = function () {
             // Changing the disable flage to a new value
-            if($scope.saved.disabled !== $scope.editing.disabled) {
-                if($scope.editing.disabled === 'true') {
+            if ($scope.saved.disabled !== $scope.editing.disabled) {
+                if ($scope.editing.disabled === 'true') {
                     AlertConfirmService.confirm('Are you sure you want to disable this joint? Games will no longer be hosted at the joint. (Note - Change takes effect only after saving the joint.)')
                         .result.then(function () { }, function (error) {
                             $scope.editing.disabled = 'false';
                         });
                 } else {
                     AlertConfirmService.confirm('Are you sure you want to enable this joint? Games will now be able to be held at this joint. (Note - Change takes effect only after saving the joint.)')
-                        .result.then(function () {  }, function (error) {
+                        .result.then(function () { }, function (error) {
                             $scope.editing.disabled = 'true';
                         });
                 }
