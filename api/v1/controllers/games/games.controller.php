@@ -193,13 +193,14 @@ class GameController {
     }
 
     static function checkTeamIntoGame($app, $gameId) {
+        $post = $app->request->post();
         if(!v::intVal()->validate($gameId) || 
-            !v::key('teamId', v::intVal())->validate($app->request->post())) {
+            !v::key('teamId', v::intVal())->validate($post)) {
             return $app->render(400,  array('msg' => 'Invalid game or team. Check your parameters and try again.'));
         }
         
-        $teamCurrentGameId = GameData::selectTeamCurrentGameId($app->request->post('teamId'), APIAuth::getUserId());
-        if($teamCurrentGameId && intval($teamCurrentGameId) === intval($gameId)) {
+        $teamCurrentGameId = GameData::selectTeamCurrentGameId($post['teamId'], APIAuth::getUserId());
+        if($teamCurrentGameId && $teamCurrentGameId === intval($gameId)) {
             return $app->render(200,  array('msg' => 'This team is already participating in this game.'));
         } else if($teamCurrentGameId) {
             return $app->render(400,  array('msg' => 'This team is already participating in a different game.'));
@@ -207,7 +208,7 @@ class GameController {
         
         $validTeam = array(
             ":game_id" => $gameId,
-            ":team_id" => $app->request->post('teamId'),
+            ":team_id" => $post['teamId'],
             ":created_user_id" => APIAuth::getUserId(),
             ":last_updated_by" => APIAuth::getUserId()
         );        
