@@ -3,10 +3,10 @@
 /* @author  Rachel Carbone */
 
 angular.module('app.modal.trivia.editTeam', [])        
-    .controller('TriviaEditTeamModalCtrl', ['ApiRoutesGames', 'AlertConfirmService', '$scope', '$filter', 
-        '$uibModalInstance', 'editing', 'venuesList', 'addUserId', 'currentVenueId', 'currentGameId', 'DataTableHelper', 'DTColumnBuilder',
-    function(ApiRoutesGames, AlertConfirmService, $scope, $filter, 
-        $uibModalInstance, editing, venuesList, addUserId, currentVenueId, currentGameId, DataTableHelper, DTColumnBuilder) {
+    .controller('TriviaEditTeamModalCtrl', ['ApiRoutesGames', 'AlertConfirmService', '$scope', '$uibModalInstance', 'DataTableHelper', 'DTColumnBuilder', 
+        'editing', 'venuesList', 'addUserId', 'currentVenueId', 'currentGameId', 'currentMode',
+    function(ApiRoutesGames, AlertConfirmService, $scope, $uibModalInstance, DataTableHelper, DTColumnBuilder, 
+        editing, venuesList, addUserId, currentVenueId, currentGameId, currentMode) {
     
     $scope.automaticallyAddUserId = addUserId || false;
     
@@ -74,7 +74,11 @@ angular.module('app.modal.trivia.editTeam', [])
     
     /* Save for resetting purposes */
     if(angular.isDefined(editing.id) && editing.id) {
-        $scope.setMode('view');
+        if(currentMode && (currentMode === 'view' || currentMode === 'edit' || currentMode === 'log')) {
+            $scope.setMode(currentMode);
+        } else {
+            $scope.setMode('view');
+        }
         
         $scope.dtTeamCheckins = DataTableHelper.getDTStructure($scope, 'adminTeamCheckinsList', editing.id);
         $scope.dtTeamCheckins.options.withOption('order', [1, 'desc'])

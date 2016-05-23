@@ -7,13 +7,13 @@
  */
 
 angular.module('app.admin.venues', [])
-        .controller('AdminVenuesCtrl', ['$scope', '$compile', '$filter', 'DTOptionsBuilder', 'DTColumnBuilder', 'DataTableHelper', 'TriviaModalService',
-            function ($scope, $compile, $filter, DTOptionsBuilder, DTColumnBuilder, DataTableHelper, TriviaModalService) {
+        .controller('AdminVenuesCtrl', ['$scope', '$compile', '$filter', 'DTOptionsBuilder', 'DTColumnBuilder', 'DataTableHelper', 'ModalService', 'TriviaModalService',
+            function ($scope, $compile, $filter, DTOptionsBuilder, DTColumnBuilder, DataTableHelper, ModalService, TriviaModalService) {
 
                 $scope.alertProxy = {};
         
                 /* Modal triggers */
-                // Edit User Modal
+                // Edit Venue Modal
                 $scope.buttonOpenEditVenueModal = function (id) {
                     var found = $filter('filter')($scope.dtVenues.instance.DataTable.data(), {id: id}, true);
                     if (angular.isDefined(found[0])) {
@@ -24,6 +24,14 @@ angular.module('app.admin.venues', [])
                         });
                     }
                 };
+                
+                // Edit User Modal
+                $scope.buttonOpenEditUserModal = function (userId) {
+                    var modalInstance = ModalService.openEditUser(userId);
+                    modalInstance.result.then(function (selectedItem) {
+                        $scope.dtUsers.reloadData();
+                    }, function () {});
+                };
 
                 // DataTable Setup
                 $scope.dtUserGroups = {};
@@ -31,48 +39,6 @@ angular.module('app.admin.venues', [])
 
                 $scope.dtVenues = DataTableHelper.getDTStructure($scope, 'adminVenuesList');
                 $scope.dtVenues.options.withOption('order', [0, 'desc']);
-                /*
-                 $scope.dtVenues.options.withOption('order', [1, 'desc']).withOption('responsive', {
-                 details: {
-                 type: 'column',
-                 renderer: function(api, rowIdx, columns) {
-                 // Get the group id
-                 var id = 0;
-                 var data = new Array();
-                 angular.forEach(columns, function (value, key) {
-                 if(value.title == 'ID') {
-                 id = value.data;
-                 }
-                 if(value.title == 'User Groups') {
-                 data = value.data;
-                 }
-                 });
-                 
-                 var header = '<table datatable="" dt-options="dtUserGroups.options" class="table table-hover sub-table">\n\
-                 <thead><tr>\n\
-                 <td>ID</td>\n\
-                 <td>Group</td>\n\
-                 <td>Description</td>\n\
-                 </tr></thead><tbody>';
-                 
-                 var body = '';
-                 $.each(data, function(index, value) {
-                 body += '<tr><td>' + value.id + '</td><td>' + value.group + '</td><td>' + value.desc + '</td></tr>\n';
-                 });
-                 
-                 // Create angular table element
-                 body = (body) ? body : '<tr><td colspan="3"><p>This user has not been assigned to any groups.</p></td></tr>';
-                 
-                 var table = angular.element(header + body + '</tbody></table>');
-                 
-                 // compile the table to keep the directives (ngClick)
-                 $compile(table.contents())($scope);
-                 
-                 return table;
-                 }
-                 }
-                 });
-                 */
 
                 $scope.dtVenues.columns = [/*
                  DTColumnBuilder.newColumn(null).withTitle('Games').withClass('responsive-control text-right noclick').renderWith(function(data, type, full, meta) {
@@ -104,8 +70,8 @@ angular.module('app.admin.venues', [])
                     DTColumnBuilder.newColumn('referralCode').withTitle('Referral Code').renderWith(function (data, type, full, meta) {
                         return (data && data !== null) ? '<code>' + data + '</code>' : '';
                     }),
-                    DTColumnBuilder.newColumn(null).withTitle('Created By').renderWith(function (data, type, full, meta) {
-                        return (data && data.createdBy !== null) ?'<a href="mailto:' + data.createdByEmail + '">' + data.createdBy + '</a>' : '';
+                    DTColumnBuilder.newColumn(null).withTitle('Contact User').renderWith(function (data, type, full, meta) {
+                        return (data && data.contactUserId !== null) ?'<a ng-click="buttonOpenEditUserModal(\'' + data.contactUserId + '\')">' + data.contactUser + '</a>' : '';
                     }),
                     DTColumnBuilder.newColumn('created').withTitle('Created').renderWith(function (data, type, full, meta) {
                         return moment(data, 'YYYY-MM-DD HH:mm:ss').format('M/D/YYYY h:mm a');

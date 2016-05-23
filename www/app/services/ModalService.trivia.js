@@ -141,7 +141,7 @@ angular.module('TriviaModalService', [
      * 
      * @return uibModalInstance
      */
-    api.openEditTeam = function(team, addUserId, currentVenueId, currentGameId) {
+    api.openEditTeam = function(team, addUserId, currentVenueId, currentGameId, currentMode) {
         return api.openModal({
             templateUrl: templatePath + 'editTeam/editTeam.html',
             controller: 'TriviaEditTeamModalCtrl',
@@ -153,7 +153,7 @@ angular.module('TriviaModalService', [
                     return $q(function (resolve, reject) {
                             if (angular.isObject(team)) {
                                 return resolve(team);
-                            } else if (angular.isNumber(team)) {
+                            } else if (angular.isNumber(+team)) {
                                 ApiRoutesGames.getTeam(team).then(function (result) {
                                     console.log(result);
                                     return resolve(result.team);
@@ -177,7 +177,11 @@ angular.module('TriviaModalService', [
                 },
                 venuesList: function(ApiRoutesSimpleLists) {
                     return ApiRoutesSimpleLists.simpleVenuesList();
+                },
+                currentMode: function() {
+                    return currentMode || false;
                 }
+                
             }
         });
     };

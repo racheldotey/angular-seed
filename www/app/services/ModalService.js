@@ -136,18 +136,28 @@ angular.module('ModalService', [
             templateUrl: templatePath + 'admin/editUser/editUser.html',
             controller: 'EditUserModalCtrl',
             resolve: {
+                $q: '$q',
                 ApiRoutesUsers: 'ApiRoutesUsers',
                 ApiRoutesSimpleLists: 'ApiRoutesSimpleLists',
                 groupList: function(ApiRoutesSimpleLists) {
                     return ApiRoutesSimpleLists.simpleGroupsList();
                 },
-                editing: function(ApiRoutesUsers) {
-                    if(angular.isDefined(user)) {
-                        return (angular.isObject(user)) ? user : 
-                                ApiRoutesUsers.getUser(user);
-                    } else {
-                        return {};
-                    }
+                editing: function($q, ApiRoutesUsers) {
+                    return $q(function (resolve, reject) {
+                            if (angular.isObject(user)) {
+                                return resolve(user);
+                            } else if (angular.isNumber(+user)) {
+                                ApiRoutesUsers.getUser(user).then(function (result) {
+                                    console.log(result);
+                                    return resolve(result.user);
+                                }, function (error) {
+                                    console.log(error);
+                                    return reject(error);
+                                });
+                            } else {
+                                return resolve({});
+                            }
+                    });
                 }
             }
         });

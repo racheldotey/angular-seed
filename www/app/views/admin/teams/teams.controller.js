@@ -14,10 +14,10 @@ angular.module('app.admin.teams', [])
 
         /* Modal triggers */
         // Edit Team Modal
-        $scope.buttonOpenEditTeamModal = function (id) {
+        $scope.buttonOpenEditTeamModal = function (id, mode) {
             var found = $filter('filter')($scope.dtTeams.instance.DataTable.data(), {id: id}, true);
             if(angular.isDefined(found[0])) {
-                var modalInstance = TriviaModalService.openEditTeam(found[0]);
+                var modalInstance = TriviaModalService.openEditTeam(found[0], false, false, false, mode);
                 modalInstance.result.then(function (selectedItem) {
                     $scope.dtTeams.reloadData();
                 }, function () {});
@@ -81,7 +81,7 @@ angular.module('app.admin.teams', [])
             }).notSortable(),
             DTColumnBuilder.newColumn('homeVenue').withTitle('Home Joint'),
             DTColumnBuilder.newColumn(null).withTitle('Last Game').renderWith(function (data, type, full, meta) {
-                return (!data.lastGameName) ? 'None' : '<a data-ui-sref="app.member.game({gameId :' + data.lastGameId + ', roundNumber : 1 })">' + data.lastGameName + '</a>';
+                return (!data.lastGameName) ? 'None' : '<a ng-click="buttonOpenEditTeamModal(\'' + data.id + '\', \'log\')">' + data.lastGameName + '</a>';
             }),
             DTColumnBuilder.newColumn('createdBy').withTitle('Created By'),
             DTColumnBuilder.newColumn('created').withTitle('Created').renderWith(function (data, type, full, meta) {
