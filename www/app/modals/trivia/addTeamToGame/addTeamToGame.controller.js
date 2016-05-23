@@ -8,15 +8,12 @@ angular.module('app.modal.trivia.addTeamToGame', [])
     
     $scope.team = team;
     $scope.game = game;
-    $scope.teamsList = teamsList;
-    $scope.gamesList = gamesList;
     
     $scope.addTeam = {};
     if(team) {
         for(var t = 0; t < teamsList.length; t++) {
             if(parseInt(teamsList[t].id) === parseInt(team.id)) {
                 $scope.addTeam = teamsList[t];
-                t = teamsList.length;
                 break;
             }
         }
@@ -24,6 +21,17 @@ angular.module('app.modal.trivia.addTeamToGame', [])
     
     $scope.toGame = {};
     if(game) {
+        for(var t = (teamsList.length - 1); t >= 0; t--) {
+            // Remove already checked in teams
+            for(var s = (game.scoreboard.length - 1); s >= 0; s--) {
+                if (parseInt(teamsList[t].id) === parseInt(game.scoreboard[s].teamId)) {
+                    teamsList.splice(t, 1);
+                    break;
+                }
+            }
+            
+        }
+                
         for(var g = 0; g < gamesList.length; g++) {
             if(parseInt(gamesList[g].id) === parseInt(game.id)) {
                 $scope.toGame = gamesList[g];
@@ -32,6 +40,8 @@ angular.module('app.modal.trivia.addTeamToGame', [])
             }
         }
     }
+    $scope.teamsList = teamsList;
+    $scope.gamesList = gamesList;
     
     /* Used to restrict alert bars */
     $scope.alertProxy = {};
