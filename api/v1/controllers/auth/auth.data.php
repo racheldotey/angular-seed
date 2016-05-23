@@ -5,7 +5,7 @@ class AuthData {
     
   
     static function insertUser($validUser) {
-        $userId = DBConn::insert("INSERT INTO as_users(name_first, name_last, email, phone, password) "
+        $userId = DBConn::insert("INSERT INTO " . DBConn::prefix() . "users(name_first, name_last, email, phone, password) "
                 . "VALUES (:name_first, :name_last, :email, :phone, :password);", $validUser);
         if($userId) {
             GroupData::addDefaultGroupToUser($userId);
@@ -14,7 +14,7 @@ class AuthData {
     }
   
     static function insertFacebookUser($validUser) {
-        $userId = DBConn::insert("INSERT INTO as_users(name_first, name_last, email, facebook_id) "
+        $userId = DBConn::insert("INSERT INTO " . DBConn::prefix() . "users(name_first, name_last, email, facebook_id) "
                 . "VALUES (:name_first, :name_last, :email, :facebook_id);", $validUser);
         if($userId) {
             GroupData::addDefaultGroupToUser($userId);
@@ -41,15 +41,15 @@ class AuthData {
     }
     
     static function updateUserFacebookId($validUser) {
-        return DBConn::update("UPDATE as_users SET facebook_id = :facebook_id WHERE id = :id;", $validUser);
+        return DBConn::update("UPDATE " . DBConn::prefix() . "users SET facebook_id = :facebook_id WHERE id = :id;", $validUser);
     }
     
     static function updateforgotpassworddata($forgotpwdperms) {
-        return DBConn::update("UPDATE as_users SET usertoken = :usertoken,fortgotpassword_duration = :fortgotpassword_duration WHERE email = :email;", $forgotpwdperms);
+        return DBConn::update("UPDATE " . DBConn::prefix() . "users SET usertoken = :usertoken,fortgotpassword_duration = :fortgotpassword_duration WHERE email = :email;", $forgotpwdperms);
     }
         
     static function updateUserPassword($validUser) {
-        return DBConn::update("UPDATE as_users SET password = :password WHERE id = :id;", $validUser);
+        return DBConn::update("UPDATE " . DBConn::prefix() . "users SET password = :password WHERE id = :id;", $validUser);
     }
 
     /* Select User */
@@ -64,7 +64,7 @@ class AuthData {
     
     static function selectUserAndPasswordByEmail($email) {
         $user = DBConn::selectOne("SELECT id, name_first as nameFirst, name_last as nameLast, email, phone, password "
-                        . "FROM as_users WHERE email = :email AND disabled IS NULL LIMIT 1;", array(':email' => $email));
+                        . "FROM " . DBConn::prefix() . "users WHERE email = :email AND disabled IS NULL LIMIT 1;", array(':email' => $email));
         if ($user) {
             $user = self::selectUserData($user);
         }
@@ -72,18 +72,18 @@ class AuthData {
     }
 
     static function selectUserByUsertoken($usertoken) {
-        return DBConn::selectOne("SELECT email FROM as_users "
+        return DBConn::selectOne("SELECT email FROM " . DBConn::prefix() . "users "
                 . "WHERE usertoken = :usertoken LIMIT 1;", array(':usertoken' => $usertoken));
     }
 
     static function selectUsertokenExpiry($email) {
-        return DBConn::selectOne("SELECT fortgotpassword_duration FROM as_users "
+        return DBConn::selectOne("SELECT fortgotpassword_duration FROM " . DBConn::prefix() . "users "
                 . "WHERE email = :email LIMIT 1;", array(':email' => $email));
     }
     
     private static function selectUserWhere($where, $params) {
         $user = DBConn::selectOne("SELECT id, name_first as nameFirst, name_last as nameLast, email, phone "
-                        . "FROM as_users WHERE {$where} LIMIT 1;", $params);
+                        . "FROM " . DBConn::prefix() . "users WHERE {$where} LIMIT 1;", $params);
         if ($user) {
             $user = self::selectUserData($user);
         }
@@ -93,8 +93,8 @@ class AuthData {
     static function selectUserByIdentifierToken($identifier) {
         $user = DBConn::selectOne("SELECT u.id, name_first AS nameFirst, name_last AS nameLast, "
                 . "email, phone, token AS apiToken, identifier AS apiKey "
-                . "FROM as_tokens_auth AS t "
-                . "JOIN as_users AS u ON u.id = t.user_id "
+                . "FROM " . DBConn::prefix() . "tokens_auth AS t "
+                . "JOIN " . DBConn::prefix() . "users AS u ON u.id = t.user_id "
                 . "WHERE identifier = :identifier AND t.expires > NOW() "
                 . "AND u.disabled IS NULL;", array(':identifier' => $identifier));
         if($user) {
@@ -107,26 +107,26 @@ class AuthData {
         if ($user) {
             $user->displayName = $user->nameFirst;
             $user->roles = DBConn::selectAll("SELECT DISTINCT(gr.auth_role_id) "
-                    . "FROM as_auth_lookup_user_group AS ug "
-                    . "JOIN as_auth_lookup_group_role AS gr ON ug.auth_group_id = gr.auth_group_id "
+                    . "FROM " . DBConn::prefix() . "auth_lookup_user_group AS ug "
+                    . "JOIN " . DBConn::prefix() . "auth_lookup_group_role AS gr ON ug.auth_group_id = gr.auth_group_id "
                     . "WHERE ug.user_id = :id;", array(':id' => $user->id), \PDO::FETCH_COLUMN);
             
             $user->teams = DBConn::selectAll("SELECT t.id, t.name, m.joined, IFNULL(g.id, 0) AS gameId, IFNULL(g.name, '') AS game, "
                     . "IFNULL(g.scheduled, 'false') AS gameScheduled, IFNULL(g.game_started, 'false') AS gameStarted, IFNULL(g.game_ended, 'false') AS gameEnded "
-                    . "FROM as_teams AS t "
-                    . "LEFT JOIN as_team_members AS m ON m.team_id = t.id "
-                    . "LEFT JOIN as_games AS g ON t.current_game_id = g.id "
+                    . "FROM " . DBConn::prefix() . "teams AS t "
+                    . "LEFT JOIN " . DBConn::prefix() . "team_members AS m ON m.team_id = t.id "
+                    . "LEFT JOIN " . DBConn::prefix() . "games AS g ON t.current_game_id = g.id "
                     . "WHERE m.user_id = :user_id ORDER BY t.name;", array(':user_id' => $user->id));
             
             $user->notices = array('teamInvites' => 
                     DBConn::selectAll("SELECT i.token, i.created, i.expires, "
                             . "i.team_id AS teamId, t.name AS teamName, i.user_id AS userId, "
                             . "CONCAT(u.name_first, ' ', u.name_last) AS fromPlayer, u.id AS fromPlayerId "
-                            . "FROM as_tokens_player_invites AS i "
-                            . "LEFT JOIN as_teams AS t ON t.id = i.team_id "
-                            . "LEFT JOIN as_users AS u ON u.id = i.created_user_id "
+                            . "FROM " . DBConn::prefix() . "tokens_player_invites AS i "
+                            . "LEFT JOIN " . DBConn::prefix() . "teams AS t ON t.id = i.team_id "
+                            . "LEFT JOIN " . DBConn::prefix() . "users AS u ON u.id = i.created_user_id "
                             . "WHERE user_id = :id AND response IS NULL AND expires > NOW() "
-                            . "AND i.team_id NOT IN (SELECT m.team_id FROM as_team_members AS m WHERE i.user_id = m.user_id);", 
+                            . "AND i.team_id NOT IN (SELECT m.team_id FROM " . DBConn::prefix() . "team_members AS m WHERE i.user_id = m.user_id);", 
                             array(':id' => $user->id))
                     );
         }
@@ -136,37 +136,37 @@ class AuthData {
     /* Password Updating */
 
     static function resetUserPassword($resetpwdperms) {
-        return DBConn::update("UPDATE as_users SET password = :password, usertoken = :usertoken,fortgotpassword_duration = :fortgotpassword_duration  WHERE email = :email;", $resetpwdperms);
+        return DBConn::update("UPDATE " . DBConn::prefix() . "users SET password = :password, usertoken = :usertoken,fortgotpassword_duration = :fortgotpassword_duration  WHERE email = :email;", $resetpwdperms);
     }
     
     static function selectUserPasswordById($userId) {
-        return DBConn::selectColumn("SELECT password FROM as_users WHERE id = :id LIMIT 1;", array(':id' => $userId));
+        return DBConn::selectColumn("SELECT password FROM " . DBConn::prefix() . "users WHERE id = :id LIMIT 1;", array(':id' => $userId));
     }
     
     static function selectUserPasswordByEmail($email) {
-        return DBConn::selectColumn("SELECT password FROM as_users WHERE email = :email LIMIT 1;", array(':email' => $email));
+        return DBConn::selectColumn("SELECT password FROM " . DBConn::prefix() . "users WHERE email = :email LIMIT 1;", array(':email' => $email));
     }
     
     // Player invite
     
     static function selectSignupInvite($token) {
-        return DBConn::selectColumn("SELECT team_id AS teamId FROM as_tokens_player_invites "
+        return DBConn::selectColumn("SELECT team_id AS teamId FROM " . DBConn::prefix() . "tokens_player_invites "
                 . "WHERE user_id IS NULL AND response IS NULL AND expires >= NOW() "
                 . "AND token = :token LIMIT 1;", array(':token' => $token));
     }
     
     static function updateAcceptSignupInvite($validInvite) {
-        return DBConn::update("UPDATE as_tokens_player_invites "
+        return DBConn::update("UPDATE " . DBConn::prefix() . "tokens_player_invites "
                 . "SET user_id =:user_id, response='accepted', last_visited=NOW() "
                 . "WHERE token = :token LIMIT 1;", $validInvite);
     }
     
     static function updateAcceptSignupTeamInvite($validInvite) {        
-        DBConn::insert("INSERT INTO as_team_members(user_id, team_id, added_by) "
+        DBConn::insert("INSERT INTO " . DBConn::prefix() . "team_members(user_id, team_id, added_by) "
                 . "VALUES (:user_id, :team_id, :added_by);", 
                 array(':user_id' => $validInvite[':user_id'],  ':team_id' => $validInvite[':team_id'], ':added_by' => $validInvite[':user_id']));
         
-        return DBConn::update("UPDATE as_tokens_player_invites SET "
+        return DBConn::update("UPDATE " . DBConn::prefix() . "tokens_player_invites SET "
                 . "response='accepted', user_id = :user_id WHERE token = :token "
                 . "AND team_id = :team_id AND response IS NULL AND expires >= NOW() LIMIT 1;", $validInvite);
     }
