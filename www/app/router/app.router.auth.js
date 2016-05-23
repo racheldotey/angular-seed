@@ -81,7 +81,7 @@ app.config(['$stateProvider', 'USER_ROLES',
                             console.log(result);
                         }, function(error) {
                             console.log(error);
-                            reject(error);
+                            resolve(error);
                         });
                     });
                 }

@@ -43,7 +43,7 @@ class AuthControllerNative {
         // Validate Sent Input
         $valid = self::signup_validateSentParameters($post);
         if($valid !== true) {
-            return array('registered' => false, 'msg' => $valid);
+            return array('registered' => false, 'msg' => $valid, 'post' => $post);
         }
         // Look for user with that email
         $existing = AuthData::selectUserAndPasswordByEmail($post['email']);
@@ -80,6 +80,17 @@ class AuthControllerNative {
             /// FAIL - If Inserting the user failed (hopefully this is redundant)
             return array('registered' => false, 'msg' => 'Signup failed. Could not select user.');    
         }
+        
+        // If a token was sent, update token status
+        if(v::key('token', v::stringType())->validate($post)) {
+            $inviteTeamId = AuthData::selectSignupInvite($post['token']);
+            if($inviteTeamId) {
+                AuthData::updateAcceptSignupTeamInvite(array(':user_id' => $userId, ':token' => $post['token'], ':team_id' => $inviteTeamId));
+            } else {
+                AuthData::updateAcceptSignupPlayerInvite(array(':user_id' => $userId, ':token' => $post['token']));
+            }
+        }
+         
         // Save "Where did you hear about us" and any other additional questions
         // This is "quiet" in that it may not execute if no paramters match
         // And it doesnt set the response for the api call
@@ -96,7 +107,7 @@ class AuthControllerNative {
             return $found;
         } else {
             /// FAIL - If the auth token couldnt be created and saved
-            return array('registered' => false, 'msg' => 'Signup failed to creat auth token.');    
+            return array('registered' => false, 'msg' => 'Signup failed to create auth token.');    
         }
     }
     

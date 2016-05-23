@@ -143,7 +143,7 @@ class EmailController {
             return $app->render(400,  array('msg' => 'Invalid token. Check your parameters and try again.'));
         }
         
-        $sent = EmailData::updateAcceptInvite(array(
+        $sent = EmailData::updateAcceptTeamInvite(array(
             ':token' => $post['inviteToken'], 
             ':team_id' => $post['teamId'], 
             ':user_id' => $post['userId']

@@ -21,14 +21,14 @@ class EmailData {
                 . "(token, team_id, user_id, name_first, name_last, email, "
                 . "phone, created_user_id, expires) VALUES "
                 . "(:token, :team_id, :user_id, :name_first, :name_last, :email, "
-                . ":phone, :created_user_id, DATE_ADD( NOW(), INTERVAL 24 HOUR ));", $validInvite);
+                . ":phone, :created_user_id, DATE_ADD( NOW(), INTERVAL 1 WEEK ));", $validInvite);
     }
     
     static function insertPlayerInvite($validInvite) {
         return DBConn::insert("INSERT INTO " . DBConn::prefix() . "tokens_player_invites"
                 . "(token, name_first, name_last, email, phone, created_user_id, expires) VALUES "
                 . "(:token, :name_first, :name_last, :email, :phone, :created_user_id, "
-                . "DATE_ADD( NOW(), INTERVAL 24 HOUR ));", $validInvite);
+                . "DATE_ADD( NOW(), INTERVAL 4 WEEK ));", $validInvite);
     }
     
     static function selectUserIdByEmail($email) {
@@ -36,7 +36,7 @@ class EmailData {
                 . "WHERE email = :email LIMIT 1;", array(':email' => $email));
     }
     
-    static function updateAcceptInvite($validInvite) {
+    static function updateAcceptTeamInvite($validInvite) {
         DBConn::delete("DELETE FROM " . DBConn::prefix() . "team_members WHERE user_id = :user_id;", 
                 array(':user_id' => $validInvite[':user_id']));
         
