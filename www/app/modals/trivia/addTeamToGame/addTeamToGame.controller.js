@@ -21,12 +21,19 @@ angular.module('app.modal.trivia.addTeamToGame', [])
     
     $scope.toGame = {};
     if(game) {
+        var scoreboard = (angular.isDefined(game.teams)) ? game.teams : game.scoreboard;
         for(var t = (teamsList.length - 1); t >= 0; t--) {
             // Remove already checked in teams
-            for(var s = (game.scoreboard.length - 1); s >= 0; s--) {
-                if (parseInt(teamsList[t].id) === parseInt(game.scoreboard[s].teamId)) {
+            if(angular.isArray(scoreboard)) {
+                for(var s = (scoreboard.length - 1); s >= 0; s--) {
+                    if (parseInt(teamsList[t].id) === parseInt(scoreboard[s].teamId)) {
+                        teamsList.splice(t, 1);
+                        break;
+                    }
+                }
+            } else if(angular.isObject(scoreboard)) {
+                if(angular.isDefined(scoreboard[parseInt(teamsList[t].id)])) {
                     teamsList.splice(t, 1);
-                    break;
                 }
             }
             

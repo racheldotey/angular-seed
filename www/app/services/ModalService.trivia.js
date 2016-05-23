@@ -151,9 +151,11 @@ angular.module('TriviaModalService', [
                 ApiRoutesSimpleLists: 'ApiRoutesSimpleLists',
                 editing: function($q, ApiRoutesGames) {
                     return $q(function (resolve, reject) {
-                            if (angular.isObject(team)) {
+                             if (!team) {
+                                return resolve({});
+                            } else if (angular.isObject(team)) {
                                 return resolve(team);
-                            } else if (angular.isNumber(+team)) {
+                            } else {
                                 ApiRoutesGames.getTeam(team).then(function (result) {
                                     console.log(result);
                                     return resolve(result.team);
@@ -161,8 +163,6 @@ angular.module('TriviaModalService', [
                                     console.log(error);
                                     return reject(error);
                                 });
-                            } else {
-                                return resolve({});
                             }
                     });
                 },
