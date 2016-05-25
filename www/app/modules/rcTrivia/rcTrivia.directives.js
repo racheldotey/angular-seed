@@ -217,10 +217,16 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
             
             // View Sortable Scoreboard Modal
             $scope.buttonViewScoreboardModal = function() {
-                var modalInstance = TriviaModalService.openViewGameScoreboard($scope.game.id, $scope.game.currentRoundNumber);
-                modalInstance.result.then(function (result) {
-                    console.log(result);
-                }, function () {});
+                TriviaScoreboard.saveScoreboard().then(function (result) {
+                        $scope.alertProxy.success("Game saved.");
+                        $scope.unsavedState = false;
+                        var modalInstance = TriviaModalService.openViewGameScoreboard($scope.game.id, $scope.game.currentRoundNumber);
+                        modalInstance.result.then(function (result) {
+                            console.log(result);
+                        }, function () {});
+                    }, function (error) {
+                        $scope.alertProxy.error(error);
+                    });
                 
             };
             
@@ -307,20 +313,25 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
             };
             
             $scope.calculateWagerScore = function(teamId, questionNumber) {
-                var teamScore = $scope.game.teams[teamId].rounds[$scope.game.currentRoundNumber].questions[questionNumber];
+                var teamQScore = $scope.game.teams[teamId].rounds[$scope.game.currentRoundNumber].questions[questionNumber];
                 
-                if(teamScore.teamWager > $scope.game.teams[teamId].gameScore) {
-                    teamScore.teamWager = $scope.game.teams[teamId].gameScore;
+                var newWager = parseFloat(teamQScore.teamWager);
+                
+                teamQScore.questionScore = 0;
+                $scope.updateTeamRankings(teamId);
+                
+                if (newWager < 0) {
+                    $scope.alertProxy.error("Teams cannot wager less than 0 points.");
+                    teamQScore.teamWager = 0;
+                } else if(newWager > $scope.game.teams[teamId].gameScore) {
+                    teamQScore.teamWager = (parseFloat($scope.game.teams[teamId].gameScore) <= 0) ? 0 : $scope.game.teams[teamId].gameScore;
                     $scope.alertProxy.error("Teams cannot wager more points than they have.");
+                } else {
+                    console.log("Wager accepted. Team Game Score: " + $scope.game.teams[teamId].gameScore + " - Team Wager: " + newWager);
+                    teamQScore.teamWager = newWager;
                 }
-                
-                if (teamScore.teamWager < 0) {
-                    teamScore.teamWager = 0;
-                }
-                
-                var correct = (angular.isDefined(teamScore.wagerChecked) && teamScore.wagerChecked);
-                var wager = parseFloat(teamScore.teamWager);
-                teamScore.questionScore =  (correct) ? wager : (wager* -1);
+                var correct = (angular.isDefined(teamQScore.wagerChecked) && teamQScore.wagerChecked);
+                teamQScore.questionScore =  (correct) ? teamQScore.teamWager : (teamQScore.teamWager * -1);
                 $scope.updateTeamRankings(teamId);
             };
             
