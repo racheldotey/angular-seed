@@ -100,7 +100,7 @@ class AuthRoutes {
          *          }
          *      }
          */
-        $app->post("/user/update/password/", $authenticateForRole('member'), function () use ($app) {
+        $app->post("/user/update/password/", $authenticateForRole('registered-user'), function () use ($app) {
             AuthController::changeUserPassword($app);
         });
         

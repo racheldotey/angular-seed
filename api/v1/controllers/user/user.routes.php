@@ -7,14 +7,14 @@ class UserRoutes {
         
         //* /user/id - members can get their own profile
         
-        $app->map("/user/get/:userId/", $authenticateForRole('member'), function ($userId) use ($app) {
+        $app->map("/user/get/:userId/", $authenticateForRole('registered-user'), function ($userId) use ($app) {
             UserController::selectUser($app, $userId);
         })->via('GET', 'POST');
 
         /*
          * id, nameFirst, nameLast, email, phone
          */
-        $app->post("/user/update/:userId/", $authenticateForRole('member'), function ($userId) use ($app) {
+        $app->post("/user/update/:userId/", $authenticateForRole('registered-user'), function ($userId) use ($app) {
             UserController::updateUser($app, $userId);
         });
             

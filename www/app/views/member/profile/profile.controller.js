@@ -64,6 +64,9 @@ angular.module('app.member.profile', [])
             } else if($scope.changePassword.new !== $scope.changePassword.confirm) {
                 $scope.form.password.$setDirty();
                 $scope.passwordFormAlerts.error('Passwords must match.');
+            }  else if($scope.showPasswordRules) {
+                $scope.form.password.$setDirty();
+                $scope.passwordFormAlerts.error('Your new password must be at least 8 characters long and contain at least one letter and one number.');
             } else {
                 $scope.changePassword.userId = $scope.user.id;
                 ApiRoutesUsers.changePassword($scope.changePassword).then(
