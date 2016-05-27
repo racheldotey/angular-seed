@@ -117,16 +117,27 @@ angular.module('app.modal.trivia.editTeam', [])
     
     /* Click event for the Add New Team button */
     $scope.buttonNew = function(currentGameId) {
-        if(!$scope.form.modalForm.$valid) {
-            $scope.form.modalForm.$setDirty();
-            $scope.alertProxy.error('Please select a home venue and name for your team.');
-        } else {
-            var players = new Array();
-            for(var i = 0; i < $scope.editing.players.length; i++) {
-                if($scope.editing.players[i].email.length > 0) {
-                    players.push({ 'email' : $scope.editing.players[i].email });
-                }
+        var emailError = false;
+        
+        var players = new Array();
+        for(var i = 0; i < $scope.editing.players.length; i++) {
+            if($scope.editing.players[i].email === '') {
+                // Ignore blank lines
+            } else if (angular.isUndefined($scope.editing.players[i].email)) {
+                emailError = true;
+                break;
+            } else {
+                players.push({ 'email' : $scope.editing.players[i].email });
             }
+        }
+            
+        if(emailError) {
+            $scope.form.modalForm.$setDirty();
+            $scope.alertProxy.error('One or more emails entered are invalid. Please confirm the emails for players you would like to invite.');
+        } else if(!$scope.form.modalForm.$valid) {
+            $scope.form.modalForm.$setDirty();
+            $scope.alertProxy.error('Please name your team and select a home venue.');
+        } else {
             if($scope.automaticallyAddUserId) {
                 players.push({ 'userId' : $scope.automaticallyAddUserId });
                 
@@ -178,16 +189,28 @@ angular.module('app.modal.trivia.editTeam', [])
         
     /* Click event for the Save Team button */
     $scope.buttonSave = function() {
-        if(!$scope.form.modalForm.$valid) {
-            $scope.form.modalForm.$setDirty();
-            $scope.alertProxy.error('Please select a home venue and name for your team.');
-        } else {
-            var players = new Array();
-            for(var i = 0; i < $scope.editing.players.length; i++) {
-                if($scope.editing.players[i].email.length > 0) {
-                    players.push({ 'email' : $scope.editing.players[i].email });
-                }
+        
+        var emailError = false;
+        
+        var players = new Array();
+        for(var i = 0; i < $scope.editing.players.length; i++) {
+            if($scope.editing.players[i].email === '') {
+                // Ignore blank lines
+            } else if (angular.isUndefined($scope.editing.players[i].email)) {
+                emailError = true;
+                break;
+            } else {
+                players.push({ 'email' : $scope.editing.players[i].email });
             }
+        }
+            
+        if(emailError) {
+            $scope.form.modalForm.$setDirty();
+            $scope.alertProxy.error('One or more emails entered are invalid. Please confirm the emails for players you would like to invite.');
+        } else if(!$scope.form.modalForm.$valid) {
+            $scope.form.modalForm.$setDirty();
+            $scope.alertProxy.error('Please name your team and select a home venue.');
+        } else {
             ApiRoutesGames.saveTeam({ 
                 'id' : $scope.editing.id,  
                 'name' : $scope.editing.name,  

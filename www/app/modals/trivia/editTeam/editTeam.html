@@ -71,8 +71,8 @@
         <div class="row">
             <div class="col-xs-12">
                 <label>Invite Team Members</label>
-                <div class="form-group" ng-repeat="player in editing.players">
-                    <input ng-if="!player.id" placeholder="Player Email" ng-model="player.email" class="form-control" type="email" maxlength="255" />
+                <div class="form-group" ng-repeat="player in editing.players track by $index">
+                    <input ng-if="!player.id" name="email-{{$index}}" placeholder="Player Email" ng-model="player.email" class="form-control" type="email" maxlength="255" />
                     <input ng-if="player.id" placeholder="Player Name" ng-model="player.name" ng-readonly="true" class="form-control" type="text" />
                 </div>
             </div>
@@ -88,7 +88,7 @@
     <div ng-show="logMode">
         <label>Team Checkin Logs</label>
                     
-        <table
+        <table ng-if="dtTeamCheckins"
             data-datatable=""
             data-dt-options="dtTeamCheckins.options"
             data-dt-columns="dtTeamCheckins.columns"
