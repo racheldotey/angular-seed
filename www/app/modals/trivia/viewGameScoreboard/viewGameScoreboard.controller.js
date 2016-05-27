@@ -6,10 +6,12 @@ angular.module('app.modal.trivia.viewGameScoreboard', [])
     .controller('TriviaViewGameScoreboardModalCtrl', ['$scope', '$uibModalInstance', '$filter', 'viewGame', 'DataTableHelper', 'DTColumnBuilder',
     function($scope, $uibModalInstance, $filter, viewGame, DataTableHelper, DTColumnBuilder) { 
     
+    $scope.viewGame = viewGame;
+    
     /* Used to restrict alert bars */
     $scope.alertProxy = {};
         
-    $scope.dtScoreboard = DataTableHelper.getDTStructure($scope, 'publicGameScoreboardList', viewGame.id, false, viewGame.roundNumber);
+    $scope.dtScoreboard = DataTableHelper.getDTStructure($scope, 'publicGameScoreboardList', viewGame.id, false, viewGame.currentRoundNumber);
     $scope.dtScoreboard.options.withOption('order', [1, 'desc'])
     .withDOM('<"row"<"col-sm-12 col-md-12"fr><"col-sm-12 add-space"t><"col-sm-6"l><"col-sm-6 text-right"i><"col-sm-12 text-center"p>>');
     $scope.dtScoreboard.columns = [

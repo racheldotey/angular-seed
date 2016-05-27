@@ -73,13 +73,13 @@ angular.module('TriviaModalService', [
      * 
      * @return uibModalInstance
      */
-    api.openViewGameScoreboard = function(gameId, roundNumber) {
+    api.openViewGameScoreboard = function(game) {
         return api.openModal({
             templateUrl: templatePath + 'viewGameScoreboard/viewGameScoreboard.html',
             controller: 'TriviaViewGameScoreboardModalCtrl',
             resolve: {
                 viewGame: function() {
-                    return { 'id' : gameId, 'roundNumber' : roundNumber };
+                    return game;
                 }
             }
         });

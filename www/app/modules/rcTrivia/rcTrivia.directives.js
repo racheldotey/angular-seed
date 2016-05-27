@@ -220,7 +220,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 TriviaScoreboard.saveScoreboard().then(function (result) {
                         $scope.alertProxy.success("Game saved.");
                         $scope.unsavedState = false;
-                        var modalInstance = TriviaModalService.openViewGameScoreboard($scope.game.id, $scope.game.currentRoundNumber);
+                        var modalInstance = TriviaModalService.openViewGameScoreboard($scope.game);
                         modalInstance.result.then(function (result) {
                             console.log(result);
                         }, function () {});
