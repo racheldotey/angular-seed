@@ -10,9 +10,9 @@
 
 <div class="collapse navbar-collapse" data-uib-collapse="navbarCollapsed">
     <ul class="nav navbar-nav">
-        <li rc-auth-visible-if="user" data-ui-sref-active="active"><a data-ui-sref="app.member.dashboard">Player Dashboard</a></li>
-        <li rc-auth-visible-if="host" data-ui-sref-active="active"><a data-ui-sref="app.host.dashboard">Host Dashboard</a></li>
-        <li rc-auth-visible-if="venue" data-ui-sref-active="active"><a data-ui-sref="app.venue.dashboard">Joint Dashboard</a></li>
+        <li class="trigger-collapse" rc-auth-visible-if="user" data-ui-sref-active="active"><a data-ui-sref="app.member.dashboard">Player Dashboard</a></li>
+        <li class="trigger-collapse" rc-auth-visible-if="host" data-ui-sref-active="active"><a data-ui-sref="app.host.dashboard">Host Dashboard</a></li>
+        <li class="trigger-collapse" rc-auth-visible-if="venue" data-ui-sref-active="active"><a data-ui-sref="app.venue.dashboard">Joint Dashboard</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
         <li data-uib-dropdown data-is-open="userNavDropdownIsOpen">
@@ -26,8 +26,8 @@
                 <li class="trigger-collapse"><a ng-click="logout()">Logout</a></li>
             </ul>
         </li>
-        <li data-ui-sref-active="active" ng-if="!userDisplayName"><a data-ui-sref="app.auth.login">Login</a></li>
-        <li data-ui-sref-active="active" ng-if="!userDisplayName"><a data-ui-sref="app.auth.signup">Sign Up</a></li>
-        <li data-ui-sref-active="active" ng-if="!userDisplayName"><a data-ui-sref="app.auth.signupVenue">Venue Sign Up</a></li>
+        <li class="trigger-collapse" data-ui-sref-active="active" ng-if="!userDisplayName"><a data-ui-sref="app.auth.login">Login</a></li>
+        <li class="trigger-collapse" data-ui-sref-active="active" ng-if="!userDisplayName"><a data-ui-sref="app.auth.signup">Sign Up</a></li>
+        <li class="trigger-collapse" data-ui-sref-active="active" ng-if="!userDisplayName"><a data-ui-sref="app.auth.signupVenue">Venue Sign Up</a></li>
     </ul>
 </div>
