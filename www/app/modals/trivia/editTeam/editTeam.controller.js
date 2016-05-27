@@ -144,7 +144,6 @@ angular.module('app.modal.trivia.editTeam', [])
                 }
                 
                 ApiRoutesGames.addTeam(data).then(function(result) {
-
                         console.log(result);
                         $scope.alertProxy.success("Team '" + result.team.name + "'added");
                         $uibModalInstance.close(result);
@@ -166,7 +165,6 @@ angular.module('app.modal.trivia.editTeam', [])
                 }
                 
                 ApiRoutesGames.addTeam(data).then(function(result) {
-
                     console.log(result);
                     $scope.alertProxy.success("Team '" + result.team.name + "'added");
                     $uibModalInstance.close(result);

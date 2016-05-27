@@ -47,6 +47,10 @@ angular.module('apiRoutes.lists', [])
         return getList('/simple-list/teams');
     };
     
+    api.simpleAllTeamsList = function() { 
+        return getList('/simple-list/teams/all');
+    };
+    
     api.simpleActiveGamesList = function() { 
         return getList('/simple-list/games');
     };

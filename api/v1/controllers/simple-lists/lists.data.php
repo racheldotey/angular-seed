@@ -30,6 +30,12 @@ class ListsData {
     
     static function selectTeams() {
         return DBConn::selectAll("SELECT t.id, t.name AS label "
+                . "FROM " . DBConn::prefix() . "teams AS t "
+                . "WHERE t.current_game_id IS NULL ORDER BY t.name;");
+    }
+    
+    static function selectAllTeams() {
+        return DBConn::selectAll("SELECT t.id, t.name AS label "
                 . "FROM " . DBConn::prefix() . "teams AS t ORDER BY t.name;");
     }
     

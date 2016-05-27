@@ -34,6 +34,10 @@ class ListRoutes {
                 ListsController::getTeamsList($app);
             })->via('GET', 'POST');
             
+            $app->map("/teams/all", function () use ($app) {
+                ListsController::getAllTeamsList($app);
+            })->via('GET', 'POST');
+            
             $app->map("/games", function () use ($app) {
                 ListsController::getGamesList($app);
             })->via('GET', 'POST');

@@ -42,6 +42,12 @@ class ListsController {
         return $app->render(200, array('list' => $list));
     }
     
+    static function getAllTeamsList($app) {
+        $data = ListsData::selectAllTeams();
+        $list = ($data) ? $data : array();
+        return $app->render(200, array('list' => $list));
+    }
+    
     static function getGamesList($app) {
         $data = ListsData::selectGames();
         $list = ($data) ? $data : array();

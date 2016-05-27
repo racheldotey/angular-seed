@@ -235,6 +235,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 var modalInstance = TriviaModalService.openAddTeam($scope.game);
                 modalInstance.result.then(function (result) {
                     console.log(result);
+                    $state.go('app.host.game', { 'gameId': $scope.game.id, 'roundNumber' : $scope.game.currentRoundNumber }, { reload: true });
                 }, function () {});
                 
             };

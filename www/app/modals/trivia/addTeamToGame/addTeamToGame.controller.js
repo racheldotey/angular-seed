@@ -20,25 +20,7 @@ angular.module('app.modal.trivia.addTeamToGame', [])
     }
     
     $scope.toGame = {};
-    if(game) {
-        var scoreboard = (angular.isDefined(game.teams)) ? game.teams : game.scoreboard;
-        for(var t = (teamsList.length - 1); t >= 0; t--) {
-            // Remove already checked in teams
-            if(angular.isArray(scoreboard)) {
-                for(var s = (scoreboard.length - 1); s >= 0; s--) {
-                    if (parseInt(teamsList[t].id) === parseInt(scoreboard[s].teamId)) {
-                        teamsList.splice(t, 1);
-                        break;
-                    }
-                }
-            } else if(angular.isObject(scoreboard)) {
-                if(angular.isDefined(scoreboard[parseInt(teamsList[t].id)])) {
-                    teamsList.splice(t, 1);
-                }
-            }
-            
-        }
-                
+    if(game) {    
         for(var g = 0; g < gamesList.length; g++) {
             if(parseInt(gamesList[g].id) === parseInt(game.id)) {
                 $scope.toGame = gamesList[g];
@@ -73,11 +55,11 @@ angular.module('app.modal.trivia.addTeamToGame', [])
             AlertConfirmService.confirm('<p>Would like to check team<br/><strong>' + $scope.addTeam.value.label + '</strong><br/><br/>into the game<br/><strong>' + $scope.toGame.value.label + '</strong>?</p><p>The team will be locked in for the duration of the game after it starts.</p>', 'Checking Into Game')
                 .result.then(function(results) { 
                     TriviaScoreboard.addTeamToGame($scope.addTeam.value.id, $scope.toGame.value.id).then(
-                            function (result) {
-                                $uibModalInstance.close(result);
-                            }, function (error) {
-                        $scope.alertProxy.error(error);
-                    });
+                        function (result) {
+                            $uibModalInstance.close(result);
+                        }, function (error) {
+                            $scope.alertProxy.error(error);
+                        });
                 }, function(declined) {
 
                 });

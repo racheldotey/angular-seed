@@ -130,7 +130,7 @@ angular.module('TriviaModalService', [
                     return currentTeam || false;
                 },
                 teamsList: function(ApiRoutesSimpleLists) {
-                    return ApiRoutesSimpleLists.simpleTeamsList();
+                    return ApiRoutesSimpleLists.simpleAllTeamsList();
                 }
             }
         });

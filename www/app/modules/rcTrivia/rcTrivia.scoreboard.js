@@ -15,7 +15,8 @@ angular.module('rcTrivia.scoreboard', ['rcTrivia.game'])
         api.loadGame = function(gameId, roundNumber) {
             return $q(function (resolve, reject) {
                 // Has the game been loaded
-                var loadedGame = api.getGame();
+                // This was stoping a reload, removing it for now
+                var loadedGame = false;//api.getGame();
                 if(loadedGame && parseInt(gameId) === parseInt(loadedGame.id)) {
                     // If the game has already been loaded
                     // Just load the requested round
