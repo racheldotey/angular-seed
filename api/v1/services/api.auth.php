@@ -17,6 +17,7 @@ class APIAuth {
     static function getUserId() {        
         return (isset($_SESSION[self::APISESSIONNAME])) ? $_SESSION[self::APISESSIONNAME] : '0';
     }
+    
     static function isAuthorized($app, $role = 'public') {
         $post = $app->request->post();
         
@@ -27,6 +28,7 @@ class APIAuth {
                 v::key('apiToken', v::stringType())->validate($post)) {
                 $session = self::selectUserSession($post['apiKey']);
                 $_SESSION[self::APISESSIONNAME] = ($session) ? $session->userId : '0';
+                self::updateSessionTimeout($session->sessionId, $session->expires);
             }
             
             return true; // Public access
@@ -81,6 +83,7 @@ class APIAuth {
             $userRoles = self::selectUserRoles($session->userId);
             if($userRoles && in_array($role, $userRoles)) {
                 /* SUCCESS - User is logged in and does have access to this request. */
+                self::updateSessionTimeout($session->sessionId, $session->expires);
                 return true; // Ideal Endpoint
             } else {
                 /*
@@ -122,7 +125,8 @@ class APIAuth {
     }
     
     private static function selectUserSession($identifier) {
-        return DBConn::selectOne("SELECT user_id AS userId, token AS apiToken, identifier AS apiKey, t.expires "
+        return DBConn::selectOne("SELECT t.id AS sessionId, user_id AS userId, "
+                . "token AS apiToken, identifier AS apiKey, t.expires "
                 . "FROM " . DBConn::prefix() . "tokens_auth AS t "
                 . "JOIN " . DBConn::prefix() . "users AS u ON u.id = t.user_id "
                 . "WHERE identifier = :identifier AND u.disabled IS NULL "
@@ -135,6 +139,28 @@ class APIAuth {
                 . "JOIN " . DBConn::prefix() . "auth_lookup_group_role AS gr ON ug.auth_group_id = gr.auth_group_id "
                 . "JOIN " . DBConn::prefix() . "auth_roles AS r ON r.id = gr.auth_role_id "
                 . "WHERE ug.user_id = :id;", array(':id' => $userId), \PDO::FETCH_COLUMN);
+    }
+    
+    private static function updateSessionTimeout($sessionId, $expiresString) {
+        if (is_null($expiresString)) {
+            return true;
+        }
+        
+        $timeoutInHours = APIConfig::get('AUTH_COOKIE_TIMEOUT_HOURS');
+        $expires = new \DateTime($expiresString);
+        
+        $newExpires = new \DateTime();
+        $newExpires->modify("+{$timeoutInHours} hour");
+        
+        $interval = $expires->diff($newExpires);
+        
+        // Only update once every 5 minutes to limit overhead
+        if(intval($interval->format('%i')) >= 5) {
+            return DBConn::selectOne("UPDATE " . DBConn::prefix() . "tokens_auth SET "
+                . "expires = :expires WHERE id = :id LIMIT 1;", 
+                    array(':id' => $sessionId, ':expires' => $newExpires->format('Y-m-d H:i:s')));
+        }
+        return true;
     }
     
 }
