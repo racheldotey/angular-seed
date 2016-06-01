@@ -8,6 +8,26 @@ app.constant('THIS_DIRECTORY', (function () {
     return scriptPath.substring(0, scriptPath.lastIndexOf('/') + 1);
 })());
 
+app.factory('ScoreboardResizing', [function() {
+            
+        var api = {};  
+        
+        api.setHeight = function() {
+                // Height of the visible window area (screen size)
+                var visibleWindowHeight = $(window).height();
+                // Get the table header height (because its not part of dataTables_scrollBody)
+                var tableHeaderHeight = $('div.dataTables_scrollHead').height();
+                // Add a little padding
+                var padding = 20;
+                // Do the maths
+                var newHeight = visibleWindowHeight - tableHeaderHeight - padding;
+                // Change the inner scrollable tables height
+                $('.dataTables_scrollBody').css('height', newHeight + 'px');
+            };
+            
+        return api;
+    }]);
+
 app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
         
     return {
@@ -16,8 +36,8 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
         scope: {
             game: '=rcTriviaScoreboard'
         },
-        controller: ['$rootScope', '$scope', '$state', '$stateParams', '$window', '$filter', 'TriviaScoreboard', 'AlertConfirmService', 'TriviaModalService', 'DTOptionsBuilder', 'DTColumnDefBuilder',
-            function($rootScope, $scope, $state, $stateParams, $window, $filter, TriviaScoreboard, AlertConfirmService, TriviaModalService, DTOptionsBuilder, DTColumnDefBuilder) {
+        controller: ['$rootScope', '$scope', '$state', '$stateParams', '$window', '$filter', 'TriviaScoreboard', 'ScoreboardResizing', 'AlertConfirmService', 'TriviaModalService', 'DTOptionsBuilder', 'DTColumnDefBuilder',
+            function($rootScope, $scope, $state, $stateParams, $window, $filter, TriviaScoreboard, ScoreboardResizing, AlertConfirmService, TriviaModalService, DTOptionsBuilder, DTColumnDefBuilder) {
             
             // Prevent leaving without saving
             $rootScope.$on('$stateChangeStart',
@@ -79,7 +99,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                 .withOption('ordering', false)
                 .withFixedColumns({ leftColumns: 1 })
                 .withOption('drawCallback', function() {
-                    $scope.setScoreboardHeight();
+                    ScoreboardResizing.setHeight();
                 });
                 
             if(angular.isDefined($stateParams.sortBy) && angular.isNumber(parseInt($stateParams.sortBy))){
@@ -160,34 +180,8 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
             }
                 
             // Responsive table height
-
-            $scope.setScoreboardHeight = function() {
-                // Get the height of everything that is not the table
-                var otherHeight = $('body').height();
-                var otherHeight = $('body').height();
-                var otherHeight = $('body').height() - $('.dataTables_scrollBody').height();
-                // The height of the navigation
-                var scoreboardNavigation = $('div#scoreboard-navigation').height();
-                // The height of the footer
-                var scoreboardFooter = $('footer#scoreboard-about-game').height();
-                // Height of the window
-                var windowHeight = $(window).height();
-                // Subtract the height of everything but the table from the
-                // height of the window to get whats left for the table
-                var tableHeight = windowHeight - otherHeight + scoreboardFooter + scoreboardNavigation;
-
-                // Max height on table
-                var scoreboardTable = $('table#scoreboard').height();
-                tableHeight = (tableHeight < scoreboardTable) ? tableHeight : scoreboardTable;
-                // Min Height on table
-                tableHeight = (tableHeight >= 300) ? tableHeight : 300;
-
-                // Set the datatables wrapper to that height
-                $('.dataTables_scrollBody').css('height', tableHeight + 'px');
-            };
-
             angular.element($window).on('resize', function () {
-                $scope.setScoreboardHeight();
+                ScoreboardResizing.setHeight();
             });
             
             $scope.buttonStartGame = function() {
@@ -392,8 +386,8 @@ app.directive('rcTriviaScoreboardReadonly', function(THIS_DIRECTORY) {
         scope: {
             game: '=rcTriviaScoreboardReadonly'
         },
-        controller: ['$scope', 'DTOptionsBuilder', '$window', 'TriviaScoreboard',
-            function($scope, DTOptionsBuilder, $window, TriviaScoreboard) {
+        controller: ['$scope', 'DTOptionsBuilder', '$window', 'TriviaScoreboard', 'ScoreboardResizing',
+            function($scope, DTOptionsBuilder, $window, TriviaScoreboard, ScoreboardResizing) {
             /* Used to restrict alert bars */
             $scope.alertProxy = {};
     
@@ -415,36 +409,12 @@ app.directive('rcTriviaScoreboardReadonly', function(THIS_DIRECTORY) {
                 .withOption('bSort', false)
                 .withOption('ordering', false)
                 .withOption('drawCallback', function() {
-                    $scope.setScoreboardHeight();
+                    ScoreboardResizing.setHeight();
                 });
                 
                 // Responsive table height
-                
-                $scope.setScoreboardHeight = function() {
-                    // Get the height of everything that is not the table
-                    var otherHeight = $('body').height() - $('.dataTables_scrollBody').height();
-                    // The height of the navigation
-                    var scoreboardNavigation = $('div#scoreboard-navigation').height();
-                    // The height of the footer
-                    var scoreboardFooter = $('footer#scoreboard-about-game').height();
-                    // Height of the window
-                    var windowHeight = $(window).height();
-                    // Subtract the height of everything but the table from the
-                    // height of the window to get whats left for the table
-                    var tableHeight = windowHeight - otherHeight + scoreboardFooter + scoreboardNavigation;
-
-                    // Max height on table
-                    var scoreboardTable = $('table#scoreboard').height();
-                    tableHeight = (tableHeight < scoreboardTable) ? tableHeight : scoreboardTable;
-                    // Min Height on table
-                    tableHeight = (tableHeight >= 300) ? tableHeight : 300;
-
-                    // Set the datatables wrapper to that height
-                    $('.dataTables_scrollBody').css('height', tableHeight + 'px');
-                };
-                
                 angular.element($window).on('resize', function () {
-                    $scope.setScoreboardHeight();
+                    ScoreboardResizing.setHeight();
                 });
             
             $scope.getQuestionType = function(questionNumber) {
