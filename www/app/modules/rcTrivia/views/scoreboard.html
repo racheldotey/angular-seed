@@ -178,16 +178,16 @@
         </form>
     </section>
 
-    <footer>
+    <footer id="scoreboard-about-game">
         <address>
             <small>
             <strong>About This Game</strong><br>
-            {{game.name}}<br/>
-            <abbr title="Venue">Venue</abbr> {{game.venue}}<br/>
-            <abbr title="Host">Host:</abbr> {{game.hostName}}<br/>
-            <abbr title="Scheduled">Scheduled:</abbr> {{game.scheduled | formatMySQLDate}}<br/>
-            <abbr title="Started">Started:</abbr> {{game.started | formatMySQLDate}}<br/>
-            <abbr title="Ended">Ended:</abbr> {{game.ended | formatMySQLDate}}<br/>
+            <abbr title="Name of the Game.">Name</abbr> {{game.name}}<br/>
+            <abbr title="Venue or Joint where the game is hosted.">Joint:</abbr> {{game.venue}}<br/>
+            <abbr title="The host of the game.">Host:</abbr> {{game.hostName}}<br/>
+            <abbr title="The game is Scheduled">Scheduled:</abbr> {{game.scheduled | formatMySQLDate}}<br/>
+            <span ng-show="game.started"><abbr title="The game has Started">Started:</abbr> {{game.started | formatMySQLDate}}<br/></span>
+            <span ng-show="game.ended"><abbr title="The game has Ended">Ended:</abbr> {{game.ended | formatMySQLDate}}<br/></span>
             </small>
         </address>
     </footer>

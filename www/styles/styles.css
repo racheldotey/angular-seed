@@ -861,10 +861,11 @@ body.scoreboard .game-scoreboard > section {
 body.scoreboard .game-scoreboard > section #scoreboard-navigation {
   min-width: 300px;
 }
-body.scoreboard .game-scoreboard > section #scoreboard-navigation .game-round-navigation {
+body.scoreboard .game-scoreboard > section #scoreboard-navigation #scoreboard-navigation .game-round-navigation {
   display: block;
+  overflow: hidden;
 }
-body.scoreboard .game-scoreboard > section #scoreboard-navigation .game-round-navigation nav ul.pagination {
+body.scoreboard .game-scoreboard > section #scoreboard-navigation #scoreboard-navigation .game-round-navigation nav ul.pagination {
   display: block;
   padding: 0;
   margin: 0;
@@ -1029,6 +1030,12 @@ body.scoreboard .game-scoreboard > section ::-webkit-scrollbar-thumb:active {
 }
 body.scoreboard .game-scoreboard > section ::-webkit-scrollbar-corner {
   background: transparent;
+}
+body.scoreboard .game-scoreboard > footer {
+  padding-top: 20px;
+}
+body.scoreboard .game-scoreboard > footer abbr {
+  margin-left: 10px;
 }
 .store.item-details .page-header {
   margin-top: 0;

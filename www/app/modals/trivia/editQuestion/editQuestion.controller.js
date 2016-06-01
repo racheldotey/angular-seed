@@ -49,6 +49,7 @@ angular.module('app.modal.trivia.editQuestion', [])
         $scope.setMode('view');
         /* Save for resetting purposes */
         $scope.saved = angular.copy(editing);
+        $scope.saved.wager = (editing.wager) ? '1' : '0';
         $scope.saved.maxPoints = parseFloat(editing.maxPoints);
     } else {
         $scope.setMode('new');

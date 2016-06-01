@@ -23,7 +23,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
             $rootScope.$on('$stateChangeStart',
                 function (event, toState, toParams, fromState, fromParams) {
                     
-                    if(fromState.name === 'app.host.game' && $scope.unsavedState) {    
+                    if(fromState.name === 'app.host.game' && $scope.unsavedState) {
                         event.preventDefault();
                         AlertConfirmService.confirm('Wait! You have unsaved changes. Would you like to save the scoreboard before you leave?', 'Unsaved Changes!')
                             .result.then(function () {
@@ -36,6 +36,7 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
                                     $scope.alertProxy.error(error);
                                 });
                             }, function (declined) {
+                                $scope.unsavedState = false;
                                 $state.go(toState.name, toParams);
                             });
                     }
@@ -162,10 +163,18 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
 
             $scope.setScoreboardHeight = function() {
                 // Get the height of everything that is not the table
+                var otherHeight = $('body').height();
+                var otherHeight = $('body').height();
                 var otherHeight = $('body').height() - $('.dataTables_scrollBody').height();
+                // The height of the navigation
+                var scoreboardNavigation = $('div#scoreboard-navigation').height();
+                // The height of the footer
+                var scoreboardFooter = $('footer#scoreboard-about-game').height();
+                // Height of the window
+                var windowHeight = $(window).height();
                 // Subtract the height of everything but the table from the
                 // height of the window to get whats left for the table
-                var tableHeight = $(window).height() - otherHeight - 1;
+                var tableHeight = windowHeight - otherHeight + scoreboardFooter + scoreboardNavigation;
 
                 // Max height on table
                 var scoreboardTable = $('table#scoreboard').height();
@@ -217,15 +226,20 @@ app.directive('rcTriviaScoreboard', function(THIS_DIRECTORY) {
             
             // View Sortable Scoreboard Modal
             $scope.buttonViewScoreboardModal = function() {
-                TriviaScoreboard.saveScoreboard().then(function (result) {
-                        $scope.alertProxy.success("Game saved.");
-                        $scope.unsavedState = false;
-                        var modalInstance = TriviaModalService.openViewGameScoreboard($scope.game);
-                        modalInstance.result.then(function (result) {
-                            console.log(result);
-                        }, function () {});
-                    }, function (error) {
-                        $scope.alertProxy.error(error);
+                AlertConfirmService.confirm('Unsaved changes need to be saved to show the sortable scoreboard. Would you like to save the scoreboard?', 'Unsaved Changes!')
+                    .result.then(function () {
+                        TriviaScoreboard.saveScoreboard().then(function (result) {
+                            $scope.alertProxy.success("Game saved.");
+                            $scope.unsavedState = false;
+                            var modalInstance = TriviaModalService.openViewGameScoreboard($scope.game);
+                            modalInstance.result.then(function (result) {
+                                console.log(result);
+                            }, function () {});
+                        }, function (error) {
+                            $scope.alertProxy.error(error);
+                        });
+                    }, function (declined) {
+                        $scope.alertProxy.error("No changes were saved.");
                     });
                 
             };
@@ -409,16 +423,22 @@ app.directive('rcTriviaScoreboardReadonly', function(THIS_DIRECTORY) {
                 $scope.setScoreboardHeight = function() {
                     // Get the height of everything that is not the table
                     var otherHeight = $('body').height() - $('.dataTables_scrollBody').height();
+                    // The height of the navigation
+                    var scoreboardNavigation = $('div#scoreboard-navigation').height();
+                    // The height of the footer
+                    var scoreboardFooter = $('footer#scoreboard-about-game').height();
+                    // Height of the window
+                    var windowHeight = $(window).height();
                     // Subtract the height of everything but the table from the
                     // height of the window to get whats left for the table
-                    var tableHeight = $(window).height() - otherHeight - 1;
-                    
+                    var tableHeight = windowHeight - otherHeight + scoreboardFooter + scoreboardNavigation;
+
                     // Max height on table
                     var scoreboardTable = $('table#scoreboard').height();
                     tableHeight = (tableHeight < scoreboardTable) ? tableHeight : scoreboardTable;
                     // Min Height on table
                     tableHeight = (tableHeight >= 300) ? tableHeight : 300;
-                    
+
                     // Set the datatables wrapper to that height
                     $('.dataTables_scrollBody').css('height', tableHeight + 'px');
                 };

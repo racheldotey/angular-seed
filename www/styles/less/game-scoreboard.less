@@ -22,15 +22,18 @@ body.scoreboard .game-scoreboard {
         #scoreboard-navigation {
             min-width: 300px;
                 
-            .game-round-navigation {
-                display: block;
-                 nav {
-                    ul.pagination {
-                        display: block;
-                        padding: 0;
-                        margin: 0;
-                    }
-                 }
+            #scoreboard-navigation {
+                .game-round-navigation {
+                    display: block;
+                    overflow: hidden;
+                     nav {
+                        ul.pagination {
+                            display: block;
+                            padding: 0;
+                            margin: 0;
+                        }
+                     }
+                }
             }
             
             .host-actions {
@@ -167,7 +170,9 @@ body.scoreboard .game-scoreboard {
     }
     
     >footer {
-        >div {
+        padding-top: 20px;
+        abbr {
+            margin-left:10px;
         }
     }
     
