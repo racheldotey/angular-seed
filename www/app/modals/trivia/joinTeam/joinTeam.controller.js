@@ -43,6 +43,7 @@ angular.module('app.modal.trivia.joinTeam', [])
 
                     ApiRoutesGames.addTeamMemberById($scope.userId, $scope.joinTeam.value.id).then(
                             function (result) {
+                                result.msg = "You have successfully joined " + $scope.joinTeam.value.label + ".";
                                 $uibModalInstance.close(result);
                             }, function (error) {
                         $scope.alertProxy.error(error);

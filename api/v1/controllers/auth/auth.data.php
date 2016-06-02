@@ -150,7 +150,7 @@ class AuthData {
     // Player invite
     
     static function selectSignupInvite($token) {
-        return DBConn::selectColumn("SELECT team_id AS teamId FROM " . DBConn::prefix() . "tokens_player_invites "
+        return DBConn::selectColumn("SELECT IFNULL(team_id,false) AS teamId FROM " . DBConn::prefix() . "tokens_player_invites "
                 . "WHERE user_id IS NULL AND response IS NULL AND expires >= NOW() "
                 . "AND token = :token LIMIT 1;", array(':token' => $token));
     }
@@ -158,7 +158,8 @@ class AuthData {
     static function updateAcceptSignupInvite($validInvite) {
         return DBConn::update("UPDATE " . DBConn::prefix() . "tokens_player_invites "
                 . "SET user_id =:user_id, response='accepted', last_visited=NOW() "
-                . "WHERE token = :token LIMIT 1;", $validInvite);
+                . "WHERE user_id IS NULL AND response IS NULL AND expires >= NOW() "
+                . "AND token = :token LIMIT 1;", $validInvite);
     }
     
     static function updateAcceptSignupTeamInvite($validInvite) {        

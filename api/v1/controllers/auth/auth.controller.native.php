@@ -87,7 +87,7 @@ class AuthControllerNative {
             if($inviteTeamId) {
                 AuthData::updateAcceptSignupTeamInvite(array(':user_id' => $userId, ':token' => $post['token'], ':team_id' => $inviteTeamId));
             } else {
-                AuthData::updateAcceptSignupPlayerInvite(array(':user_id' => $userId, ':token' => $post['token']));
+                AuthData::updateAcceptSignupInvite(array(':user_id' => $userId, ':token' => $post['token']));
             }
         }
          

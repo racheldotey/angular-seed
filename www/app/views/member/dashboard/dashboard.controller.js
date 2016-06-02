@@ -209,9 +209,7 @@ angular.module('app.member.dashboard', [])
                         console.log("Couldnt reload user");
                     });
                         
-                }, function (error) {
-                    $scope.alertProxy.error(error);
-                });
+                }, function (error) { });
             }
         };
         
@@ -246,9 +244,9 @@ angular.module('app.member.dashboard', [])
                     });
                 }, function (declined) {});
             } else {
-                    var modalInstance = TriviaModalService.openJoinTeam($scope.currentPlayer.id, $scope.currentPlayer.teams[0]);
+                var modalInstance = TriviaModalService.openJoinTeam($scope.currentPlayer.id, $scope.currentPlayer.teams[0]);
                 modalInstance.result.then(function (result) {
-                    $scope.alertProxy.success(result);
+                    $scope.alertProxy.success(result.msg);
                         
                     AuthService.reloadUser().then(function (result) {
                         $scope.currentPlayer = result;
@@ -257,9 +255,7 @@ angular.module('app.member.dashboard', [])
                         console.log("Couldnt reload user");
                     });
                         
-                }, function (error) {
-                    $scope.alertProxy.error(error);
-                });
+                }, function (error) {});
             }
         };
         
