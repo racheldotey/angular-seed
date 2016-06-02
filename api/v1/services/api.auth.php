@@ -28,7 +28,7 @@ class APIAuth {
                 v::key('apiToken', v::stringType())->validate($post)) {
                 $session = self::selectUserSession($post['apiKey']);
                 $_SESSION[self::APISESSIONNAME] = ($session) ? $session->userId : '0';
-                self::updateSessionTimeout($session->sessionId, $session->expires);
+                //self::updateSessionTimeout($session->sessionId, $session->expires);
             }
             
             return true; // Public access
@@ -83,7 +83,7 @@ class APIAuth {
             $userRoles = self::selectUserRoles($session->userId);
             if($userRoles && in_array($role, $userRoles)) {
                 /* SUCCESS - User is logged in and does have access to this request. */
-                self::updateSessionTimeout($session->sessionId, $session->expires);
+                //self::updateSessionTimeout($session->sessionId, $session->expires);
                 return true; // Ideal Endpoint
             } else {
                 /*
@@ -146,7 +146,10 @@ class APIAuth {
             return true;
         }
         
-        $timeoutInHours = APIConfig::get('AUTH_COOKIE_TIMEOUT_HOURS');
+        $timeoutInHours = intval(APIConfig::get('AUTH_COOKIE_TIMEOUT_HOURS'));
+        if(!$timeoutInHours) {
+            $timeoutInHours = 24;
+        }
         $expires = new \DateTime($expiresString);
         
         $newExpires = new \DateTime();
