@@ -32,7 +32,7 @@
                 
                 <div class="form-group">
                     <label for="messageSenderEmail">Email</label>
-                    <input type="email" class="form-control" id="messageSenderEmail" placeholder="Your best email">
+                    <input type="email" ng-pattern="/^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/" class="form-control" id="messageSenderEmail" placeholder="Your best email">
                 </div>
                 <div class="form-group">
                     <label for="messageSenderName">Name</label>

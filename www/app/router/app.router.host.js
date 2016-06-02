@@ -144,7 +144,11 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
                                             $state.go('app.host.dashboard');
                                         });
                                     });
-                            } else {
+                            } else if(parseInt(result.hostId) !== parseInt(initUser.id)) {
+                                $rootScope.$evalAsync(function () {
+                                    $state.go('app.member.game', {gameId: $stateParams.gameId, roundNumber: $stateParams.roundNumber });
+                                });
+                            }else {
                                 resolve(result);
                             }
                         }, function (error) {

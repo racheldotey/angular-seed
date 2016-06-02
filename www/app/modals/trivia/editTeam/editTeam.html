@@ -72,7 +72,7 @@
             <div class="col-xs-12">
                 <label>Invite Team Members</label>
                 <div class="form-group" ng-repeat="player in editing.players track by $index">
-                    <input ng-if="!player.id" name="email-{{$index}}" placeholder="Player Email" ng-model="player.email" class="form-control" type="email" ng-pattern="/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/" maxlength="255" />
+                    <input ng-if="!player.id" name="email-{{$index}}" placeholder="Player Email" ng-model="player.email" class="form-control" type="email" ng-pattern="/^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/" maxlength="255" />
                     <input ng-if="player.id" placeholder="Player Name" ng-model="player.name" ng-readonly="true" class="form-control" type="text" />
                 </div>
             </div>
