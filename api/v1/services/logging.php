@@ -49,6 +49,8 @@ class Logging {
     
     /* 
      * Alias for the write function
+     * 
+     * @param $logItem String
      */
     function log($logItem) {
         // This is just a different way to call write
@@ -57,6 +59,8 @@ class Logging {
     
     /* 
      * Prepend a timestamp to a line of text and write it to the log file.
+     * 
+     * @param $logItem String
      */
     function write($logItem) {
         if(is_array($logItem)) {

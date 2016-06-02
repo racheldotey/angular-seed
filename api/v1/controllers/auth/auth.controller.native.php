@@ -21,10 +21,10 @@ class AuthControllerNative {
         $user = AuthData::selectUserByIdentifierToken($post['apiKey']);
         if(!$user) {
         // Validate existing user
-            return array('authenticated' => false, 'msg' => 'Unauthenticated: No User');
+            return array('authenticated' => false, 'msg' => 'Unauthenticated: Please login to continue.');
         } else if (!password_verify($post['apiToken'], $user->apiToken)) {
         // Validate Password
-            return array('authenticated' => false, 'msg' => 'Unauthenticated: Invalid Cookie');
+            return array('authenticated' => false, 'msg' => 'Unauthenticated: Please login to continue.');
         }
         // Go now. Be free little brother.
         if(isset($user->apiKey)){ 

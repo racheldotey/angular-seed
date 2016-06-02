@@ -24,6 +24,7 @@ class V1Controller {
         
         ApiRouter::addRoutes($app, $config->get('debugMode'), $authenticateForRole);
 
+        
         /* Start Slim */
         $app->run();
     }
@@ -40,22 +41,16 @@ class V1Controller {
         
         // Only invoked if mode is "production"
         $app->configureMode('production', function () use ($app) {
-            $app->config(array(
-                'log.enable' => true,
-                'debug' => false
-            ));
+            $app->config('debug', false);
+            $app->config('log.enable', true);
         });
 
         // Only invoked if mode is "development"
         $app->configureMode('development', function () use ($app) {
-            $app->config(array(
-                //'log.enable' => false,
-                'debug' => true,
-                
-                'log.enabled' => true,
-                'log.level' => \Slim\Log::DEBUG,
-                'log.writer' => new APILogWriter()
-            ));
+            $app->config('debug', true);
+            $app->config('log.enable', true);
+            $app->config('log.level', \Slim\Log::DEBUG);
+            $app->config('log.writer', new APILogWriter());
         });
         
         return $app;

@@ -20,6 +20,7 @@ class APIAuth {
     
     static function isAuthorized($app, $role = 'public') {
         $post = $app->request->post();
+        $logger = new Logging('is_authorized');
         
         /* If this is a public route */
         if(strtolower($role) === 'public' || strtolower($role) === 'guest') {
@@ -29,6 +30,9 @@ class APIAuth {
                 $session = self::selectUserSession($post['apiKey']);
                 $_SESSION[self::APISESSIONNAME] = ($session) ? $session->userId : '0';
                 //self::updateSessionTimeout($session->sessionId, $session->expires);
+                $logger->log("[SUCCESS] [PUBLIC] [ROLE: {$role}] {$post['apiKey']}:{$post['apiToken']}");
+            } else {
+                $logger->log("[SUCCESS] [PUBLIC] [ROLE: {$role}]");
             }
             
             return true; // Public access
@@ -37,6 +41,7 @@ class APIAuth {
         /* Check parameters for non public routes. */
         if(!v::key('apiKey', v::stringType())->validate($post) || 
            !v::key('apiToken', v::stringType())->validate($post)) {
+            $logger->log("[FAIL: 400] [ROLE: {$role}]");
             /* 
              * 400 Bad Request
              * 
@@ -62,19 +67,25 @@ class APIAuth {
             $now = new \DateTime();
             $expires = (is_null($session->expires)) ? $now : new \DateTime($session->expires);
             // If the expiration is NULL it never expires
-            if(false && !is_null($session->expires) && $now < $expires) {
-                /* 419 Authentication Timeout (not in RFC 2616)
+            if(!is_null($session->expires) && $now > $expires) {
+                $logger->log("[FAIL: 419] [ROLE: {$role}] [EXP: {$expires->format('Y-m-d H:i:s')}] [NOW: {$now->format('Y-m-d H:i:s')}] {$post['apiKey']}:{$post['apiToken']}");
+                /* 401 Unauthorized
                  * 
-                 * Not a part of the HTTP standard, 419 Authentication Timeout 
-                 * denotes that previously valid authentication has expired. It is 
-                 * used as an alternative to 401 Unauthorized in order to 
-                 * differentiate from otherwise authenticated clients being denied 
-                 * access to specific server resources.
+                 * Similar to 403 Forbidden, but specifically for use when 
+                 * authentication is required and has failed or has not yet been 
+                 * provided. The response must include a WWW-Authenticate header field 
+                 * containing a challenge applicable to the requested resource. See 
+                 * Basic access authentication and Digest access authentication.
+                 * 401 semantically means "unauthenticated", i.e. the user does 
+                 * not have the necessary credentials.
+                 * 
+                 * NOTE: We are using POST variables `apiKey` and `apiToken` instead
+                 *       of the WWW-Authenticate header currently. 
                  */
-                $app->halt(419, json_encode(array(
+                $app->halt(401, json_encode(array(
                     'other' => array('post' => $post, 'route' => $role),
                     'data' => array('msg' => 'Session timed out. Please login again.'), 
-                    'meta' => array('error' => true, 'status' => 419)
+                    'meta' => array('error' => true, 'status' => 401)
                     )));
                 return false;
             }
@@ -84,8 +95,10 @@ class APIAuth {
             if($userRoles && in_array($role, $userRoles)) {
                 /* SUCCESS - User is logged in and does have access to this request. */
                 //self::updateSessionTimeout($session->sessionId, $session->expires);
+                $logger->log("[SUCCESS] [ACCESS] [ROLE: {$role}] [EXP: {$expires->format('Y-m-d H:i:s')}] [NOW: {$now->format('Y-m-d H:i:s')}] {$post['apiKey']}:{$post['apiToken']}");
                 return true; // Ideal Endpoint
             } else {
+                $logger->log("[FAIL: 403] [ROLE: {$role}] [EXP: {$expires->format('Y-m-d H:i:s')}] [NOW: {$now->format('Y-m-d H:i:s')}] {$post['apiKey']}:{$post['apiToken']}");
                 /*
                  * 403 Forbidden
                  * 
@@ -121,6 +134,7 @@ class APIAuth {
             'data' => array('msg' => 'Unauthorized API Access.'), 
             'meta' => array('error' => true, 'status' => 401)
             )));
+        $logger->log("[FAIL: 401] {$post['apiKey']}:{$post['apiToken']}");
         return false;
     }
     

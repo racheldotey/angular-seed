@@ -7,12 +7,20 @@
  */
 
 angular.module('app.auth.login', [])
-    .controller('AuthLoginCtrl', ['$scope', '$state', 'AuthService', 'ModalService',
-    function ($scope, $state, AuthService,ModalService) {
+    .controller('AuthLoginCtrl', ['$rootScope', '$scope', '$state', '$timeout', 'AuthService', 'ModalService',
+    function ($rootScope, $scope, $state, $timeout, AuthService,ModalService) {
+        
         
     /* Used to restrict alert bars */
     $scope.alertProxy = {};
 
+        if(angular.isDefined($rootScope.authRedirectErrorData) && 
+                angular.isDefined($rootScope.authRedirectErrorData.msg)) {
+                $timeout(function() {
+                    $scope.alertProxy.error($rootScope.authRedirectErrorData.msg);
+                }, 500);
+        }
+        
     $scope.results = [];
 
     $scope.$state = $state;

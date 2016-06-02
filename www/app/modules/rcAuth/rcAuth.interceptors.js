@@ -26,8 +26,7 @@ app.factory('AuthInterceptor', function($rootScope, $q, AUTH_EVENTS) {
         // then broadcast the apropriate auth event. 
         $rootScope.$broadcast({
             401: AUTH_EVENTS.notAuthenticated,
-            403: AUTH_EVENTS.notAuthorized,
-            419: AUTH_EVENTS.sessionTimeout
+            403: AUTH_EVENTS.notAuthorized
         }[response.status], response);
 
         // Reject the response as normal
@@ -113,6 +112,10 @@ app.run(['$rootScope', '$state', 'AUTH_EVENTS', 'AuthService',
                 if(angular.isDefined(args.state)) {
                     // Save it for rediredt after login
                     $rootScope.redirectPlaceholder = args;
+                }
+                if(angular.isDefined(args.data) && angular.isDefined(args.data.data)) {
+                    // Save it for rediredt after login
+                    $rootScope.authRedirectErrorData = args.data.data;
                 }
                 // Go to the login state
                 $state.go('app.auth.login');
