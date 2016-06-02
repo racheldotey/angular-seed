@@ -20,7 +20,7 @@
             </div>
 
             <div class="form-group col-xs-12 col-sm-6">
-                <input ng-model="newUser.email" type="email" class="form-control" name="email" placeholder="Player Email" maxlength="255" required>
+                <input ng-model="newUser.email" type="email" ng-pattern="/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/" class="form-control" name="email" placeholder="Player Email" maxlength="255" required>
             </div>
 
             <div class="form-group col-xs-12 col-sm-6">
