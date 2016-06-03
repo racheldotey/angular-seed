@@ -119,9 +119,10 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
                 $q: '$q',
                 $rootScope: '$rootScope', 
                 $state: '$state',
+                USER_ROLES: 'USER_ROLES',
                 TriviaScoreboard: 'TriviaScoreboard',
                 AlertConfirmService: 'AlertConfirmService',
-                currentGame: function(initUser, AlertConfirmService, TriviaScoreboard, $stateParams, $rootScope, $state, $q) {
+                currentGame: function(initUser, USER_ROLES, AlertConfirmService, TriviaScoreboard, $stateParams, $rootScope, $state, $q) {
                     $stateParams.roundNumber = (parseInt($stateParams.roundNumber)) ? $stateParams.roundNumber : 1;
                     return $q(function (resolve, reject) {
                         TriviaScoreboard.loadGame($stateParams.gameId, $stateParams.roundNumber).then(function (result) {
@@ -144,7 +145,8 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
                                             $state.go('app.host.dashboard');
                                         });
                                     });
-                            } else if(parseInt(result.hostId) !== parseInt(initUser.id)) {
+                            } else if(parseInt(result.hostId) !== parseInt(initUser.id) &&
+                                    initUser.roles.indexOf(USER_ROLES.admin) < 0) {
                                 $rootScope.$evalAsync(function () {
                                     $state.go('app.member.game', {gameId: $stateParams.gameId, roundNumber: $stateParams.roundNumber });
                                 });

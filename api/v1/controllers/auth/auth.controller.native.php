@@ -363,12 +363,15 @@ class AuthControllerNative {
                 $post['remember'] === true || 
                 $post['remember'] === 'true');
         }
-        $timeoutInHours = intval(APIConfig::get('AUTH_COOKIE_TIMEOUT_HOURS'));
-        if(!$timeoutInHours || !$remember) {
-            $timeoutInHours = 24;
+        if($remember) {
+            $hours = intval(APIConfig::get('AUTH_COOKIE_TIMEOUT_HOURS_REMEMBER'));
+            $timeoutInHours = (!$hours) ? 24 : $hours;
+        } else {
+            $hours = intval(APIConfig::get('AUTH_COOKIE_TIMEOUT_HOURS'));
+            $timeoutInHours = (!$hours) ? 3 : $hours;
         }
         // TODO: Change this to use config var
-        return $timeoutInHours; // 1 Hours or 3 days if remember was checked
+        return $timeoutInHours; 
     }
     
     
