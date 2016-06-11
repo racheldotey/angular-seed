@@ -147,7 +147,9 @@ class AuthHooks {
         // Get Post Data
         $post = $app->request->post();
         $params = array(
+
             'name' => $post['venue'],
+
             'email' => (v::key('email', v::email())->validate($post)) ? $post['email'] : '',
             'firstName' => (v::key('nameFirst', v::stringType())->validate($post)) ? $post['nameFirst'] : '',
             'lastName' => (v::key('nameLast', v::stringType())->validate($post)) ? $post['nameLast'] : '',
@@ -159,8 +161,8 @@ class AuthHooks {
             'state' => $post['state'],
             'postalCode' => $post['zip'],
             'country' => 'US',
-            'triviaDay' => $post['triviaDay'],
-            'triviaTime' => $post['triviaTime'],
+            'triviaDay' => (v::key('triviaDay', v::stringType())->validate($post))?$post['triviaDay']:"",
+            'triviaTime' => (v::key('triviaTime', v::stringType())->validate($post))?$post['triviaTime']:"",
             'appVersion' => $vars['HOT_SALSA_APP_VERSION'],
             'code' => $vars['HOT_SALSA_URL_CODE'],
             'authKey' => $vars['HOT_SALSA_AUTH_KEY'],
@@ -237,7 +239,7 @@ class AuthHooks {
             DBConn::update("UPDATE " . DBConn::prefix() . "venues SET salsa_location_id=:salsa_location_id"
                     . " WHERE id=:id;", $venuedata);
         }
-        return DBConn::insert("INSERT INTO " . DBConn::prefix() . "log_hot_salsa_venue_signup(venue_id, salsa_call_status, salsa_location_id, salsa_location_data, salsa_error_message) "
+        return DBConn::insert("INSERT INTO " . DBConn::prefix() . "logs_hot_salsa_venue_signup(venue_id, salsa_call_status, salsa_location_id, salsa_location_data, salsa_error_message) "
                         . "VALUES (:venue_id, :salsa_call_status, :salsa_location_id, :salsa_location_data, :salsa_error_message);", $logData);
     }
 
@@ -248,7 +250,7 @@ class AuthHooks {
             ':salsa_error_message' => json_encode($data)
         );
 
-        return DBConn::insert("INSERT INTO " . DBConn::prefix() . "log_hot_salsa_venue_signup(venue_id, salsa_call_status, salsa_error_message) "
+        return DBConn::insert("INSERT INTO " . DBConn::prefix() . "logs_hot_salsa_venue_signup(venue_id, salsa_call_status, salsa_error_message) "
                         . "VALUES (:venue_id, :salsa_call_status, :salsa_error_message);", $logData);
     }
 

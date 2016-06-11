@@ -37,7 +37,8 @@ class AuthData {
     }
     
     static function deleteExpiredAuthTokens() {
-        return DBConn::executeQuery('DELETE FROM ' . DBConn::prefix() . 'tokens_auth WHERE expires < NOW();');
+        $date=date("Y-m-d H:i:s");
+        return DBConn::executeQuery('DELETE FROM ' . DBConn::prefix() . 'tokens_auth WHERE expires < "'.$date.'";');
     }
     
     static function updateUserFacebookId($validUser) {
@@ -91,11 +92,13 @@ class AuthData {
     }
     
     static function selectUserByIdentifierToken($identifier) {
+        $date=date("Y-m-d H:i:s");
+
         $user = DBConn::selectOne("SELECT u.id, name_first AS nameFirst, name_last AS nameLast, "
                 . "email, phone, token AS apiToken, identifier AS apiKey "
                 . "FROM " . DBConn::prefix() . "tokens_auth AS t "
                 . "JOIN " . DBConn::prefix() . "users AS u ON u.id = t.user_id "
-                . "WHERE identifier = :identifier AND t.expires > NOW() "
+                . "WHERE identifier = :identifier AND t.expires > '".$date."'"
                 . "AND u.disabled IS NULL;", array(':identifier' => $identifier));
         if($user) {
             $user = self::selectUserData($user);

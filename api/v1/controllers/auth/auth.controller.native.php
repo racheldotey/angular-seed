@@ -14,7 +14,7 @@ class AuthControllerNative {
     static function isAuthenticated($app) {
         $post = $app->request->post();
         if(!v::key('apiKey', v::stringType())->validate($post) || 
-           !v::key('apiToken', v::stringType())->validate($post)) 
+         !v::key('apiToken', v::stringType())->validate($post)) 
         {
             return array('authenticated' => false, 'msg' => 'Unauthenticated: Invalid request. Check your parameters and try again.');
         }
@@ -37,9 +37,15 @@ class AuthControllerNative {
     }
     
     // Signup Function
-    static function signup($app) {
+    static function signup($app,$type="venue") {
         // Get Post Data
         $post = $app->request->post();
+        if($type=="host_signup" && $password=self::generateRandomPassword()){
+            if($password!=''){            
+                $post['password']=$password;
+            }
+        }
+       
         // Validate Sent Input
         $valid = self::signup_validateSentParameters($post);
         if($valid !== true) {
@@ -51,6 +57,12 @@ class AuthControllerNative {
             /// FAIL - If a user with that email already exists
             return array('registered' => false, 'msg' => 'Signup failed. A user with that email already exists.');        
         }
+        if (v::key('phone', v::stringType())->validate($post) && $post['phone'] != '') {
+            if (!preg_match('/^[+]?([\d]{0,3})?[\(\.\-\s]?([\d]{3})[\)\.\-\s]*([\d]{3})[\.\-\s]?([\d]{4})$/', $post["phone"])) {
+                return $app->render(400, array('msg' => 'This is not valid US format number.'));
+            }
+        }
+
         // Create and insert a new user
         $validUser = array(
             ':email' => $post['email'],
@@ -120,16 +132,16 @@ class AuthControllerNative {
      */
     private static function signup_validateSentParameters($post) {
         if (!v::key('email', v::email())->validate($post) ||
-                !v::key('password', v::stringType())->validate($post)) {
+            !v::key('password', v::stringType())->validate($post))
+        {
             return 'Signup failed. Check your parameters and try again.';
         } else if(!self::validatePasswordRequirements($post, 'password')) {
-            // Validate that the password is valid
             return 'Signup failed. ' . self::$passwordRules;
         } else {
             return true;
         }
     }
-    
+
     ///// 
     ///// Login
     ///// 
@@ -143,13 +155,13 @@ class AuthControllerNative {
         $found = self::forgotpassword_validateFoundUser($post,$app);
         return $found;
     }
-    
+
     static function resetpassword($app){
         $post = $app->request->post();
         $found = self::getresetpassword_validateFoundUser($post);
         return $found;
     }
-    
+
     private static function getresetpassword_validateFoundUser($post) {
         $result_array=array();
         $user = AuthData::selectUsertokenExpiry($post['email']);
@@ -226,13 +238,13 @@ class AuthControllerNative {
             return $result_array; 
         }
     }
-    
+
     static function getforgotpasswordemail($app){
         $post = $app->request->post();
         $found = self::getforgotpasswordemail_validateFoundUser($post);
         return $found;
     }
-    
+
     private static function getforgotpasswordemail_validateFoundUser($post) {
         $user = AuthData::selectUserByUsertoken($post['usertoken']);
         if(!$user) {
@@ -241,7 +253,7 @@ class AuthControllerNative {
         } 
         return array('frgtauthenticatedemail' => true,  'user' => $user);
     }
-    
+
     private static function forgotpassword_validateFoundUser($post,$app) {
         $user = AuthData::selectUserAndPasswordByEmail($post['email']);
         if(!$user) {
@@ -286,7 +298,7 @@ class AuthControllerNative {
             return array('frgtauthenticated' => true,  'msg' => 'Email has been sent to your email address for reset password.');
         }
     }
-    
+
     static function login($app) {
         $post = $app->request->post();
         // If anone is logged in currently, log them out
@@ -314,7 +326,7 @@ class AuthControllerNative {
             return array('authenticated' => false, 'msg' => 'Login failed to create token.');   
         }
     }
-    
+
     static function createAuthToken($app, $userId) {
         $token = array();
         $token['apiKey'] = hash('sha512', uniqid());
@@ -336,7 +348,7 @@ class AuthControllerNative {
             ));
         return ($saved) ? $token : false;
     }
-    
+
     private static function login_validateFoundUser($post) {
         $user = AuthData::selectUserAndPasswordByEmail($post['email']);
         if(!$user) {
@@ -351,7 +363,7 @@ class AuthControllerNative {
         unset($user->password);
         return array('authenticated' => true, 'user' => $user);
     }
-    
+
     private static function login_getSessionExpirationInHours($post) {
         $remember = false;
         if (v::key('remember')->validate($post)) {
@@ -403,5 +415,17 @@ class AuthControllerNative {
             return false;
         }
         return self::login_logoutCurrentAccount($app->request->post());
+    }
+    static function generateRandomString($length = 6) {
+        return substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, $length);
+    }
+    static function generateRandomNumber($length = 4) {
+        return substr(str_shuffle("0123456789"), 0, $length);
+    }
+    static function generateRandomPassword($length = 4) {
+        $config_data = ConfigData::getVariableByName("DUMMY_PASSWORD_VENUE_SIGNUP");
+        $password =(!empty($config_data) && $config_data->value!='')?$config_data->value:self::generateRandomString().self::generateRandomNumber();
+      
+        return $password;
     }
 }

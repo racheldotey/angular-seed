@@ -258,6 +258,22 @@ class AuthRoutes {
                 AuthController::venueFacebookSignup($app);
             });
 
+            $app->post("/venue/host/signup/", function () use ($app) {
+                AuthController::venueSignup($app,'host_signup');
+            });
+            /* email, nameFirst, nameLast, password,host_address,host_city,host_state,host_zip,host_accepted_terms */
+            /* OPTIONAL: venueId,venueName,address, city, state, zip,addressb, host_phone, website, facebook,  host_addressb,host_website,host_facebook*/
+                    
+            $app->post("/host/signup/", function () use ($app) {
+                AuthController::hostSignup($app);
+            });
+            
+             /* email, nameFirst, nameLast, facebookId, accessToken,host_address,host_city,host_state,host_zip,host_accepted_terms */
+            /* OPTIONAL: venueId,venueName,address, city, state, zip,addressb, phone, website, facebook, logo, hours, referralCode,host_addressb,host_website,host_facebook*/
+                    
+            $app->post("/host/signup/facebook/", function () use ($app) {
+                AuthController::hostFacebookSignup($app);
+            });
             $app->post("/signup/additional/", function () use ($app) {
                 InfoController::saveAdditional($app);
             });

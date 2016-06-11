@@ -45,6 +45,9 @@ class DatatableRoutes {
                 DatatablesController::getTeamGameCheckins($app, $teamId);
             });
             
+			 $app->post("/trivia-hosts", function () use ($app) {
+                DatatablesController::getTriviaHosts($app);
+            });
         });
         
         // Games
@@ -70,7 +73,10 @@ class DatatableRoutes {
             $app->map("/game/simple-scoreboard/:gameId/:roundNumber", function ($gameId, $roundNumber) use ($app) {
                 DatatablesController::getGameSimpleScoreboard($app, $gameId, $roundNumber);
             })->via('GET', 'POST');
-            
+             
+			$app->post("/trivia-venues", function () use ($app) {
+                DatatablesController::getTriviaVenues($app);
+            });
         });
     }
 }

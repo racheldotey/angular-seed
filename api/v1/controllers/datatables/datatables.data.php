@@ -159,11 +159,13 @@ class DatatablesData {
     }
 
     static function selectTriviaVenues() {
+
         return DBConn::selectAll("SELECT v.id, v.name AS venue, v.address, v.address_b AS addressb, v.city, v.state, v.zip, "
-                . "v.phone, v.phone_extension AS phoneExtension, v.website, v.facebook_url as facebook, "
+                . "v.phone, v.phone_extension AS phoneExtension,v.created_by_user_type AS createdByUserType,  v.website, v.facebook_url as facebook, "
                 . "v.logo, v.referral AS referralCode, v.created, v.disabled, "
                 . "CONCAT(u.name_first, ' ', u.name_last) AS contactUser, u.id AS contactUserId, "
                 . "CONCAT(u2.name_first, ' ', u2.name_last) AS createdBy, u2.id AS createdById, "
+
                 . "vs.trivia_day AS triviaDay, vs.trivia_time AS triviaTime "
                 . "FROM " . DBConn::prefix() . "venues AS v "
                 . "LEFT JOIN " . DBConn::prefix() . "venue_roles AS vr ON vr.venue_id = v.id "
@@ -171,7 +173,21 @@ class DatatablesData {
                 . "LEFT JOIN " . DBConn::prefix() . "users AS u2 ON u2.id = v.created_user_id "
                 . "LEFT JOIN " . DBConn::prefix() . "venues_trivia_schedules AS vs ON vs.venue_id = v.id ORDER BY v.name;");
     }
+	static function selectTriviaHosts() {
+        return DBConn::selectAll("SELECT h.id,h.trv_users_id,u1.name_first AS nameFirst,u1.name_last AS nameLast,u1.email, h.address, h.address_b AS addressb, "
+            . "h.city, h.state, h.zip, h.phone, h.phone_extension AS phoneExtension, "
+            . "h.website, h.facebook_url as facebook, h.created, h.disabled, "
+            . "CONCAT(u1.name_first, ' ', u1.name_last) AS createdBy, "
+            . "CONCAT(u2.name_first, ' ', u2.name_last) AS updatedBy, "
+            . "hns.trivia_day AS triviaDay, hns.trivia_time AS triviaTime "
+            . "FROM " . DBConn::prefix() . "hosts AS h "
+            . "LEFT JOIN " . DBConn::prefix() . "users AS u1 ON u1.id = h.trv_users_id "
+            . "LEFT JOIN " . DBConn::prefix() . "users AS u2 ON u2.id = h.last_updated_by "
+            . "LEFT JOIN " . DBConn::prefix() . "hosts_trivia_nights AS hns ON hns.host_id = h.id "
+           . "ORDER BY h.id;");
+    }
 
+	
     // Games    
 
     static function selectGames() {
