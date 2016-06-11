@@ -11,17 +11,17 @@
     <div ng-if="!editMode">
 
         <div class="row">
-            
+
             <div class="col-xs-12">
-                
+
                 <img ng-src="{{saved.logo}}" class="img-responsive pull-right" style="max-height: 100px; max-width: 100px;" />
-                    
+
                 <div class="form-group">
                     <label>Joint Name</label>
                     <p class="form-control-static">{{saved.venue}}</p>
                 </div>
             </div>
-            
+
             <div class="col-xs-12 col-md-6">
                 <div class="form-group">
                     <label>Address</label>
@@ -30,28 +30,28 @@
                     <p class="form-control-static">{{saved.city}}, {{saved.state}} {{saved.zip}}</p>
                 </div>
             </div>
-            
+
             <div class="col-xs-12 col-md-6">
                 <div class="form-group">
                     <label>Joint Phone</label>
                     <p class="form-control-static">{{saved.phone}}<span ng-show="saved.phoneExtension"> Ext. {{saved.phoneExtension}}</span></p>
                 </div>
             </div>
-            
+
             <div class="col-xs-12">
                 <div class="form-group">
                     <label>Joint Hours</label>
                     <p class="form-control-static">{{saved.triviaDay}} at {{saved.triviaTime}}</p>
                 </div>
             </div>
-            
+
             <div class="col-xs-6">
                 <div class="form-group">
                     <label>Joint Website</label>
                     <p class="form-control-static"><a href="{{saved.website}}" target="_blank">{{saved.website}}</a></p>
                 </div>
             </div>
-            
+
             <div class="col-xs-6">
                 <div class="form-group">
                     <label>Joint Facebook Page</label>
@@ -64,13 +64,14 @@
                     <p class="form-control-static"><code ng-show="saved.referralCode">{{saved.referralCode}}</code></p>
                 </div>
             </div>
-            
-            
+
+
         </div>
 
         <div class="meta" ng-if="!newMode && (saved.created || saved.lastUpdated)">
-            <hr/>
+            <hr />
             <p ng-show="saved.created" class="text-muted"><strong>Created:</strong> {{saved.created | formatMySQLDate}} <span ng-show="saved.createdBy">by {{saved.createdBy}}</span></p>
+            <p ng-show="saved.createdByUserType" class="text-muted"><strong>Created By User Type:</strong> {{((saved.createdByUserType !== undefined && saved.createdByUserType!=null) ? ((saved.createdByUserType === 'o') ? 'Owner' : 'Host') : '')}}</p>
             <p ng-show="saved.lastUpdated" class="text-muted"><strong>Updated:</strong> {{saved.lastUpdated | formatMySQLDate}} <span ng-show="saved.updatedBy">by {{saved.updatedBy}}</span></p>
         </div>
 
@@ -107,7 +108,7 @@
             </div>
 
             <div class="col-xs-3">
-                <input ng-model="editing.zip" type="text" class="form-control" name="zip" placeholder="Zip" maxlength="255" required>
+                <input ng-model="editing.zip" type="text" class="form-control" name="zip" placeholder="Zip" maxlength="9" required>
             </div>
         </div>
 
@@ -116,7 +117,9 @@
                 <input type="text" class="form-control" placeholder="Joint Phone" ng-model="editing.phone" ui-mask="(999) 999-9999" ui-mask-placeholder ui-mask-placeholder-char="_" ui-options="{clearOnBlur: false}" ng-model-options="{ updateOn: 'blur' }" ng-change="handlePhoneChangeEvent(editing.phone)" />
             </div>
             <div class="col-xs-4">
+
                 <input type="text" class="form-control" placeholder="Ext" ng-model="editing.phoneExtension"  />
+
             </div>
         </div>
         <div ng-if="showPhoneValidation" class="form-group">
@@ -150,28 +153,36 @@
             <div class="col-xs-6">
                 <input ng-model="editing.referralCode" type="text" class="form-control" name="referralCode" placeholder="Referral Code" maxlength="255">
             </div>
-            
+
             <div class="col-xs-6">
                 <div class="form-group">
-                    <label for="disabled">Disable Joint</label> {{editing.disabled}}<br/>
+                    <label for="disabled">Disable Joint</label> {{editing.disabled}}<br />
                     <label class="radio-inline"><input type="radio" name="disabled" ng-click="buttonChangeDisabled()" ng-model="editing.disabled" value="false"> Enable Joint</label>
                     <label class="radio-inline"><input type="radio" name="disabled" ng-click="buttonChangeDisabled()" ng-model="editing.disabled" value="true"> Disable Joint</label>
                 </div>
             </div>
         </div>
-
+        <div class="form-group row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <label for="radCreatedByUserType">Created By User Type</label> {{((editing.createdByUserType !== undefined && editing.createdByUserType!=null) ? ((editing.createdByUserType === 'o') ? '(Owner)' : '(Host)') : '')}}<br />
+                    <label class="radio-inline"><input type="radio" name="radCreatedByUserType" ng-click="buttonChangeCreatedByUserType()" ng-model="editing.createdByUserType" value="o">Owner</label>
+                    <label class="radio-inline"><input type="radio" name="radCreatedByUserType" ng-click="buttonChangeCreatedByUserType()" ng-model="editing.createdByUserType" value="h"> Host</label>
+                </div>
+            </div>
+        </div>
         <div rc-image-upload-with-editor="venueLogo"
              saved-image-data-url="savedImageDataUrl"
              data-label-input="Upload Venue Logo"
              data-label-browse-button="Select Logo"
              data-label-crop-area="Crop Your Logo"
              data-label-crop-preview="Logo Preview"></div>
-        
+
         <div class="meta" ng-if="saved.disabled === 'true'">
-            <hr/>
+            <hr />
             <p class="text-danger">Current Saved Joint State: <strong>Disabled</strong>.</p>
         </div>
-        
+
         <div data-rc-bootstrap-alerts="alertProxy"></div>
 
     </form>
@@ -185,7 +196,7 @@
 
 <div ng-if="editMode" class="modal-footer">
     <!--<button class="btn btn-warning pull-left" ng-if="!newMode" ng-click="buttonDelete()">Delete</button>-->
-    
+
     <button class="btn btn-default pull-left" ng-click="buttonCancel()">Cancel</button>
     <button class="btn btn-primary" ng-if="newMode" ng-click="buttonNew()">Add</button>
     <button class="btn btn-primary" ng-if="!newMode" ng-click="buttonSave()">Save</button>

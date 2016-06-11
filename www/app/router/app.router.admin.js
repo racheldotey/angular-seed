@@ -147,6 +147,17 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES',
                 }
             }
         });
+        $stateProvider.state('app.admin.hosts', {
+            bodyClass: 'admin hosts',
+            title: 'Trivia Hosts',
+            url: '/host',
+            views: {
+                'content@app.admin': {
+                    templateUrl: 'app/views/admin/hosts/hosts.html',
+                    controller: 'AdminHostsCtrl'
+                }
+            }
+        });
         
         // For any unmatched url, redirect to /
         $urlRouterProvider.when('/admin/', '/admin/dashboard');

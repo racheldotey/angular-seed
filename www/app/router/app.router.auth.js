@@ -57,6 +57,23 @@ app.config(['$stateProvider', 'USER_ROLES',
             }
         });
 
+        $stateProvider.state('app.auth.signup.iframe', {
+            bodyClass: 'auth signup iframe-compatible',
+            title: 'Sign Up',
+            url: '/iframe',
+            views: {
+                'header@app.auth': {},
+                'content@app.auth': {
+                    templateUrl: 'app/views/auth/signup/signupiFrame.html',
+                    controller: 'AuthSignupCtrl'
+                },
+                'signupform@app.auth.signup.iframe': {
+                    templateUrl: 'app/views/auth/signup/signupForm.html'
+                },
+                'footer@app.auth': {}
+            }
+        });
+
         $stateProvider.state('app.auth.signup.invite', {
             bodyClass: 'auth signup',
             title: 'You have been invited!',
@@ -85,23 +102,6 @@ app.config(['$stateProvider', 'USER_ROLES',
                         });
                     });
                 }
-            }
-        });
-
-        $stateProvider.state('app.auth.signup.iframe', {
-            bodyClass: 'auth signup iframe-compatible',
-            title: 'Sign Up',
-            url: '/iframe',
-            views: {
-                'header@app.auth': {},
-                'content@app.auth': {
-                    templateUrl: 'app/views/auth/signup/signupiFrame.html',
-                    controller: 'AuthSignupCtrl'
-                },
-                'signupform@app.auth.signup.iframe': {
-                    templateUrl: 'app/views/auth/signup/signupForm.html'
-                },
-                'footer@app.auth': {}
             }
         });
 
@@ -151,6 +151,61 @@ app.config(['$stateProvider', 'USER_ROLES',
                 'footer@app.auth': {}
             }
         });
+
+        //start of region for Host signup
+        $stateProvider.state('app.auth.signupHost', {
+            bodyClass: 'auth signup',
+            title: 'Host Sign Up',
+            url: '/host/signup',
+            views: {
+                'content@app.auth': {
+                    templateUrl: 'app/views/auth/signupHost/signupHost.html',
+                    controller: 'AuthSignupHostCtrl'
+                },
+                'signupform@app.auth.signupHost': {
+                    templateUrl: 'app/views/auth/signupHost/signupHostForm.html'
+                }
+            },
+            resolve: {
+                $q: '$q',
+                $rootScope: '$rootScope',
+                $state: '$state',
+                alreadyLoggedIn: function ($rootScope, $state, $q, AuthService) {
+                    return $q(function (resolve, reject) {
+                        if (AuthService.getUser()) {
+                            $rootScope.$evalAsync(function () {
+                                $state.go('app.member.dashboard');
+                            });
+                            reject(false);
+                        } else {
+                            resolve(true);
+                        }
+                    });
+                }
+            }
+        });
+        $stateProvider.state('app.auth.signupHost.iframe', {
+            bodyClass: 'auth signup iframe-compatible',
+            title: 'Host Sign Up',
+            url: '/iframe',
+            views: {
+                'header@app.auth': {},
+                'content@app.auth': {
+                    templateUrl: 'app/views/auth/signupHost/signupHostiFrame.html',
+                    controller: 'AuthSignupHostCtrl'
+                },
+                'signupform@app.auth.signupHost.iframe': {
+                    templateUrl: 'app/views/auth/signupHost/signupHostForm.html'
+                },
+                'footer@app.auth': {}
+            },
+            resolve: {
+                alreadyLoggedIn: function () {
+                    return true;
+                }
+            }
+        });
+        //end of region for Host signup
 
         $stateProvider.state('app.auth.signup.confirmEmail', {
             title: 'Please Confirm Your Email',

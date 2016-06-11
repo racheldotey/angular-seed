@@ -61,7 +61,6 @@ angular.module('apiRoutes.datatables', [])
         return getPromise('/datatable/admin/trivia-venues');
     };
     
-    
     // Games
     
     api.publicGamesList = function() { 
@@ -86,5 +85,12 @@ angular.module('apiRoutes.datatables', [])
         return getPromise('/datatable/game/simple-scoreboard/' + gameId + '/' + roundNumber);
     };
     
+    //host signup venu list
+    api.VenuesListPublicHost = function () {
+        return getPromise('/datatable/trivia-venues');
+    };
+    api.adminHostList = function () {
+        return getPromise('/datatable/admin/trivia-hosts');
+    };
     return api;
 }]);

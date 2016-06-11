@@ -66,10 +66,15 @@ angular.module('app.modal.trivia.editGame', [])
     
     $scope.updateGameName = function() {
         // Brickhouse - 2016-03-08 5:00pm
-        var date = moment($scope.editing.scheduledDate).format('dddd MMMM D, YYYY');
-        var time = moment($scope.editing.scheduledTime).format('h:mm a');
-        var venue = (angular.isDefined($scope.editing.venue.value) && angular.isDefined($scope.editing.venue.value.name)) ? $scope.editing.venue.value.name : '';
-        $scope.editing.gameName = venue + ' - ' + date + ' ' + time ;
+		if(angular.isDefined($scope.editing)) {
+			var date = moment($scope.editing.scheduledDate).format('dddd MMMM D, YYYY');
+			var time = moment($scope.editing.scheduledTime).format('h:mm a');
+			var venue = (angular.isDefined($scope.editing.venue) && 
+						angular.isDefined($scope.editing.venue.value.name)) ? $scope.editing.venue.value.name : '';
+			$scope.editing.gameName = venue + ' - ' + date + ' ' + time ;
+		} else {
+			$scope.editing = { gameName : '' };
+		}
     };
     $scope.$watch("editing.venue.value", function(newValue, oldValue) {
         $scope.updateGameName();

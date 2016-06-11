@@ -26,7 +26,7 @@ angular.module('apiRoutes.users', [])
 
         return API.post('user/insert/', user, 'System unable to create new user.');
     };
-    
+
     api.saveUser = function (user) {
         if (angular.isUndefined(user.nameFirst) || angular.isUndefined(user.nameLast) ||
                 angular.isUndefined(user.email) || angular.isUndefined(user.id) || angular.isUndefined(user.phone)) {
@@ -99,6 +99,30 @@ angular.module('apiRoutes.users', [])
         }
         return API.post('user/assign-group', pair, 'System unable to assign user from group.');
     };
+
+    //region for get;set; of host information
+    api.saveHostUserInfo = function (host) {
+        if (!angular.isNumber(parseInt(host.hostId)) || !angular.isNumber(parseInt(host.userId)) ||
+                !angular.isString(host.nameFirst) ||
+                !angular.isString(host.nameLast) ||
+                !angular.isString(host.phone) ||
+                !angular.isString(host.phone_extension) ||
+                !angular.isString(host.host_address) ||
+                !angular.isString(host.host_addressb) ||
+                !angular.isString(host.host_city) ||
+                !angular.isString(host.host_state) ||
+                !angular.isNumber(parseInt(host.host_zip))) {
+            return API.reject('Invalid venue. Please check your parameters and try again.');
+        }
+        return API.post('/hostsdata/update/' + host.userId, host, 'System unable to save user.');
+    };
+    api.getHostUserInfo = function (user) {
+        if (angular.isUndefined(user.id)) {
+            return API.reject('Invalid user. Please check your parameters and try again.');
+        }
+        return API.get('/host/getHostByUser/' + user.id, user, 'System unable to get venue.');
+    };
+    //end region
 
     return api;
 }]);

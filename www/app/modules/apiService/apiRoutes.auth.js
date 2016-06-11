@@ -122,7 +122,58 @@ angular.module('apiRoutes.auth', [])
         }
         return API.post('auth/venue/signup/facebook/', newUser, 'System unable to register new facebook user or venue.');
     };
-
+    //region for host
+    api.postHostSignup = function (newUser) {
+        if (!newUser.password ||
+                !newUser.nameFirst ||
+                !newUser.nameLast ||
+                !newUser.email) {
+            return API.reject('Invalid user please verify your information and try again.');
+        } else if (!newUser.nameFirst || !newUser.nameLast ||
+                !newUser.host_address ||
+                !newUser.host_city ||
+                !newUser.host_state ||
+                !newUser.host_zip) {
+            return API.reject('Invalid host please verify your information and try again.');
+        }
+        return API.post('auth/host/signup/', newUser, 'System unable to register new user or host.');
+    };
+    api.postHostFacebookSignup = function (newUser) {
+        if (!newUser.accessToken ||
+                !newUser.facebookId ||
+                !newUser.nameFirst ||
+                !newUser.nameLast ||
+                !newUser.email ||
+                !newUser.link ||
+                !newUser.locale ||
+                !newUser.timezone ||
+                !newUser.ageRange) {
+            return API.reject('Invalid user please verify your information and try again.');
+        } else if (!newUser.nameFirst ||
+                !newUser.host_address ||
+                !newUser.host_city ||
+                !newUser.host_state ||
+                !newUser.host_zip) {
+            return API.reject('Invalid host please verify your information and try again.');
+        }
+        return API.post('auth/host/signup/facebook/', newUser, 'System unable to register new facebook user or host.');
+    };
+    api.postHostVenueSignup = function (newUser) {
+        if (!newUser.address || !newUser.city || !newUser.zip ||
+                !newUser.nameLast ||
+                !newUser.nameLast ||
+                !newUser.email) {
+            return API.reject('Invalid user please verify your information and try again.');
+        } else if (!newUser.venue ||
+                !newUser.address ||
+                !newUser.city ||
+                !newUser.state ||
+                !newUser.zip) {
+            return API.reject('Invalid venue please verify your information and try again.');
+        }
+        return API.post('auth/venue/host/signup/', newUser, 'System unable to register new user user or venue.');
+    };
+    // end region for host
     api.postLogout = function (logout) {
         var data = {};
         data.logout = logout;

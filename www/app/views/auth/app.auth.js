@@ -14,5 +14,6 @@ angular.module('app.auth', [
     'app.auth.playerInvite',
     'app.auth.signup',
     'app.auth.signupVenue',
+    'app.auth.signupHost',
     'app.auth.resetPassword'
 ]);

@@ -68,7 +68,16 @@ angular.module('app.auth.signupVenue', [])
                 $scope.newUser.triviaTime = $filter('date')($scope.newUser.triviaTimeDate, 'h:mm a');
                 if (!$scope.form.venue.$valid) {
                     $scope.form.venue.$setDirty();
-                    $scope.venueAlerts.error('Please fill in all fields for your venue.');
+                    if ($scope.form.venue.website.$error.url) {
+                        $scope.venueAlerts.error('Invalid website url provided. Check your parameters and try again.');
+                    }
+                    else if ($scope.form.venue.facebook.$error.pattern) {
+                        $scope.venueAlerts.error('Invalid facebook url provided. Check your parameters and try again..');
+                    }
+                    else
+                    {
+                        $scope.venueAlerts.error('Please fill in all fields for your venue.');
+                    }
                 } else if ($scope.newUser.password !== $scope.newUser.passwordB) {
                     $scope.form.venue.$setDirty();
                     $scope.signupAlerts.error('Passwords do not match.');
@@ -101,14 +110,23 @@ angular.module('app.auth.signupVenue', [])
             };
 
             $scope.facebookSignup = function () {
-                if (angular.isString($scope.venueLogo.imageDataUrl)
-                        ($scope.venueLogo.imageDataUrl.indexOf('data:image') > -1)) {
-                    $scope.newUser.logo = $scope.venueLogo.imageDataUrl;
-                }
+                
+                    if (angular.isString($scope.venueLogo.imageDataUrl) && ($scope.venueLogo.imageDataUrl.indexOf('data:image') > -1))
+                    {
+                        $scope.newUser.logo = $scope.venueLogo.imageDataUrl;
+                    }
 
                 if (!$scope.form.venue.$valid) {
                     $scope.form.venue.$setDirty();
-                    $scope.venueAlerts.error('Please fill in all fields for your venue.');
+                    if ($scope.form.venue.website.$error.url) {
+                        $scope.venueAlerts.error('Invalid website url provided. Check your parameters and try again.');
+                    }
+                    else if ($scope.form.venue.facebook.$error.pattern) {
+                        $scope.venueAlerts.error('Invalid facebook url provided. Check your parameters and try again..');
+                    }
+                    else {
+                        $scope.venueAlerts.error('Please fill in all fields for your venue.');
+                    }
                 } else if (!$scope.newUser.acceptTerms) {
                     AlertConfirmService.confirm('Do you agree to our <a href="http://www.triviajoint.com/joint-terms-and-conditions/" target="_blank">Terms of Service</a>?', 'Terms of Service Agreement').result.then(function (resp) {
                         $scope.newUser.acceptTerms = true;

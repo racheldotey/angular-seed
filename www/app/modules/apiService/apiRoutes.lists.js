@@ -55,5 +55,8 @@ angular.module('apiRoutes.lists', [])
         return getList('/simple-list/games');
     };
     
+    api.simplePublicVenuesList = function () {
+        return getList('/simple-list-public/venues');
+    };
     return api;
 }]);

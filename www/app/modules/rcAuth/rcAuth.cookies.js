@@ -28,20 +28,14 @@ angular.module('rcAuth.cookies', [])
             var now = moment(new Date()).format('M/D/YYYY h:mm a');
             var exp = moment(date).format('M/D/YYYY h:mm a');
 
-            console.log("Cookie Expires at: " + exp + ", currently: " + now);
+            //console.log("Cookie Expires at: " + exp + ", currently: " + now);
 
             //put valid login creds in a cookie
             $cookies.put(AUTH_COOKIES.apiKey, apiKey, {expires: date});
             $cookies.put(AUTH_COOKIES.apiToken, apiToken, {expires: date});
         };
 
-        factory.destroyAuthCookie = function() {
-            console.log("Destroying Cookie");
-            console.log({
-                'apiKey' : $cookies.get(AUTH_COOKIES.apiKey),
-                'apiToken' : $cookies.get(AUTH_COOKIES.apiToken)
-            });
-            
+        factory.destroyAuthCookie = function() {            
             $cookies.remove(AUTH_COOKIES.apiKey);
             $cookies.remove(AUTH_COOKIES.apiToken);
             return true;

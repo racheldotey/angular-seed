@@ -16,7 +16,9 @@ angular.module('TriviaModalService', [
     'app.modal.trivia.editTeam',
     'app.modal.trivia.editVenue',
     'app.modal.trivia.joinTeam',
-    'app.modal.trivia.viewGameScoreboard'
+    'app.modal.trivia.viewGameScoreboard',
+    'app.modal.trivia.addHostJoint',
+    'app.modal.trivia.editHost',
 ])
 .factory('TriviaModalService', ['$uibModal', function($uibModal) {
         
@@ -237,5 +239,36 @@ angular.module('TriviaModalService', [
         });
     };
     
+    /*
+* Open Edit Trivia Host / Joint Modal
+* 
+* @return uibModalInstance
+*/
+    api.openAddHostJoint = function () {
+        return api.openModal({
+            templateUrl: templatePath + 'addHostJoint/addHostJoint.html',
+            controller: 'TriviaAddHostJointModalCtrl',
+            resolve: {
+               // ApiRoutesGames: 'ApiRoutesGames',
+               // ModelValue: function () { return ModelValue; }
+            }
+        });
+    };
+    api.openEditHost = function (host) {
+        return api.openModal({
+            templateUrl: templatePath + 'editHost/editHost.html',
+            controller: 'TriviaEditHostModalCtrl',
+            resolve: {
+                editing: function () {
+                    return (angular.isObject(host)) ? host : {};
+                },
+                venuesList: function (ApiRoutesSimpleLists) {
+                    return ApiRoutesSimpleLists.simpleVenuesList();
+                }
+            }
+        });
+    };
+
+
     return api;
 }]);

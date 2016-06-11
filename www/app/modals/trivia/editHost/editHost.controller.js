@@ -2,36 +2,15 @@
 
 /* @author  Rachel Carbone */
 
-angular.module('app.modal.trivia.editVenue', [])
-    .controller('TriviaEditVenueModalCtrl', ['$scope', '$uibModalInstance', 'AlertConfirmService', 'editing', 'ApiRoutesGames', '$filter',
-    function ($scope, $uibModalInstance, AlertConfirmService, editing, ApiRoutesGames, $filter) {
+angular.module('app.modal.trivia.editHost', [])
+    .controller('TriviaEditHostModalCtrl', ['$scope',  '$uibModalInstance', 'AlertConfirmService', 'editing', 'ApiRoutesGames', '$filter',
+    function ($scope,  $uibModalInstance, AlertConfirmService, editing, ApiRoutesGames, $filter) {
         /* Used to restrict alert bars */
         $scope.alertProxy = {};
 
         /* Holds the add / edit form on the modal */
         $scope.form = {};
         $scope.showPhoneValidation = false;
-
-        $scope.parseTime = function (timeString) {
-            if (timeString == '' || timeString == undefined) return null;
-
-            var time = timeString.match(/(\d+)(:(\d\d))?\s*(p?)/i);
-            if (time == null) return null;
-
-            var hours = parseInt(time[1], 10);
-            if (hours == 12 && !time[4]) {
-                hours = 0;
-            }
-            else {
-                hours += (hours < 12 && time[4]) ? 12 : 0;
-            }
-            var d = new Date();
-            d.setHours(hours);
-            d.setMinutes(parseInt(time[3], 10) || 0);
-            d.setSeconds(0, 0);
-            return d;
-        };
-
 
         /* Modal Mode */
         $scope.setMode = function (type) {
@@ -54,51 +33,11 @@ angular.module('app.modal.trivia.editVenue', [])
             }
         };
 
-        /* Save for resetting purposes */
-        $scope.saved = (angular.isDefined(editing.id)) ? angular.copy(editing) : {
-            'venueName': '',
-            'phone': '',
-            'phoneExtension': '',
-            'address': '',
-            'addressb': '',
-            'city': '',
-            'state': '',
-            'zip': '',
-            'website': '',
-            'facebook': '',
-            'triviaDay': '',
-            'triviaTime': '',
-
-            'referralCode': '',
-            'createdByUserType': '',
-        };
-
-     
-
-
-
         if (angular.isDefined(editing.id)) {
             $scope.setMode('view');
-            $scope.saved.triviaTimeDate = $scope.parseTime(editing.triviaTime);
         } else {
             $scope.setMode('new');
-            // nearest quarter hour
-            var currentDateTime = new Date();
-            var minutes = currentDateTime.getMinutes();
-            var hours = currentDateTime.getHours();
-            var m = (parseInt((minutes + 7.5) / 15) * 15) % 60;
-            var h = minutes > 52 ? (hours === 23 ? 0 : ++hours) : hours;
-            currentDateTime.setHours(h);
-            currentDateTime.setMinutes(m);
-
-            $scope.saved.triviaTimeDate = currentDateTime;
-
-            var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-            var day = days[currentDateTime.getDay()];
-            $scope.saved.triviaDay = day;
         }
-
-     
 
         $scope.getMode = function () {
             if ($scope.newMode) {
@@ -110,11 +49,55 @@ angular.module('app.modal.trivia.editVenue', [])
             }
         };
 
-     
-        // Hold venue logo
-        $scope.venueLogo = {};
-        $scope.savedImageDataUrl = $scope.saved.logo;
-
+        $scope.saved = {
+            'id': '',
+            'trv_users_id': '',
+            'nameFirst': '',
+            'nameLast': '',
+            'email': '',
+            'referrer': '',
+            'phone': '',
+            'phone_extension': '',
+            'host_address': '',
+            'host_addressb': '',
+            'host_city': '',
+            'host_state': '',
+            'host_zip': '',
+            'host_website': '',
+            'host_facebook': '',
+            "created": '',
+            "createdBy": '',
+            "updatedBy": '',
+            "disabled": '',
+            "triviaDay": '',
+            "triviaTime": '',
+        };
+        /* Save for resetting purposes */
+        if (angular.isDefined(editing.id))
+        {
+            $scope.saved = {
+                'hostId': editing.id,
+                'userId': editing.trv_users_id,
+                'nameFirst': editing.nameFirst,
+                'nameLast': editing.nameLast,
+                'email': editing.email,
+                'referrer': editing.referrer,
+                'phone': editing.phone,
+                'phone_extension': editing.phoneExtension,
+                'host_address': editing.address,
+                'host_addressb': editing.addressb,
+                'host_city': editing.city,
+                'host_state': editing.state,
+                'host_zip': editing.zip,
+                'host_website': editing.website,
+                'host_facebook': editing.facebook,
+                "created": editing.created,
+                "createdBy": editing.createdBy,
+                "updatedBy": editing.updatedBy,
+                "disabled": editing.disabled,
+            };
+        }
+       
         $scope.saved.disabled = (angular.isUndefined(editing.disabled) || editing.disabled === null || !editing.disabled) ? 'false' : 'true';
 
         /* Item to display and edit */
@@ -146,15 +129,7 @@ angular.module('app.modal.trivia.editVenue', [])
 
         /* Click event for the Save button */
         $scope.buttonSave = function () {
-            if ($scope.venueLogo.file && $scope.venueLogo.imageDataUrl.indexOf('data:image') > -1) {
-                $scope.editing.logo = $scope.venueLogo.imageDataUrl;
-            } else if (angular.isString($scope.savedImageDataUrl) &&
-                    ($scope.savedImageDataUrl.indexOf('data:image') > -1)) {
-                $scope.editing.logo = $scope.savedImageDataUrl;
-            }
-            $scope.editing.triviaTime = $filter('date')($scope.editing.triviaTimeDate, 'h:mm a');
-            $scope.editing.venueName = $scope.editing.venue;
-            ApiRoutesGames.saveVenue($scope.editing).then(
+            ApiRoutesGames.saveHost($scope.editing).then(
                     function (result) {
                         $uibModalInstance.close(result.msg);
                     }, function (error) {
@@ -195,41 +170,25 @@ angular.module('app.modal.trivia.editVenue', [])
             }
         };
 
-        $scope.buttonChangeDisabled = function () {
+        $scope.buttonChangeDisabled = function() {
             // Changing the disable flage to a new value
-            if ($scope.saved.disabled !== $scope.editing.disabled) {
-                if ($scope.editing.disabled === 'true') {
+            if($scope.saved.disabled !== $scope.editing.disabled) {
+                if($scope.editing.disabled === 'true') {
                     AlertConfirmService.confirm('Are you sure you want to disable this joint? Games will no longer be hosted at the joint. (Note - Change takes effect only after saving the joint.)')
                         .result.then(function () { }, function (error) {
                             $scope.editing.disabled = 'false';
                         });
                 } else {
                     AlertConfirmService.confirm('Are you sure you want to enable this joint? Games will now be able to be held at this joint. (Note - Change takes effect only after saving the joint.)')
-                        .result.then(function () { }, function (error) {
+                        .result.then(function () {  }, function (error) {
                             $scope.editing.disabled = 'true';
                         });
                 }
             } else {
                 var userState = ($scope.editing.disabled === 'true') ? "The joint is already disabled and will remain disabled after save. Games cannot be hosted at this joint." :
                         "The joint is already enabled and will remain enabled after save. Games can be hosted at this joint.";
-                var alertTitle = ($scope.editing.disabled === 'true') ? "Joint is Disabled." : "Joint is Enabled.";
+                var alertTitle = ($scope.editing.disabled === 'true') ? "Host is Disabled." : "Host is Enabled.";
                 AlertConfirmService.alert(userState, alertTitle);
             }
-        };
-
-        $scope.buttonChangeCreatedByUserType = function () {
-            // Changing the created by user type value to a new value
-            if ($scope.editing.createdByUserType === 'o') {
-                AlertConfirmService.confirm('Are you sure you want to change the created user type to Owner for this joint? (Note - Change takes effect only after saving the joint.)')
-                    .result.then(function () { }, function (error) {
-                        $scope.editing.createdByUserType = 'h';
-                    });
-            } else {
-                AlertConfirmService.confirm('Are you sure you want to change the created user type to Host for this joint? (Note - Change takes effect only after saving the joint.)')
-                    .result.then(function () { }, function (error) {
-                        $scope.editing.createdByUserType = 'o';
-                    });
-            }
-
         };
     }]);

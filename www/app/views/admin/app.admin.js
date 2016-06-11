@@ -18,5 +18,6 @@ angular.module('app.admin', [
     'app.admin.users',
     'app.admin.games',
     'app.admin.teams',
-    'app.admin.venues'
+    'app.admin.venues',
+    'app.admin.hosts',
 ]);

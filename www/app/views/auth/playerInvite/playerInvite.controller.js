@@ -21,7 +21,7 @@ angular.module('app.auth.playerInvite', [])
         $scope.newUser = {
             'userGroup' : 'player',
             'nameFirst' : InvitationData.nameFirst || '',
-            'nameLast' : InvitationData.nameFirst || '',
+            'nameLast' : InvitationData.nameLast || '',
             'email' : InvitationData.email,
             'phone' : InvitationData.phone || '',
             'password' : '',

@@ -1,0 +1,168 @@
+<div class="modal-header">
+    <h3 ng-if="newMode" class="modal-title">New Trivia Host</h3>
+    <h3 ng-if="!newMode && editMode" class="modal-title">Edit Trivia Host #{{saved.hostId}} - {{saved.nameFirst}} &nbsp; {{saved.nameLast}}</h3>
+    <h3 ng-if="!newMode && !editMode" class="modal-title">Trivia Host #{{saved.hostId}} - {{saved.nameFirst}} &nbsp; {{saved.nameLast}}</h3>
+</div>
+
+<div class="modal-body">
+
+    <div data-rc-bootstrap-alerts="alertProxy"></div>
+
+    <div ng-if="!editMode">
+
+        <div class="row">
+            <div class="col-xs-12">
+
+                <img ng-src="{{saved.logo}}" class="img-responsive pull-right" style="max-height: 100px; max-width: 100px;" />
+                <div class="form-group">
+                    <label>Host Name</label>
+                    <p class="form-control-static">{{saved.nameFirst}} &nbsp; {{saved.nameLast}}</p>
+                </div>
+            </div>
+            
+            <div class="col-xs-12 col-md-6">
+                <div class="form-group">
+                    <label>Address</label>
+                    <p class="form-control-static">{{saved.host_address}}</p>
+                    <p ng-show="saved.host_addressb" class="form-control-static">{{saved.host_addressb}}</p>
+                    <p class="form-control-static">{{saved.host_city}}, {{saved.host_state}} {{saved.host_zip}}</p>
+                </div>
+            </div>
+            
+            <div class="col-xs-12 col-md-6">
+                <div class="form-group">
+                    <label>Host Phone</label>
+                    <p class="form-control-static">{{saved.phone}}<span ng-show="saved.phone_extension"> Ext. {{saved.phone_extension}}</span></p>
+                </div>
+            </div>
+            
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <label>Host Email</label>
+                    <p class="form-control-static">{{saved.email}}</p>
+                </div>
+            </div>
+            
+            <div class="col-xs-6">
+                <div class="form-group">
+                    <label>Host Website</label>
+                    <p class="form-control-static"><a href="{{saved.host_website}}" target="_blank">{{saved.host_website}}</a></p>
+                </div>
+            </div>
+            
+            <div class="col-xs-6">
+                <div class="form-group">
+                    <label>Host Facebook Page</label>
+                    <p class="form-control-static"><a href="{{saved.host_facebook}}" target="_blank">{{saved.host_facebook}}</a></p>
+                </div>
+            </div>
+            
+        </div>
+
+        <div class="meta" ng-if="!newMode && (saved.created || saved.lastUpdated)">
+            <hr/>
+            <p ng-show="saved.created" class="text-muted"><strong>Created:</strong> {{saved.created | formatMySQLDate}} <span ng-show="saved.createdBy">by {{saved.createdBy}}</span></p>
+            <p ng-show="saved.lastUpdated" class="text-muted"><strong>Updated:</strong> {{saved.lastUpdated | formatMySQLDate}} <span ng-show="saved.updatedBy">by {{saved.updatedBy}}</span></p>
+        </div>
+
+    </div>
+
+    <form ng-if="editMode" name="form.modalForm" role="form" novalidate>
+
+        <div data-rc-bootstrap-alerts="alertProxy"></div>
+
+        <div class="form-group row">
+            <div class="col-xs-6">
+                <input ng-model="editing.nameFirst" type="text" class="form-control" name="hostFirstName" placeholder="First Name" maxlength="255" required>
+            </div>
+            <div class="col-xs-6">
+                <input ng-model="editing.nameLast" type="text" class="form-control" name="hostLastName" placeholder="Last Name" maxlength="255" required>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-xs-6">
+                <input ng-model="editing.host_address" type="text" class="form-control" name="address" placeholder="Host Address" maxlength="255" required>
+            </div>
+            <div class="col-xs-6">
+                <input ng-model="editing.host_addressb" type="text" class="form-control" name="addressb" placeholder="Host Address Con't" maxlength="255">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-xs-6">
+                <input ng-model="editing.host_city" type="text" class="form-control" name="city" placeholder="Host City" maxlength="255" required>
+            </div>
+
+            <div class="col-xs-3">
+                <select rc-drop-down-states ng-model="editing.host_state" class="form-control" required>
+                    <option value="">State</option>
+                </select>
+            </div>
+
+            <div class="col-xs-3">
+                <input ng-model="editing.host_zip" type="text" class="form-control" name="zip" placeholder="Zip" maxlength="9" required ng-pattern="/^[0-9]+$/">
+                <div ng-show="form.modalForm.zip.$error.pattern">
+                    <br />
+                    <span style="border-radius:inherit" class="alert alert-danger" ng-show="form.modalForm.zip.$error.pattern">Invalid zip</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-xs-8">
+                <input type="text" class="form-control" placeholder="Host Phone" ng-model="editing.phone" ui-mask="(999) 999-9999" ui-mask-placeholder ui-mask-placeholder-char="_" ui-options="{clearOnBlur: false}" ng-model-options="{ updateOn: 'blur' }" ng-change="handlePhoneChangeEvent(editing.phone)" />
+            </div>
+            <div class="col-xs-4">
+                <input type="text" class="form-control" placeholder="Ext" ng-model="editing.phone_extension"  maxlength="5"  ui-mask="999" />
+            </div>
+        </div>
+        <div ng-if="showPhoneValidation" class="form-group">
+            <div class="col-xs-12">
+                <div class="alert alert-warning" role="alert">
+                    <p>Phone Number is Invalid.</p>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-xs-6">
+                <input ng-model="editing.host_website" type="text" class="form-control" name="website" placeholder="Host Website (http://...)" maxlength="255">
+            </div>
+            <div class="col-xs-6">
+                <input ng-model="editing.host_facebook" type="text" class="form-control" name="facebook" placeholder="Host Facebook Page (http://...)" maxlength="255">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <label for="disabled">Disable Host</label> {{editing.disabled}}<br/>
+                    <label class="radio-inline"><input type="radio" name="disabled" ng-click="buttonChangeDisabled()" ng-model="editing.disabled" value="false"> Enable Host</label>
+                    <label class="radio-inline"><input type="radio" name="disabled" ng-click="buttonChangeDisabled()" ng-model="editing.disabled" value="true"> Disable Host</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="meta" ng-if="saved.disabled === 'true'">
+            <hr/>
+            <p class="text-danger">Current Saved Host State: <strong>Disabled</strong>.</p>
+        </div>
+        
+        <div data-rc-bootstrap-alerts="alertProxy"></div>
+
+    </form>
+
+</div>
+
+<div ng-if="!editMode" class="modal-footer">
+    <button class="btn btn-default pull-left" ng-click="buttonEdit()">Edit</button>
+    <button class="btn btn-primary" ng-click="buttonCancel()">Done</button>
+</div>
+
+<div ng-if="editMode" class="modal-footer">
+    <!--<button class="btn btn-warning pull-left" ng-if="!newMode" ng-click="buttonDelete()">Delete</button>-->
+    
+    <button class="btn btn-default pull-left" ng-click="buttonCancel()">Cancel</button>
+    <button class="btn btn-primary" ng-if="newMode" ng-click="buttonNew()">Add</button>
+    <button class="btn btn-primary" ng-if="!newMode" ng-click="buttonSave()">Save</button>
+</div>

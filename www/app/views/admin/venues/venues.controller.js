@@ -71,7 +71,7 @@ angular.module('app.admin.venues', [])
                         return (data && data !== null) ? '<code>' + data + '</code>' : '';
                     }),
                     DTColumnBuilder.newColumn(null).withTitle('Contact User').renderWith(function (data, type, full, meta) {
-                        return (data && data.contactUserId !== null) ?'<a ng-click="buttonOpenEditUserModal(\'' + data.contactUserId + '\')">' + data.contactUser + '</a>' : '';
+                        return (data && data.contactUserId !== null) ? '<a ng-click="buttonOpenEditUserModal(\'' + data.contactUserId + '\')">' + data.contactUser + '</a>' + ((data && data.createdByUserType !== undefined && String(data.createdByUserType).length > 0) ? (data.createdByUserType == 'o' ? '(Owner)' : '(Host)') : '') : ((data && data.createdByUserType !== undefined && String(data.createdByUserType).length > 0) ? (data.createdByUserType == 'o' ? '(Owner)' : '(Host)') : '');
                     }),
                     DTColumnBuilder.newColumn('created').withTitle('Created').renderWith(function (data, type, full, meta) {
                         return moment(data, 'YYYY-MM-DD HH:mm:ss').format('M/D/YYYY h:mm a');

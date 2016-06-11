@@ -11,13 +11,12 @@
             <p class="text-muted">Update at <a href="http://www.gravatar.com/" target="_blank">gravatar.com</a>.</p>
         </div>
         <div class="col-xs-12 col-sm-9 col-md-8">
-                
+            <div data-rc-bootstrap-alerts="editHostInformationAlerts"></div>
+         
             <h4>General</h4>
-            
             <div data-rc-bootstrap-alerts="generalFormAlerts"></div>
-            
-            <form ng-if="!editGeneralMode" class="form-horizontal">
-                 
+            <form ng-if="!editGeneralMode  && isUserRoleHost==false"" class="form-horizontal">
+
                 <div class="form-group">
                     <label for="nameFirst" class="col-sm-3 control-label">First Name</label>
                     <div class="col-sm-9">
@@ -39,24 +38,114 @@
                     </div>
                 </div>
                 
+
                 <div class="form-group">
                     <label for="email" class="col-sm-3 control-label">Phone Number</label>
                     <div class="col-sm-9">
                         <p class="form-control-static">{{user.phone}}</p>
                     </div>
                 </div>
-                 
+                
+                <div data-rc-bootstrap-alerts="generalPasswordupdateAlerts"></div>
+                <br />
                 <div class="form-group text-right">
                     <div class="col-xs-12">
-                        <button ng-if="!editPasswordMode" ng-click="buttonShowChangePassword()" type="button" class="btn btn-default">Change Password</button>
-                        <button ng-if="!editPasswordMode" ng-click="buttonShowGeneralEdit()" type="button" class="btn btn-primary">Edit</button>
+                        <button ng-if="!editPasswordMode && !editHostInformationMode" ng-click="buttonShowChangePassword()" type="button" class="btn btn-default">Change Password</button>
+                        <button ng-if="!editPasswordMode && !editHostInformationMode" ng-click="buttonShowGeneralEdit()" type="button" class="btn btn-primary">Edit</button>
                     </div>
                 </div>
                  
             </form>
+
+            <form ng-if="isUserRoleHost && !editHostInformationMode" class="form-horizontal">
+               
+                <div class="form-group">
+                    <label for="nameFirst" class="col-sm-3 control-label">First Name</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-static">{{userHostInfo.nameFirst}}</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="nameLast" class="col-sm-3 control-label">Last Name</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-static">{{userHostInfo.nameLast}}</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-sm-3 control-label">Email</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-static">{{userHostInfo.email}}</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-sm-3 control-label">Phone Number</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-static">{{userHostInfo.phone}}</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-sm-3 control-label">Phone Extension</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-static">{{userHostInfo.phone_extension}}</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-sm-3 control-label">Address</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-static">{{userHostInfo.host_address}}</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-sm-3 control-label">Address 2</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-static">{{userHostInfo.host_addressb}}</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-sm-3 control-label">City</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-static">{{userHostInfo.host_city}}</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-sm-3 control-label">State</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-static">{{userHostInfo.host_state}}</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-sm-3 control-label">Zip</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-static">{{userHostInfo.host_zip}}</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-sm-3 control-label">Website</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-static">{{userHostInfo.host_website}}</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-sm-3 control-label">Facebook</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-static">{{userHostInfo.host_facebook}}</p>
+                    </div>
+                </div>
+                <div data-rc-bootstrap-alerts="generalPasswordupdateAlerts"></div>
+                <br />
+                <div class="form-group text-right">
+                    <div class="col-xs-12">
+                        <button ng-if="!editPasswordMode && !editHostInformationMode"  ng-click="buttonShowChangePassword()" type="button" class="btn btn-default">Change Password</button>
+                        <button ng-if="!editPasswordMode && !editHostInformationMode" ng-click="buttonShowGeneralEditHost()" type="button" class="btn btn-primary">Edit</button>
+                    </div>
+                </div>
+             
+            </form>
             
             <form ng-if="editGeneralMode" name="form.general" class="form-horizontal">
-                
+                <div data-rc-bootstrap-alerts="generalFormAlerts"></div>
+                <br />
+
                 <div class="form-group">
                     <label for="nameFirst" class="col-sm-3 control-label">First Name</label>
                     <div class="col-sm-9">
@@ -155,6 +244,92 @@
                 
             </form>
             
+            <form  ng-if="isUserRoleHost && editHostInformationMode"  name="form.host" class="form-horizontal">
+                <br />
+                <div class="form-group row">
+                    <div class="col-xs-6">
+                        <input ng-model="userHostInfo.nameFirst" type="text" class="form-control" name="nameFirst" placeholder="Contact First Name" maxlength="255" required>
+                    </div>
+
+                    <div class="col-xs-6">
+                        <input ng-model="userHostInfo.nameLast" type="text" class="form-control" name="nameLast" placeholder="Contact Last Name" maxlength="255" required>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-xs-12">
+                        <input ng-model="userHostInfo.email" ng-disabled="true"  type="email" class="form-control" name="email" placeholder="Contact Email" maxlength="255" required>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-xs-12">
+                        <input ng-model="userHostInfo.host_address" type="text" class="form-control" name="address" placeholder="Joint Address" maxlength="255" required>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-xs-12">
+                        <input ng-model="userHostInfo.host_addressb" type="text" class="form-control" name="addressb" placeholder="Joint Address Con't" maxlength="255">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-xs-6">
+                        <input ng-model="userHostInfo.host_city" type="text" class="form-control" name="city" placeholder="Joint City" maxlength="255" required>
+                    </div>
+
+                    <div class="col-xs-3">
+                        <select rc-drop-down-states ng-model="userHostInfo.host_state" class="form-control" required>
+                            <option value="">State</option>
+                        </select>
+                    </div>
+
+                    <div class="col-xs-3">
+                        <input ng-model="userHostInfo.host_zip" type="text" class="form-control" name="zip" placeholder="Zip" maxlength="9" required ng-pattern="/^[0-9]+$/">
+                        <div ng-show="form.host.zip.$error.pattern">
+                            <br />
+                            <span style="border-radius:inherit" class="alert alert-danger" ng-show="form.host.zip.$error.pattern">Invalid zip</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-xs-8">
+                        <input type="text" class="form-control" placeholder="Joint Phone" ng-model="userHostInfo.phone" ui-mask="(999) 999-9999" ui-mask-placeholder ui-mask-placeholder-char="_" ng-model-options="{ updateOn: 'blur' }" ng-change="handlePhoneChangeEvent(userHostInfo.phone)" required />
+                    </div>
+                    <div class="col-xs-4">
+                        <input type="text" class="form-control" placeholder="Ext" ng-model="userHostInfo.phone_extension" maxlength="5"  />
+                    </div>
+                </div>
+                <div ng-if="showPhoneValidation" class="form-group">
+                    <div class="col-xs-12">
+                        <div class="alert alert-warning" role="alert">
+                            <p>Phone Number is Invalid.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-xs-12">
+                        <input ng-model="userHostInfo.host_website" class="form-control" name="website" placeholder="Joint Website (http://...)" maxlength="255" type="url" url-input required>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-xs-12">
+                        <input ng-model="userHostInfo.host_facebook" class="form-control" name="facebook" placeholder="Joint Facebook Page (http://...)" maxlength="255" type="url" url-input ng-pattern='/(?:https?:\/\/)?(?:www\.)?facebook\.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[\w\-]*\/)*([\w\-\.]*)/' required>
+                    </div>
+                </div>
+                
+                
+                <div class="form-group text-right">
+                    <div class="col-xs-12">
+                        <button ng-click="buttonCancel()" type="button" class="btn btn-default">Cancel</button>
+                        <button ng-click="buttonSaveHostInformation()" type="button" class="btn btn-primary">Save Information</button>
+                    </div>
+                </div>
+            </form>
+
         </div>
     </div>
     
