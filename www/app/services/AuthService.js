@@ -92,7 +92,9 @@ angular.module('AuthService', [
                     // Confirm that the user is logged in
                     factory.isAuthenticated().then(function (results) {
 
-                        if (VisibilityService.isVisibleToUser(authorizedRole, UserSession.roles())) {
+                        if (!UserSession.get()) {
+                            reject(AUTH_EVENTS.notAuthenticated);
+                        } else if (VisibilityService.isVisibleToUser(authorizedRole, UserSession.roles())) {
                             resolve(true);
                         } else {
                             reject(AUTH_EVENTS.notAuthorized);

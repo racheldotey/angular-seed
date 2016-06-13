@@ -110,6 +110,7 @@ angular.module('app.router', [
   'app.router.admin',
   'app.router.auth',
   'app.router.host',
+  'app.router.leaderboards',
   'app.router.member',
   'app.router.public',
   'app.router.venue',

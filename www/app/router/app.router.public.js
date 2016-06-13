@@ -45,7 +45,7 @@ app.config(['$stateProvider', 'USER_ROLES', function ($stateProvider, USER_ROLES
             resolve: {
                 $window: '$window',
                 homepageRedirect : function($window) {
-                    $window.top.location.href = 'http://www.triviajoint.com/';
+                    //$window.top.location.href = 'http://www.triviajoint.com/';
                 }
             }
         });
