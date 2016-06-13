@@ -45,8 +45,8 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
             url: '/global/players/score/:count',
             views: {
                 'content@app.leaderboard': {
-                    templateUrl: 'app/views/host/scoreboard/scoreboard.html',
-                    controller: 'HostScoreboardDashboardCtrl'
+                    templateUrl: 'app/views/leaderboards/globalPlayer/globalPlayer.html',
+                    controller: 'GlobalPlayerLeaderboardCtrl'
                 }
             },
             resolve: {
@@ -62,8 +62,8 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
             url: '/global/teams/score/:count',
             views: {
                 'content@app.leaderboard': {
-                    templateUrl: 'app/views/host/scoreboard/scoreboard.html',
-                    controller: 'HostScoreboardDashboardCtrl'
+                    templateUrl: 'app/views/leaderboards/globalPlayer/globalPlayer.html',
+                    controller: 'GlobalPlayerLeaderboardCtrl'
                 }
             },
             resolve: {
@@ -79,8 +79,8 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
             url: '/joint/players/score/:count/:venueId',
             views: {
                 'content@app.leaderboard': {
-                    templateUrl: 'app/views/host/scoreboard/scoreboard.html',
-                    controller: 'HostScoreboardDashboardCtrl'
+                    templateUrl: 'app/views/leaderboards/globalPlayer/globalPlayer.html',
+                    controller: 'GlobalPlayerLeaderboardCtrl'
                 }
             },
             resolve: {
@@ -96,8 +96,8 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
             url: '/joint/teams/score/:count/:venueId',
             views: {
                 'content@app.leaderboard': {
-                    templateUrl: 'app/views/host/scoreboard/scoreboard.html',
-                    controller: 'HostScoreboardDashboardCtrl'
+                    templateUrl: 'app/views/leaderboards/globalPlayer/globalPlayer.html',
+                    controller: 'GlobalPlayerLeaderboardCtrl'
                 }
             },
             resolve: {
@@ -113,8 +113,8 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
             url: '/global/players/checkins/:count',
             views: {
                 'content@app.leaderboard': {
-                    templateUrl: 'app/views/host/scoreboard/scoreboard.html',
-                    controller: 'HostScoreboardDashboardCtrl'
+                    templateUrl: 'app/views/leaderboards/globalPlayer/globalPlayer.html',
+                    controller: 'GlobalPlayerLeaderboardCtrl'
                 }
             },
             resolve: {
@@ -130,8 +130,8 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
             url: '/global/teams/checkins/:count',
             views: {
                 'content@app.leaderboard': {
-                    templateUrl: 'app/views/host/scoreboard/scoreboard.html',
-                    controller: 'HostScoreboardDashboardCtrl'
+                    templateUrl: 'app/views/leaderboards/globalPlayer/globalPlayer.html',
+                    controller: 'GlobalPlayerLeaderboardCtrl'
                 }
             },
             resolve: {
@@ -147,8 +147,8 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
             url: '/joint/players/checkins/:count/:venueId',
             views: {
                 'content@app.leaderboard': {
-                    templateUrl: 'app/views/host/scoreboard/scoreboard.html',
-                    controller: 'HostScoreboardDashboardCtrl'
+                    templateUrl: 'app/views/leaderboards/globalPlayer/globalPlayer.html',
+                    controller: 'GlobalPlayerLeaderboardCtrl'
                 }
             },
             resolve: {
@@ -164,8 +164,8 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
             url: '/jont/players/checkins/:count/:venueId',
             views: {
                 'content@app.leaderboard': {
-                    templateUrl: 'app/views/host/scoreboard/scoreboard.html',
-                    controller: 'HostScoreboardDashboardCtrl'
+                    templateUrl: 'app/views/leaderboards/globalPlayer/globalPlayer.html',
+                    controller: 'GlobalPlayerLeaderboardCtrl'
                 }
             },
             resolve: {
