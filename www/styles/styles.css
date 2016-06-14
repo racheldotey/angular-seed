@@ -444,6 +444,12 @@ div.grid.grid-dark ::-webkit-scrollbar-thumb:active {
 div.grid.grid-dark ::-webkit-scrollbar-corner {
   background: transparent;
 }
+div.leaderboard-controls select {
+  display: inline-block;
+  color: #fff;
+  background-color: #47413a;
+  border-color: #71685c;
+}
 div.grid-length label {
   display: inline-block;
   white-space: nowrap;
