@@ -6,7 +6,7 @@ use \Respect\Validation\Validator as v;
 
 class LeaderboardController {
 
-    private static function hookCallHotSalsa($app, $apiResponse) { 
+    private static function hook($app, $apiResponse) { 
         $vars = self::data_hookConfigVars('HOT_SALSA_');
 
         if (!isset($vars['HOT_SALSA_PLAYER_REGISTRATION_ENABLED']) || ($vars['HOT_SALSA_PLAYER_REGISTRATION_ENABLED'] !== 'true' && $vars['HOT_SALSA_PLAYER_REGISTRATION_ENABLED'] !== '1')) {
@@ -72,12 +72,71 @@ class LeaderboardController {
     }
     
     private static function callHotSalsa($url) {
-        $img = APIConfig::get('SYSTEM_DEV_TEST_DATA_IMAGE');
+        $testImage = APIConfig::get('SYSTEM_DEV_TEST_DATA_IMAGE');
+        $img = ($testImage) ? $testImage : '';
         return array(
             array( 'img' => '', 'label' => 'Bob Bobbingston', 'mobileScore' => '22', 'liveScore' => '24' ),
-            array( 'img' => $img, 'label' => 'Andy Andyson', 'mobileScore' => '41', 'liveScore' => '45' ),
-            array( 'img' => $img, 'label' => 'Linda Lindason', 'mobileScore' => '7', 'liveScore' => '14' )
+            array( 'img' => $img, 'label' => 'Andy Andyson', 'mobileScore' => '41', 'liveScore' => '40' ),
+            array( 'img' => $img, 'label' => 'Linda Lindason', 'mobileScore' => '13', 'liveScore' => '14' ),
+            array( 'img' => '', 'label' => 'Rachel Bobbingston', 'mobileScore' => '43', 'liveScore' => '43' ),
+            array( 'img' => $img, 'label' => 'Elan Ellingston', 'mobileScore' => '33', 'liveScore' => '32' ),
+            array( 'img' => $img, 'label' => 'George Georgeston', 'mobileScore' => '7', 'liveScore' => '14' )
         );
+    }
+    
+    private static function makeHotSalsaRequest($app, $apiResponse) { 
+        $url = APIConfig::get('HOT_SALSA_API_URL');
+        $version = APIConfig::get('HOT_SALSA_APP_VERSION');
+        $code = APIConfig::get('HOT_SALSA_URL_CODE');
+        $key = APIConfig::get('HOT_SALSA_AUTH_KEY');
+        $os = APIConfig::get('HOT_SALSA_OS');
+        $package = APIConfig::get('HOT_SALSA_PACKAGE_CODE');
+
+        if (!$url || !$version || !$code || !$key || !$os || !$package) {
+            self::data_logHotSalsaError($apiResponse['user']->id, "Could not attempt call. The Hot Salsa signup hook is enabled but a system variable is disabled or missing.", $vars);
+            return false;
+        }
+
+        $params = array(
+            'appVersion' => $version,
+            'code' => $code,
+            'authKey' => $key,
+            'os' => $os,
+            'packageCode' => $package
+        );
+        
+        // create curl resource 
+        $ch = curl_init();
+
+        // set url 
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+
+        //return the transfer as a string 
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+        // $output contains the output string 
+        $curlOutput = curl_exec($ch);
+
+        if (!$curlOutput) {
+            // No Results = Error
+            $error = (curl_error($ch)) ? curl_error($ch) : 'ERROR: No results';
+            $info = (curl_getinfo($ch)) ? json_encode(curl_getinfo($ch)) : 'ERROR: No Info';
+            self::data_logHotSalsaError($apiResponse['user']->id, $error, $info);
+        } else {
+            // Results
+            $curlResult = json_decode($curlOutput, true);
+            if (!isset($curlResult['status']) || $curlResult['status'] === 'failed') {
+                $error = (isset($curlResult['status'])) ? $curlResult['status'] : 'ERROR: Unknown error occured';
+                self::data_logHotSalsaError($apiResponse['user']->id, $error, $curlOutput);
+            } else {
+                self::data_logHotSalsaResults($curlResult, $app, $apiResponse);
+            }
+        }
+
+        // close curl resource to free up system resources 
+        curl_close($ch);
     }
 
     // Global Player Score Leaderboard

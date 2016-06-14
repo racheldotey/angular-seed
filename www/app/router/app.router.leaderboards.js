@@ -19,6 +19,18 @@ var app = angular.module('app.router.leaderboards', [
 app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($stateProvider, $urlRouterProvider, USER_ROLES) {
 
         /*  Abstract Member (Authenticated) Route */
+        $stateProvider.state('app.iframeLeaderboard', {
+            url: '/iframe/leaderboard',
+            abstract: true,
+            data: {authorizedRoles: USER_ROLES.host},
+            views: {
+                'layout@': {
+                    templateUrl: 'app/views/member/memberiFrameLayout/memberiFrameLayout.html'
+                }
+            }
+        });
+        
+        /*  Abstract Member (Authenticated) Route */
         $stateProvider.state('app.leaderboard', {
             url: '/leaderboard',
             abstract: true,
@@ -51,17 +63,15 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
             }
         });
         
-        $stateProvider.state('app.leaderboard.iframe.globalPlayerCheckins', {
+        $stateProvider.state('app.iframeLeaderboard.globalPlayerCheckins', {
             bodyClass: 'leaderboard player checkins',
             title: 'Global Player Checkins Leaderboard',
-            url: '/iframe/global/players/checkins/:count',
+            url: '/global/players/checkins/:count',
             views: {
-                'header@app.leaderboard': {},
-                'content@app.leaderboard': {
+                'content@app.iframeLeaderboard': {
                     templateUrl: 'app/views/leaderboards/globalPlayerCheckins/globalPlayerCheckins.html',
                     controller: 'GlobalPlayerCheckinsLeaderboardCtrl'
-                },
-                'footer@app.leaderboard': {}
+                }
             }
         });
         
@@ -77,17 +87,15 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
             }
         });
         
-        $stateProvider.state('app.leaderboard.iframe..globalPlayers', {
+        $stateProvider.state('app.iframeLeaderboard.globalPlayers', {
             bodyClass: 'leaderboard players',
             title: 'Global Player Score Leaderboard',
-            url: '/iframe/global/players/score/:count',
+            url: '/global/players/score/:count',
             views: {
-                'header@app.leaderboard': {},
-                'content@app.leaderboard': {
+                'content@app.iframeLeaderboard': {
                     templateUrl: 'app/views/leaderboards/globalPlayers/globalPlayers.html',
                     controller: 'GlobalPlayersLeaderboardCtrl'
-                },
-                'footer@app.leaderboard': {}
+                }
             }
         });
         
@@ -103,17 +111,15 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
             }
         });
         
-        $stateProvider.state('app.leaderboard.iframe.globalTeamCheckins', {
+        $stateProvider.state('app.iframeLeaderboard.globalTeamCheckins', {
             bodyClass: 'leaderboard team checkins',
             title: 'Global Team Checkin Leaderboard',
-            url: '/iframe/global/teams/checkins/:count',
+            url: '/global/teams/checkins/:count',
             views: {
-                'header@app.leaderboard': {},
-                'content@app.leaderboard': {
+                'content@app.iframeLeaderboard': {
                     templateUrl: 'app/views/leaderboards/globalTeamCheckins/globalTeamCheckins.html',
                     controller: 'GlobalTeamCheckinsLeaderboardCtrl'
-                },
-                'footer@app.leaderboard': {}
+                }
             }
         });
         
@@ -129,17 +135,15 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
             }
         });
         
-        $stateProvider.state('app.leaderboard.iframe.globalTeams', {
+        $stateProvider.state('app.iframeLeaderboard.globalTeams', {
             bodyClass: 'leaderboard teams',
             title: 'Global Team Score Leaderboard',
-            url: '/iframe/global/teams/score/:count',
+            url: '/global/teams/score/:count',
             views: {
-                'header@app.leaderboard': {},
-                'content@app.leaderboard': {
+                'content@app.iframeLeaderboard': {
                     templateUrl: 'app/views/leaderboards/globalTeams/globalTeams.html',
                     controller: 'GlobalTeamsLeaderboardCtrl'
-                },
-                'footer@app.leaderboard': {}
+                }
             }
         });
         
@@ -155,17 +159,15 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
             }
         });
         
-        $stateProvider.state('app.leaderboard.iframe.venuePlayerCheckins', {
+        $stateProvider.state('app.iframeLeaderboard.venuePlayerCheckins', {
             bodyClass: 'leaderboard players',
             title: 'Per Joint Player Checkins Leaderboard',
-            url: '/iframe/joint/players/checkins/:venueId/:count',
+            url: '/joint/players/checkins/:venueId/:count',
             views: {
-                'header@app.leaderboard': {},
-                'content@app.leaderboard': {
+                'content@app.iframeLeaderboard': {
                     templateUrl: 'app/views/leaderboards/venuePlayerCheckins/venuePlayerCheckins.html',
                     controller: 'VenuePlayerCheckinsLeaderboardCtrl'
-                },
-                'footer@app.leaderboard': {}
+                }
             }
         });
         
@@ -181,17 +183,15 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
             }
         });
         
-        $stateProvider.state('app.leaderboard.iframe.venuePlayers', {
+        $stateProvider.state('app.iframeLeaderboard.venuePlayers', {
             bodyClass: 'leaderboard venue players',
             title: 'Per Joint Player Score Leaderboard',
-            url: '/iframe/joint/players/score/:venueId/:count',
+            url: '/joint/players/score/:venueId/:count',
             views: {
-                'header@app.leaderboard': {},
-                'content@app.leaderboard': {
+                'content@app.iframeLeaderboard': {
                     templateUrl: 'app/views/leaderboards/venuePlayers/venuePlayers.html',
                     controller: 'VenuePlayersLeaderboardCtrl'
-                },
-                'footer@app.leaderboard': {}
+                }
             }
         });
         
@@ -207,17 +207,15 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
             }
         });
         
-        $stateProvider.state('app.leaderboard.iframe.venueTeamCheckins', {
+        $stateProvider.state('app.iframeLeaderboard.venueTeamCheckins', {
             bodyClass: 'leaderboard players',
             title: 'Per Joint Team Checkins Leaderboard',
-            url: '/iframe/jont/players/checkins/:venueId/:count',
+            url: '/jont/players/checkins/:venueId/:count',
             views: {
-                'header@app.leaderboard': {},
-                'content@app.leaderboard': {
+                'content@app.iframeLeaderboard': {
                     templateUrl: 'app/views/leaderboards/venueTeamCheckins/venueTeamCheckins.html',
                     controller: 'VenueTeamCheckinsLeaderboardCtrl'
-                },
-                'footer@app.leaderboard': {}
+                }
             }
         });
         
@@ -233,17 +231,15 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
             }
         });
         
-        $stateProvider.state('app.leaderboard.iframe.venueTeams', {
+        $stateProvider.state('app.iframeLeaderboard.venueTeams', {
             bodyClass: 'leaderboard venue teams',
             title: 'Per Joint Team Score Leaderboard',
-            url: '/iframe/joint/teams/score/:venueId/:count',
+            url: '/joint/teams/score/:venueId/:count',
             views: {
-                'header@app.leaderboard': {},
-                'content@app.leaderboard': {
+                'content@app.iframeLeaderboard': {
                     templateUrl: 'app/views/leaderboards/venueTeams/venueTeams.html',
                     controller: 'VenueTeamsLeaderboardCtrl'
-                },
-                'footer@app.leaderboard': {}
+                }
             }
         });
         

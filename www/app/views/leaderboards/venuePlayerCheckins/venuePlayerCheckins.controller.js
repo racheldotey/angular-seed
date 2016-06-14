@@ -5,10 +5,11 @@
  */
 
 angular.module('app.leaderboards.venuePlayerCheckins', ['ui.grid', 'ui.grid.autoResize'])
-    .controller('VenuePlayerCheckinsLeaderboardCtrl', ['$window', '$state', '$stateParams', '$rootScope', '$scope', 'uiGridConstants', 'ApiRoutesLeaderboards',
-        function($window, $state, $stateParams, $rootScope, $scope, uiGridConstants, ApiRoutesLeaderboards) {
+    .controller('VenuePlayerCheckinsLeaderboardCtrl', ['$window', '$state', '$stateParams', '$rootScope', '$scope', 'uiGridConstants', 'ApiRoutesLeaderboards', 'ApiRoutesSimpleLists',
+        function($window, $state, $stateParams, $rootScope, $scope, uiGridConstants, ApiRoutesLeaderboards, ApiRoutesSimpleLists) {
             
             $scope.title = $rootScope.title;
+            $scope.selected = {};
             $scope.showLimit = $stateParams.count;
             
             $scope.grid = {};
@@ -19,7 +20,7 @@ angular.module('app.leaderboards.venuePlayerCheckins', ['ui.grid', 'ui.grid.auto
             $scope.grid.data = [];
             $scope.grid.columnDefs = [
                 { field: 'img', displayName:'', cellClass: 'leaderboard-img-cell', enableSorting: false, cellTemplate: '<img ng-src="{{COL_FIELD}}" class="leaderboard-img" />' },
-                { field: 'label', displayName:'Player' },
+                { field: 'label', displayName:'Player Name' },
                 { field: 'mobileScore', displayName:'Mobile Score', type: 'number', sort: { direction: uiGridConstants.DESC, priority: 1 } },
                 { field: 'liveScore', displayName:'Live Score', type: 'number' }
             ];
@@ -51,4 +52,15 @@ angular.module('app.leaderboards.venuePlayerCheckins', ['ui.grid', 'ui.grid.auto
                     console.log(error);
                 });
             })($scope.showLimit);
+            
+            // Venue Button
+            ApiRoutesSimpleLists.simpleVenuesList().then(
+                function(results) {
+                    console.log(results);
+                    $scope.venueList = results;
+                    $scope.selectedVenue = 1;
+                }, function (error) {
+                    console.log(error);
+                    $scope.venueList = [];
+                });
     }]);
