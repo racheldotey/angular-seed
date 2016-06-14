@@ -39,87 +39,26 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
             }
         });
         
-        $stateProvider.state('app.leaderboard.globalPlayers', {
-            bodyClass: 'leaderboard players',
-            title: 'Global Player Score Leaderboard',
-            url: '/global/players/score/:count',
-            views: {
-                'content@app.leaderboard': {
-                    templateUrl: 'app/views/leaderboards/globalPlayer/globalPlayer.html',
-                    controller: 'GlobalPlayerLeaderboardCtrl'
-                }
-            },
-            resolve: {
-                $q: '$q',
-                currentGame: function($q) {
-                }
-            }
-        });
-        
-        $stateProvider.state('app.leaderboard.globalTeams', {
-            bodyClass: 'leaderboard teams',
-            title: 'Global Team Score Leaderboard',
-            url: '/global/teams/score/:count',
-            views: {
-                'content@app.leaderboard': {
-                    templateUrl: 'app/views/leaderboards/globalPlayer/globalPlayer.html',
-                    controller: 'GlobalPlayerLeaderboardCtrl'
-                }
-            },
-            resolve: {
-                $q: '$q',
-                currentGame: function($q) {
-                }
-            }
-        });
-        
-        $stateProvider.state('app.leaderboard.venuePlayers', {
-            bodyClass: 'leaderboard venue players',
-            title: 'Per Joint Player Score Leaderboard',
-            url: '/joint/players/score/:count/:venueId',
-            views: {
-                'content@app.leaderboard': {
-                    templateUrl: 'app/views/leaderboards/globalPlayer/globalPlayer.html',
-                    controller: 'GlobalPlayerLeaderboardCtrl'
-                }
-            },
-            resolve: {
-                $q: '$q',
-                currentGame: function($q) {
-                }
-            }
-        });
-        
-        $stateProvider.state('app.leaderboard.venueTeams', {
-            bodyClass: 'leaderboard venue teams',
-            title: 'Per Joint Team Score Leaderboard',
-            url: '/joint/teams/score/:count/:venueId',
-            views: {
-                'content@app.leaderboard': {
-                    templateUrl: 'app/views/leaderboards/globalPlayer/globalPlayer.html',
-                    controller: 'GlobalPlayerLeaderboardCtrl'
-                }
-            },
-            resolve: {
-                $q: '$q',
-                currentGame: function($q) {
-                }
-            }
-        });
-        
         $stateProvider.state('app.leaderboard.globalPlayerCheckins', {
             bodyClass: 'leaderboard player checkins',
             title: 'Checkins Leaderboard',
             url: '/global/players/checkins/:count',
             views: {
                 'content@app.leaderboard': {
-                    templateUrl: 'app/views/leaderboards/globalPlayer/globalPlayer.html',
+                    templateUrl: 'app/views/leaderboards/globalPlayerCheckins/globalPlayerCheckins.html',
                     controller: 'GlobalPlayerLeaderboardCtrl'
                 }
-            },
-            resolve: {
-                $q: '$q',
-                currentGame: function($q) {
+            }
+        });
+        
+        $stateProvider.state('app.leaderboard.globalPlayers', {
+            bodyClass: 'leaderboard players',
+            title: 'Global Player Score Leaderboard',
+            url: '/global/players/score/:count',
+            views: {
+                'content@app.leaderboard': {
+                    templateUrl: 'app/views/leaderboards/globalPlayers/globalPlayers.html',
+                    controller: 'GlobalPlayerLeaderboardCtrl'
                 }
             }
         });
@@ -130,13 +69,20 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
             url: '/global/teams/checkins/:count',
             views: {
                 'content@app.leaderboard': {
-                    templateUrl: 'app/views/leaderboards/globalPlayer/globalPlayer.html',
+                    templateUrl: 'app/views/leaderboards/globalTeamCheckins/globalTeamCheckins.html',
                     controller: 'GlobalPlayerLeaderboardCtrl'
                 }
-            },
-            resolve: {
-                $q: '$q',
-                currentGame: function($q) {
+            }
+        });
+        
+        $stateProvider.state('app.leaderboard.globalTeams', {
+            bodyClass: 'leaderboard teams',
+            title: 'Global Team Score Leaderboard',
+            url: '/global/teams/score/:count',
+            views: {
+                'content@app.leaderboard': {
+                    templateUrl: 'app/views/leaderboards/globalTeams/globalTeams.html',
+                    controller: 'GlobalPlayerLeaderboardCtrl'
                 }
             }
         });
@@ -147,13 +93,20 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
             url: '/joint/players/checkins/:count/:venueId',
             views: {
                 'content@app.leaderboard': {
-                    templateUrl: 'app/views/leaderboards/globalPlayer/globalPlayer.html',
+                    templateUrl: 'app/views/leaderboards/venuePlayerCheckins/venuePlayerCheckins.html',
                     controller: 'GlobalPlayerLeaderboardCtrl'
                 }
-            },
-            resolve: {
-                $q: '$q',
-                currentGame: function($q) {
+            }
+        });
+        
+        $stateProvider.state('app.leaderboard.venuePlayers', {
+            bodyClass: 'leaderboard venue players',
+            title: 'Per Joint Player Score Leaderboard',
+            url: '/joint/players/score/:count/:venueId',
+            views: {
+                'content@app.leaderboard': {
+                    templateUrl: 'app/views/leaderboards/venuePlayers/venuePlayers.html',
+                    controller: 'GlobalPlayerLeaderboardCtrl'
                 }
             }
         });
@@ -164,16 +117,22 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
             url: '/jont/players/checkins/:count/:venueId',
             views: {
                 'content@app.leaderboard': {
-                    templateUrl: 'app/views/leaderboards/globalPlayer/globalPlayer.html',
+                    templateUrl: 'app/views/leaderboards/venueTeamCheckins/venueTeamCheckins.html',
                     controller: 'GlobalPlayerLeaderboardCtrl'
-                }
-            },
-            resolve: {
-                $q: '$q',
-                currentGame: function($q) {
                 }
             }
         });
         
+        $stateProvider.state('app.leaderboard.venueTeams', {
+            bodyClass: 'leaderboard venue teams',
+            title: 'Per Joint Team Score Leaderboard',
+            url: '/joint/teams/score/:count/:venueId',
+            views: {
+                'content@app.leaderboard': {
+                    templateUrl: 'app/views/leaderboards/venueTeams/venueTeams.html',
+                    controller: 'GlobalPlayerLeaderboardCtrl'
+                }
+            }
+        });
         
     }]);

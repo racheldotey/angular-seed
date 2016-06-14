@@ -7,20 +7,17 @@
  */
 
 angular.module('app.leaderboards.globalPlayers', ['ui.grid', 'ui.grid.autoResize'])
-    .controller('GlobalPlayerLeaderboardCtrl', ['$window', '$state', '$stateParams', '$scope', 'uiGridConstants', 'ApiRoutesLeaderboards',
-        function($window, $state, $stateParams, $scope, uiGridConstants, ApiRoutesLeaderboards) {
+    .controller('GlobalPlayerLeaderboardCtrl', ['$window', '$state', '$stateParams', '$rootScope', '$scope', 'uiGridConstants', 'ApiRoutesLeaderboards',
+        function($window, $state, $stateParams, $rootScope, $scope, uiGridConstants, ApiRoutesLeaderboards) {
+            
+            $scope.title = $rootScope.title;
             $scope.showLimit = $stateParams.count;
             
             $scope.grid = {};
             $scope.grid.enableSorting = true;           // Column sort order
             $scope.grid.enableColumnResizing = true;
             $scope.grid.fastWatch = true;               // Improves performance of updates by watching array length
-            
- $scope.someProp = 'abc',
- $scope.showMe = function(){
-                   alert($scope.someProp);
-                };
-                
+                            
             $scope.grid.data = [];
             $scope.grid.columnDefs = [
                 { field: 'img', displayName:'', cellClass: 'leaderboard-img-cell', enableSorting: false, cellTemplate: '<img ng-src="{{COL_FIELD}}" class="leaderboard-img" />' },
