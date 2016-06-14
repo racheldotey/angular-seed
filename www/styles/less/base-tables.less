@@ -160,3 +160,101 @@ table.table.dataTable {
         }
     }
 }
+
+div.grid.grid-dark {
+    border-color: darken(@brick-red, 5%);
+ 
+    div.ui-grid-header {
+        border-bottom-color: lighten(@brick-red, 15%);
+        
+        div.ui-grid-top-panel {
+            background: @brick-red;
+                
+            div.ui-grid-header-cell {
+                background: @brick-red;
+                color: #fff;
+                border-color: darken(@brick-red, 5%);
+                
+            }
+            div.ui-grid-cell {
+                background: @brick-red;
+                color: #fff;
+                border-color: darken(@brick-red, 5%);
+                
+            }
+        }
+    }
+    
+    div.ui-grid-canvas {
+        div.ui-grid-row {
+            
+            .ui-grid-cell {
+                background: lighten(@brick-red, 1%);
+                border-color: darken(@brick-red, 5%);
+            }
+            
+            &:nth-child(even) {
+                .ui-grid-cell {
+                    background: darken(@brick-red, 2%);
+                }
+            }
+        }
+    }
+    
+    // Custom Scrollbar
+    /* Begin ::-webkit Scrollbar CSS Color Code by http//:snapbuilder.com */
+    ::-webkit-scrollbar {
+        width:20px;
+        height:17px;
+        margin-top: 10px;
+    }
+    ::-webkit-scrollbar-button {
+        width: 0px;
+        height: 0px;
+    }
+    ::-webkit-scrollbar-track {
+        background-color: @medium-brown;
+        &:active {
+            background: darken(@medium-brown, 5%);
+        }
+    }
+    ::-webkit-scrollbar-thumb {
+        background: darken(@brick-red, 5%);
+        border: 2px solid @medium-brown;
+        border-radius:20px;
+        &:hover {
+            background: @brick-red;
+            border-color: @medium-brown;
+        }
+        &:active {
+            background: lighten(@brick-red, 5%);
+            border-color: darken(@medium-brown, 5%);
+        }
+    }
+    ::-webkit-scrollbar-corner {
+        background: transparent;
+    } 
+        
+}
+
+div.grid-length {
+    
+    label {
+        display: inline-block;
+        white-space: nowrap;
+    }
+    select {
+        display: inline-block;
+        color: #fff;
+        background-color: @medium-brown;
+        border-color: lighten(@medium-brown, 15%);
+    }
+}
+
+.leaderboard-img-cell {
+    img.leaderboard-img {
+        width: 100%;
+        height: auto;
+        max-width: 100px;
+    }
+}

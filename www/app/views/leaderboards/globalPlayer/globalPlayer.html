@@ -1,5 +1,21 @@
 <div class="page host scoreboard">
     
-    <div id="grid1" ui-grid="{ data: myData }" class="grid"></div>
+    <div id="leaderboard" ui-grid="grid" ui-grid-auto-resize class="grid grid-dark"></div>
+    <div class="leaderboard-footer row">
+        <div class="col-xs-12 col-sm-6">
+            <p>Total Items: {{grid.data.length}}</p>
+        </div>
+        
+        <div class="col-xs-12 col-sm-6">
+            <div class="grid-length text-right">
+                <label>Show <select name="gridResultsLength" class="input-sm" ng-model="showLimit" ng-change="refreshGrid(showLimit)">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select> results</label>
+            </div>
+        </div>
+    </div>
     
 </div>

@@ -16,6 +16,7 @@ require_once dirname(__FILE__) . '/teams/teams.routes.php';
 require_once dirname(__FILE__) . '/user/user.routes.php';
 require_once dirname(__FILE__) . '/venues/venues.routes.php';
 require_once dirname(__FILE__) . '/hosts/hosts.routes.php';
+require_once dirname(__FILE__) . '/leaderboards/leaderboards.routes.php';
 
 class ApiRouter {
     
@@ -39,6 +40,7 @@ class ApiRouter {
         UserRoutes::addRoutes($app, $authenticateForRole);
         VenueRoutes::addRoutes($app, $authenticateForRole);
         HostRoutes::addRoutes($app, $authenticateForRole);
+        LeaderboardRoutes::addRoutes($app, $authenticateForRole);
     }
     
     

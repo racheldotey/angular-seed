@@ -12,6 +12,7 @@ angular.module('api.v1', [
     'apiRoutes.emails',
     'apiRoutes.games',
     'apiRoutes.groups',
+    'apiRoutes.Leaderboards',
     'apiRoutes.lists',
     'apiRoutes.roles',
     'apiRoutes.systemVariables',

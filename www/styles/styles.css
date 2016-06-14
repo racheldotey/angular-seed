@@ -386,6 +386,79 @@ table.table.dataTable.table-dark.table-striped > tbody > tr:nth-of-type(odd),
 table.table.dataTable.table-dark table.sub-table.table-striped > tbody > tr:nth-of-type(odd) {
   background-color: #7e0000;
 }
+div.grid.grid-dark {
+  border-color: #6f0000;
+  /* Begin ::-webkit Scrollbar CSS Color Code by http//:snapbuilder.com */
+}
+div.grid.grid-dark div.ui-grid-header {
+  border-bottom-color: #d40000;
+}
+div.grid.grid-dark div.ui-grid-header div.ui-grid-top-panel {
+  background: #880000;
+}
+div.grid.grid-dark div.ui-grid-header div.ui-grid-top-panel div.ui-grid-header-cell {
+  background: #880000;
+  color: #fff;
+  border-color: #6f0000;
+}
+div.grid.grid-dark div.ui-grid-header div.ui-grid-top-panel div.ui-grid-cell {
+  background: #880000;
+  color: #fff;
+  border-color: #6f0000;
+}
+div.grid.grid-dark div.ui-grid-canvas div.ui-grid-row .ui-grid-cell {
+  background: #8d0000;
+  border-color: #6f0000;
+}
+div.grid.grid-dark div.ui-grid-canvas div.ui-grid-row:nth-child(even) .ui-grid-cell {
+  background: #7e0000;
+}
+div.grid.grid-dark ::-webkit-scrollbar {
+  width: 20px;
+  height: 17px;
+  margin-top: 10px;
+}
+div.grid.grid-dark ::-webkit-scrollbar-button {
+  width: 0px;
+  height: 0px;
+}
+div.grid.grid-dark ::-webkit-scrollbar-track {
+  background-color: #47413a;
+}
+div.grid.grid-dark ::-webkit-scrollbar-track:active {
+  background: #39342f;
+}
+div.grid.grid-dark ::-webkit-scrollbar-thumb {
+  background: #6f0000;
+  border: 2px solid #47413a;
+  border-radius: 20px;
+}
+div.grid.grid-dark ::-webkit-scrollbar-thumb:hover {
+  background: #880000;
+  border-color: #47413a;
+}
+div.grid.grid-dark ::-webkit-scrollbar-thumb:active {
+  background: #a20000;
+  border-color: #39342f;
+}
+div.grid.grid-dark ::-webkit-scrollbar-corner {
+  background: transparent;
+}
+div.grid-length label {
+  display: inline-block;
+  white-space: nowrap;
+}
+div.grid-length select {
+  display: inline-block;
+  color: #fff;
+  background-color: #47413a;
+  border-color: #71685c;
+}
+.leaderboard-img-cell img.leaderboard-img {
+  width: 100%;
+  height: auto;
+  max-width: 100px;
+}
 /*
  * Typography Styles
  * 
