@@ -9,7 +9,8 @@ angular.module('app.leaderboards.venuePlayerCheckins', ['ui.grid', 'ui.grid.auto
         function($window, $state, $stateParams, $rootScope, $scope, uiGridConstants, ApiRoutesLeaderboards, ApiRoutesSimpleLists) {
             
             $scope.title = $rootScope.title;
-            $scope.selected = {};
+            $scope.selectedVenue = {};
+            $scope.selectedVenue.id = $stateParams.venueId;
             $scope.showLimit = $stateParams.count;
             
             $scope.grid = {};
@@ -46,7 +47,7 @@ angular.module('app.leaderboards.venuePlayerCheckins', ['ui.grid', 'ui.grid.auto
                     $scope.grid.data = result.leaderboard;
                     $scope.setLeaderboardHeight();
                     if($stateParams.count != limit) {
-                        $state.go($state.current.name, {count: limit}, {notify: false});
+                        $state.go($state.current.name, {count: limit, venueId: $stateParams.venueId}, {notify: false});
                     }
                 }, function(error) {
                     console.log(error);
@@ -58,9 +59,20 @@ angular.module('app.leaderboards.venuePlayerCheckins', ['ui.grid', 'ui.grid.auto
                 function(results) {
                     console.log(results);
                     $scope.venueList = results;
-                    $scope.selectedVenue = 1;
                 }, function (error) {
                     console.log(error);
                     $scope.venueList = [];
                 });
+                
+            $scope.$watch("selectedVenue.id", function(newValue, oldValue) {
+                if(angular.isDefined(newValue) && parseInt(newValue) && $stateParams.venueId != newValue) {
+                    ApiRoutesLeaderboards.getVenuePlayerCheckinsLeaderboard(newValue, $stateParams.count).then(function(result) {
+                        $scope.grid.data = result.leaderboard;
+                        $scope.setLeaderboardHeight();
+                        $state.go($state.current.name, {count: $stateParams.count, venueId: newValue}, {notify: false});
+                    }, function(error) {
+                        console.log(error);
+                    });
+                }
+            });
     }]);

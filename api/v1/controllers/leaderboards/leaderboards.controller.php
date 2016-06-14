@@ -71,17 +71,15 @@ class LeaderboardController {
         curl_close($ch);
     }
     
-    private static function callHotSalsa($url) {
+    private static function callHotSalsa($url, $limit) {
         $testImage = APIConfig::get('SYSTEM_DEV_TEST_DATA_IMAGE');
         $img = ($testImage) ? $testImage : '';
-        return array(
-            array( 'img' => '', 'label' => 'Bob Bobbingston', 'mobileScore' => '22', 'liveScore' => '24' ),
-            array( 'img' => $img, 'label' => 'Andy Andyson', 'mobileScore' => '41', 'liveScore' => '40' ),
-            array( 'img' => $img, 'label' => 'Linda Lindason', 'mobileScore' => '13', 'liveScore' => '14' ),
-            array( 'img' => '', 'label' => 'Rachel Bobbingston', 'mobileScore' => '43', 'liveScore' => '43' ),
-            array( 'img' => $img, 'label' => 'Elan Ellingston', 'mobileScore' => '33', 'liveScore' => '32' ),
-            array( 'img' => $img, 'label' => 'George Georgeston', 'mobileScore' => '7', 'liveScore' => '14' )
-        );
+        
+        $results = array();
+        for($i = 1; $i <= $limit; $i++) {
+            $results[] = array( 'img' => $img, 'label' => "Name #{$i}", 'mobileScore' => rand(1, 100), 'liveScore' => rand(1, 100) );
+        }
+        return $results;
     }
     
     private static function makeHotSalsaRequest($app, $apiResponse) { 
@@ -144,7 +142,7 @@ class LeaderboardController {
         $limit = (!v::intVal()->validate($count)) ? '10' : $count;
         $url = '';
         
-        $data = self::callHotSalsa($url);
+        $data = self::callHotSalsa($url, $limit);
         if($data) {
             return $app->render(200, array('leaderboard' => $data));
         } else {
@@ -157,7 +155,7 @@ class LeaderboardController {
         $limit = (!v::intVal()->validate($count)) ? '10' : $count;
         $url = '';
         
-        $data = self::callHotSalsa($url);
+        $data = self::callHotSalsa($url, $limit);
         if($data) {
             return $app->render(200, array('leaderboard' => $data));
         } else {
@@ -174,7 +172,7 @@ class LeaderboardController {
         $limit = (!v::intVal()->validate($count)) ? '10' : $count;
         $url = '';
         
-        $data = self::callHotSalsa($url);
+        $data = self::callHotSalsa($url, $limit);
         if($data) {
             return $app->render(200, array('leaderboard' => $data));
         } else {
@@ -191,7 +189,7 @@ class LeaderboardController {
         $limit = (!v::intVal()->validate($count)) ? '10' : $count;
         $url = '';
         
-        $data = self::callHotSalsa($url);
+        $data = self::callHotSalsa($url, $limit);
         if($data) {
             return $app->render(200, array('leaderboard' => $data));
         } else {
@@ -204,7 +202,7 @@ class LeaderboardController {
         $limit = (!v::intVal()->validate($count)) ? '10' : $count;
         $url = '';
         
-        $data = self::callHotSalsa($url);
+        $data = self::callHotSalsa($url, $limit);
         if($data) {
             return $app->render(200, array('leaderboard' => $data));
         } else {
@@ -217,7 +215,7 @@ class LeaderboardController {
         $limit = (!v::intVal()->validate($count)) ? '10' : $count;
         $url = '';
         
-        $data = self::callHotSalsa($url);
+        $data = self::callHotSalsa($url, $limit);
         if($data) {
             return $app->render(200, array('leaderboard' => $data));
         } else {
@@ -234,7 +232,7 @@ class LeaderboardController {
         $limit = (!v::intVal()->validate($count)) ? '10' : $count;
         $url = '';
         
-        $data = self::callHotSalsa($url);
+        $data = self::callHotSalsa($url, $limit);
         if($data) {
             return $app->render(200, array('leaderboard' => $data));
         } else {
@@ -251,7 +249,7 @@ class LeaderboardController {
         $limit = (!v::intVal()->validate($count)) ? '10' : $count;
         $url = '';
         
-        $data = self::callHotSalsa($url);
+        $data = self::callHotSalsa($url, $limit);
         if($data) {
             return $app->render(200, array('leaderboard' => $data));
         } else {
