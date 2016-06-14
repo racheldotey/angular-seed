@@ -158,7 +158,7 @@ class LeaderboardController {
         $limit = (!v::intVal()->validate($count)) ? '10' : $count;
         $url = '';
         
-        $data = LeaderboardData::selectVenueList( $limit);
+        $data = self::callHotSalsa($url);
         if($data) {
             return $app->render(200, array('leaderboard' => $data));
         } else {
