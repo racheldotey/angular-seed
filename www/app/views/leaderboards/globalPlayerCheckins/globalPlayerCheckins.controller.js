@@ -19,7 +19,7 @@ angular.module('app.leaderboards.globalPlayerCheckins', ['ui.grid', 'ui.grid.aut
             $scope.grid.data = [];
             $scope.grid.columnDefs = [
                 { field: 'img', displayName:'', cellClass: 'leaderboard-img-cell', enableSorting: false, cellTemplate: '<img ng-src="{{COL_FIELD}}" class="leaderboard-img" />' },
-                { field: 'label', displayName:'Player' },
+                { field: 'label', displayName:'Player Name' },
                 { field: 'mobileScore', displayName:'Mobile Score', type: 'number', sort: { direction: uiGridConstants.DESC, priority: 1 } },
                 { field: 'liveScore', displayName:'Live Score', type: 'number' }
             ];
