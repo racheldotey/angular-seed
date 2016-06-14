@@ -1,13 +1,11 @@
 'use strict';
 
 /* 
- * Global Player Leaderboard
- * 
- * Controller for the game scorboard, host view.
+ * Global Team Score Leaderboard
  */
 
-angular.module('app.leaderboards.globalPlayers', ['ui.grid', 'ui.grid.autoResize'])
-    .controller('GlobalPlayerLeaderboardCtrl', ['$window', '$state', '$stateParams', '$rootScope', '$scope', 'uiGridConstants', 'ApiRoutesLeaderboards',
+angular.module('app.leaderboards.globalTeams', ['ui.grid', 'ui.grid.autoResize'])
+    .controller('GlobalTeamsLeaderboardCtrl', ['$window', '$state', '$stateParams', '$rootScope', '$scope', 'uiGridConstants', 'ApiRoutesLeaderboards',
         function($window, $state, $stateParams, $rootScope, $scope, uiGridConstants, ApiRoutesLeaderboards) {
             
             $scope.title = $rootScope.title;
@@ -43,7 +41,7 @@ angular.module('app.leaderboards.globalPlayers', ['ui.grid', 'ui.grid.autoResize
             });
             
             ($scope.refreshGrid = function(limit) {
-                ApiRoutesLeaderboards.getGlobalPlayersLeaderboard(limit).then(function(result) {
+                ApiRoutesLeaderboards.getGlobalTeamsLeaderboard(limit).then(function(result) {
                     $scope.grid.data = result.leaderboard;
                     $scope.setLeaderboardHeight();
                     if($stateParams.count != limit) {

@@ -22,12 +22,12 @@ angular.module('apiRoutes.Leaderboards', [])
     };
     
     // Per Joint Player Score Leaderboard
-    api.getJointPlayersLeaderboard = function (venueId, count) {
+    api.getVenuePlayersLeaderboard = function (venueId, count) {
         return API.get('leaderboard/joint/players/score/' + venueId + '/' + count, 'Could not get leaderboard.');
     };
     
     // Per Joint Team Score Leaderboard
-    api.getJointTeamsLeaderboard = function (venueId, count) {
+    api.getVenueTeamsLeaderboard = function (venueId, count) {
         return API.get('leaderboard/joint/teams/score/' + venueId + '/' + count, 'Could not get leaderboard.');
     };
     

@@ -46,7 +46,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
             views: {
                 'content@app.leaderboard': {
                     templateUrl: 'app/views/leaderboards/globalPlayerCheckins/globalPlayerCheckins.html',
-                    controller: 'GlobalPlayerLeaderboardCtrl'
+                    controller: 'GlobalPlayerCheckinsLeaderboardCtrl'
                 }
             }
         });
@@ -58,7 +58,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
             views: {
                 'content@app.leaderboard': {
                     templateUrl: 'app/views/leaderboards/globalPlayers/globalPlayers.html',
-                    controller: 'GlobalPlayerLeaderboardCtrl'
+                    controller: 'GlobalPlayersLeaderboardCtrl'
                 }
             }
         });
@@ -70,7 +70,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
             views: {
                 'content@app.leaderboard': {
                     templateUrl: 'app/views/leaderboards/globalTeamCheckins/globalTeamCheckins.html',
-                    controller: 'GlobalPlayerLeaderboardCtrl'
+                    controller: 'GlobalTeamCheckinsLeaderboardCtrl'
                 }
             }
         });
@@ -82,7 +82,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
             views: {
                 'content@app.leaderboard': {
                     templateUrl: 'app/views/leaderboards/globalTeams/globalTeams.html',
-                    controller: 'GlobalPlayerLeaderboardCtrl'
+                    controller: 'GlobalTeamsLeaderboardCtrl'
                 }
             }
         });
@@ -94,7 +94,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
             views: {
                 'content@app.leaderboard': {
                     templateUrl: 'app/views/leaderboards/venuePlayerCheckins/venuePlayerCheckins.html',
-                    controller: 'GlobalPlayerLeaderboardCtrl'
+                    controller: 'VenuePlayerCheckinsLeaderboardCtrl'
                 }
             }
         });
@@ -106,7 +106,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
             views: {
                 'content@app.leaderboard': {
                     templateUrl: 'app/views/leaderboards/venuePlayers/venuePlayers.html',
-                    controller: 'GlobalPlayerLeaderboardCtrl'
+                    controller: 'VenuePlayersLeaderboardCtrl'
                 }
             }
         });
@@ -118,7 +118,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
             views: {
                 'content@app.leaderboard': {
                     templateUrl: 'app/views/leaderboards/venueTeamCheckins/venueTeamCheckins.html',
-                    controller: 'GlobalPlayerLeaderboardCtrl'
+                    controller: 'VenueTeamCheckinsLeaderboardCtrl'
                 }
             }
         });
@@ -130,7 +130,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
             views: {
                 'content@app.leaderboard': {
                     templateUrl: 'app/views/leaderboards/venueTeams/venueTeams.html',
-                    controller: 'GlobalPlayerLeaderboardCtrl'
+                    controller: 'VenueTeamsLeaderboardCtrl'
                 }
             }
         });

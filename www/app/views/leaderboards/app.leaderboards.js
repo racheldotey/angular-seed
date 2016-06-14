@@ -7,5 +7,12 @@
  */
 
 angular.module('app.leaderboards', [
-    'app.leaderboards.globalPlayers'
+    'app.leaderboards.globalPlayerCheckins',
+    'app.leaderboards.globalPlayers',
+    'app.leaderboards.globalTeamCheckins',
+    'app.leaderboards.globalTeams',
+    'app.leaderboards.venuePlayerCheckins',
+    'app.leaderboards.venuePlayers',
+    'app.leaderboards.venueTeamCheckins',
+    'app.leaderboards.venueTeams'
 ]);

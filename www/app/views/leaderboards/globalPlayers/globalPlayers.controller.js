@@ -1,13 +1,11 @@
 'use strict';
 
 /* 
- * Global Player Leaderboard
- * 
- * Controller for the game scorboard, host view.
+ * Global Player Score Leaderboard
  */
 
 angular.module('app.leaderboards.globalPlayers', ['ui.grid', 'ui.grid.autoResize'])
-    .controller('GlobalPlayerLeaderboardCtrl', ['$window', '$state', '$stateParams', '$rootScope', '$scope', 'uiGridConstants', 'ApiRoutesLeaderboards',
+    .controller('GlobalPlayersLeaderboardCtrl', ['$window', '$state', '$stateParams', '$rootScope', '$scope', 'uiGridConstants', 'ApiRoutesLeaderboards',
         function($window, $state, $stateParams, $rootScope, $scope, uiGridConstants, ApiRoutesLeaderboards) {
             
             $scope.title = $rootScope.title;
