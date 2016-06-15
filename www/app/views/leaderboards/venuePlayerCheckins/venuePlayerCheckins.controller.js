@@ -23,7 +23,7 @@ angular.module('app.leaderboards.venuePlayerCheckins', ['ui.grid', 'ui.grid.auto
                 { field: 'img', displayName:'', cellClass: 'leaderboard-img-cell', enableSorting: false, cellTemplate: '<img ng-src="{{COL_FIELD}}" class="leaderboard-img" />' },
                 { field: 'label', displayName:'Player Name' },
                 { field: 'mobileScore', displayName:'Mobile Score', type: 'number', sort: { direction: uiGridConstants.DESC, priority: 1 } },
-                { field: 'liveScore', displayName:'Live Score', type: 'number' }
+                { field: 'liveScore', displayName:'Live Team Score', type: 'number' }
             ];
             
             $scope.setLeaderboardHeight = function() {

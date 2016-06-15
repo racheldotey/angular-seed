@@ -69,8 +69,13 @@ class APIConfig {
             self::setAPIConfig();
         }
         
-        if ($opt !== false && isset(self::$config[$opt])) {
-            return self::$config[$opt];
+        if ($opt !== false) {
+            if(isset(self::$config[$opt])) {
+                
+                return self::$config[$opt];
+            } else {
+                return false;
+            }
         }
         return self::$config;
     }

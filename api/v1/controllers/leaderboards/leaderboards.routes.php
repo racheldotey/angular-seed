@@ -5,7 +5,7 @@ class LeaderboardRoutes {
     
     static function addRoutes($app, $authenticateForRole) {
         
-        $app->group('/leaderboard', $authenticateForRole('registered-user'), function () use ($app) {
+        $app->group('/leaderboard', $authenticateForRole('public'), function () use ($app) {
             
             // Global Player Score Leaderboard
             $app->map("/global/players/score/:count/", function ($count) use ($app) {

@@ -1,76 +1,62 @@
 <?php namespace API;
 require_once dirname(__FILE__) . '/leaderboards.data.php';
+ require_once dirname(dirname(dirname(__FILE__))) . '/config/config.php';
 
 use \Respect\Validation\Validator as v;
 
 
 class LeaderboardController {
-
-    private static function hook($app, $apiResponse) { 
-        $vars = self::data_hookConfigVars('HOT_SALSA_');
-
-        if (!isset($vars['HOT_SALSA_PLAYER_REGISTRATION_ENABLED']) || ($vars['HOT_SALSA_PLAYER_REGISTRATION_ENABLED'] !== 'true' && $vars['HOT_SALSA_PLAYER_REGISTRATION_ENABLED'] !== '1')) {
-            return;
-        }
-
-        if (!isset($vars['HOT_SALSA_PLAYER_REGISTRATION_URL']) ||
-                !isset($vars['HOT_SALSA_APP_VERSION']) ||
-                !isset($vars['HOT_SALSA_URL_CODE']) ||
-                !isset($vars['HOT_SALSA_AUTH_KEY']) ||
-                !isset($vars['HOT_SALSA_OS']) ||
-                !isset($vars['HOT_SALSA_PACKAGE_CODE'])) {
-
-            self::data_logHotSalsaError($apiResponse['user']->id, "Could not attempt call. The Hot Salsa signup hook is enabled but a system variable is disabled or missing.", $vars);
-            return;
-        }
-
-        // Get Post Data
-        $post = $app->request->post();
-        $params = array(
-            'email' => $post['email'],
-            'firstName' => $post['nameFirst'],
-            'lastName' => $post['nameLast'],
-            'appVersion' => $vars['HOT_SALSA_APP_VERSION'],
-            'code' => $vars['HOT_SALSA_URL_CODE'],
-            'authKey' => $vars['HOT_SALSA_AUTH_KEY'],
-            'os' => $vars['HOT_SALSA_OS'],
-            'packageCode' => $vars['HOT_SALSA_PACKAGE_CODE']
-        );
-        
-        // create curl resource 
-        $ch = curl_init();
-
-        // set url 
-        curl_setopt($ch, CURLOPT_URL, $vars['HOT_SALSA_PLAYER_REGISTRATION_URL']);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-
-        //return the transfer as a string 
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-        // $output contains the output string 
-        $curlOutput = curl_exec($ch);
-
-        if (!$curlOutput) {
-            // No Results = Error
-            $error = (curl_error($ch)) ? curl_error($ch) : 'ERROR: No results';
-            $info = (curl_getinfo($ch)) ? json_encode(curl_getinfo($ch)) : 'ERROR: No Info';
-            self::data_logHotSalsaError($apiResponse['user']->id, $error, $info);
-        } else {
-            // Results
-            $curlResult = json_decode($curlOutput, true);
-            if (!isset($curlResult['status']) || $curlResult['status'] === 'failed') {
-                $error = (isset($curlResult['status'])) ? $curlResult['status'] : 'ERROR: Unknown error occured';
-                self::data_logHotSalsaError($apiResponse['user']->id, $error, $curlOutput);
-            } else {
-                self::data_logHotSalsaResults($curlResult, $app, $apiResponse);
-            }
-        }
-
-        // close curl resource to free up system resources 
-        curl_close($ch);
-    }
     
+    /* Global List of Teams API
+     * /location/getTeamNames 
+     *  
+     * Per Joint List of Teams API
+     * Input: locationId (optional)
+     * /location/getTeamNames?locationId=111 
+     * 
+     * Returns: Joint Name/Id, Team Name/Id, Player List (email address, first name, lastname, image, id)
+     */
+    private static $HOT_SALSA_URL_TEAMS_LIST = '/location/getTeamNames';
+    
+    /* Global List of Joints API
+     * /locationList 
+     * 
+     * Returns: Joint Name/Id, address, city, state, zip 
+     */
+    private static $HOT_SALSA_URL_VENUE_LIST = '/locationList';
+    
+    /* Global Player Score Leaderboard API
+     * /trivia/gameNight/cumilativeScore?scoreType=player&count=10&startDate= optional&endDate=optional
+     * 
+     * Global Team Score Leaderboard API
+     * /trivia/gameNight/cumilativeScore?scoreType=team&count=10&startDate= optional&endDate=optional 
+     * 
+     * Per Joint Player Score Leaderboard APIs
+     * /trivia/gameNight/cumilativeScore?scoreType=player&scoreLevel=bar&locationId=111&count=10&startDate=optional&endDate=optional
+     * 
+     * Per Joint Team Score Leaderboard API
+     * /trivia/gameNight/cumilativeScore?scoreType=team&scoreLevel=bar&locationId=111&count=10&startDate= optional&endDate=optional
+     * 
+     * Returns: Player Info (email address, first name, last name), Team Name, Player’s Mobile App Score 
+     */
+    private static $HOT_SALSA_URL_MOBILE_SCORE = '/trivia/gameNight/cumilativeScore';
+    
+    /* Global Player Checkins Leaderboard API
+     * /location/getCheckins?scoreType=player&count=10
+     * 
+     * Global Team Checkins Leaderboard API
+     * /location/getCheckins?scoreType=team&count=10
+     * 
+     * Per Joint Player Checkins Leaderboard API
+     * /location/getCheckins?scoreType=player&scoreLevel=bar&locationId=111&count=10
+     * 
+     * Per Joint Team Checkins Leaderboard API
+     * /location/getCheckins?scoreType=team&scoreLevel=bar&locationId=111&count=10
+     * 
+     * Returns: Player Info (email address, first name, last name), Team Name, Players’s Checkin Count
+     */
+    private static $HOT_SALSA_URL_GAME_CHECKINS = '/location/getCheckins';
+        
     private static function callHotSalsa($url, $limit) {
         $testImage = APIConfig::get('SYSTEM_DEV_TEST_DATA_IMAGE');
         $img = ($testImage) ? $testImage : '';
@@ -82,7 +68,9 @@ class LeaderboardController {
         return $results;
     }
     
-    private static function makeHotSalsaRequest($app, $apiResponse) { 
+    private static function makeHotSalsaRequest($apiPath) { 
+        $log = new Logging('leaderboards');
+            
         $url = APIConfig::get('HOT_SALSA_API_URL');
         $version = APIConfig::get('HOT_SALSA_APP_VERSION');
         $code = APIConfig::get('HOT_SALSA_URL_CODE');
@@ -91,7 +79,15 @@ class LeaderboardController {
         $package = APIConfig::get('HOT_SALSA_PACKAGE_CODE');
 
         if (!$url || !$version || !$code || !$key || !$os || !$package) {
-            self::data_logHotSalsaError($apiResponse['user']->id, "Could not attempt call. The Hot Salsa signup hook is enabled but a system variable is disabled or missing.", $vars);
+            $log->write("Could not attempt call. The Hot Salsa signup hook is enabled but a system variable is disabled or missing.");
+            $log->write(array(
+                'apiUrl' => $url,
+                'appVersion' => $version,
+                'code' => $code,
+                'authKey' => $key,
+                'os' => $os,
+                'packageCode' => $package
+            ));
             return false;
         }
 
@@ -105,9 +101,9 @@ class LeaderboardController {
         
         // create curl resource 
         $ch = curl_init();
-
+        
         // set url 
-        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_URL, $url . $apiPath);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
 
@@ -121,45 +117,70 @@ class LeaderboardController {
             // No Results = Error
             $error = (curl_error($ch)) ? curl_error($ch) : 'ERROR: No results';
             $info = (curl_getinfo($ch)) ? json_encode(curl_getinfo($ch)) : 'ERROR: No Info';
-            self::data_logHotSalsaError($apiResponse['user']->id, $error, $info);
-        } else {
-            // Results
-            $curlResult = json_decode($curlOutput, true);
-            if (!isset($curlResult['status']) || $curlResult['status'] === 'failed') {
-                $error = (isset($curlResult['status'])) ? $curlResult['status'] : 'ERROR: Unknown error occured';
-                self::data_logHotSalsaError($apiResponse['user']->id, $error, $curlOutput);
-            } else {
-                self::data_logHotSalsaResults($curlResult, $app, $apiResponse);
-            }
+            
+            $log->write($error);
+            $log->write($info);
+            
+            curl_close($ch);
+            
+            return false;
         }
-
-        // close curl resource to free up system resources 
+        
+        // Results
+        $curlResult = json_decode($curlOutput, true);
+        
+        if (!isset($curlResult['status']) || $curlResult['status'] === 'failed') {
+            $error = (isset($curlResult['status'])) ? $curlResult['status'] : 'ERROR: Unknown error occured';
+            
+            $log->write($error);
+            
+            curl_close($ch);
+            
+            return false;
+        } 
         curl_close($ch);
+        return $curlResult;
+    }
+    
+    private static function getHotSalsaVenues() {
+        $url = 'locationList';
+        return $results;
     }
 
+    private static function getHotSalsaLocationId($venueName, $venueZip) {
+        return '65';
+    }
+    
     // Global Player Score Leaderboard
     static function getGlobalPlayersLeaderboard($app, $count) {
         $limit = (!v::intVal()->validate($count)) ? '10' : $count;
-        $url = '';
         
-        $data = self::callHotSalsa($url, $limit);
+        // /trivia/gameNight/cumilativeScore?scoreType=player&count=10&startDate= optional&endDate=optional
+        // Returns: Player Info (email address, first name, last name), Team Name, Player’s Mobile App Score 
+        $url = self::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreType=player&count={$limit}";
+        
+            
+        $data = self::makeHotSalsaRequest($url);
         if($data) {
             return $app->render(200, array('leaderboard' => $data));
         } else {
-            return $app->render(400,  array('msg' => 'Could not select list of joints.'));
+            return $app->render(400,  array('msg' => 'Could not select Global Player Score Leaderboard.'));
         }
     }
 
     // Global Team Score Leaderboard
     static function getGlobalTeamsLeaderboard($app, $count) {
         $limit = (!v::intVal()->validate($count)) ? '10' : $count;
-        $url = '';
         
-        $data = self::callHotSalsa($url, $limit);
+        // /trivia/gameNight/cumilativeScore?scoreType=team&count=10&startDate= optional&endDate=optional 
+        // Returns: Player Info (email address, first name, last name), Team Name, Player’s Mobile App Score 
+        $url = self::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreType=team&count={$limit}";
+        
+        $data = self::makeHotSalsaRequest($url);
         if($data) {
             return $app->render(200, array('leaderboard' => $data));
         } else {
-            return $app->render(400,  array('msg' => 'Could not select list of joints.'));
+            return $app->render(400,  array('msg' => 'Could not select Global Team Score Leaderboard.'));
         }
     }
 
@@ -170,13 +191,18 @@ class LeaderboardController {
         }
         
         $limit = (!v::intVal()->validate($count)) ? '10' : $count;
-        $url = '';
         
-        $data = self::callHotSalsa($url, $limit);
+        $locationId = self::getHotSalsaLocationId('', '');
+        
+        // /trivia/gameNight/cumilativeScore?scoreType=player&scoreLevel=bar&locationId=111&count=10&startDate=optional&endDate=optional
+        // Returns: Player Info (email address, first name, last name), Team Name, Player’s Mobile App Score 
+        $url = self::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreType=player&scoreLevel=bar&locationId={$locationId}&count={$limit}";
+        
+        $data = self::makeHotSalsaRequest($url);
         if($data) {
             return $app->render(200, array('leaderboard' => $data));
         } else {
-            return $app->render(400,  array('msg' => 'Could not select list of joints.'));
+            return $app->render(400,  array('msg' => 'Could not select Per Joint Player Score Leaderboard.'));
         }
     }
 
@@ -187,39 +213,50 @@ class LeaderboardController {
         }
         
         $limit = (!v::intVal()->validate($count)) ? '10' : $count;
-        $url = '';
         
-        $data = self::callHotSalsa($url, $limit);
+        $locationId = self::getHotSalsaLocationId('', '');
+        
+        // /trivia/gameNight/cumilativeScore?scoreType=team&scoreLevel=bar&locationId=111&count=10&startDate= optional&endDate=optional
+        // Returns: Player Info (email address, first name, last name), Team Name, Player’s Mobile App Score 
+        $url = self::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreType=team&scoreLevel=bar&locationId={$locationId}&count={$limit}";
+        
+        $data = self::makeHotSalsaRequest($url);
         if($data) {
             return $app->render(200, array('leaderboard' => $data));
         } else {
-            return $app->render(400,  array('msg' => 'Could not select list of joints.'));
+            return $app->render(400,  array('msg' => 'Could not select Per Joint Team Score Leaderboard.'));
         }
     }
-
+    
     // Global Player Checkin Leaderboard
     static function getGlobalPlayerCheckinsLeaderboard($app, $count) {
         $limit = (!v::intVal()->validate($count)) ? '10' : $count;
-        $url = '';
         
-        $data = self::callHotSalsa($url, $limit);
+        // /location/getCheckins?scoreType=player&count=10
+        // Returns: Player Info (email address, first name, last name), Team Name, Players’s Checkin Count
+        $url = self::$HOT_SALSA_URL_GAME_CHECKINS . "?scoreType=player&count={$limit}";
+        
+        $data = self::makeHotSalsaRequest($url);
         if($data) {
             return $app->render(200, array('leaderboard' => $data));
         } else {
-            return $app->render(400,  array('msg' => 'Could not select list of joints.'));
+            return $app->render(400,  array('msg' => 'Could not select Global Player Checkin Leaderboard.'));
         }
     }
 
     // Global Team Checkin Leaderboard
     static function getGlobalTeamCheckinsLeaderboard($app, $count) {
         $limit = (!v::intVal()->validate($count)) ? '10' : $count;
-        $url = '';
         
-        $data = self::callHotSalsa($url, $limit);
+        // /location/getCheckins?scoreType=team&count=10
+        // Returns: Player Info (email address, first name, last name), Team Name, Players’s Checkin Count
+        $url = self::$HOT_SALSA_URL_GAME_CHECKINS . "?scoreType=team&count={$limit}";
+        
+        $data = self::makeHotSalsaRequest($url);
         if($data) {
             return $app->render(200, array('leaderboard' => $data));
         } else {
-            return $app->render(400,  array('msg' => 'Could not select list of joints.'));
+            return $app->render(400,  array('msg' => 'Could not select Global Team Checkin Leaderboard.'));
         }
     }
 
@@ -230,13 +267,18 @@ class LeaderboardController {
         }
         
         $limit = (!v::intVal()->validate($count)) ? '10' : $count;
-        $url = '';
         
-        $data = self::callHotSalsa($url, $limit);
+        $locationId = self::getHotSalsaLocationId('', '');
+        
+        // /location/getCheckins?scoreType=player&scoreLevel=bar&locationId=111&count=10
+        // Returns: Player Info (email address, first name, last name), Team Name, Players’s Checkin Count
+        $url = self::$HOT_SALSA_URL_GAME_CHECKINS . "?scoreType=player&scoreLevel=bar&locationId={$locationId}&count={$limit}";
+        
+        $data = self::makeHotSalsaRequest($url);
         if($data) {
             return $app->render(200, array('leaderboard' => $data));
         } else {
-            return $app->render(400,  array('msg' => 'Could not select list of joints.'));
+            return $app->render(400,  array('msg' => 'Could not select Per Joint Player Checkins Leaderboard.'));
         }
     }
 
@@ -247,13 +289,18 @@ class LeaderboardController {
         }
         
         $limit = (!v::intVal()->validate($count)) ? '10' : $count;
-        $url = '';
         
-        $data = self::callHotSalsa($url, $limit);
+        $locationId = self::getHotSalsaLocationId('', '');
+        
+        // /location/getCheckins?scoreType=team&scoreLevel=bar&locationId=111&count=10
+        // Returns: Player Info (email address, first name, last name), Team Name, Players’s Checkin Count
+        $url = self::$HOT_SALSA_URL_GAME_CHECKINS . "?scoreType=team&scoreLevel=bar&locationId={$locationId}&count={$limit}";
+        
+        $data = self::makeHotSalsaRequest($url);
         if($data) {
             return $app->render(200, array('leaderboard' => $data));
         } else {
-            return $app->render(400,  array('msg' => 'Could not select list of joints.'));
+            return $app->render(400,  array('msg' => 'Could not select Per Joint Team Checkins Leaderboard.'));
         }
     }
     
