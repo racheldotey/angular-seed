@@ -49,7 +49,7 @@ angular.module('app.leaderboards.venueTeamCheckins', ['ui.grid', 'ui.grid.autoRe
                     var venue = (angular.isDefined(venueId) && parseInt(venueId)) ? venueId : $stateParams.venueId;
                     var count = (angular.isDefined(limit) && parseInt(limit)) ? limit : $stateParams.count;
 
-                    ApiRoutesLeaderboards.getVenuePlayerCheckinsLeaderboard(venue, count).then(function (result) {
+                    ApiRoutesLeaderboards.getVenueTeamCheckinsLeaderboard(venue, count).then(function (result) {
                         $scope.grid.data = result.leaderboard;
                         $scope.setLeaderboardHeight();
                         if ($stateParams.count !== count || $stateParams.venueId !== venue) {

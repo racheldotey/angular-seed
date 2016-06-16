@@ -43,17 +43,15 @@ angular.module('app.leaderboards.globalPlayers', ['ui.grid', 'ui.grid.autoResize
                 $scope.setLeaderboardHeight();
             });
             
-            
-            ($scope.refreshGrid = function(limit, venueId) {
+            ($scope.refreshGrid = function(limit) {
                 return $q(function(resolve, reject) {
-                    var venue = (angular.isDefined(venueId) && parseInt(venueId)) ? venueId : $stateParams.venueId;
                     var count = (angular.isDefined(limit) && parseInt(limit)) ? limit : $stateParams.count;
 
-                    ApiRoutesLeaderboards.getVenuePlayerCheckinsLeaderboard(venue, count).then(function (result) {
+                    ApiRoutesLeaderboards.getGlobalPlayersLeaderboard(count).then(function (result) {
                         $scope.grid.data = result.leaderboard;
                         $scope.setLeaderboardHeight();
-                        if ($stateParams.count !== count || $stateParams.venueId !== venue) {
-                            $state.go($state.current.name, {count: count, venueId: venue}, {notify: false});
+                        if ($stateParams.count !== count) {
+                            $state.go($state.current.name, {count: count}, {notify: false});
                         }
                         resolve(true);
                     }, function (error) {
