@@ -12,7 +12,7 @@ class LeaderboardController {
      *  
      * Per Joint List of Teams API
      * Input: locationId (optional)
-     * /location/getTeamNames?locationId=111 
+     * /location/getTeamNames?locationId=11 
      * 
      * Returns: Joint Name/Id, Team Name/Id, Player List (email address, first name, lastname, image, id)
      */
@@ -32,10 +32,10 @@ class LeaderboardController {
      * /trivia/gameNight/cumilativeScore?scoreType=team&count=10&startDate= optional&endDate=optional 
      * 
      * Per Joint Player Score Leaderboard APIs
-     * /trivia/gameNight/cumilativeScore?scoreType=player&scoreLevel=bar&locationId=111&count=10&startDate=optional&endDate=optional
+     * /trivia/gameNight/cumilativeScore?scoreType=player&scoreLevel=bar&locationId=11&count=10&startDate=optional&endDate=optional
      * 
      * Per Joint Team Score Leaderboard API
-     * /trivia/gameNight/cumilativeScore?scoreType=team&scoreLevel=bar&locationId=111&count=10&startDate= optional&endDate=optional
+     * /trivia/gameNight/cumilativeScore?scoreType=team&scoreLevel=bar&locationId=11&count=10&startDate= optional&endDate=optional
      * 
      * Returns: Player Info (email address, first name, last name), Team Name, Player’s Mobile App Score 
      */
@@ -48,10 +48,10 @@ class LeaderboardController {
      * /location/getCheckins?scoreType=team&count=10
      * 
      * Per Joint Player Checkins Leaderboard API
-     * /location/getCheckins?scoreType=player&scoreLevel=bar&locationId=111&count=10
+     * /location/getCheckins?scoreType=player&scoreLevel=bar&locationId=11&count=10
      * 
      * Per Joint Team Checkins Leaderboard API
-     * /location/getCheckins?scoreType=team&scoreLevel=bar&locationId=111&count=10
+     * /location/getCheckins?scoreType=team&scoreLevel=bar&locationId=11&count=10
      * 
      * Returns: Player Info (email address, first name, last name), Team Name, Players’s Checkin Count
      */
@@ -149,7 +149,7 @@ class LeaderboardController {
     }
 
     private static function getHotSalsaLocationId($venueName, $venueZip) {
-        return '65';
+        return '11';
     }
     
     
@@ -251,13 +251,37 @@ class LeaderboardController {
         
         $locationId = self::getHotSalsaLocationId('', '');
         
-        // /trivia/gameNight/cumilativeScore?scoreType=player&scoreLevel=bar&locationId=111&count=10&startDate=optional&endDate=optional
+        // /trivia/gameNight/cumilativeScore?scoreType=player&scoreLevel=bar&locationId=11&count=10&startDate=optional&endDate=optional
         // Returns: Player Info (email address, first name, last name), Team Name, Player’s Mobile App Score 
         $url = self::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreType=player&scoreLevel=bar&locationId={$locationId}&count={$limit}";
         
         $data = self::makeHotSalsaRequest($url, $app);
-        if($data) {
-            return $app->render(200, array('leaderboard' => $data));
+        /* {
+         *      "status":"success",
+         *      "scores":[
+         *          {"firstname":"Pavel",
+         *          "lastName":"Goncharov",
+         *          "email":"thundrax@gmail.com",
+         *          "teamName":"Lotus",
+         *          "checkinCount":"3"}
+         *      ]
+         * } */
+        if($data && isset($data['scores'])) {
+            $results = array();
+            foreach($data['scores'] AS $player) {
+                $first = (isset($player['firstName'])) ? $player['firstName'] : $player['firstname'];
+                $last = (isset($player['lastName'])) ? $player['lastName'] : '';
+                $mobile = (isset($player['checkinCount'])) ? $player['checkinCount'] : 0;
+                $live = 0;
+                        
+                $results[] = array( 
+                    'img' => '', 
+                    'label' => "{$first} {$last}", 
+                    'mobileScore' => $mobile,
+                    'liveScore' => $live
+                );
+            }
+            return $app->render(200, array('leaderboard' => $results));
         } else {
             return $app->render(400,  array('msg' => 'Could not select Per Joint Player Score Leaderboard.'));
         }
@@ -273,7 +297,7 @@ class LeaderboardController {
         
         $locationId = self::getHotSalsaLocationId('', '');
         
-        // /trivia/gameNight/cumilativeScore?scoreType=team&scoreLevel=bar&locationId=111&count=10&startDate= optional&endDate=optional
+        // /trivia/gameNight/cumilativeScore?scoreType=team&scoreLevel=bar&locationId=11&count=10&startDate= optional&endDate=optional
         // Returns: Player Info (email address, first name, last name), Team Name, Player’s Mobile App Score 
         $url = self::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreType=team&scoreLevel=bar&locationId={$locationId}&count={$limit}";
         
@@ -377,13 +401,37 @@ class LeaderboardController {
         
         $locationId = self::getHotSalsaLocationId('', '');
         
-        // /location/getCheckins?scoreType=player&scoreLevel=bar&locationId=111&count=10
+        // /location/getCheckins?scoreType=player&scoreLevel=bar&locationId=11&count=10
         // Returns: Player Info (email address, first name, last name), Team Name, Players’s Checkin Count
         $url = self::$HOT_SALSA_URL_GAME_CHECKINS . "?scoreType=player&scoreLevel=bar&locationId={$locationId}&count={$limit}";
         
         $data = self::makeHotSalsaRequest($url, $app);
+        /* {
+         *      "status":"success",
+         *      "checkins":[
+         *          {"firstname":"Pavel",
+         *          "lastName":"Goncharov",
+         *          "email":"thundrax@gmail.com",
+         *          "teamName":"Lotus",
+         *          "checkinCount":"3"}
+         *      ]
+         * } */
         if($data && isset($data['checkins'])) {
-            return $app->render(200, array('leaderboard' => $data['checkins']));
+            $results = array();
+            foreach($data['checkins'] AS $player) {
+                $first = (isset($player['firstName'])) ? $player['firstName'] : $player['firstname'];
+                $last = (isset($player['lastName'])) ? $player['lastName'] : '';
+                $mobile = (isset($player['checkinCount'])) ? $player['checkinCount'] : 0;
+                $live = 0;
+                        
+                $results[] = array( 
+                    'img' => '', 
+                    'label' => "{$first} {$last}", 
+                    'mobileScore' => $mobile,
+                    'liveScore' => $live
+                );
+            }
+            return $app->render(200, array('leaderboard' => $results));
         } else {
             return $app->render(400,  array('msg' => 'Could not select Per Joint Player Checkins Leaderboard.'));
         }
@@ -399,7 +447,7 @@ class LeaderboardController {
         
         $locationId = self::getHotSalsaLocationId('', '');
         
-        // /location/getCheckins?scoreType=team&scoreLevel=bar&locationId=111&count=10
+        // /location/getCheckins?scoreType=team&scoreLevel=bar&locationId=11&count=10
         // Returns: Player Info (email address, first name, last name), Team Name, Players’s Checkin Count
         $url = self::$HOT_SALSA_URL_GAME_CHECKINS . "?scoreType=team&scoreLevel=bar&locationId={$locationId}&count={$limit}";
         
