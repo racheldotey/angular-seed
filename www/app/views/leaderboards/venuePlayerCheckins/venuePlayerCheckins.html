@@ -1,15 +1,24 @@
 <div class="page leaderboard">
-    
-        <div class="row">
-            <div class="col-xs-12 col-sm-6">
-                <h3 ng-bind="title">Leaderboard</h3>
-            </div>
-            <div class="col-xs-12 col-sm-6">
-                <div class="form-group">
-                    <div rc-trivia-select-list-venue="selectedVenue.id" teams-list-data="venueList"></div>
-                </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-6">
+            <h3 ng-bind="title">Leaderboard</h3>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <div class="form-group">                    
+                <ui-select ng-model="selected.venue" title="Search for Trivia Joint">
+                    <ui-select-match placeholder="Search for Trivia Joint">
+                        <span ng-bind="$select.selected.label"></span>
+                    </ui-select-match>
+                    <ui-select-choices repeat="item in (venueList | filter: $select.search) track by item.id">
+                        <span>#{{item.id}} - {{item.label}}</span>
+                    </ui-select-choices>
+                </ui-select>
             </div>
         </div>
+    </div>
+    
+    <div data-rc-bootstrap-alerts="alertProxy"></div>
     
     <div id="leaderboard" ui-grid="grid" ui-grid-auto-resize class="grid grid-dark"></div>
     <div class="leaderboard-footer row">

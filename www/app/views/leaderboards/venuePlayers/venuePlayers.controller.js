@@ -5,10 +5,14 @@
  */
 
 angular.module('app.leaderboards.venuePlayers', ['ui.grid', 'ui.grid.autoResize'])
-    .controller('VenuePlayersLeaderboardCtrl', ['$window', '$state', '$stateParams', '$rootScope', '$scope', 'uiGridConstants', 'ApiRoutesLeaderboards',
-        function($window, $state, $stateParams, $rootScope, $scope, uiGridConstants, ApiRoutesLeaderboards) {
+    .controller('VenuePlayersLeaderboardCtrl', ['$window', '$state', '$stateParams', '$rootScope', '$scope', '$q', 'uiGridConstants', 'ApiRoutesLeaderboards', 'ApiRoutesSimpleLists',
+        function($window, $state, $stateParams, $rootScope, $scope, $q, uiGridConstants, ApiRoutesLeaderboards, ApiRoutesSimpleLists) {
+        
+            /* Used to restrict alert bars */
+            $scope.alertProxy = {};
             
             $scope.title = $rootScope.title;
+            $scope.selected = { venue : {} };
             $scope.showLimit = $stateParams.count;
             
             $scope.grid = {};
@@ -40,15 +44,49 @@ angular.module('app.leaderboards.venuePlayers', ['ui.grid', 'ui.grid.autoResize'
                 $scope.setLeaderboardHeight();
             });
             
-            ($scope.refreshGrid = function(limit) {
-                ApiRoutesLeaderboards.getVenuePlayersLeaderboard($stateParams.venueId, limit).then(function(result) {
-                    $scope.grid.data = result.leaderboard;
-                    $scope.setLeaderboardHeight();
-                    if($stateParams.count != limit) {
-                        $state.go($state.current.name, {count: limit}, {notify: false});
-                    }
-                }, function(error) {
-                    console.log(error);
+            ($scope.refreshGrid = function(limit, venueId) {
+                return $q(function(resolve, reject) {
+                    var venue = (angular.isDefined(venueId) && parseInt(venueId)) ? venueId : $stateParams.venueId;
+                    var count = (angular.isDefined(limit) && parseInt(limit)) ? limit : $stateParams.count;
+
+                    ApiRoutesLeaderboards.getVenuePlayerCheckinsLeaderboard(venue, count).then(function (result) {
+                        $scope.grid.data = result.leaderboard;
+                        $scope.setLeaderboardHeight();
+                        if ($stateParams.count !== count || $stateParams.venueId !== venue) {
+                            $state.go($state.current.name, {count: count, venueId: venue}, {notify: false});
+                        }
+                        resolve(true);
+                    }, function (error) {
+                        console.log(error);
+                        $scope.alertProxy.error(error);
+                        reject(error);
+                    });
                 });
             })($scope.showLimit);
+            
+            // Venue Button
+            ApiRoutesSimpleLists.simpleVenuesList().then(
+                function(results) {
+                    console.log(results);
+                    $scope.venueList = results;                    
+                    for(var i = 0; i < $scope.venueList.length; i++) {
+                        if($scope.venueList[i].id === $stateParams.venueId) {
+                            $scope.selected.venue = $scope.venueList[i];
+                        }
+                    }
+                }, function (error) {
+                    console.log(error);
+                    $scope.alertProxy.error(error);
+                    $scope.venueList = [];
+                });
+                
+            $scope.$watch("selected.venue", function(newValue, oldValue) {
+                if(angular.isDefined(newValue) && angular.isDefined(newValue.id) && $stateParams.venueId != newValue.id) {
+                    $scope.refreshGrid(true, newValue.id).then(function(response) {
+                        
+                    }, function(error) {
+                        newValue = oldValue;
+                    });
+                }
+            });
     }]);

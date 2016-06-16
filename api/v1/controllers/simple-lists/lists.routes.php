@@ -7,7 +7,7 @@ class ListRoutes {
         
         //* /simple-lists/ routes - authenticated members only
         
-        $app->group('/simple-list', $authenticateForRole('registered-user'), function () use ($app) {
+        $app->group('/simple-list', $authenticateForRole('public'), function () use ($app) {
 
             $app->map("/users", function () use ($app) {
                 ListsController::getUsersList($app);
@@ -43,10 +43,5 @@ class ListRoutes {
             })->via('GET', 'POST');
             
         });
-		$app->group('/simple-list-public', $authenticateForRole('public'), function () use ($app) {
-			$app->map("/venues", function () use ($app) {
-                ListsController::getVenuesList($app);
-            })->via('GET', 'POST');
-		});	
     }
 }

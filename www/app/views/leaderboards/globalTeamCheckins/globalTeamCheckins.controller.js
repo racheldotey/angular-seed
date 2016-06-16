@@ -5,8 +5,11 @@
  */
 
 angular.module('app.leaderboards.globalTeamCheckins', ['ui.grid', 'ui.grid.autoResize'])
-    .controller('GlobalTeamCheckinsLeaderboardCtrl', ['$window', '$state', '$stateParams', '$rootScope', '$scope', 'uiGridConstants', 'ApiRoutesLeaderboards',
-        function($window, $state, $stateParams, $rootScope, $scope, uiGridConstants, ApiRoutesLeaderboards) {
+    .controller('GlobalTeamCheckinsLeaderboardCtrl', ['$window', '$state', '$stateParams', '$rootScope', '$scope', '$q', 'uiGridConstants', 'ApiRoutesLeaderboards',
+        function($window, $state, $stateParams, $rootScope, $scope, $q, uiGridConstants, ApiRoutesLeaderboards) {
+        
+            /* Used to restrict alert bars */
+            $scope.alertProxy = {};
             
             $scope.title = $rootScope.title;
             $scope.showLimit = $stateParams.count;
@@ -40,15 +43,23 @@ angular.module('app.leaderboards.globalTeamCheckins', ['ui.grid', 'ui.grid.autoR
                 $scope.setLeaderboardHeight();
             });
             
-            ($scope.refreshGrid = function(limit) {
-                ApiRoutesLeaderboards.getGlobalTeamCheckinsLeaderboard(limit).then(function(result) {
-                    $scope.grid.data = result.leaderboard;
-                    $scope.setLeaderboardHeight();
-                    if($stateParams.count != limit) {
-                        $state.go($state.current.name, {count: limit}, {notify: false});
-                    }
-                }, function(error) {
-                    console.log(error);
+            ($scope.refreshGrid = function(limit, venueId) {
+                return $q(function(resolve, reject) {
+                    var venue = (angular.isDefined(venueId) && parseInt(venueId)) ? venueId : $stateParams.venueId;
+                    var count = (angular.isDefined(limit) && parseInt(limit)) ? limit : $stateParams.count;
+
+                    ApiRoutesLeaderboards.getVenuePlayerCheckinsLeaderboard(venue, count).then(function (result) {
+                        $scope.grid.data = result.leaderboard;
+                        $scope.setLeaderboardHeight();
+                        if ($stateParams.count !== count || $stateParams.venueId !== venue) {
+                            $state.go($state.current.name, {count: count, venueId: venue}, {notify: false});
+                        }
+                        resolve(true);
+                    }, function (error) {
+                        console.log(error);
+                        $scope.alertProxy.error(error);
+                        reject(error);
+                    });
                 });
             })($scope.showLimit);
     }]);
