@@ -63,12 +63,13 @@ class LeaderboardController {
         
         $results = array();
         for($i = 1; $i <= $limit; $i++) {
-            $results[] = array( 'img' => $img, 'label' => "Name #{$i}", 'mobileScore' => rand(1, 100), 'liveScore' => rand(1, 100) );
+            $results[] = array( 'img' => $img, 
+                'label' => "Name #{$i}", 'mobileScore' => rand(1, 100), 'liveScore' => rand(1, 100) );
         }
         return $results;
     }
     
-    private static function makeHotSalsaRequest($apiPath) { 
+    private static function makeHotSalsaRequest($apiPath, $app) { 
         $log = new Logging('leaderboards');
             
         $url = APIConfig::get('HOT_SALSA_API_URL');
@@ -151,6 +152,10 @@ class LeaderboardController {
         return '65';
     }
     
+    
+    
+    
+    
     // Global Player Score Leaderboard
     static function getGlobalPlayersLeaderboard($app, $count) {
         $limit = (!v::intVal()->validate($count)) ? '10' : $count;
@@ -160,9 +165,36 @@ class LeaderboardController {
         $url = self::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreType=player&count={$limit}";
         
             
-        $data = self::makeHotSalsaRequest($url);
-        if($data) {
-            return $app->render(200, array('leaderboard' => $data));
+        $data = self::makeHotSalsaRequest($url, $app);
+        /*
+         * {"data":{"msg":{"status":"success","scores":[{"name":"billman_c@hotmail.com","score":"783","players":[]},{"name":"10154054462631407","score":"550","players":[]},{"name":"conrad@hotsalsainteractive.com","score":"494","players":[]},{"name":"ibellais@cox.net","score":"472","players":[]},{"name":"thundrax@gmail.com","score":"360","players":[]},{"name":"georgemh77@hotmail.com","score":"290","players":[]},{"name":"conrad@hsi.com","score":"223","players":[]},{"name":"kbrink68@comcast.net","score":"172","players":[]},{"name":"tarawhittle@gmail.com","score":"168","players":[]},{"name":"jonathon.campbell125@gmail.com","score":"150","players":[]}]}}}
+         */
+        if($data && isset($data['scores'])) {
+        /* ????????????????? {
+         *      "status":"success",
+         *      "scores":[
+         *          {"firstname":"Pavel",
+         *          "lastName":"Goncharov",
+         *          "email":"thundrax@gmail.com",
+         *          "teamName":"Lotus",
+         *          "checkinCount":"3"}
+         *      ]
+         * } */
+            $results = array();
+            foreach($data['scores'] AS $player) {
+                $first = (isset($player['name'])) ? $player['name'] : 'Name Unavailable';
+                $last = (isset($player['lastName'])) ? $player['lastName'] : '';
+                $mobile = (isset($player['score'])) ? $player['score'] : 0;
+                $live = 0;
+                        
+                $results[] = array( 
+                    'img' => '', 
+                    'label' => "{$first} {$last}", 
+                    'mobileScore' => $mobile,
+                    'liveScore' => $live
+                );
+            }
+            return $app->render(200, array('leaderboard' => $results));
         } else {
             return $app->render(400,  array('msg' => 'Could not select Global Player Score Leaderboard.'));
         }
@@ -176,9 +208,34 @@ class LeaderboardController {
         // Returns: Player Info (email address, first name, last name), Team Name, Player’s Mobile App Score 
         $url = self::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreType=team&count={$limit}";
         
-        $data = self::makeHotSalsaRequest($url);
-        if($data) {
-            return $app->render(200, array('leaderboard' => $data));
+        $data = self::makeHotSalsaRequest($url, $app);
+        if($data && isset($data['scores'])) {
+        /* ????????????????? {
+         *      "status":"success",
+         *      "scores":[
+         *          { "players":[
+         *              {"firstname":"Pavel",
+         *              "lastName":"Goncharov",
+         *              "email":"thundrax@gmail.com",
+         *              "teamName":"Lotus"}],
+         *          "name":"Super Villans",
+         *          "score":"101"}]}
+         *      ]
+         * } */
+            $results = array();
+            foreach($data['scores'] AS $player) {
+                $name = (isset($player['name'])) ? $player['name'] : '';
+                $mobile = (isset($player['score'])) ? $player['score'] : 0;
+                $live = 0;
+                        
+                $results[] = array( 
+                    'img' => '', 
+                    'label' => $name, 
+                    'mobileScore' => $mobile,
+                    'liveScore' => $live
+                );
+            }
+            return $app->render(200, array('leaderboard' => $results));
         } else {
             return $app->render(400,  array('msg' => 'Could not select Global Team Score Leaderboard.'));
         }
@@ -198,7 +255,7 @@ class LeaderboardController {
         // Returns: Player Info (email address, first name, last name), Team Name, Player’s Mobile App Score 
         $url = self::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreType=player&scoreLevel=bar&locationId={$locationId}&count={$limit}";
         
-        $data = self::makeHotSalsaRequest($url);
+        $data = self::makeHotSalsaRequest($url, $app);
         if($data) {
             return $app->render(200, array('leaderboard' => $data));
         } else {
@@ -220,7 +277,7 @@ class LeaderboardController {
         // Returns: Player Info (email address, first name, last name), Team Name, Player’s Mobile App Score 
         $url = self::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreType=team&scoreLevel=bar&locationId={$locationId}&count={$limit}";
         
-        $data = self::makeHotSalsaRequest($url);
+        $data = self::makeHotSalsaRequest($url, $app);
         if($data) {
             return $app->render(200, array('leaderboard' => $data));
         } else {
@@ -236,9 +293,33 @@ class LeaderboardController {
         // Returns: Player Info (email address, first name, last name), Team Name, Players’s Checkin Count
         $url = self::$HOT_SALSA_URL_GAME_CHECKINS . "?scoreType=player&count={$limit}";
         
-        $data = self::makeHotSalsaRequest($url);
-        if($data) {
-            return $app->render(200, array('leaderboard' => $data));
+        $data = self::makeHotSalsaRequest($url, $app);
+        /* {
+         *      "status":"success",
+         *      "checkins":[
+         *          {"firstname":"Pavel",
+         *          "lastName":"Goncharov",
+         *          "email":"thundrax@gmail.com",
+         *          "teamName":"Lotus",
+         *          "checkinCount":"3"}
+         *      ]
+         * } */
+        if($data && isset($data['checkins'])) {
+            $results = array();
+            foreach($data['checkins'] AS $player) {
+                $first = (isset($player['firstName'])) ? $player['firstName'] : $player['firstname'];
+                $last = (isset($player['lastName'])) ? $player['lastName'] : '';
+                $mobile = (isset($player['checkinCount'])) ? $player['checkinCount'] : 0;
+                $live = 0;
+                        
+                $results[] = array( 
+                    'img' => '', 
+                    'label' => "{$first} {$last}", 
+                    'mobileScore' => $mobile,
+                    'liveScore' => $live
+                );
+            }
+            return $app->render(200, array('leaderboard' => $results));
         } else {
             return $app->render(400,  array('msg' => 'Could not select Global Player Checkin Leaderboard.'));
         }
@@ -252,9 +333,35 @@ class LeaderboardController {
         // Returns: Player Info (email address, first name, last name), Team Name, Players’s Checkin Count
         $url = self::$HOT_SALSA_URL_GAME_CHECKINS . "?scoreType=team&count={$limit}";
         
-        $data = self::makeHotSalsaRequest($url);
-        if($data) {
-            return $app->render(200, array('leaderboard' => $data));
+        $data = self::makeHotSalsaRequest($url, $app);
+        /* {
+         *      "status":"success",
+         *      "checkins":[
+         *          { "players":[
+         *              {"firstname":"Pavel",
+         *              "lastName":"Goncharov",
+         *              "email":"thundrax@gmail.com",
+         *              "teamName":"Lotus",
+         *              "checkinCount":"3"}],
+         *          "teamName":"Super Villans",
+         *          "checkinCount":"4"}]}
+         *      ]
+         * } */
+        if($data && isset($data['checkins'])) {
+            $results = array();
+            foreach($data['checkins'] AS $team) {
+                $name = (isset($team['teamName'])) ? $team['teamName'] : '';
+                $mobile = (isset($team['checkinCount'])) ? $team['checkinCount'] : 0;
+                $live = 0;
+                        
+                $results[] = array( 
+                    'img' => '', 
+                    'label' => $name, 
+                    'mobileScore' => $mobile,
+                    'liveScore' => $live
+                );
+            }
+            return $app->render(200, array('leaderboard' => $results));
         } else {
             return $app->render(400,  array('msg' => 'Could not select Global Team Checkin Leaderboard.'));
         }
@@ -274,9 +381,9 @@ class LeaderboardController {
         // Returns: Player Info (email address, first name, last name), Team Name, Players’s Checkin Count
         $url = self::$HOT_SALSA_URL_GAME_CHECKINS . "?scoreType=player&scoreLevel=bar&locationId={$locationId}&count={$limit}";
         
-        $data = self::makeHotSalsaRequest($url);
-        if($data) {
-            return $app->render(200, array('leaderboard' => $data));
+        $data = self::makeHotSalsaRequest($url, $app);
+        if($data && isset($data['checkins'])) {
+            return $app->render(200, array('leaderboard' => $data['checkins']));
         } else {
             return $app->render(400,  array('msg' => 'Could not select Per Joint Player Checkins Leaderboard.'));
         }
@@ -296,9 +403,9 @@ class LeaderboardController {
         // Returns: Player Info (email address, first name, last name), Team Name, Players’s Checkin Count
         $url = self::$HOT_SALSA_URL_GAME_CHECKINS . "?scoreType=team&scoreLevel=bar&locationId={$locationId}&count={$limit}";
         
-        $data = self::makeHotSalsaRequest($url);
-        if($data) {
-            return $app->render(200, array('leaderboard' => $data));
+        $data = self::makeHotSalsaRequest($url, $app);
+        if($data && isset($data['checkins'])) {
+            return $app->render(200, array('leaderboard' => $data['checkins']));
         } else {
             return $app->render(400,  array('msg' => 'Could not select Per Joint Team Checkins Leaderboard.'));
         }
