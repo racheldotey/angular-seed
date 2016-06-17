@@ -21,10 +21,10 @@ angular.module('app.leaderboards.globalTeamCheckins', ['ui.grid', 'ui.grid.autoR
                             
             $scope.grid.data = [];
             $scope.grid.columnDefs = [
-                { field: 'img', displayName:'', cellClass: 'leaderboard-img-cell', enableSorting: false, cellTemplate: '<img ng-src="{{COL_FIELD}}" class="leaderboard-img" />' },
-                { field: 'label', displayName:'Team Name' },
-                { field: 'mobileScore', displayName:'Mobile Score', type: 'number', sort: { direction: uiGridConstants.DESC, priority: 1 } },
-                { field: 'liveScore', displayName:'Live Team Score', type: 'number' }
+                { field: 'teamName', displayName:'Team Name' },
+                { field: 'homeJoint', displayName:'Team Home Joint' },
+                { field: 'mobileCheckins', displayName:'Mobile Checkins', type: 'number', sort: { direction: uiGridConstants.DESC, priority: 1 } },
+                { field: 'liveCheckins', displayName:'Live Team Checkins', type: 'number' }
             ];
             
             $scope.setLeaderboardHeight = function() {

@@ -429,33 +429,58 @@ class LeaderboardController {
         $limit = (!v::intVal()->validate($count)) ? '10' : $count;
         
         // /location/getCheckins?scoreType=player&count=10
-        // Returns: Player Info (email address, first name, last name), Team Name, Players’s Checkin Count
         $url = self::$HOT_SALSA_URL_GAME_CHECKINS . "?scoreType=player&count={$limit}";
-        
-        $data = self::makeHotSalsaRequest($url, $app);
-        /* {
-         *      "status":"success",
-         *      "checkins":[
-         *          {"firstname":"Pavel",
-         *          "lastName":"Goncharov",
-         *          "email":"thundrax@gmail.com",
-         *          "teamName":"Lotus",
-         *          "checkinCount":"3"}
-         *      ]
-         * } */
-        if($data && isset($data['checkins'])) {
+        $salsaData = self::makeHotSalsaRequest($url, $app);
+        /* {  
+            "status":"success",
+            "checkins":[  
+               {  
+                  "userId":"1688",
+                  "confirmed":"1",
+                  "lastName":"Goncharov",
+                  "firstName":"Pavel",
+                  "emailAddress":"thundrax@gmail.com",
+                  "facebookId":"10207653889717859",
+                  "teamName":"Lotus",
+                  "photoUser":"http://cfxcdnorigin.hotsalsainteractive.com/hotsalsainteractive/userPhoto/1458942803.png",
+                  "hasPhoto":0,
+                  "upgraded":0,
+                  "checkinCount":"3"
+               }
+            ]
+         } */
+        if($salsaData && isset($salsaData['checkins'])) {
             $results = array();
-            foreach($data['checkins'] AS $player) {
-                $first = (isset($player['firstName'])) ? $player['firstName'] : $player['firstname'];
-                $last = (isset($player['lastName'])) ? $player['lastName'] : '';
-                $mobile = (isset($player['checkinCount'])) ? $player['checkinCount'] : 0;
-                $live = 0;
+            foreach($salsaData['checkins'] AS $salsaPlayer) {
+                $first = (isset($salsaPlayer['firstName'])) ? $salsaPlayer['firstName'] : '';
+                $last = (isset($salsaPlayer['lastName'])) ? $salsaPlayer['lastName'] : '';
+                $email = (isset($salsaPlayer['emailAddress'])) ? $salsaPlayer['emailAddress'] : '';
+                
+                $teamName = (isset($salsaPlayer['teamName'])) ? $salsaPlayer['teamName'] : '';
+                $homeJoint = (isset($salsaPlayer['homeJoint'])) ? $salsaPlayer['homeJoint'] : '';
+                        
+                $player = LeaderboardData::selectPlayerLiveScoreByEmail($email, $teamName, $homeJoint);
+                if(!$player) {
+                    $player = array();
+                }
                         
                 $results[] = array( 
-                    'img' => '', 
-                    'label' => "{$first} {$last}", 
-                    'mobileScore' => $mobile,
-                    'liveScore' => $live
+                    'mobileCheckins' => (isset($salsaPlayer['checkinCount'])) ? $salsaPlayer['checkinCount'] : 0,
+                    'liveCheckins' => ($player && isset($player['score'])) ? $player['score'] : 0,
+                    
+                    'player' => "{$first} {$last}", 
+                    'userId' => ($player && isset($player['userId'])) ? $player['userId'] : 0,
+                    'hotSalsaUserId' => (isset($salsaPlayer['userId'])) ? $salsaPlayer['userId'] : 0,
+                    'email' => $email, 
+                    'img' => (isset($salsaPlayer['photoUser'])) ? $salsaPlayer['photoUser'] : '', 
+                            
+                    'teamName' => $teamName,
+                    'teamId' => ($player && isset($player['teamId'])) ? $player['teamId'] : 0, 
+                    'hotSalsaTeamId' => (isset($salsaPlayer['teamId'])) ? $salsaPlayer['teamId'] : 0,
+                            
+                    'homeJoint' => $homeJoint,
+                    'homeJointId' => ($player && isset($player['homeVenueId'])) ? $player['homeVenueId'] : 0,
+                    'hotSalsaHomeJointId' => (isset($salsaPlayer['jointId'])) ? $salsaPlayer['jointId'] : 0
                 );
             }
             return $app->render(200, array('leaderboard' => $results));
@@ -469,35 +494,52 @@ class LeaderboardController {
         $limit = (!v::intVal()->validate($count)) ? '10' : $count;
         
         // /location/getCheckins?scoreType=team&count=10
-        // Returns: Player Info (email address, first name, last name), Team Name, Players’s Checkin Count
         $url = self::$HOT_SALSA_URL_GAME_CHECKINS . "?scoreType=team&count={$limit}";
-        
         $data = self::makeHotSalsaRequest($url, $app);
-        /* {
-         *      "status":"success",
-         *      "checkins":[
-         *          { "players":[
-         *              {"firstname":"Pavel",
-         *              "lastName":"Goncharov",
-         *              "email":"thundrax@gmail.com",
-         *              "teamName":"Lotus",
-         *              "checkinCount":"3"}],
-         *          "teamName":"Super Villans",
-         *          "checkinCount":"4"}]}
-         *      ]
-         * } */
+        /* { 
+            "status":"success",
+            "checkins":[  
+               {  
+                  "players":[  
+                     {  
+                        "userId":"1033",
+                        "confirmed":"0",
+                        "lastName":"Test",
+                        "firstName":"John",
+                        "emailAddress":"John@test.go",
+                        "facebookId":"",
+                        "teamName":"Lotus",
+                        "photoUser":"http://cfxcdnorigin.hotsalsainteractive.com/hotsalsainteractive/userPhoto/1458942803.png",
+                        "hasPhoto":0,
+                        "upgraded":0
+                     }
+                  ],
+                  "teamName":"Lotus",
+                  "checkinCount":"3"
+               }]
+         } */
         if($data && isset($data['checkins'])) {
             $results = array();
-            foreach($data['checkins'] AS $team) {
-                $name = (isset($team['teamName'])) ? $team['teamName'] : '';
-                $mobile = (isset($team['checkinCount'])) ? $team['checkinCount'] : 0;
-                $live = 0;
-                        
+            foreach($data['checkins'] AS $salsaTeam) {
+                $teamName = (isset($salsaTeam['name'])) ? $salsaTeam['name'] : '';
+                $homeJoint = (isset($salsaTeam['homeJoint'])) ? $salsaTeam['homeJoint'] : '';
+                
+                $team = LeaderboardData::selectTeamLiveScoreByNameAndVenue($teamName, $homeJoint);
+                if(!$team) {
+                    $team = array();
+                }
+                
                 $results[] = array( 
-                    'img' => '', 
-                    'label' => $name, 
-                    'mobileScore' => $mobile,
-                    'liveScore' => $live
+                    'mobileCheckins' => (isset($salsaTeam['checkinCount'])) ? $salsaTeam['checkinCount'] : 0,
+                    'liveCheckins' => ($team && isset($team['score'])) ? $team['score'] : 0,
+                    
+                    'teamName' => $teamName,
+                    'teamId' => ($team && isset($team['teamId'])) ? $team['teamId'] : 0,
+                    'hotSalsaTeamId' => (isset($salsaTeam['teamId'])) ? $salsaTeam['teamId'] : 0,
+                    
+                    'homeJoint' => $homeJoint,
+                    'homeJointId' => ($team && isset($team['homeVenueId'])) ? $team['homeVenueId'] : 0,
+                    'hotSalsaHomeJointId' => (isset($salsaTeam['jointId'])) ? $salsaTeam['jointId'] : 0
                 );
             }
             return $app->render(200, array('leaderboard' => $results));
