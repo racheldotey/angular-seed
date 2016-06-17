@@ -5,8 +5,8 @@
  */
 
 angular.module('app.leaderboards.venuePlayerCheckins', ['ui.grid', 'ui.grid.autoResize'])
-    .controller('VenuePlayerCheckinsLeaderboardCtrl', ['$window', '$state', '$stateParams', '$rootScope', '$scope', '$q', 'uiGridConstants', 'ApiRoutesLeaderboards', 'ApiRoutesSimpleLists',
-        function($window, $state, $stateParams, $rootScope, $scope, $q, uiGridConstants, ApiRoutesLeaderboards, ApiRoutesSimpleLists) {
+    .controller('VenuePlayerCheckinsLeaderboardCtrl', ['$window', '$state', '$stateParams', '$rootScope', '$scope', '$q', 'uiGridConstants', 'ApiRoutesLeaderboards',
+        function($window, $state, $stateParams, $rootScope, $scope, $q, uiGridConstants, ApiRoutesLeaderboards) {
         
             /* Used to restrict alert bars */
             $scope.alertProxy = {};
@@ -65,7 +65,7 @@ angular.module('app.leaderboards.venuePlayerCheckins', ['ui.grid', 'ui.grid.auto
             })($scope.showLimit);
             
             // Venue Button
-            ApiRoutesSimpleLists.simpleVenuesList().then(
+            ApiRoutesLeaderboards.getListOfJoints().then(
                 function(results) {
                     console.log(results);
                     $scope.venueList = results;                    
