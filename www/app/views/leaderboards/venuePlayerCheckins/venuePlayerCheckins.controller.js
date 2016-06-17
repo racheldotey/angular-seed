@@ -68,7 +68,7 @@ angular.module('app.leaderboards.venuePlayerCheckins', ['ui.grid', 'ui.grid.auto
             ApiRoutesLeaderboards.getListOfJoints().then(
                 function(results) {
                     console.log(results);
-                    $scope.venueList = results;                    
+                    $scope.venueList = results.joints;                   
                     for(var i = 0; i < $scope.venueList.length; i++) {
                         if($scope.venueList[i].id === $stateParams.venueId) {
                             $scope.selected.venue = $scope.venueList[i];

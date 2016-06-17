@@ -53,7 +53,7 @@ angular.module('apiRoutes.Leaderboards', [])
     
     // List of Joints / Venues
     api.getListOfJoints = function () {
-        return API.get('leaderboard/list-joint-names/hot-salsa', 'Could not get list of joints.');
+        return API.get('leaderboard/list-joints/hot-salsa', 'Could not get list of joints.');
     };
 
     return api;

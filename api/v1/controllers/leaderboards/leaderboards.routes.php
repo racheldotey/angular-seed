@@ -46,22 +46,20 @@ class LeaderboardRoutes {
                 LeaderboardController::getVenueTeamCheckinsLeaderboard($app, $venueId, $count);
             })->via('GET', 'POST');
 
-            
             // List of Joints / Venues
-            $app->map("/list-joint-names/", function () use ($app) {
+            $app->map("/list-joints/local/", function () use ($app) {
                 LeaderboardController::getVenueLocalList($app);
             })->via('GET', 'POST');
             
             // List of Joints / Venues
-            $app->map("/list-joint-names/local/", function () use ($app) {
-                LeaderboardController::getVenueLocalList($app);
-            })->via('GET', 'POST');
-            
-            // List of Joints / Venues
-            $app->map("/list-joint-names/hot-salsa/", function () use ($app) {
+            $app->map("/list-joints/hot-salsa/", function () use ($app) {
                 LeaderboardController::getVenueHotSalsaList($app);
             })->via('GET', 'POST');
             
+            // List of Joints / Venues
+            $app->map("/list-joints/", function () use ($app) {
+                LeaderboardController::getVenueLocalList($app);
+            })->via('GET', 'POST');
         });
     }
 }

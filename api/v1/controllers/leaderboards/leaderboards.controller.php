@@ -611,12 +611,50 @@ class LeaderboardController {
     }
     
     static function getVenueHotSalsaList($app) {
-        $data = LeaderboardData::selectVenueList();
+        // /locationList
+        $url = self::$HOT_SALSA_URL_VENUE_LIST;
         
-        if($data) {
-            return $app->render(200, array('joints' => $data));
+        $salsaData = self::makeHotSalsaRequest($url, $app);
+        /*
+        {  
+            "status":"success",
+            "addresses":[{  
+               "sdkAddressId":"11",
+               "name":"Bayou Cafe",
+               "city":"Schenectady",
+               "state":"NY",
+               "address":"507 Saratoga Road",
+               "postalCode":"12302",
+               "country":"US",
+               "image":"http://cfxcdnorigin.hotsalsainteractive.com/hotsalsainteractive/address/1459204914.png",
+               "hasTrivia":1,
+               "triviaDay":"Wednesday",
+               "triviaTime":"7:00 PM"
+            }]
+         }
+         */
+        if($salsaData && isset($salsaData['addresses'])) {
+            $results = array();
+            foreach($salsaData['addresses'] AS $salsaVenue) {
+                if(!isset($salsaVenue['sdkAddressId'])) {
+                    break;
+                }
+                $results[] = array( 
+                    'id' => $salsaVenue['sdkAddressId'],
+                    'name' => $salsaVenue['name'],
+                    'city' => $salsaVenue['city'],
+                    'state' => $salsaVenue['state'],
+                    'zip' => $salsaVenue['postalCode'],
+                    'address' => $salsaVenue['address'],
+                    'image' => $salsaVenue['image'],
+                    'hasTrivia' => $salsaVenue['hasTrivia'],
+                    'triviaDay' => $salsaVenue['triviaDay'],
+                    'triviaTime' => $salsaVenue['triviaTime']
+                );
+            }
+            return $app->render(200, array('joints' => $results));
         } else {
-            return $app->render(400,  array('msg' => 'Could not select list of joints.'));
+            return $app->render(400,  array('msg' => $salsaData));
         }
     }
 }

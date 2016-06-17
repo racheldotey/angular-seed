@@ -8,10 +8,10 @@
             <div class="form-group">                    
                 <ui-select ng-model="selected.venue" title="Search for Trivia Joint">
                     <ui-select-match placeholder="Search for Trivia Joint">
-                        <span ng-bind="$select.selected.label"></span>
+                        <span ng-bind="$select.selected.name"></span>
                     </ui-select-match>
                     <ui-select-choices repeat="item in (venueList | filter: $select.search) track by item.id">
-                        <span>#{{item.id}} - {{item.label}}</span>
+                        <span>#{{item.id}} {{item.name}} - {{item.city}}</span>
                     </ui-select-choices>
                 </ui-select>
             </div>
