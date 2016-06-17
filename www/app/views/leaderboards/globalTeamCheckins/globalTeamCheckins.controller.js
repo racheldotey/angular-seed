@@ -18,13 +18,13 @@ angular.module('app.leaderboards.globalTeamCheckins', ['ui.grid', 'ui.grid.autoR
             $scope.grid.enableSorting = true;           // Column sort order
             $scope.grid.enableColumnResizing = true;
             $scope.grid.fastWatch = true;               // Improves performance of updates by watching array length
-                            
+                        
             $scope.grid.data = [];
             $scope.grid.columnDefs = [
                 { field: 'teamName', displayName:'Team Name' },
                 { field: 'homeJoint', displayName:'Team Home Joint' },
-                { field: 'mobileCheckins', displayName:'Mobile Checkins', type: 'number', sort: { direction: uiGridConstants.DESC, priority: 1 } },
-                { field: 'liveCheckins', displayName:'Live Team Checkins', type: 'number' }
+                { field: 'mobileCheckins', displayName:'Mobile Checkins', type: 'number', sort: { direction: uiGridConstants.DESC, priority: 1 }, maxWidth: 175 },
+                { field: 'liveCheckins', displayName:'Live Team Checkins', type: 'number', maxWidth: 175 }
             ];
             
             $scope.setLeaderboardHeight = function() {
