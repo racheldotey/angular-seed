@@ -125,8 +125,7 @@ class LeaderboardController {
     
     private static function getHotSalsaLocationId($venueId) {
         // Leave for hooking into later
-        return 
-        $venueId;
+        return $venueId;
     }
     
     
@@ -162,28 +161,29 @@ class LeaderboardController {
                 
                 $teamName = (isset($salsaPlayer['teamName'])) ? $salsaPlayer['teamName'] : '';
                 $homeJoint = (isset($salsaPlayer['homeJoint'])) ? $salsaPlayer['homeJoint'] : '';
-                        
-                $player = LeaderboardData::selectPlayerLiveScoreByEmail($email, $teamName, $homeJoint);
-                if(!$player) {
-                    $player = array();
+                
+                $user = LeaderboardData::selectUserIdByEmail($email);
+                $team = LeaderboardData::selectTeamLiveScoreByNameAndVenue($teamName, $homeJoint);
+                if(!$team) {
+                    $team = array();
                 }
                         
                 $results[] = array( 
                     'mobileScore' => (isset($salsaPlayer['score'])) ? $salsaPlayer['score'] : 0,
-                    'liveScore' => ($player && isset($player['score'])) ? $player['score'] : 0,
+                    'liveScore' => ($team && isset($team['score'])) ? $team['score'] : 0,
                     
                     'player' => "{$first} {$last}", 
-                    'userId' => ($player && isset($player['userId'])) ? $player['userId'] : 0,
+                    'userId' => ($user && $user->id) ? $user->id : 0,
                     'hotSalsaUserId' => (isset($salsaPlayer['userId'])) ? $salsaPlayer['userId'] : 0,
                     'email' => $email, 
                     'img' => (isset($salsaPlayer['photoUser'])) ? $salsaPlayer['photoUser'] : '', 
                             
                     'teamName' => $teamName,
-                    'teamId' => ($player && isset($player['teamId'])) ? $player['teamId'] : 0, 
+                    'teamId' => ($team && isset($team['teamId'])) ? $team['teamId'] : 0, 
                     'hotSalsaTeamId' => (isset($salsaPlayer['teamId'])) ? $salsaPlayer['teamId'] : 0,
                             
                     'homeJoint' => $homeJoint,
-                    'homeJointId' => ($player && isset($player['homeVenueId'])) ? $player['homeVenueId'] : 0,
+                    'homeJointId' => ($team && isset($team['homeVenueId'])) ? $team['homeVenueId'] : 0,
                     'hotSalsaHomeJointId' => (isset($salsaPlayer['jointId'])) ? $salsaPlayer['jointId'] : 0
                 );
             }
@@ -306,27 +306,28 @@ class LeaderboardController {
                 $teamName = (isset($salsaPlayer['teamName'])) ? $salsaPlayer['teamName'] : '';
                 $homeJoint = (isset($salsaPlayer['homeJoint'])) ? $salsaPlayer['homeJoint'] : '';
                         
-                $player = LeaderboardData::selectPlayerLiveScoreByEmail($email, $teamName, $homeJoint);
-                if(!$player) {
-                    $player = array();
+                $user = LeaderboardData::selectUserIdByEmail($email);
+                $team = LeaderboardData::selectTeamLiveScoreByNameAndVenue($teamName, $homeJoint);
+                if(!$team) {
+                    $team = array();
                 }
                         
                 $results[] = array( 
                     'mobileScore' => (isset($salsaPlayer['score'])) ? $salsaPlayer['score'] : 0,
-                    'liveScore' => ($player && isset($player['score'])) ? $player['score'] : 0,
+                    'liveScore' => ($team && isset($team['score'])) ? $team['score'] : 0,
                     
                     'player' => "{$first} {$last}", 
-                    'userId' => ($player && isset($player['userId'])) ? $player['userId'] : 0,
+                    'userId' => ($user && $user->id) ? $user->id : 0,
                     'hotSalsaUserId' => (isset($salsaPlayer['userId'])) ? $salsaPlayer['userId'] : 0,
                     'email' => $email, 
                     'img' => (isset($salsaPlayer['photoUser'])) ? $salsaPlayer['photoUser'] : '', 
                             
                     'teamName' => $teamName,
-                    'teamId' => ($player && isset($player['teamId'])) ? $player['teamId'] : 0, 
+                    'teamId' => ($team && isset($team['teamId'])) ? $team['teamId'] : 0, 
                     'hotSalsaTeamId' => (isset($salsaPlayer['teamId'])) ? $salsaPlayer['teamId'] : 0,
                             
                     'homeJoint' => $homeJoint,
-                    'homeJointId' => ($player && isset($player['homeVenueId'])) ? $player['homeVenueId'] : 0,
+                    'homeJointId' => ($team && isset($team['homeVenueId'])) ? $team['homeVenueId'] : 0,
                     'hotSalsaHomeJointId' => (isset($salsaPlayer['jointId'])) ? $salsaPlayer['jointId'] : 0
                 );
             }
@@ -449,27 +450,28 @@ class LeaderboardController {
                 $teamName = (isset($salsaPlayer['teamName'])) ? $salsaPlayer['teamName'] : '';
                 $homeJoint = (isset($salsaPlayer['homeJoint'])) ? $salsaPlayer['homeJoint'] : '';
                         
-                $player = LeaderboardData::selectPlayerLiveScoreByEmail($email, $teamName, $homeJoint);
-                if(!$player) {
-                    $player = array();
+                $user = LeaderboardData::selectUserIdByEmail($email);
+                $team = LeaderboardData::selectTeamLiveCheckinsByNameAndVenue($teamName, $homeJoint);
+                if(!$team) {
+                    $team = array();
                 }
                         
                 $results[] = array( 
                     'mobileCheckins' => (isset($salsaPlayer['checkinCount'])) ? $salsaPlayer['checkinCount'] : 0,
-                    'liveCheckins' => ($player && isset($player['score'])) ? $player['score'] : 0,
+                    'liveCheckins' => ($team && isset($team['checkins'])) ? $team['checkins'] : 0,
                     
                     'player' => "{$first} {$last}", 
-                    'userId' => ($player && isset($player['userId'])) ? $player['userId'] : 0,
+                    'userId' => ($user && $user->id) ? $user->id : 0,
                     'hotSalsaUserId' => (isset($salsaPlayer['userId'])) ? $salsaPlayer['userId'] : 0,
                     'email' => $email, 
                     'img' => (isset($salsaPlayer['photoUser'])) ? $salsaPlayer['photoUser'] : '', 
                             
                     'teamName' => $teamName,
-                    'teamId' => ($player && isset($player['teamId'])) ? $player['teamId'] : 0, 
+                    'teamId' => ($team && isset($team['teamId'])) ? $team['teamId'] : 0, 
                     'hotSalsaTeamId' => (isset($salsaPlayer['teamId'])) ? $salsaPlayer['teamId'] : 0,
                             
                     'homeJoint' => $homeJoint,
-                    'homeJointId' => ($player && isset($player['homeVenueId'])) ? $player['homeVenueId'] : 0,
+                    'homeJointId' => ($team && isset($team['homeVenueId'])) ? $team['homeVenueId'] : 0,
                     'hotSalsaHomeJointId' => (isset($salsaPlayer['jointId'])) ? $salsaPlayer['jointId'] : 0
                 );
             }
@@ -514,14 +516,14 @@ class LeaderboardController {
                 $teamName = (isset($salsaTeam['teamName'])) ? $salsaTeam['teamName'] : '';
                 $homeJoint = (isset($salsaTeam['homeJoint'])) ? $salsaTeam['homeJoint'] : '';
                 
-                $team = LeaderboardData::selectTeamLiveScoreByNameAndVenue($teamName, $homeJoint);
+                $team = LeaderboardData::selectTeamLiveCheckinsByNameAndVenue($teamName, $homeJoint);
                 if(!$team) {
                     $team = array();
                 }
                 
                 $results[] = array( 
                     'mobileCheckins' => (isset($salsaTeam['checkinCount'])) ? $salsaTeam['checkinCount'] : 0,
-                    'liveCheckins' => ($team && isset($team['score'])) ? $team['score'] : 0,
+                    'liveCheckins' => ($team && isset($team['checkins'])) ? $team['checkins'] : 0,
                     
                     'teamName' => $teamName,
                     'teamId' => ($team && isset($team['teamId'])) ? $team['teamId'] : 0,
@@ -580,27 +582,28 @@ class LeaderboardController {
                 $teamName = (isset($salsaPlayer['teamName'])) ? $salsaPlayer['teamName'] : '';
                 $homeJoint = (isset($salsaPlayer['homeJoint'])) ? $salsaPlayer['homeJoint'] : '';
                         
-                $player = LeaderboardData::selectPlayerLiveScoreByEmail($email, $teamName, $homeJoint);
-                if(!$player) {
-                    $player = array();
+                $user = LeaderboardData::selectUserIdByEmail($email);
+                $team = LeaderboardData::selectTeamLiveCheckinsByNameAndVenue($teamName, $homeJoint);
+                if(!$team) {
+                    $team = array();
                 }
                         
                 $results[] = array( 
                     'mobileCheckins' => (isset($salsaPlayer['checkinCount'])) ? $salsaPlayer['checkinCount'] : 0,
-                    'liveCheckins' => ($player && isset($player['score'])) ? $player['score'] : 0,
+                    'liveCheckins' => ($team && isset($team['checkins'])) ? $team['checkins'] : 0,
                     
                     'player' => "{$first} {$last}", 
-                    'userId' => ($player && isset($player['userId'])) ? $player['userId'] : 0,
+                    'userId' => ($user && $user->id) ? $user->id : 0,
                     'hotSalsaUserId' => (isset($salsaPlayer['userId'])) ? $salsaPlayer['userId'] : 0,
                     'email' => $email, 
                     'img' => (isset($salsaPlayer['photoUser'])) ? $salsaPlayer['photoUser'] : '', 
                             
                     'teamName' => $teamName,
-                    'teamId' => ($player && isset($player['teamId'])) ? $player['teamId'] : 0, 
+                    'teamId' => ($team && isset($team['teamId'])) ? $team['teamId'] : 0, 
                     'hotSalsaTeamId' => (isset($salsaPlayer['teamId'])) ? $salsaPlayer['teamId'] : 0,
                             
                     'homeJoint' => $homeJoint,
-                    'homeJointId' => ($player && isset($player['homeVenueId'])) ? $player['homeVenueId'] : 0,
+                    'homeJointId' => ($team && isset($team['homeVenueId'])) ? $team['homeVenueId'] : 0,
                     'hotSalsaHomeJointId' => (isset($salsaPlayer['jointId'])) ? $salsaPlayer['jointId'] : 0
                 );
             }

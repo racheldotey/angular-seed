@@ -389,6 +389,7 @@ table.table.dataTable.table-dark table.sub-table.table-striped > tbody > tr:nth-
 div.grid.grid-dark {
   border-color: #6f0000;
   /* Begin ::-webkit Scrollbar CSS Color Code by http//:snapbuilder.com */
+  /* Menue */
 }
 div.grid.grid-dark div.ui-grid-header {
   border-bottom-color: #d40000;
@@ -443,6 +444,13 @@ div.grid.grid-dark ::-webkit-scrollbar-thumb:active {
 }
 div.grid.grid-dark ::-webkit-scrollbar-corner {
   background: transparent;
+}
+div.grid.grid-dark .ui-grid-menu .ui-grid-menu-inner {
+  background-color: #880000;
+  border-color: #d40000;
+}
+div.grid.grid-dark .ui-grid-menu .ui-grid-menu-inner ul li:not(:last-child) > button {
+  border-color: #d40000;
 }
 div.leaderboard-controls select {
   display: inline-block;

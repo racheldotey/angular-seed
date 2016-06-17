@@ -234,7 +234,17 @@ div.grid.grid-dark {
     ::-webkit-scrollbar-corner {
         background: transparent;
     } 
+       
+       
+    /* Menue */
+    .ui-grid-menu .ui-grid-menu-inner {
+        background-color: (@brick-red);
+        border-color: lighten(@brick-red, 15%);
         
+         ul li:not(:last-child)>button {
+            border-color: lighten(@brick-red, 15%);
+        }
+    }
 }
 
 div.leaderboard-controls {
