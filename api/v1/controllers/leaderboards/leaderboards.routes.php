@@ -7,7 +7,6 @@ class LeaderboardRoutes {
         
         $app->group('/leaderboard', $authenticateForRole('public'), function () use ($app) {
             
-            // Global Player Score Leaderboard
             $app->map("/global/players/score/:count/", function ($count) use ($app) {
                 LeaderboardController::getGlobalPlayersLeaderboard($app, $count);
             })->via('GET', 'POST');

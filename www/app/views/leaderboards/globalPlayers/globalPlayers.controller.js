@@ -22,7 +22,9 @@ angular.module('app.leaderboards.globalPlayers', ['ui.grid', 'ui.grid.autoResize
             $scope.grid.data = [];
             $scope.grid.columnDefs = [
                 { field: 'img', displayName:'', cellClass: 'leaderboard-img-cell', enableSorting: false, cellTemplate: '<img ng-src="{{COL_FIELD}}" class="leaderboard-img" />' },
-                { field: 'label', displayName:'Player Name' },
+                { field: 'player', displayName:'Player Name' },
+                { field: 'homeVenue', displayName:'Team Home Joint' },
+                { field: 'teamName', displayName:'Team Name' },
                 { field: 'mobileScore', displayName:'Mobile Score', type: 'number', sort: { direction: uiGridConstants.DESC, priority: 1 } },
                 { field: 'liveScore', displayName:'Live Team Score', type: 'number' }
             ];
