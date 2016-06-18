@@ -388,6 +388,7 @@ table.table.dataTable.table-dark table.sub-table.table-striped > tbody > tr:nth-
 }
 div.grid.grid-dark {
   border-color: #6f0000;
+  height: 100%;
   /* Begin ::-webkit Scrollbar CSS Color Code by http//:snapbuilder.com */
   /* Menue */
 }
@@ -406,6 +407,9 @@ div.grid.grid-dark div.ui-grid-header div.ui-grid-top-panel div.ui-grid-cell {
   background: #880000;
   color: #fff;
   border-color: #6f0000;
+}
+div.grid.grid-dark div.ui-grid-canvas {
+  padding-top: 0;
 }
 div.grid.grid-dark div.ui-grid-canvas div.ui-grid-row .ui-grid-cell {
   background: #8d0000;
@@ -860,9 +864,6 @@ html {
 }
 html body {
   /* Margin bottom by footer height */
-  margin-bottom: 60px;
-}
-html body .page {
   margin-bottom: 60px;
 }
 html body footer.footer {

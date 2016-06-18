@@ -28,14 +28,26 @@ angular.module('app.leaderboards.globalTeams', ['ui.grid', 'ui.grid.autoResize']
             ];
             
             $scope.setLeaderboardHeight = function() {
-                // Height of the visible window area (screen size)
-                var visibleWindowHeight = $(window).height();
-                // Add a little padding
-                var padding = 20;
-                // Do the maths
-                var newHeight = visibleWindowHeight - padding;
-                // Change the inner scrollable tables height
-                angular.element(document.getElementsByClassName('grid')[0]).css('height', newHeight + 'px');
+                if($scope.grid.data.length) {
+                    // Height of the entire page
+                    var pageHeight = $(document).height();
+                    // Current height of the table
+                    var currentGridHeight = angular.element(document.getElementsByClassName('grid')[0]).height();
+                    // The height of everything except the grid.
+                    var everythingElseHeight = pageHeight - Math.round(currentGridHeight);
+                    // Add a little padding
+                    var padding = 0;
+                    // Height of the visible window area (screen size)
+                    var visibleWindowHeight = $(window).height();
+                    // Whats left height
+                    var whatsLeftHeight = visibleWindowHeight - everythingElseHeight;
+                    // Do the maths
+                    var newHeight = (whatsLeftHeight > 100) ? whatsLeftHeight : 100;
+                    // Change the inner scrollable tables height
+                    angular.element(document.getElementsByClassName('grid')[0]).css('height', newHeight + 'px');
+                } else {
+                    angular.element(document.getElementsByClassName('grid')[0]).css('height', '50px');
+                }
             };
             
             // Responsive leaderboard height on window resize
@@ -55,6 +67,7 @@ angular.module('app.leaderboards.globalTeams', ['ui.grid', 'ui.grid.autoResize']
                         }
                         resolve(true);
                     }, function (error) {
+                        $scope.setLeaderboardHeight();
                         console.log(error);
                         $scope.alertProxy.error(error);
                         reject(error);
