@@ -35,13 +35,14 @@ app.factory('LeaderboardResizing', [function() {
                 
                 // Do the maths
                 var newHeight = currentGridHeight + whatsLeftHeight;
-                newHeight = (newHeight > 100) ? parseInt(newHeight) : 100;
+                newHeight = (newHeight > 100) ? parseInt(Math.floor(newHeight)) : 100;
                 
                 console.log('');
                 console.log('visibleWindowHeight : ' + visibleWindowHeight);
                 console.log('pageContentHeight : ' + pageContentHeight);
                 console.log('footerContentHeight : ' + footerContentHeight);
                 console.log('whatsLeftHeight : ' + whatsLeftHeight);
+                console.log('newHeight : ' + newHeight);
                 console.log('');
                 // Change the inner scrollable tables height
                 angular.element(document.getElementsByClassName('grid')[0]).css('height', newHeight + 'px');

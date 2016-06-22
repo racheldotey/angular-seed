@@ -24,7 +24,7 @@ angular.module('app.leaderboards.venueTeams', ['ui.grid', 'ui.grid.autoResize'])
             $scope.grid.columnDefs = [
                 { field: 'teamName', displayName:'Team Name' },
                 { field: 'mobileScore', displayName:'Mobile Score', type: 'number', sort: { direction: uiGridConstants.DESC, priority: 1 }, maxWidth: 175 },
-                { field: 'liveScore', displayName:'Live Team Score', type: 'number', maxWidth: 175 }
+                { field: 'liveScore', displayName:'Live Team Score', type: 'number', cellFilter: 'numberEx', maxWidth: 175 }
             ];
             
             $scope.setLeaderboardHeight = function() {

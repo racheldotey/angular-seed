@@ -33,7 +33,7 @@ class LeaderboardData {
     
     static function selectPlayerScoreLeaderboards($count, $mergedUserIds = array()) {
         if(count($mergedUserIds) > 0) {
-            $variables = $mergedUserIds;
+            //$variables = $mergedUserIds;
             $placeholders = str_repeat ('?, ',  count ($mergedUserIds) - 1) . '?';
             $variables[] = (int)$count;
             
@@ -47,7 +47,6 @@ class LeaderboardData {
                     . "JOIN " . DBConn::prefix() . "teams AS t ON t.id = m.team_id "
                     . "JOIN " . DBConn::prefix() . "game_score_teams AS s ON s.team_id = t.id "
                     . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = t.home_venue_id "
-                    . "WHERE NOT IN({$placeholders}) "
                     . "GROUP BY u.id "
                     . "ORDER BY score DESC "
                     . "LIMIT ?;", $variables);
@@ -70,7 +69,7 @@ class LeaderboardData {
     
     static function selectTeamScoreLeaderboards($count, $mergedTeamIds = array()) {
         if(count($mergedTeamIds) > 0) {
-            $variables = $mergedTeamIds;
+            //$variables = $mergedTeamIds;
             $placeholders = str_repeat ('?, ',  count ($mergedTeamIds) - 1) . '?';
             $variables[] = (int)$count;
 
@@ -80,7 +79,6 @@ class LeaderboardData {
                     . "FROM " . DBConn::prefix() . "teams AS t "
                     . "JOIN " . DBConn::prefix() . "game_score_teams AS s ON s.team_id = t.id "
                     . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = t.home_venue_id "
-                    . "WHERE NOT IN({$placeholders}) "
                     . "GROUP BY s.team_id "
                     . "ORDER BY score DESC "
                     . "LIMIT ?;", $variables);
