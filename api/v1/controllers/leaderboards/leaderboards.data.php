@@ -41,7 +41,7 @@ class LeaderboardData {
                     . "u.name_last AS lastName, u.email, "
                     . "t.id AS teamId, t.name AS teamName, "
                     . "v.id AS homeJointId, v.name AS homeJoint, "
-                    . "COALESCE(SUM(s.score),0) AS score, count(s.game_id) AS gameCount "
+                    . "COALESCE(SUM(s.score),0) AS score, count(s.game_id) AS gameCheckins "
                     . "FROM " . DBConn::prefix() . "team_members AS m "
                     . "JOIN " . DBConn::prefix() . "users AS u ON u.id = m.user_id "
                     . "JOIN " . DBConn::prefix() . "teams AS t ON t.id = m.team_id "
@@ -56,7 +56,7 @@ class LeaderboardData {
                 . "u.name_last AS lastName, u.email, "
                 . "t.id AS teamId, t.name AS teamName, "
                 . "v.id AS homeJointId, v.name AS homeJoint, "
-                . "COALESCE(SUM(s.score),0) AS score, count(s.game_id) AS gameCount "
+                . "COALESCE(SUM(s.score),0) AS score, count(s.game_id) AS gameCheckins "
                 . "FROM " . DBConn::prefix() . "team_members AS m "
                 . "JOIN " . DBConn::prefix() . "users AS u ON u.id = m.user_id "
                 . "JOIN " . DBConn::prefix() . "teams AS t ON t.id = m.team_id "
@@ -76,7 +76,7 @@ class LeaderboardData {
 
             return DBConn::selectAll("SELECT t.id AS teamId, t.name AS teamName, "
                     . "v.id AS homeJointId, v.name AS homeJoint, "
-                    . "COALESCE(SUM(s.score),0) AS score, count(s.game_id) AS gameCount "
+                    . "COALESCE(SUM(s.score),0) AS score, count(s.game_id) AS gameCheckins "
                     . "FROM " . DBConn::prefix() . "teams AS t "
                     . "JOIN " . DBConn::prefix() . "game_score_teams AS s ON s.team_id = t.id "
                     . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = t.home_venue_id "
@@ -87,7 +87,7 @@ class LeaderboardData {
         } else {
             return DBConn::selectAll("SELECT t.id AS teamId, t.name AS teamName, "
                 . "v.id AS homeJointId, v.name AS homeJoint, "
-                . "COALESCE(SUM(s.score),0) AS score, count(s.game_id) AS gameCount "
+                . "COALESCE(SUM(s.score),0) AS score, count(s.game_id) AS gameCheckins "
                 . "FROM " . DBConn::prefix() . "teams AS t "
                 . "JOIN " . DBConn::prefix() . "game_score_teams AS s ON s.team_id = t.id "
                 . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = t.home_venue_id "
@@ -109,7 +109,7 @@ class LeaderboardData {
     
     static function selectTeamLiveCheckinsByNameAndVenue($teamName, $homeVenue) {
         return DBConn::selectOne("SELECT t.id AS teamId, t.name AS teamName, v.id AS homeVenueId, "
-                . "v.name AS homeVenue, COUNT(c.game_id) AS checkins "
+                . "v.name AS homeVenue, COUNT(c.game_id) AS gameCheckins "
                 . "FROM " . DBConn::prefix() . "teams AS t "
                 . "LEFT JOIN " . DBConn::prefix() . "game_score_teams AS s ON s.game_id = t.current_game_id AND s.team_id = t.id "
                 . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = t.home_venue_id "

@@ -577,7 +577,7 @@ class LeaderboardController {
                         
                 $results[] = array( 
                     'mobileCheckins' => (isset($salsaPlayer['checkinCount'])) ? $salsaPlayer['checkinCount'] : 0,
-                    'liveCheckins' => ($team && isset($team['checkins'])) ? $team['checkins'] : 0,
+                    'liveCheckins' => ($team && isset($team['gameCheckins'])) ? $team['gameCheckins'] : 0,
                     
                     'player' => "{$first} {$last}", 
                     'userId' => ($user && $user->id) ? $user->id : 0,
@@ -642,7 +642,7 @@ class LeaderboardController {
                 
                 $results[] = array( 
                     'mobileCheckins' => (isset($salsaTeam['checkinCount'])) ? $salsaTeam['checkinCount'] : 0,
-                    'liveCheckins' => ($team && isset($team['checkins'])) ? $team['checkins'] : 0,
+                    'liveCheckins' => ($team && isset($team['gameCheckins'])) ? $team['gameCheckins'] : 0,
                     
                     'teamName' => $teamName,
                     'teamId' => ($team && isset($team['teamId'])) ? $team['teamId'] : 0,
@@ -715,7 +715,7 @@ class LeaderboardController {
                         
                 $results[] = array( 
                     'mobileCheckins' => (isset($salsaPlayer['checkinCount'])) ? $salsaPlayer['checkinCount'] : 0,
-                    'liveCheckins' => ($team && isset($team['checkins'])) ? $team['checkins'] : 0,
+                    'liveCheckins' => ($team && isset($team['gameCheckins'])) ? $team['gameCheckins'] : 0,
                     
                     'player' => "{$first} {$last}", 
                     'userId' => ($user && $user->id) ? $user->id : 0,
@@ -792,7 +792,7 @@ class LeaderboardController {
                 
                 $results[] = array( 
                     'mobileCheckins' => (isset($salsaTeam['checkinCount'])) ? $salsaTeam['checkinCount'] : 0,
-                    'liveCheckins' => ($team && isset($team['checkins'])) ? $team['checkins'] : 0,
+                    'liveCheckins' => ($team && isset($team['gameCheckins'])) ? $team['gameCheckins'] : 0,
                     
                     'teamName' => $teamName,
                     'teamId' => ($team && isset($team['teamId'])) ? $team['teamId'] : 0,
