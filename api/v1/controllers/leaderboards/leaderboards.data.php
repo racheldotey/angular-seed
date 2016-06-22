@@ -34,9 +34,9 @@ class LeaderboardData {
     static function selectPlayerScoreLeaderboards($count, $mergedUserIds = array()) {
         if(count($mergedUserIds) > 0) {
             $variables = $mergedUserIds;
-            $placeholders = str_repeat ('?, ',  count ($variables) - 1) . '?';
-            $variables[] = $count;
-
+            $placeholders = str_repeat ('?, ',  count ($mergedUserIds) - 1) . '?';
+            $variables[] = (int)$count;
+            
             return DBConn::selectAll("SELECT u.id AS userId, u.name_first AS firstName, "
                     . "u.name_last AS lastName, u.email, "
                     . "t.id AS teamId, t.name AS teamName, "
@@ -47,7 +47,7 @@ class LeaderboardData {
                     . "JOIN " . DBConn::prefix() . "teams AS t ON t.id = m.team_id "
                     . "JOIN " . DBConn::prefix() . "game_score_teams AS s ON s.team_id = t.id "
                     . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = t.home_venue_id "
-                    . "WHERE NOT IN($placeholders) "
+                    . "WHERE NOT IN({$placeholders}) "
                     . "GROUP BY u.id "
                     . "ORDER BY score DESC "
                     . "LIMIT ?;", $variables);
@@ -64,15 +64,15 @@ class LeaderboardData {
                 . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = t.home_venue_id "
                 . "GROUP BY u.id "
                 . "ORDER BY score DESC "
-                . "LIMIT :limit;", array(':limit' => $count));
+                . "LIMIT :limit;", array(':limit' => (int)$count));
         }
     }
     
     static function selectTeamScoreLeaderboards($count, $mergedTeamIds = array()) {
         if(count($mergedTeamIds) > 0) {
             $variables = $mergedTeamIds;
-            $placeholders = str_repeat ('?, ',  count ($variables) - 1) . '?';
-            $variables[] = $count;
+            $placeholders = str_repeat ('?, ',  count ($mergedTeamIds) - 1) . '?';
+            $variables[] = (int)$count;
 
             return DBConn::selectAll("SELECT t.id AS teamId, t.name AS teamName, "
                     . "v.id AS homeJointId, v.name AS homeJoint, "
@@ -80,7 +80,7 @@ class LeaderboardData {
                     . "FROM " . DBConn::prefix() . "teams AS t "
                     . "JOIN " . DBConn::prefix() . "game_score_teams AS s ON s.team_id = t.id "
                     . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = t.home_venue_id "
-                    . "WHERE NOT IN($placeholders) "
+                    . "WHERE NOT IN({$placeholders}) "
                     . "GROUP BY s.team_id "
                     . "ORDER BY score DESC "
                     . "LIMIT ?;", $variables);
@@ -93,7 +93,7 @@ class LeaderboardData {
                 . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = t.home_venue_id "
                 . "GROUP BY s.team_id "
                 . "ORDER BY score DESC "
-                . "LIMIT :limit;", array(':limit' => $count));
+                . "LIMIT :limit;", array(':limit' => (int)$count));
         }
     }
 

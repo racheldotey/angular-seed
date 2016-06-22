@@ -28,7 +28,7 @@ angular.module('app.leaderboards.venueTeamCheckins', ['ui.grid', 'ui.grid.autoRe
             ];
             
             $scope.setLeaderboardHeight = function() {
-                if($scope.grid.data.length) {
+                if($scope.grid.data && $scope.grid.data.length) {
                     LeaderboardResizing.setUIGridHeight();
                 } else {
                     angular.element(document.getElementsByClassName('grid')[0]).css('height', '50px');

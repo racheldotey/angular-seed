@@ -31,7 +31,7 @@ angular.module('app.leaderboards.globalPlayers', ['ui.grid', 'ui.grid.autoResize
             ];
             
             $scope.setLeaderboardHeight = function() {
-                if($scope.grid.data.length) {
+                if($scope.grid.data && $scope.grid.data.length) {
                     LeaderboardResizing.setUIGridHeight();
                 } else {
                     angular.element(document.getElementsByClassName('grid')[0]).css('height', '50px');
