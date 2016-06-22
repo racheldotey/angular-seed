@@ -8,6 +8,48 @@ app.constant('THIS_DIRECTORY', (function () {
     return scriptPath.substring(0, scriptPath.lastIndexOf('/') + 1);
 })());
 
+app.factory('LeaderboardResizing', [function() {
+            
+        var api = {};
+        
+        api.footerHeight = 0;
+        
+        api.setUIGridHeight = function() {
+                // Height of the entire page - Expanded in the beginning dont use
+                //var pageHeight = $(document).height();
+                // The height of everything except the grid.
+                //var everythingElseHeight = visibleWindowHeight - Math.round(currentGridHeight);
+                
+
+                // Height of the visible window area (screen size)
+                var visibleWindowHeight = $(window).height();
+                
+                var pageContentHeight = angular.element(document.getElementsByClassName('layout')[0]).height();
+                var footerContentHeight = angular.element(document.getElementsByClassName('footer')[0]).height();
+                
+                // Whats left height
+                var whatsLeftHeight = visibleWindowHeight - (pageContentHeight + footerContentHeight);
+                
+                // Current height of the table
+                var currentGridHeight = angular.element(document.getElementsByClassName('grid')[0]).height();
+                
+                // Do the maths
+                var newHeight = currentGridHeight + whatsLeftHeight;
+                newHeight = (newHeight > 100) ? parseInt(newHeight) : 100;
+                
+                console.log('');
+                console.log('visibleWindowHeight : ' + visibleWindowHeight);
+                console.log('pageContentHeight : ' + pageContentHeight);
+                console.log('footerContentHeight : ' + footerContentHeight);
+                console.log('whatsLeftHeight : ' + whatsLeftHeight);
+                console.log('');
+                // Change the inner scrollable tables height
+                angular.element(document.getElementsByClassName('grid')[0]).css('height', newHeight + 'px');
+            };
+            
+        return api;
+    }]);
+
 app.factory('ScoreboardResizing', [function() {
             
         var api = {};  
