@@ -159,7 +159,7 @@ angular.module('apiRoutes.auth', [])
         return API.post('auth/host/signup/facebook/', newUser, 'System unable to register new facebook user or host.');
     };
     api.postHostVenueSignup = function (newUser) {
-        if (!newUser.address || !newUser.city || !newUser.zip ||
+        if (!newUser.address || !newUser.city || !newUser.zip ||!newUser.venue||
                 !newUser.nameLast ||
                 !newUser.nameLast ||
                 !newUser.email) {

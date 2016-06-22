@@ -64,6 +64,9 @@ angular.module('app.auth.login', [])
         if (typeof (credentials) !== undefined && typeof (credentials.email) !== undefined) {
             emailAddress = credentials.email;
         }
-      ModalService.openForgotPassword(emailAddress);
+        var modalInstance = ModalService.openForgotPassword(emailAddress);;
+        modalInstance.result.then(function (result) {
+            $scope.alertProxy.success(result.msg);
+        });
     };
 }]);

@@ -50,7 +50,6 @@ app.run(['$rootScope', '$state', 'AUTH_EVENTS', 'AuthService',
                         event.preventDefault();
                         // Broadcast reason for failure
                         // https://docs.angularjs.org/api/ng/type/$rootScope.Scope#$broadcast
-                        console.log("Auth Event Broadcast: " + results, { 'state': toState.name, 'params': toParams });
                         $rootScope.$broadcast(results, { 'state': toState.name, 'params': toParams });
                     });
                 });

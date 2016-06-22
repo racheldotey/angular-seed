@@ -13,12 +13,12 @@ angular.module('app.admin.hosts', [])
                 $scope.alertProxy = {};
 
                 /* Modal triggers */
-                // Edit User Modal
                 $scope.buttonOpenEditHostModal = function (id) {
                     var found = $filter('filter')($scope.dtHosts.instance.DataTable.data(), { id: id }, true);
                     if (angular.isDefined(found[0])) {
                         var modalInstance = TriviaModalService.openEditHost(found[0]);
                         modalInstance.result.then(function (result) {
+                            if (result!="reloadDataOnly")
                             $scope.alertProxy.success(result);
                             $scope.dtHosts.reloadData();
                         });
@@ -41,7 +41,6 @@ angular.module('app.admin.hosts', [])
                     }).notSortable(),
                     DTColumnBuilder.newColumn('nameFirst').withTitle('First Name'),
                     DTColumnBuilder.newColumn('nameLast').withTitle('Last Name'),
-                   // DTColumnBuilder.newColumn('email').withTitle('Email Address'),
                     DTColumnBuilder.newColumn(null).withTitle('Email Address').renderWith(function (data, type, full, meta) {
                         return '<a ng-click="buttonOpenEditHostModal(\'' + data.id + '\')">' + data.email + '</a>';
                     }),
@@ -54,11 +53,6 @@ angular.module('app.admin.hosts', [])
                     DTColumnBuilder.newColumn('facebook').withTitle('Facebook').renderWith(function (data, type, full, meta) {
                         return (data.length <= 0) ? '' : '<a href="' + data + '" target="_blank">' + data + '</a>';
                     }),
-                    //DTColumnBuilder.newColumn('triviaDay').withTitle('Day'),
-                    //DTColumnBuilder.newColumn('triviaTime').withTitle('Hours'),
-                    //DTColumnBuilder.newColumn(null).withTitle('Created By').renderWith(function (data, type, full, meta) {
-                    //    return (data && data.createdBy !== null) ?'<a href="mailto:' + data.createdByEmail + '">' + data.createdBy + '</a>' : '';
-                    //}),
                     DTColumnBuilder.newColumn(null).withTitle('Created By').renderWith(function (data, type, full, meta) {
                         return '<a ng-click="buttonOpenEditUserModal(\'' + data.trv_users_id + '\')">' + data.createdBy + '</a>';
                     }),
@@ -70,7 +64,6 @@ angular.module('app.admin.hosts', [])
                     }).notSortable()
 
                 ];
-
                 $scope.buttonOpenNewHostModal = function () {
                     var modalInstance = TriviaModalService.openEditHost(false);
                     modalInstance.result.then(function (result) {
@@ -87,6 +80,13 @@ angular.module('app.admin.hosts', [])
                         }, function () { });
                     };
                 }
+                $scope.buttonOpenNewAddHostModal = function () {
+                    var modalInstance = TriviaModalService.openEditHost(false);
+                    modalInstance.result.then(function (result) {
+                        $scope.alertProxy.success(result);
+                        $scope.dtHosts.reloadData();
+                    });
+                };
 
             }]);
 

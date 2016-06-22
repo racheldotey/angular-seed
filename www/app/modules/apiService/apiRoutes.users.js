@@ -122,6 +122,19 @@ angular.module('apiRoutes.users', [])
         }
         return API.get('/host/getHostByUser/' + user.id, user, 'System unable to get venue.');
     };
+    api.deleteHostVenue = function (host) {
+        if (angular.isUndefined(host.hostId)) {
+            return API.reject('Invalid host. Please check your parameters and try again.');
+        }
+        return API.post('/host/delete/venue/' + host.hostId, host, 'System unable to get venue.');
+    };
+    api.updateHostVenue = function (host) {
+        console.log(JSON.stringify(host));
+        if (angular.isUndefined(host.hostId)) {
+            return API.reject('Invalid host. Please check your parameters and try again.');
+        }
+        return API.post('/host/update/trivia/' + host.hostId, host, 'System unable to get venue.');
+    };
     //end region
 
     return api;

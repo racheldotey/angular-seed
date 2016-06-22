@@ -262,9 +262,9 @@ angular.module('TriviaModalService', [
                 editing: function () {
                     return (angular.isObject(host)) ? host : {};
                 },
-                venuesList: function (ApiRoutesSimpleLists) {
-                    return ApiRoutesSimpleLists.simpleVenuesList();
-                }
+                //venuesList: function (ApiRoutesSimpleLists) {
+                //    return ApiRoutesSimpleLists.simplePublicVenuesList();
+                //}
             }
         });
     };

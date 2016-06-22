@@ -11,10 +11,11 @@
             <p class="text-muted">Update at <a href="http://www.gravatar.com/" target="_blank">gravatar.com</a>.</p>
         </div>
         <div class="col-xs-12 col-sm-9 col-md-8">
-            <div data-rc-bootstrap-alerts="editHostInformationAlerts"></div>
+          
          
             <h4>General</h4>
             <div data-rc-bootstrap-alerts="generalFormAlerts"></div>
+            <div data-rc-bootstrap-alerts="editHostInformationAlerts"></div>
             <form ng-if="!editGeneralMode  && isUserRoleHost==false"" class="form-horizontal">
 
                 <div class="form-group">
@@ -131,8 +132,33 @@
                         <p class="form-control-static">{{userHostInfo.host_facebook}}</p>
                     </div>
                 </div>
+               
+                <hr />
+                <div class="form-group row" n>
+                    <div class="col-xs-12">
+                        <h4>Location(s) where you host live trivia games</h4>
+                    </div>
+                </div>
+                
+                <table datatable="ng" dt-instance="dtInstance" dt-options="dtOptions" class="table table-dark ng-isolate-scope dataTable no-footer dtr-column collapsed" ng-cloak>
+                    <thead>
+                        <tr>
+                            <th>Joint Name</th>
+                            <th>Trivia Day</th>
+                            <th>Trivia Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="Venue in hostVenueList ">
+                            <td class="is-table-column"> {{Venue.name}} </td>
+                            <td class="is-table-column"> {{Venue.triviaDay}} </td>
+                            <td class="is-table-column"> {{Venue.triviaTime}} </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <hr />
                 <div data-rc-bootstrap-alerts="generalPasswordupdateAlerts"></div>
-                <br />
+               
                 <div class="form-group text-right">
                     <div class="col-xs-12">
                         <button ng-if="!editPasswordMode && !editHostInformationMode"  ng-click="buttonShowChangePassword()" type="button" class="btn btn-default">Change Password</button>
@@ -244,7 +270,7 @@
                 
             </form>
             
-            <form  ng-if="isUserRoleHost && editHostInformationMode"  name="form.host" class="form-horizontal">
+            <form  ng-if="isUserRoleHost && editHostInformationMode"  name="form.host" class="form-horizontal" ng-cloak>
                 <br />
                 <div class="form-group row">
                     <div class="col-xs-6">
@@ -320,8 +346,54 @@
                         <input ng-model="userHostInfo.host_facebook" class="form-control" name="facebook" placeholder="Joint Facebook Page (http://...)" maxlength="255" type="url" url-input ng-pattern='/(?:https?:\/\/)?(?:www\.)?facebook\.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[\w\-]*\/)*([\w\-\.]*)/' required>
                     </div>
                 </div>
-                
-                
+                <hr />
+                <div class="form-group row" n>
+                    <div class="col-xs-12">
+                        <p>Please select and/or add the Joint location(s) where you host live trivia games</p>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-5">
+                            <label>Existing Joint</label>
+                            <div rc-trivia-select-list-venue="VenuesDropDown.venue" teams-list-data="publicVenuesList"></div>
+                    </div>
+                    <div class="col-md-3 pull-left" style="text-align:right">
+                        <div class="form-group">
+                            <div class="" style="margin-top:28px">
+                                <div class="btn-group btn-group-sm" uib-dropdown>
+                                    <button id="split-button" type="button" class="btn btn-info" ng-click="buttonAddHostVenue()"><i class="fa fa-plus"></i> Add Joint</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 pull-right">
+                        <div class="form-group">
+                            <div class="" style="margin-top:28px">
+                                <div class="btn-group btn-group-sm" uib-dropdown>
+                                    <button id="split-button" type="button" class="btn btn-info" ng-click="buttonOpenNewVenueModal()"><i class="fa fa-plus"></i> Add New Joint</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div data-rc-bootstrap-alerts="alertHostVenue"></div>
+                <hr />
+                <table datatable="ng" dt-instance="dtInstance" dt-options="dtOptions" class="table table-dark ng-isolate-scope dataTable no-footer dtr-column collapsed" ng-cloak>
+                    <thead>
+                        <tr>
+                            <th>Joint Name</th>
+                            <th>Trivia Day</th>
+                            <th>Trivia Time</th>
+                            <th>&nbsp;</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="Venue in hostVenueList " ng-include="getDisplayTemplate(Venue)"></tr>
+                    </tbody>
+                </table>
+                <hr />
+                <div data-rc-bootstrap-alerts="editHostInformationAlerts"></div>
                 <div class="form-group text-right">
                     <div class="col-xs-12">
                         <button ng-click="buttonCancel()" type="button" class="btn btn-default">Cancel</button>
@@ -334,3 +406,35 @@
     </div>
     
 </div>
+<script type="text/ng-template" id="displaytemplate">
+    <td>{{Venue.name}}</td>
+    <td>{{Venue.triviaDay}}</td>
+    <td>{{Venue.triviaTime}}</td>
+    <td>
+        <button ng-click="editHostVenue(Venue)" type="button" class="btn btn-primary btn-xs pull-right"><span class="fa fa-lg  fa-pencil-square-o"></span></button>
+    </td>
+    <td>
+        <button ng-click="buttonDeleteHostVenue(Venue.venue_id)" type="button" class="btn btn-primary btn-xs pull-right"><span class="fa fa-lg fa-trash-o"></span></button>
+    </td>
+</script>
+<script type="text/ng-template" id="edittemplate">
+    <td style="padding-top:35px;"> {{selectedHostVenue.name}}</td>
+    <td>
+        <div style="padding-top:35px;">
+            <select rc-drop-down-days ng-model="defaultDayTime.triviaDay" class="form-control" required>
+                <option value="">Trivia Day</option>
+            </select>
+        </div>
+    </td>
+    <td>
+        <div class="col-xs-6">
+            <uib-timepicker ng-model="defaultDayTime.triviaTimeDate" hour-step="1" minute-step="15" show-meridian="true"></uib-timepicker>
+        </div>
+    </td>
+    <td style="padding-top:38px;">
+        <button class="btn btn-primary" ng-if="!newMode" ng-click="updateHostVenue($index)">Update</button>
+    </td>
+    <td style="padding-top:38px;">
+        <button class="btn btn-default pull-left" ng-click="resetDisplayTemplate()">Cancel</button>
+    </td>
+</script>

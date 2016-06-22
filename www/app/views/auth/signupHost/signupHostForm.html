@@ -160,8 +160,24 @@
         </div>
         <div data-rc-bootstrap-alerts="signupJoinSelectionAlerts"></div>
         <hr />
-        <table data-datatable="" data-dt-options="dtVenues.options" data-dt-columns="dtVenues.columns" data-dt-instance="dtVenues.instance" class="table table-dark ng-isolate-scope dataTable no-footer dtr-column collapsed"></table>
-        <div class="form-group row">
+           <table datatable="ng" dt-instance="dtInstance" dt-options="dtOptions" class="table table-dark ng-isolate-scope dataTable no-footer dtr-column collapsed" ng-cloak>
+                    <thead>
+                        <tr>
+                            <th>Joint Name</th>
+                            <th>Trivia Day</th>
+                            <th>Trivia Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="Venue in NewVenueHostList ">
+                            <td class="is-table-column"> {{Venue.name}} </td>
+                            <td class="is-table-column"> {{Venue.triviaDay}} </td>
+                            <td class="is-table-column"> {{Venue.triviaTime}} </td>
+                        </tr>
+                    </tbody>
+                </table>
+        <hr />
+    <div class="form-group row">
 
         </div>
         <div data-rc-bootstrap-alerts="signupAlerts"></div>

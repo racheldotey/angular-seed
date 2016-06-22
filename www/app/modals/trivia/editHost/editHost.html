@@ -8,7 +8,7 @@
 
     <div data-rc-bootstrap-alerts="alertProxy"></div>
 
-    <div ng-if="!editMode">
+    <div ng-if="!editMode && !newMode">
 
         <div class="row">
             <div class="col-xs-12">
@@ -19,7 +19,7 @@
                     <p class="form-control-static">{{saved.nameFirst}} &nbsp; {{saved.nameLast}}</p>
                 </div>
             </div>
-            
+
             <div class="col-xs-12 col-md-6">
                 <div class="form-group">
                     <label>Address</label>
@@ -28,44 +28,72 @@
                     <p class="form-control-static">{{saved.host_city}}, {{saved.host_state}} {{saved.host_zip}}</p>
                 </div>
             </div>
-            
+
             <div class="col-xs-12 col-md-6">
                 <div class="form-group">
                     <label>Host Phone</label>
                     <p class="form-control-static">{{saved.phone}}<span ng-show="saved.phone_extension"> Ext. {{saved.phone_extension}}</span></p>
                 </div>
             </div>
-            
+
             <div class="col-xs-12">
                 <div class="form-group">
                     <label>Host Email</label>
                     <p class="form-control-static">{{saved.email}}</p>
                 </div>
             </div>
-            
+
             <div class="col-xs-6">
                 <div class="form-group">
                     <label>Host Website</label>
                     <p class="form-control-static"><a href="{{saved.host_website}}" target="_blank">{{saved.host_website}}</a></p>
                 </div>
             </div>
-            
+
             <div class="col-xs-6">
                 <div class="form-group">
                     <label>Host Facebook Page</label>
                     <p class="form-control-static"><a href="{{saved.host_facebook}}" target="_blank">{{saved.host_facebook}}</a></p>
                 </div>
             </div>
-            
+
+
         </div>
 
         <div class="meta" ng-if="!newMode && (saved.created || saved.lastUpdated)">
-            <hr/>
+            <hr />
             <p ng-show="saved.created" class="text-muted"><strong>Created:</strong> {{saved.created | formatMySQLDate}} <span ng-show="saved.createdBy">by {{saved.createdBy}}</span></p>
             <p ng-show="saved.lastUpdated" class="text-muted"><strong>Updated:</strong> {{saved.lastUpdated | formatMySQLDate}} <span ng-show="saved.updatedBy">by {{saved.updatedBy}}</span></p>
         </div>
+        <hr />
+        <div data-rc-bootstrap-alerts="alertHostVenue"></div>
 
+        <div class="form-group row" n>
+            <div class="col-xs-12">
+                <h5><label>Location(s) where you host live trivia games</label></h5>
+            </div>
+        </div>
+        <hr />
+        <table datatable="ng" dt-instance="dtInstance" dt-options="dtOptions" class="table table-hover ng-isolate-scope dataTable no-footer dtr-column collapsed" ng-cloak>
+            <thead>
+                <tr>
+                    <th>Joint Name</th>
+                    <th>Trivia Day</th>
+                    <th>Trivia Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="hostVenue in hostVenueList ">
+                    <td class="is-table-column"> {{hostVenue.venue}} </td>
+                    <td class="is-table-column"> {{hostVenue.venue_triviaDay}} </td>
+                    <td class="is-table-column"> {{hostVenue.venue_triviaTime}} </td>
+                </tr>
+                <tr class="odd" ng-if="hostVenueList.length<=0"><td valign="top" colspan="3" class="dataTables_empty">No data available in table</td></tr>
+            </tbody>
+        </table>
+        <hr />
     </div>
+   
 
     <form ng-if="editMode" name="form.modalForm" role="form" novalidate>
 
@@ -111,10 +139,10 @@
 
         <div class="form-group row">
             <div class="col-xs-8">
-                <input type="text" class="form-control" placeholder="Host Phone" ng-model="editing.phone" ui-mask="(999) 999-9999" ui-mask-placeholder ui-mask-placeholder-char="_" ui-options="{clearOnBlur: false}" ng-model-options="{ updateOn: 'blur' }" ng-change="handlePhoneChangeEvent(editing.phone)" />
+                <input type="text" class="form-control" placeholder="Host Phone" ng-model="editing.phone" ui-mask="(999) 999-9999" ui-mask-placeholder ui-mask-placeholder-char="_" ui-options="{clearOnBlur: false}" ng-model-options="{ updateOn: 'blur' }" ng-change="handlePhoneChangeEvent(editing.phone)" required />
             </div>
             <div class="col-xs-4">
-                <input type="text" class="form-control" placeholder="Ext" ng-model="editing.phone_extension"  maxlength="5"  ui-mask="999" />
+                <input type="text" class="form-control" placeholder="Ext" ng-model="editing.phone_extension" maxlength="5" />
             </div>
         </div>
         <div ng-if="showPhoneValidation" class="form-group">
@@ -129,14 +157,14 @@
                 <input ng-model="editing.host_website" type="text" class="form-control" name="website" placeholder="Host Website (http://...)" maxlength="255">
             </div>
             <div class="col-xs-6">
-                <input ng-model="editing.host_facebook" type="text" class="form-control" name="facebook" placeholder="Host Facebook Page (http://...)" maxlength="255">
+                <input ng-model="editing.host_facebook" type="text" class="form-control" name="facebook" placeholder="Host Facebook Page (http://...)" maxlength="255" ng-pattern='/(?:https?:\/\/)?(?:www\.)?facebook\.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[\w\-]*\/)*([\w\-\.]*)/'>
             </div>
         </div>
 
         <div class="form-group row">
             <div class="col-xs-12">
                 <div class="form-group">
-                    <label for="disabled">Disable Host</label> {{editing.disabled}}<br/>
+                    <label for="disabled">Disable Host</label> {{editing.disabled}}<br />
                     <label class="radio-inline"><input type="radio" name="disabled" ng-click="buttonChangeDisabled()" ng-model="editing.disabled" value="false"> Enable Host</label>
                     <label class="radio-inline"><input type="radio" name="disabled" ng-click="buttonChangeDisabled()" ng-model="editing.disabled" value="true"> Disable Host</label>
                 </div>
@@ -144,25 +172,285 @@
         </div>
 
         <div class="meta" ng-if="saved.disabled === 'true'">
-            <hr/>
+            <hr />
             <p class="text-danger">Current Saved Host State: <strong>Disabled</strong>.</p>
         </div>
-        
+        <hr />
+        <div class="form-group row">
+            <div class="col-xs-12">
+                <p>Please select and/or add the Joint location(s) where you host live trivia games</p>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-6">
+                <div class="form-group" ng-cloak>
+                    <label>Existing Joint</label>
+                    <div rc-trivia-select-list-venue="VenuesDropDown.venue" teams-list-data="publicVenuesList"></div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    <div class="" style="margin-top:28px">
+                        <div class="btn-group btn-group-sm" uib-dropdown>
+                            <button id="split-button" type="button" class="btn btn-info" ng-click="buttonAddHostVenue()"><i class="fa fa-plus"></i> Add Joint</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 pull-right">
+                <div class="form-group">
+                    <div class="" style="margin-top:28px">
+                        <div class="btn-group btn-group-sm" uib-dropdown>
+                            <button id="split-button" type="button" class="btn btn-info" ng-click="buttonOpenNewVenueModal()"><i class="fa fa-plus"></i> Add New Joint</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div data-rc-bootstrap-alerts="signupJoinSelectionAlerts"></div>
+        <hr />
+        <div data-rc-bootstrap-alerts="alertHostVenue"></div>
+        <label>Host Joints</label>
+        <hr />
+         <table datatable="ng" dt-instance="dtInstance" dt-options="dtOptions" class="table table-hover ng-isolate-scope dataTable no-footer dtr-column collapsed" ng-cloak>
+            <thead>
+                <tr>
+                    <th>Joint Name</th>
+                    <th>Trivia Day</th>
+                    <th>Trivia Time</th>
+                    <th>&nbsp;</th>
+                    <th>&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="hostVenue in hostVenueList" ng-include="getDisplayTemplate(hostVenue)"></tr>
+                <tr class="odd" ng-if="hostVenueList.length<=0"><td valign="top" colspan="5" class="dataTables_empty">No data available in table</td></tr>
+                
+               
+            </tbody>
+        </table>
+       
+        <hr />
         <div data-rc-bootstrap-alerts="alertProxy"></div>
 
     </form>
 
+    <form ng-if="newMode && !editMode" name="form.host" role="form" novalidate ng-cloak>
+        <div data-rc-bootstrap-alerts="signupAlerts"></div>
+
+        <div class="form-group row">
+            <div class="col-xs-6">
+                <input ng-model="newUser.nameFirst" type="text" class="form-control" name="nameFirst" placeholder="Contact First Name" maxlength="255" required>
+            </div>
+
+            <div class="col-xs-6">
+                <input ng-model="newUser.nameLast" type="text" class="form-control" name="nameLast" placeholder="Contact Last Name" maxlength="255" required>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-xs-12">
+                <input ng-model="newUser.email" type="email" class="form-control" name="email" placeholder="Contact Email" maxlength="255" required>
+            </div>
+        </div>
+
+        <div ng-if="showPasswordRules" class="form-group">
+            <div class="col-xs-12">
+                <div class="alert alert-warning" role="alert">
+                    <p><strong>Passwords Must:</strong></p>
+                    <ul>
+                        <li>Be at least 8 characters in length.</li>
+                        <li>Contain at least one letter and number.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+
+            <div class="col-xs-6">
+                <input ng-model="newUser.password"
+                       ng-blur="onChangeValidatePassword()"
+                       type="password" class="form-control" name="password" placeholder="Contact Password" maxlength="55" required>
+            </div>
+
+            <div class="col-xs-6">
+                <input ng-model="newUser.passwordB"
+                       ng-change="onChangeValidateConfirmPassword()"
+                       type="password" class="form-control" name="passwordB" placeholder="Confirm Contact Password" maxlength="55" required>
+            </div>
+
+        </div>
+
+        <div ng-if="showPasswordMissmatch" class="form-group">
+            <div class="col-xs-12">
+                <div class="alert alert-warning" role="alert">
+                    <p>Passwords must match</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-xs-12">
+                <input ng-model="newUser.host_address" type="text" class="form-control" name="address" placeholder="Joint Address" maxlength="255" required>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-xs-12">
+                <input ng-model="newUser.host_addressb" type="text" class="form-control" name="addressb" placeholder="Joint Address Con't" maxlength="255">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-xs-6">
+                <input ng-model="newUser.host_city" type="text" class="form-control" name="city" placeholder="Joint City" maxlength="255" required>
+            </div>
+
+            <div class="col-xs-3">
+                <select rc-drop-down-states ng-model="newUser.host_state" class="form-control" required>
+                    <option value="">State</option>
+                </select>
+            </div>
+            <div class="col-xs-3">
+                <input ng-model="newUser.host_zip" type="text" class="form-control" name="zip" placeholder="Zip" maxlength="9" required ng-pattern="/^[0-9]+$/">
+                <div ng-show="form.host.zip.$error.pattern">
+                    <br />
+                    <span style="border-radius:inherit" class="alert alert-danger" ng-show="form.host.zip.$error.pattern">Invalid zip</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-group row">
+            <div class="col-xs-8">
+                <input type="text" class="form-control" placeholder="Joint Phone" ng-model="newUser.phone" ui-mask="(999) 999-9999" ui-mask-placeholder ui-mask-placeholder-char="_" ui-options="{clearOnBlur: false}" ng-model-options="{ updateOn: 'blur' }" ng-change="handlePhoneChangeEvent(newUser.phone)" required />
+            </div>
+            <div class="col-xs-4">
+                <input type="text" class="form-control" placeholder="Ext" ng-model="newUser.phone_extension" maxlength="5" />
+            </div>
+        </div>
+        <div class="form-group row" ng-if="showPhoneValidation">
+            <div class="col-xs-12">
+                <div class="alert alert-warning" role="alert">
+                    <p>Phone Number is Invalid.</p>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-xs-12">
+                <input ng-model="newUser.host_website" class="form-control" name="website" placeholder="Joint Website (http://...)" maxlength="255" type="url" url-input>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-xs-12">
+                <input ng-model="newUser.host_facebook" class="form-control" name="facebook" placeholder="Joint Facebook Page (http://...)" maxlength="255" type="url" url-input ng-pattern='/(?:https?:\/\/)?(?:www\.)?facebook\.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[\w\-]*\/)*([\w\-\.]*)/'>
+            </div>
+        </div>
+        <hr />
+
+        <div class="form-group row">
+            <div class="col-xs-12">
+                <p>Please select and/or add the Joint location(s) where you host live trivia games</p>
+            </div>
+        </div>
+        <div class="form-group row">
+
+            <div class="col-md-6">
+                <div class="form-group" ng-cloak>
+                    <label>Existing Joint</label>
+                    <div rc-trivia-select-list-venue="VenuesDropDown.venue" teams-list-data="publicVenuesList"></div>
+                </div>
+            </div>
+
+            <div class="col-md-3 pull-left" style="text-align:right">
+                <div class="form-group">
+                    <div class="" style="margin-top:28px">
+                        <div class="btn-group btn-group-sm" uib-dropdown>
+                            <button id="split-button" type="button" class="btn btn-info" ng-click="buttonAddNewVenue()"><i class="fa fa-plus"></i> Add Joint</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 pull-right">
+                <div class="form-group">
+                    <div class="" style="margin-top:28px">
+                        <div class="btn-group btn-group-sm" uib-dropdown>
+                            <button id="split-button" type="button" class="btn btn-info" ng-click="buttonOpenNewVenueModal()"><i class="fa fa-plus"></i> Add New Joint</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div data-rc-bootstrap-alerts="signupJoinSelectionAlerts"></div>
+        <hr />
+        <table datatable="ng" dt-instance="dtInstance" dt-options="dtOptions" class="table table-hover" ng-cloak>
+            <thead>
+                <tr>
+                    <th>Joint Name</th>
+                    <th>Trivia Day</th>
+                    <th>Trivia Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="Venue in hostVenueList ">
+                    <td class="is-table-column"> {{Venue.name}} </td>
+                    <td class="is-table-column"> {{Venue.triviaDay}} </td>
+                    <td class="is-table-column"> {{Venue.triviaTime}} </td>
+                </tr>
+            </tbody>
+        </table>
+        <hr />
+        <div class="form-group row">
+
+        </div>
+        <div data-rc-bootstrap-alerts="signupAlerts"></div>
+    </form>
 </div>
 
-<div ng-if="!editMode" class="modal-footer">
+<div ng-if="!editMode && !newMode" class="modal-footer">
     <button class="btn btn-default pull-left" ng-click="buttonEdit()">Edit</button>
     <button class="btn btn-primary" ng-click="buttonCancel()">Done</button>
 </div>
-
 <div ng-if="editMode" class="modal-footer">
-    <!--<button class="btn btn-warning pull-left" ng-if="!newMode" ng-click="buttonDelete()">Delete</button>-->
-    
     <button class="btn btn-default pull-left" ng-click="buttonCancel()">Cancel</button>
-    <button class="btn btn-primary" ng-if="newMode" ng-click="buttonNew()">Add</button>
     <button class="btn btn-primary" ng-if="!newMode" ng-click="buttonSave()">Save</button>
 </div>
+<div ng-if="newMode && !editMode" class="modal-footer">
+    <button class="btn btn-default pull-left" ng-click="buttonCancel()">Cancel</button>
+    <button class="btn btn-primary" ng-if="newMode" ng-click="buttonAddNewHost()">Add</button>
+</div>
+<script type="text/ng-template" id="displaytemplate">
+    <td>{{hostVenue.venue}}</td>
+    <td>{{hostVenue.venue_triviaDay}}</td>
+    <td>{{hostVenue.venue_triviaTime}}</td>
+    <td>
+        <button ng-if="hostVenue.venueId!=null" ng-click="editHostVenue(hostVenue)" type="button" class="btn btn-primary btn-xs pull-right"><span class="fa fa-lg  fa-pencil-square-o"></span></button>
+    </td>
+    <td>
+        <button  ng-if="hostVenue.venueId!=null" ng-click="buttonDeleteHostVenue(hostVenue.venue_id)" type="button" class="btn btn-primary btn-xs pull-right"><span class="fa fa-lg fa-trash-o"></span></button>
+    </td>
+</script>
+<script type="text/ng-template" id="edittemplate">
+    <td style="padding-top:35px;"> {{selectedHostVenue.venue}}</td>
+    <td>
+        <div style="padding-top:35px;">
+            <select rc-drop-down-days ng-model="defaultDayTime.triviaDay" class="form-control" required>
+                <option value="">Trivia Day</option>
+            </select>
+        </div>
+    </td>
+    <td>
+        <div class="col-xs-6">
+            <uib-timepicker ng-model="defaultDayTime.triviaTimeDate" hour-step="1" minute-step="15" show-meridian="true"></uib-timepicker>
+        </div>
+    </td>
+    <td style="padding-top:38px;">
+        <button class="btn btn-primary" ng-if="!newMode" ng-click="updateHostVenue($index)">Update</button>
+    </td>
+    <td style="padding-top:38px;">
+        <button class="btn btn-default pull-left" ng-click="resetDisplayTemplate()">Cancel</button>
+    </td>
+</script>

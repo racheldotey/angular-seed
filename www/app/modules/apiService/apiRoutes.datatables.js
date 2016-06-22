@@ -92,5 +92,9 @@ angular.module('apiRoutes.datatables', [])
     api.adminHostList = function () {
         return getPromise('/datatable/admin/trivia-hosts');
     };
+    api.hostVenueList = function (hostId) {
+        return getPromise('/datatable/admin/trivia-hosts-venues/' + hostId);
+    };
+
     return api;
 }]);

@@ -108,7 +108,11 @@
             </div>
 
             <div class="col-xs-3">
-                <input ng-model="editing.zip" type="text" class="form-control" name="zip" placeholder="Zip" maxlength="9" required>
+                <input ng-model="editing.zip" type="text" class="form-control" name="zip" placeholder="Zip" maxlength="9" required ng-pattern="/^[0-9]+$/">
+                <div ng-show="form.modalForm.zip.$error.pattern">
+                    <br />
+                    <span style="border-radius:inherit" class="alert alert-danger" ng-show="form.modalForm.zip.$error.pattern">Invalid zip</span>
+                </div>
             </div>
         </div>
 

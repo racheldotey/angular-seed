@@ -28,6 +28,7 @@ angular.module('app.modal.forgotPassword', [])
             $scope.$broadcast('show-errors-check-validity');
             if ($scope.form.modalForm.$valid) {
                 AuthService.forgotpassword($scope.forgotpasswordEmail).then(function (results) {
+                    $uibModalInstance.close(results);
                 }, function (error) {
                     $scope.alertProxy.error(error);
                 });
@@ -35,9 +36,6 @@ angular.module('app.modal.forgotPassword', [])
                 $scope.form.modalForm.$setDirty();
                 $scope.alertProxy.error('Please fill in both fields.');
             }
-
-
-
         };
 
 
