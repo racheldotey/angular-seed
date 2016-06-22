@@ -34,7 +34,7 @@ angular.module('app.leaderboards.globalPlayerCheckins', ['ui.grid', 'ui.grid.aut
                 if($scope.grid.data.length) {
                     LeaderboardResizing.setUIGridHeight();
                 } else {
-                    console.log('grid resize blocked - ' + $scope.grid.data.length);
+                    angular.element(document.getElementsByClassName('grid')[0]).css('height', '50px');
                 }
             };
             
