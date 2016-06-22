@@ -40,10 +40,10 @@ class DBConn {
                  */
                 \PDO::ATTR_PERSISTENT => true,
                 // Error Mode: Throw Exceptions
-                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                \PDO::ATTR_EMULATE_PREPARES => false
             );
             
-            // 
             $invocation = ($c['dbHost']) ? "host={$c['dbHost']}" : "unix_socket={$c['dbUnixSocket']}";
 
             try {

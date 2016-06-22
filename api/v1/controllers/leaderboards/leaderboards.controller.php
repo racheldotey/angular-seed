@@ -1,6 +1,7 @@
 <?php namespace API;
 require_once dirname(__FILE__) . '/leaderboards.data.php';
  require_once dirname(dirname(dirname(__FILE__))) . '/config/config.php';
+ require_once dirname(dirname(dirname(__FILE__))) . '/services/api.auth.php';
 
 use \Respect\Validation\Validator as v;
 
@@ -49,7 +50,7 @@ class LeaderboardController {
      */
     private static $HOT_SALSA_URL_GAME_CHECKINS = '/location/getCheckins';
     
-    private static function makeHotSalsaRequest($apiPath, $app) { 
+    private static function makeHotSalsaRequest($apiPath) { 
         $log = new Logging('leaderboards');
             
         $url = APIConfig::get('HOT_SALSA_API_URL');
@@ -128,6 +129,47 @@ class LeaderboardController {
         return $venueId;
     }
     
+    private static function getHotSalsaLocationIdForUserHomeJoint() {
+        $loggedInUserId = APIAuth::getUserId();
+        if(!$loggedInUserId) {
+            return false; 
+        }
+        
+        $homeJointName = LeaderboardData::getHomeJointForTeamByUserId($loggedInUserId);
+        if(!$homeJointName) {
+            return false; 
+        }
+        
+        $salsaVenueData = self::getHotSalsaVenuesList();
+        if(!$salsaVenueData || !isset($salsaVenueData["addresses"])) {
+            return false; 
+        }
+        /*
+        {  
+            "status":"success",
+            "addresses":[{  
+               "sdkAddressId":"11",
+               "name":"Bayou Cafe",
+               "city":"Schenectady",
+               "state":"NY",
+               "address":"507 Saratoga Road",
+               "postalCode":"12302",
+               "country":"US",
+               "image":"http://cfxcdnorigin.hotsalsainteractive.com/hotsalsainteractive/address/1459204914.png",
+               "hasTrivia":1,
+               "triviaDay":"Wednesday",
+               "triviaTime":"7:00 PM"
+            }]
+         }
+         */
+        foreach($salsaVenueData["addresses"] AS $venue) {
+            if($venue['name'] === $homeJointName) {
+                return $venue['sdkAddressId'];
+            }
+        }
+        return false;
+    }
+    
     
     // Global Player Score Leaderboard
     static function getGlobalPlayersLeaderboard($app, $count) {
@@ -135,25 +177,26 @@ class LeaderboardController {
         
         // /trivia/gameNight/cumilativeScore?scoreType=player&count=10&startDate= optional&endDate=optional
         $url = self::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreType=player&count={$limit}";
-        $salsaData = self::makeHotSalsaRequest($url, $app);
+        $salsaData = self::makeHotSalsaRequest($url);
         
-        if($salsaData && isset($salsaData['scores'])) {
-        /* {
-         *      "status":"success",
-         *      "scores":[
-         *          {"name":"billman_c@hotmail.com",
-         *          "userId":"1770",
-         *          "score":"783",
-         *          "confirmed":"0",
-         *          "lastName":"Rustad",
-         *          "firstName":"Conrad",
-         *          "emailAddress":"billman_c@hotmail.com",
-         *          "facebookId":"10154054462631407",
-         *          "teamName":"Super Villans",
-         *          "photoUser":"http://cfxcdnorigin.hotsalsainteractive.com/hotsalsainteractive/userPhoto/1463168056.png","hasPhoto":1,"upgraded":1}
-         *      ]
-         * } */
-            $results = array();
+        $results = array();
+        $mergedUserIds = array();
+        if(false && $salsaData && isset($salsaData['scores'])) {
+            /* {
+             *      "status":"success",
+             *      "scores":[
+             *          {"name":"billman_c@hotmail.com",
+             *          "userId":"1770",
+             *          "score":"783",
+             *          "confirmed":"0",
+             *          "lastName":"Rustad",
+             *          "firstName":"Conrad",
+             *          "emailAddress":"billman_c@hotmail.com",
+             *          "facebookId":"10154054462631407",
+             *          "teamName":"Super Villans",
+             *          "photoUser":"http://cfxcdnorigin.hotsalsainteractive.com/hotsalsainteractive/userPhoto/1463168056.png","hasPhoto":1,"upgraded":1}
+             *      ]
+             * } */
             foreach($salsaData['scores'] AS $salsaPlayer) {
                 $first = (isset($salsaPlayer['firstName'])) ? $salsaPlayer['firstName'] : '';
                 $last = (isset($salsaPlayer['lastName'])) ? $salsaPlayer['lastName'] : '';
@@ -168,7 +211,7 @@ class LeaderboardController {
                     $team = array();
                 }
                         
-                $results[] = array( 
+                $result = array(
                     'mobileScore' => (isset($salsaPlayer['score'])) ? $salsaPlayer['score'] : 0,
                     'liveScore' => ($team && isset($team['score'])) ? $team['score'] : 0,
                     
@@ -186,7 +229,41 @@ class LeaderboardController {
                     'homeJointId' => ($team && isset($team['homeVenueId'])) ? $team['homeVenueId'] : 0,
                     'hotSalsaHomeJointId' => (isset($salsaPlayer['jointId'])) ? $salsaPlayer['jointId'] : 0
                 );
+                    
+                $result['sort'] = ($result['mobileScore'] > $result['liveScore']) ? $result['mobileScore'] : $result['liveScore'];
+                
+                if($result['userId'] > 0) {
+                    $mergedUserIds[] = $result['userId'];
+                }
+                
+                $results[] = $result;
             }
+        }
+        
+        $localData = LeaderboardData::selectPlayerScoreLeaderboards($count, $mergedUserIds);
+        if($localData) {
+            foreach($localData AS $localPlayer) {
+                $result = array(
+                    'mobileScore' => 0,
+                    'liveScore' => $localPlayer->score,
+                    'player' => $localPlayer->firstName . " " . $localPlayer->lastName,
+                    'userId' => $localPlayer->userId,
+                    'hotSalsaUserId' => 0,
+                    'email' => $localPlayer->email,
+                    'img' => '',
+                    'teamName' => $localPlayer->teamName,
+                    'teamId' => $localPlayer->teamId,
+                    'hotSalsaTeamId' => 0,
+                    'homeJoint' => $localPlayer->homeJoint,
+                    'homeJointId' => $localPlayer->homeJointId,
+                    'hotSalsaHomeJointId' => 0,
+                    'sort' => $localPlayer->score
+                );
+                $results[] = $result;
+            }
+        }
+            
+        if(count($results) > 0) {
             return $app->render(200, array('leaderboard' => $results));
         } else {
             return $app->render(400,  array('msg' => 'Could not select Global Player Score Leaderboard.'));
@@ -200,7 +277,9 @@ class LeaderboardController {
         // /trivia/gameNight/cumilativeScore?scoreType=team&count=10&startDate= optional&endDate=optional 
         $url = self::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreType=team&count={$limit}";
         
-        $salsaData = self::makeHotSalsaRequest($url, $app);
+        $salsaData = self::makeHotSalsaRequest($url);
+        $results = array();
+        $mergedTeamIds = array();
         if($salsaData && isset($salsaData['scores'])) {
             /*  {
              *      "status":"success",
@@ -220,7 +299,6 @@ class LeaderboardController {
              *              "upgraded":0
              *         }]
              * } */
-            $results = array();
             foreach($salsaData['scores'] AS $salsaTeam) {
                 $teamName = (isset($salsaTeam['name'])) ? $salsaTeam['name'] : '';
                 $homeJoint = (isset($salsaTeam['homeJoint'])) ? $salsaTeam['homeJoint'] : '';
@@ -230,7 +308,7 @@ class LeaderboardController {
                     $team = array();
                 }
                 
-                $results[] = array( 
+                $result = array( 
                     'mobileScore' => (isset($salsaTeam['score'])) ? $salsaTeam['score'] : 0,
                     'liveScore' => ($team && isset($team['score'])) ? $team['score'] : 0,
                     
@@ -242,7 +320,36 @@ class LeaderboardController {
                     'homeJointId' => ($team && isset($team['homeVenueId'])) ? $team['homeVenueId'] : 0,
                     'hotSalsaHomeJointId' => (isset($salsaTeam['jointId'])) ? $salsaTeam['jointId'] : 0
                 );
+                    
+                $result['sort'] = ($result['mobileScore'] > $result['liveScore']) ? $result['mobileScore'] : $result['liveScore'];
+                
+                if($result['teamId'] > 0) {
+                    $mergedTeamIds[] = $result['teamId'];
+                }
+                
+                $results[] = $result;
             }
+        }
+                
+        $localData = LeaderboardData::selectTeamScoreLeaderboards($count, $mergedTeamIds);
+        if($localData) {
+            foreach($localData AS $localTeam) {
+                $result = array(
+                    'mobileScore' => 0,
+                    'liveScore' => $localTeam->score,
+                    'teamName' => $localTeam->teamName,
+                    'teamId' => $localTeam->teamId,
+                    'hotSalsaTeamId' => 0,
+                    'homeJoint' => $localTeam->homeJoint,
+                    'homeJointId' => $localTeam->homeJointId,
+                    'hotSalsaHomeJointId' => 0,
+                    'sort' => $localTeam->score
+                );
+                $results[] = $result;
+            }
+        }
+            
+        if(count($results) > 0) {
             return $app->render(200, array('leaderboard' => $results));
         } else {
             return $app->render(400,  array('msg' => 'Could not select Global Team Score Leaderboard.'));
@@ -250,9 +357,15 @@ class LeaderboardController {
     }
 
     // Per Joint Player Score Leaderboard
-    static function getJointPlayersLeaderboard($app, $venueId, $count) {
+    static function getVenuePlayersLeaderboard($app, $venueId, $count) {
         if(!v::intVal()->validate($venueId)) {
             return $app->render(400,  array('msg' => 'Invalid Joint ID. Check your parameters and try again.'));
+        } elseif ($venueId === '0') {
+            $venueId = self::getHotSalsaLocationIdForUserHomeJoint();
+            
+            if(!$venueId) {
+                return $app->render(400,  array('msg' => 'Invalid ID. Check your parameters and try again.'));
+            }
         }
         
         $limit = (!v::intVal()->validate($count)) ? '10' : $count;
@@ -262,7 +375,7 @@ class LeaderboardController {
         // /trivia/gameNight/cumilativeScore?scoreType=player&scoreLevel=bar&locationId=11&count=10&startDate=optional&endDate=optional
         $url = self::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreType=player&scoreLevel=bar&locationId={$locationId}&count={$limit}";
         
-        $salsaData = self::makeHotSalsaRequest($url, $app);
+        $salsaData = self::makeHotSalsaRequest($url);
         /*
         {  
             "status":"success",
@@ -312,7 +425,7 @@ class LeaderboardController {
                     $team = array();
                 }
                         
-                $results[] = array( 
+                $results[] = array(
                     'mobileScore' => (isset($salsaPlayer['score'])) ? $salsaPlayer['score'] : 0,
                     'liveScore' => ($team && isset($team['score'])) ? $team['score'] : 0,
                     
@@ -338,11 +451,17 @@ class LeaderboardController {
     }
 
     // Per Joint Team Score Leaderboard
-    static function getJointTeamsLeaderboard($app, $venueId, $count) {
+    static function getVenueTeamsLeaderboard($app, $venueId, $count) {
         if(!v::intVal()->validate($venueId)) {
             return $app->render(400,  array('msg' => 'Invalid Joint ID. Check your parameters and try again.'));
+        } elseif ($venueId === '0') {
+            $venueId = self::getHotSalsaLocationIdForUserHomeJoint();
+            
+            if(!$venueId) {
+                return $app->render(400,  array('msg' => 'Invalid ID. Check your parameters and try again.'));
+            }
         }
-        
+                
         $limit = (!v::intVal()->validate($count)) ? '10' : $count;
         
         $locationId = self::getHotSalsaLocationId($venueId);
@@ -350,7 +469,7 @@ class LeaderboardController {
         // /trivia/gameNight/cumilativeScore?scoreType=team&scoreLevel=bar&locationId=11&count=10&startDate= optional&endDate=optional
         $url = self::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreType=team&scoreLevel=bar&locationId={$locationId}&count={$limit}";
         
-        $salsaData = self::makeHotSalsaRequest($url, $app);
+        $salsaData = self::makeHotSalsaRequest($url);
         /* {  
            "status":"success",
            "addresses":{  
@@ -421,7 +540,7 @@ class LeaderboardController {
         
         // /location/getCheckins?scoreType=player&count=10
         $url = self::$HOT_SALSA_URL_GAME_CHECKINS . "?scoreType=player&count={$limit}";
-        $salsaData = self::makeHotSalsaRequest($url, $app);
+        $salsaData = self::makeHotSalsaRequest($url);
         /* {  
             "status":"success",
             "checkins":[  
@@ -487,7 +606,7 @@ class LeaderboardController {
         
         // /location/getCheckins?scoreType=team&count=10
         $url = self::$HOT_SALSA_URL_GAME_CHECKINS . "?scoreType=team&count={$limit}";
-        $data = self::makeHotSalsaRequest($url, $app);
+        $data = self::makeHotSalsaRequest($url);
         /* { 
             "status":"success",
             "checkins":[  
@@ -544,6 +663,12 @@ class LeaderboardController {
     static function getVenuePlayerCheckinsLeaderboard($app, $venueId, $count) {
         if(!v::intVal()->validate($venueId)) {
             return $app->render(400,  array('msg' => 'Invalid Joint ID. Check your parameters and try again.'));
+        } elseif ($venueId === '0') {
+            $venueId = self::getHotSalsaLocationIdForUserHomeJoint();
+            
+            if(!$venueId) {
+                return $app->render(400,  array('msg' => 'Invalid ID. Check your parameters and try again.'));
+            }
         }
         
         $limit = (!v::intVal()->validate($count)) ? '10' : $count;
@@ -553,7 +678,7 @@ class LeaderboardController {
         // /location/getCheckins?scoreType=player&scoreLevel=bar&locationId=11&count=10
         $url = self::$HOT_SALSA_URL_GAME_CHECKINS . "?scoreType=player&scoreLevel=bar&locationId={$locationId}&count={$limit}";
         
-        $salsaData = self::makeHotSalsaRequest($url, $app);
+        $salsaData = self::makeHotSalsaRequest($url);
         /* {  
             "status":"success",
             "checkins":[  
@@ -617,6 +742,12 @@ class LeaderboardController {
     static function getVenueTeamCheckinsLeaderboard($app, $venueId, $count) {
         if(!v::intVal()->validate($venueId)) {
             return $app->render(400,  array('msg' => 'Invalid Joint ID. Check your parameters and try again.'));
+        } elseif ($venueId === '0') {
+            $venueId = self::getHotSalsaLocationIdForUserHomeJoint();
+            
+            if(!$venueId) {
+                return $app->render(400,  array('msg' => 'Invalid ID. Check your parameters and try again.'));
+            }
         }
         
         $limit = (!v::intVal()->validate($count)) ? '10' : $count;
@@ -626,7 +757,7 @@ class LeaderboardController {
         // /location/getCheckins?scoreType=team&scoreLevel=bar&locationId=11&count=10
         $url = self::$HOT_SALSA_URL_GAME_CHECKINS . "?scoreType=team&scoreLevel=bar&locationId={$locationId}&count={$limit}";
         
-        $salsaData = self::makeHotSalsaRequest($url, $app);
+        $salsaData = self::makeHotSalsaRequest($url);
         /* {  
             "status":"success",
             "checkins":[  
@@ -678,9 +809,73 @@ class LeaderboardController {
         }
     }
     
-    static function getVenueLocalList($app) {
-        $data = LeaderboardData::selectVenueList();
+    /* Venue Lists */
+    
+    static function getMergedVenuesList($app) {
+        $localData = LeaderboardData::selectVenueList();
+        $salsaData = self::makeHotSalsaRequest(self::$HOT_SALSA_URL_VENUE_LIST);
+        if (!$localData && !$salsaData) {
+            return $app->render(400,  array('msg' => 'Could not select list of joints.'));
+        } else if (!$localData) {
+            return $app->render(200, array('joints' => $salsaData));            
+        } else if (!$salsaData) {
+            return $app->render(200, array('joints' => $localData));            
+        }
         
+        /*
+        {  
+            "status":"success",
+            "addresses":[{  
+               "sdkAddressId":"11",
+               "name":"Bayou Cafe",
+               "city":"Schenectady",
+               "state":"NY",
+               "address":"507 Saratoga Road",
+               "postalCode":"12302",
+               "country":"US",
+               "image":"http://cfxcdnorigin.hotsalsainteractive.com/hotsalsainteractive/address/1459204914.png",
+               "hasTrivia":1,
+               "triviaDay":"Wednesday",
+               "triviaTime":"7:00 PM"
+            }]
+         }
+        
+        return DBConn::selectAll("SELECT v.id, v.name, v.address, "
+                . "v.address_b AS addressb, v.city, v.state, v.zip "
+                . "FROM " . DBConn::prefix() . "venues AS v "
+                . "ORDER BY v.state, v.city, v.name;"
+         */
+                
+        $results = array();
+        foreach($salsaData['addresses'] AS $salsaVenue) {
+            if(!isset($salsaVenue['sdkAddressId'])) {
+                break;
+            }
+            
+            
+            for($i = 0; $i < count($localData); $i++) {
+                if($localData[$i]['name'] === $salsaVenue['name']) {
+                    $foundLocalVenue = $localData[$i];
+                    unset($localData[$i]);
+                    break;
+                }
+            }
+            
+            $results[] = array( 
+                'salsaUserId' => $salsaVenue['sdkAddressId'],
+                'localUserId' => (isset($foundLocalVenue['id'])) ? $foundLocalVenue['id'] : '0',
+                'name' => $salsaVenue['name'],
+                'city' => $salsaVenue['city'],
+                'state' => $salsaVenue['state'],
+                'zip' => $salsaVenue['postalCode'],
+                'address' => $salsaVenue['address']
+            );
+        }
+        return $app->render(200, array('joints' => $results));
+    }
+    
+    static function getLocalVenuesList($app) {
+        $data = LeaderboardData::selectVenueList();
         if($data) {
             return $app->render(200, array('joints' => $data));
         } else {
@@ -688,11 +883,9 @@ class LeaderboardController {
         }
     }
     
-    static function getVenueHotSalsaList($app) {
+    static function getHotSalsaVenuesList($app) {
         // /locationList
-        $url = self::$HOT_SALSA_URL_VENUE_LIST;
-        
-        $salsaData = self::makeHotSalsaRequest($url, $app);
+        $salsaData = self::makeHotSalsaRequest(self::$HOT_SALSA_URL_VENUE_LIST);
         /*
         {  
             "status":"success",
@@ -732,7 +925,35 @@ class LeaderboardController {
             }
             return $app->render(200, array('joints' => $results));
         } else {
-            return $app->render(400,  array('msg' => $salsaData));
+            return $app->render(400,  array('msg' => 'Could not select Hot Salsa Venue List.'));
+        }
+    }
+    
+    private static function getHotSalsaTeamsList() {
+        // /locationList
+        $url = self::$HOT_SALSA_URL_TEAMS_LIST;
+        
+        $salsaData = self::makeHotSalsaRequest($url);
+        /*{  
+            "status":"success",
+            "teamNames":[{  
+                "teamName":"Super Villans",
+                "locationName":"The Saratoga Winery",
+                "locationId":"12",
+                "players":[{  
+                    "firstname":"Testle",
+                    "lastName":"Testerton",
+                    "email":"test@test.test",
+                    "teamName":"Super Villans",
+                    "id":"1000",
+                    "image":""
+                }]
+            }]
+        } */
+        if($salsaData && isset($salsaData['teamNames'])) {
+            return $salsaData['teamNames'];
+        } else {
+            return false;
         }
     }
 }

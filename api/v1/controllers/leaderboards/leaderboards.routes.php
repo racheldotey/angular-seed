@@ -18,12 +18,12 @@ class LeaderboardRoutes {
 
             // Per Joint Player Score Leaderboard
             $app->map("/joint/players/score/:venueId/:count/", function ($venueId, $count) use ($app) {
-                LeaderboardController::getJointPlayersLeaderboard($app, $venueId, $count);
+                LeaderboardController::getVenuePlayersLeaderboard($app, $venueId, $count);
             })->via('GET', 'POST');
 
             // Per Joint Team Score Leaderboard
             $app->map("/joint/teams/score/:venueId/:count/", function ($venueId, $count) use ($app) {
-                LeaderboardController::getJointTeamsLeaderboard($app, $venueId, $count);
+                LeaderboardController::getVenueTeamsLeaderboard($app, $venueId, $count);
             })->via('GET', 'POST');
 
             // Global Player Checkin Leaderboard
@@ -48,17 +48,12 @@ class LeaderboardRoutes {
 
             // List of Joints / Venues
             $app->map("/list-joints/local/", function () use ($app) {
-                LeaderboardController::getVenueLocalList($app);
+                LeaderboardController::getLocalVenuesList($app);
             })->via('GET', 'POST');
             
             // List of Joints / Venues
             $app->map("/list-joints/hot-salsa/", function () use ($app) {
-                LeaderboardController::getVenueHotSalsaList($app);
-            })->via('GET', 'POST');
-            
-            // List of Joints / Venues
-            $app->map("/list-joints/", function () use ($app) {
-                LeaderboardController::getVenueLocalList($app);
+                LeaderboardController::getHotSalsaVenuesList($app);
             })->via('GET', 'POST');
         });
     }

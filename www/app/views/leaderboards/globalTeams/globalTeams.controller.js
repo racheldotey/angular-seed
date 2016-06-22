@@ -22,7 +22,7 @@ angular.module('app.leaderboards.globalTeams', ['ui.grid', 'ui.grid.autoResize']
             $scope.grid.data = [];
             $scope.grid.columnDefs = [
                 { field: 'teamName', displayName:'Team Name' },
-                { field: 'homeVenue', displayName:'Team Home Joint' },
+                { field: 'homeJoint', displayName:'Team Home Joint' },
                 { field: 'mobileScore', displayName:'Mobile Score', type: 'number', sort: { direction: uiGridConstants.DESC, priority: 1 }, maxWidth: 175 },
                 { field: 'liveScore', displayName:'Live Team Score', type: 'number', maxWidth: 175 }
             ];

@@ -468,16 +468,12 @@ angular.module('AuthService', [
             return $q(function (resolve, reject) {
                 API.postForgotpassword(credentials)
                         .then(function (data) {
-
-
-
+                            resolve(data);
                         }, function (error) {
                             reject(error);
                             $rootScope.$broadcast(AUTH_EVENTS.forgotpasswordFailed);
                         });
             });
-
-
         };
 
         factory.forgotemailaddress = function (credentials) {
@@ -511,7 +507,7 @@ angular.module('AuthService', [
 
 
         };
-
+        
         return factory;
 
     }]);

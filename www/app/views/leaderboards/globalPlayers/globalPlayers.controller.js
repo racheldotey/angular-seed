@@ -25,7 +25,7 @@ angular.module('app.leaderboards.globalPlayers', ['ui.grid', 'ui.grid.autoResize
                 { field: 'img', displayName:'', cellClass: 'leaderboard-img-cell text-center', enableSorting: false, cellTemplate: '<img ng-src="{{COL_FIELD}}" class="leaderboard-img" />', maxWidth: 110 },
                 { field: 'player', displayName:'Player Name' },
                 { field: 'teamName', displayName:'Team Name' },
-                { field: 'homeVenue', displayName:'Team Home Joint' },
+                { field: 'homeJoint', displayName:'Team Home Joint' },
                 { field: 'mobileScore', displayName:'Mobile Score', type: 'number', sort: { direction: uiGridConstants.DESC, priority: 1 }, maxWidth: 175 },
                 { field: 'liveScore', displayName:'Live Team Score', type: 'number', maxWidth: 175 }
             ];
