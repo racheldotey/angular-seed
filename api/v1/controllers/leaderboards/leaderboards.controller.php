@@ -181,7 +181,7 @@ class LeaderboardController {
         
         $results = array();
         $mergedUserIds = array();
-        if(false && $salsaData && isset($salsaData['scores'])) {
+        if($salsaData && isset($salsaData['scores'])) {
             /* {
              *      "status":"success",
              *      "scores":[
@@ -559,8 +559,9 @@ class LeaderboardController {
                }
             ]
          } */
+        $results = array();
+        $mergedUserIds = array();
         if($salsaData && isset($salsaData['checkins'])) {
-            $results = array();
             foreach($salsaData['checkins'] AS $salsaPlayer) {
                 $first = (isset($salsaPlayer['firstName'])) ? $salsaPlayer['firstName'] : '';
                 $last = (isset($salsaPlayer['lastName'])) ? $salsaPlayer['lastName'] : '';
@@ -575,7 +576,7 @@ class LeaderboardController {
                     $team = array();
                 }
                         
-                $results[] = array( 
+                $result = array( 
                     'mobileCheckins' => (isset($salsaPlayer['checkinCount'])) ? $salsaPlayer['checkinCount'] : 0,
                     'liveCheckins' => ($team && isset($team['gameCheckins'])) ? $team['gameCheckins'] : 0,
                     
@@ -592,8 +593,41 @@ class LeaderboardController {
                     'homeJoint' => $homeJoint,
                     'homeJointId' => ($team && isset($team['homeVenueId'])) ? $team['homeVenueId'] : 0,
                     'hotSalsaHomeJointId' => (isset($salsaPlayer['jointId'])) ? $salsaPlayer['jointId'] : 0
-                );
+                );                    
+                $result['sort'] = ($result['mobileCheckins'] > $result['liveCheckins']) ? $result['mobileCheckins'] : $result['liveCheckins'];
+                
+                if($result['userId'] > 0) {
+                    $mergedUserIds[] = $result['userId'];
+                }
+                
+                $results[] = $result;
             }
+        }
+        
+        $localData = LeaderboardData::selectPlayerScoreLeaderboards($count, $mergedUserIds);
+        if($localData) {
+            foreach($localData AS $localPlayer) {
+                $result = array(
+                    'mobileCheckins' => 0,
+                    'liveCheckins' => $localPlayer->gameCheckins,
+                    'player' => $localPlayer->firstName . " " . $localPlayer->lastName,
+                    'userId' => $localPlayer->userId,
+                    'hotSalsaUserId' => 0,
+                    'email' => $localPlayer->email,
+                    'img' => '',
+                    'teamName' => $localPlayer->teamName,
+                    'teamId' => $localPlayer->teamId,
+                    'hotSalsaTeamId' => 0,
+                    'homeJoint' => $localPlayer->homeJoint,
+                    'homeJointId' => $localPlayer->homeJointId,
+                    'hotSalsaHomeJointId' => 0,
+                    'sort' => $localPlayer->gameCheckins
+                );
+                $results[] = $result;
+            }
+        }
+            
+        if(count($results) > 0) {
             return $app->render(200, array('leaderboard' => $results));
         } else {
             return $app->render(400,  array('msg' => 'Could not select Global Player Checkin Leaderboard.'));
