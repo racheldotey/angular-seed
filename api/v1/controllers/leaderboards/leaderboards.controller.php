@@ -629,8 +629,9 @@ class LeaderboardController {
                   "checkinCount":"3"
                }]
          } */
+        $results = array();
+        $mergedTeamIds = array();
         if($data && isset($data['checkins'])) {
-            $results = array();
             foreach($data['checkins'] AS $salsaTeam) {
                 $teamName = (isset($salsaTeam['teamName'])) ? $salsaTeam['teamName'] : '';
                 $homeJoint = (isset($salsaTeam['homeJoint'])) ? $salsaTeam['homeJoint'] : '';
@@ -640,7 +641,7 @@ class LeaderboardController {
                     $team = array();
                 }
                 
-                $results[] = array( 
+                $result[] = array( 
                     'mobileCheckins' => (isset($salsaTeam['checkinCount'])) ? $salsaTeam['checkinCount'] : 0,
                     'liveCheckins' => ($team && isset($team['gameCheckins'])) ? $team['gameCheckins'] : 0,
                     
@@ -652,7 +653,36 @@ class LeaderboardController {
                     'homeJointId' => ($team && isset($team['homeVenueId'])) ? $team['homeVenueId'] : 0,
                     'hotSalsaHomeJointId' => (isset($salsaTeam['jointId'])) ? $salsaTeam['jointId'] : 0
                 );
+                    
+                $result['sort'] = ($result['mobileCheckins'] > $result['liveCheckins']) ? $result['mobileCheckins'] : $result['liveCheckins'];
+                
+                if($result['teamId'] > 0) {
+                    $mergedTeamIds[] = $result['teamId'];
+                }
+                
+                $results[] = $result;
             }
+        }
+                
+        $localData = LeaderboardData::selectTeamScoreLeaderboards($count, $mergedTeamIds);
+        if($localData) {
+            foreach($localData AS $localTeam) {
+                $result = array(
+                    'mobileCheckins' => 0,
+                    'liveCheckins' => $localTeam->gameCheckins,
+                    'teamName' => $localTeam->teamName,
+                    'teamId' => $localTeam->teamId,
+                    'hotSalsaTeamId' => 0,
+                    'homeJoint' => $localTeam->homeJoint,
+                    'homeJointId' => $localTeam->homeJointId,
+                    'hotSalsaHomeJointId' => 0,
+                    'sort' => $localTeam->gameCheckins
+                );
+                $results[] = $result;
+            }
+        }
+            
+        if(count($results) > 0) {
             return $app->render(200, array('leaderboard' => $results));
         } else {
             return $app->render(400,  array('msg' => 'Could not select Global Team Checkin Leaderboard.'));
