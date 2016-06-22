@@ -99,6 +99,7 @@ class AuthController {
         AuthHooks::venue_signup($app, $venue_reponse);
         self::addVenueGroupToUser($result['user']->id);
         self::addVenueRole($result['user']->id, $venue, 'owner');
+		$result['user']->venueId= $venue;
         return $app->render(200, $result);
     }
 
@@ -125,6 +126,7 @@ class AuthController {
         AuthHooks::venue_signup($app, $venue_reponse);
         self::addVenueGroupToUser($result['user']->id);
         self::addVenueRole($result['user']->id, $venue, 'owner');
+		$result['user']->venueId= $venue;
         return $app->render(200, $result);
     }
 
@@ -132,11 +134,11 @@ class AuthController {
         $post = $app->request->post();
 
         if (!v::key('venue', v::stringType())->validate($post) ||
-                !v::key('address', v::stringType())->validate($post) ||
-                !v::key('city', v::stringType())->validate($post) ||
-                !v::key('state', v::stringType())->validate($post) ||
-                !v::key('zip', v::stringType())->validate($post)) {
-
+            !v::key('address', v::stringType())->validate($post) ||
+            !v::key('city', v::stringType())->validate($post) ||
+            !v::key('state', v::stringType())->validate($post) ||
+            !v::key('zip', v::stringType())->validate($post))
+        {
             return false;
         }
 
@@ -221,34 +223,32 @@ class AuthController {
     }
     static function hostSignup($app) {
         $post = $app->request->post();
-        $isValidHost=self::addHost($app, 0,0, true);
+        $isValidHost=self::addHost($app,0,true);
 
         if($isValidHost){
-
-            if(!v::key('venueId', v::intVal())->validate($post)) 
-            {
-                return $app->render(400,  array('msg' => 'Invalid venue Id.'));
-            }
-            else{
-
-                $result = AuthControllerNative::signup($app);
-                if (!$result['registered']) {
-                    return $app->render(400, $result);
-                }
+            $result = AuthControllerNative::signup($app);
+            if (!$result['registered']) {
+                return $app->render(400, $result);
             }
 
-            $venueId=$post['venueId'];
-            $host_id=self::addHost($app, $result['user']->id,$venueId, false);
-			self::addHostGroupToUser($result['user']->id);
-            $user = UserData::selectUserById( $result['user']->id);
-            $host = HostData::getHostByUser($result['user']->id);
-            $venue = VenueData::getVenue($venueId);
-            
+            if (isset($result['user']->teams[0])) {
+                ApiMailer::sendWebsiteHostSignupConfirmation($result['user']->teams[0]->name, $result['user']->email, "{$result['user']->nameFirst} {$result['user']->nameLast}");
+            } else {
+                ApiMailer::sendWebsiteHostSignupConfirmation($result['user']->email, "{$result['user']->nameFirst} {$result['user']->nameLast}");
+            }
+
+
+            $venueIds=$post['venueIds'];
+            $host_id=self::addHost($app, $result['user']->id,false);
+            self::addHostGroupToUser($result['user']->id);
             if (!$host_id) {
                 return $app->render(400, array('msg' => "Could not add host. Check your parameters and try again."));
             }
-			return $app->render(200, $result);  // as it is returning apikey token and user detail for siginig
-            //return $app->render(200, array('msg'=>"Host Added",'user'=>$user,"venue"=>$venue,'host'=>$host));
+            
+			 $config_data = ConfigData::getVariableByName("HOST_SIGNUP_CONGRATULATION_PAGE");
+			 $redirectPage =(!empty($config_data) && $config_data->value!='')?$config_data->value:"http://www.triviajoint.com/host-registration-congratulations/";
+ 			 $result['user']->redirectPage= $redirectPage;
+			 return $app->render(200, $result); 
         }
         else{
 
@@ -257,40 +257,38 @@ class AuthController {
     }
     static function hostFacebookSignup($app) {
         $post = $app->request->post();
-        $isValidHost=self::addHost($app, 0,0, true);
+        $isValidHost=self::addHost($app,0, true);
 
         if($isValidHost){
-
-            $venueId=(v::key('venueId', v::intVal())->validate($post))?$post['venueId']:'';
-
-            if(!v::intVal()->validate($venueId)){
-                return $app->render(400,  array('msg' => 'Invalid venue Id.'));
-            }
-            else{
-                $venueId=$post['venueId'];
-                $result = AuthControllerNative::signup($app);
-                if (!$result['registered']) {
-                    return $app->render(400, $result);
-                }
+            $result = AuthControllerFacebook::signup($app);
+            if (!$result['registered']) {
+                return $app->render(400, $result);
             }
 
-            $host_id=self::addHost($app, $result['user']->id,$venueId, false);
-			self::addHostGroupToUser($result['user']->id);
-            $user = UserData::selectUserById( $result['user']->id);
-            $host = HostData::getHostByUser($host_id);
-            $venue = VenueData::getVenueByUser($venueId);
+            if (isset($result['user']->teams[0])) {
+                ApiMailer::sendWebsiteHostSignupConfirmation($result['user']->teams[0]->name, $result['user']->email, "{$result['user']->nameFirst} {$result['user']->nameLast}");
+            } else {
+                ApiMailer::sendWebsiteHostSignupConfirmation($result['user']->email, "{$result['user']->nameFirst} {$result['user']->nameLast}");
+            }
+
+            $venueIds=$post['venueIds'];
+            $host_id=self::addHost($app, $result['user']->id,$venueIds, false);
+            self::addHostGroupToUser($result['user']->id);
             if (!$host_id) {
                 return $app->render(400, array('msg' => "Could not add host. Check your parameters and try again."));
             }
-            //return $app->render(200, array('msg'=>"Host Added",'user'=>$user,"venue"=>$venue,'host'=>$host));
-			return $app->render(200, $result);  // as it is returning apikey token and user detail for siginig
+            //return $app->render(200, $result);
+			 $config_data = ConfigData::getVariableByName("HOST_SIGNUP_CONGRATULATION_PAGE");
+			 $redirectPage =(!empty($config_data) && $config_data->value!='')?$config_data->value:"http://www.triviajoint.com/host-registration-congratulations/";
+ 			 $result['user']->redirectPage= $redirectPage;	
+			 return $app->render(200, $result);			 
         }
         else{
 
             return $app->render(400, array('msg' =>"Could not add host. Check your parameters and try again."));
         }
     }
-	static function addHostGroupToUser($userId) {
+    static function addHostGroupToUser($userId) {
         $groupId = GroupData::selectGroupIdBySlug('game-admin');
         if (!$groupId) {
             return false;
@@ -301,7 +299,7 @@ class AuthController {
             ':created_user_id' => $userId
             ));
     }
-    static function addHost($app, $userId,$venueId, $onlyValidation = false) {
+    static function addHost($app, $userId, $onlyValidation = false) {
         $post = $app->request->post();
 
         if (!v::key('host_accepted_terms', v::stringType())->validate($post) ||
@@ -316,11 +314,26 @@ class AuthController {
         if($post['host_accepted_terms']!='true'){
             return false;
         }
-
+        
         if (!v::url()->validate($post["host_website"])) {
             return $app->render(400, array('msg' => $post["host_website"] . ' is not valid URL.'));
         }
+        if(v::key('venueIds', v::arrayVal())->validate($post) && !empty($post['venueIds'])){
+                
+            foreach ($post['venueIds'] as $i => $venueId) {
+                if(!v::intVal()->validate($venueId)){
+                    return $app->render(400, array('msg' => 'Invalid venue Ids.'));
+                }
+                else{
+                    $venueExists=VenueData::getVenue($venueId);
+                    if(!$venueExists){
+                        return $app->render(400, array('msg' => 'Invalid venue id.'));
+                    }
+                }
 
+            }
+        }
+        
         if (!preg_match('/(?:https?:\/\/)?(?:www\.)?facebook\.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[\w\-]*\/)*([\w\-\.]*)/', $post["host_facebook"])) {
             return $app->render(400, array('msg' => $post["host_facebook"] . ' is not valid facebook URL.'));
         }
@@ -348,26 +361,29 @@ class AuthController {
 
             $hostId = HostData::insertHost($host);
 
-             //host_venue joint table
-            $assignment = array(
-                ':host_id' => $hostId,
-                ':venue_id' => $venueId,
-                ":created_user_id" => $userId,
-                ":last_updated_by" => $userId
-                );
-            HostData::insertHostVenueAssignment($assignment);
-            //day time host venue 
-            $venueData = VenueData::getVenue($venueId);  
-            if($venueData->triviaDay!='' && $venueData->triviaTime!=''){
-                $hostScheduleId = HostData::insertHostTriviaSchedules(array(
-                    ':host_id' => $hostId,
-                    ':venue_id' => $venueId,                    
-                    ':trivia_day' => $venueData->triviaDay, 
-                    ':trivia_time' => $venueData->triviaTime, 
-                    ":created_user_id" => $userId,
-                    ":last_updated_by" => $userId
-                    ));
-            }    
+            if(v::key('venueIds', v::arrayVal())->validate($post) && !empty($post['venueIds'])){
+                foreach ($post['venueIds'] as $key => $venueId) {
+                    $assignment = array(
+                        ':host_id' => $hostId,
+                        ':venue_id' => $venueId,
+                        ":created_user_id" => $userId,
+                        ":last_updated_by" => $userId
+                        );
+                    HostData::insertHostVenueAssignment($assignment);
+                    $venueData = VenueData::getVenue($venueId);  
+                    if($venueData->triviaDay!='' && $venueData->triviaTime!=''){
+                        $hostScheduleId = HostData::insertHostTriviaSchedules(array(
+                            ':host_id' => $hostId,
+                            ':venue_id' => $venueId,                    
+                            ':trivia_day' => $venueData->triviaDay, 
+                            ':trivia_time' => $venueData->triviaTime, 
+                            ":created_user_id" => $userId,
+                            ":last_updated_by" => $userId
+                            ));
+                    }    
+                }
+            }
+            
             return $hostId;
         } else {
             return true;

@@ -51,10 +51,36 @@ class DatatablesController {
         $table = ($data) ? $data : array();
         return $app->render(200, array('table' => $table ));
     }
-	
-     static function getTriviaHosts($app) {
+
+    static function getTriviaHosts($app) {
+        $hosts=array();
         $data = DatatablesData::selectTriviaHosts();
-        $table = ($data) ? $data : array();
+        if(!empty($data)){
+            foreach ($data as $i => $d) {
+                unset($d->temp);
+                $venue=array();
+                $array=get_object_vars ($d);
+                $keys = array_keys($array);
+                
+                foreach ($keys as $j => $key) {
+                    
+                    if(preg_match('/^venue(.*)/', $key))
+                    {
+                        $venue[$key]=$d->{$key};
+                    }
+                    else if(!isset($hosts[$d->id][$key])){
+                        $hosts[$d->id][$key]=$d->{$key};
+                    }
+                }
+                if(!isset($hosts[$d->id])){
+                      $hosts[$d->id]['venues']=array();
+                }
+                $hosts[$d->id]['venues'][]=$venue;
+             
+            }
+        }
+        $table = ($hosts) ? array_values($hosts) : array();
+
         return $app->render(200, array('table' => $table ));
     }
     static function getTeamGameCheckins($app, $teamId) {

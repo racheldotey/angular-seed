@@ -39,6 +39,14 @@ class ApiMailer {
         return self::sendEmailFromTemplate('NEW_USER_SIGNED_UP', $playerEmail, $playerName, [$websiteTitle, $websiteUrl, $loginLink], [$websiteTitle]);
     }
     
+    public static function sendWebsiteHostSignupConfirmation($hostEmail, $hostName = '') {
+        $websiteTitle = APIConfig::get('WEBSITE_TITLE');
+        $websiteUrl = APIConfig::get('WEBSITE_URL');
+        $loginLink = "{$websiteUrl}login/";
+        return self::sendEmailFromTemplate('NEW_HOST_SIGNED_UP', $hostEmail, $hostName, [$websiteTitle, $websiteUrl, $loginLink], [$websiteTitle]);
+    }
+
+
     public static function sendWebsiteSignupJoinTeamConfirmation($teamName, $playerEmail, $playerName = '') {
         $websiteTitle = APIConfig::get('WEBSITE_TITLE');
         $websiteUrl = APIConfig::get('WEBSITE_URL');

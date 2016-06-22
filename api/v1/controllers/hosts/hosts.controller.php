@@ -18,7 +18,7 @@ class HostController
             return $app->render(400,  array('msg' => 'Could not select host.'));
         }
     }
-	//region to get host information by user , for profile host information fetching
+    //region to get host information by user , for profile host information fetching
     static function getHostByUserId($app, $userId) {
         if(!v::intVal()->validate($userId)) {
             return $app->render(400,  array('msg' => 'Could not select user. Check your parameters and try again.'));
@@ -30,54 +30,48 @@ class HostController
             return $app->render(200,  array('msg' => 'Could not select host.'));
         }
     }
-	//
-
+    //
     static function addHost($app) 
     {
-
         $post = $app->request->post();
-        if(!v::key('venueId', v::intVal())->validate($post)) 
-        {
-            return $app->render(400,  array('msg' => 'Invalid venue Id.'));
-        }
         $results = self::hosts_validateHostParams($post);
         if($results['error']) 
         {
             return $app->render(400,  array('msg' => $results['msg']));
         }
-        $venueId=$post['venueId'];
-        if($venueId > 0)
+        $venueIds=$post['venueIds'];
+        if(!empty($venueIds))
         {
-            $venueData = VenueData::getVenue($venueId);            
-
             /*Add the verifed host*/
             $validHost = self::host_getHostArray($post);
             $validHost[':created_user_id'] = APIAuth::getUserId();
             $validHost[':trv_users_id'] = APIAuth::getUserId();
             $validHost[':host_accepted_terms'] = 'y';
-
             $hostId = HostData::insertHost($validHost);
             if($hostId) 
             {
-                $assignment = array(
-                    ':host_id' => $hostId,
-                    ':venue_id' => $venueId,
-                    ":created_user_id" =>  APIAuth::getUserId(),
-                    ":last_updated_by" =>  APIAuth::getUserId()
-                    );
-                HostData::insertHostVenueAssignment($assignment);
-
-                if($venueData->triviaDay!='' && $venueData->triviaTime!='')
+                foreach ($post['venueIds'] as $key => $venueId)
                 {
-                    $hostScheduleId = HostData::insertHostTriviaSchedules(array(
-                        ':host_id' => $hostId,     
-                        ':venue_id' => $venueId,                    
-                        ':trivia_day' => $venueData->triviaDay, 
-                        ':trivia_time' => $venueData->triviaTime, 
-                        ":created_user_id" => APIAuth::getUserId(),
-                        ":last_updated_by" => APIAuth::getUserId()
-                        ));
-                }                  
+                    $assignment = array(
+                        ':host_id' => $hostId,
+                        ':venue_id' => $venueId,
+                        ":created_user_id" =>  APIAuth::getUserId(),
+                        ":last_updated_by" =>  APIAuth::getUserId()
+                        );
+                    HostData::insertHostVenueAssignment($assignment);
+                    $venueData = VenueData::getVenue($venueId); 
+                    if($venueData->triviaDay!='' && $venueData->triviaTime!='')
+                    {
+                        $hostScheduleId = HostData::insertHostTriviaSchedules(array(
+                            ':host_id' => $hostId,     
+                            ':venue_id' => $venueId,                    
+                            ':trivia_day' => $venueData->triviaDay, 
+                            ':trivia_time' => $venueData->triviaTime, 
+                            ":created_user_id" => APIAuth::getUserId(),
+                            ":last_updated_by" => APIAuth::getUserId()
+                            ));
+                    }     
+                }
                 return $app->render(200, array('host' => $hostId));
             } else {
                 return $app->render(400,  array('msg' => 'Could not add host.'));
@@ -88,25 +82,30 @@ class HostController
         }
         /*check for venue id ends*/
     }
-
     static function updateHostData($app, $userId) 
     {
         $post = $app->request->post();
-        $results = self::hosts_validateHostParams($post);
+        
         $host_user=HostData::getHostByUser($userId);
         
+        if(!v::key('hostId', v::intVal())->validate($post) && $host_user) 
+        {
+            return $app->render(400,  array('msg' => 'Invalid host Id.'));
+        }
+        if($host_user){
+            $results = self::hosts_validateHostParams($post);
+        }
+        else{
+            $results = self::hosts_validateHostParams($post);
+        }
         if($results['error']) 
         {
             return $app->render(400,  array('msg' => $results['msg']));
         } 
-        else if(!v::key('hostId', v::intVal())->validate($post) && $host_user) 
-        {
-            return $app->render(400,  array('msg' => 'Invalid host Id.'));
-        }
-
         if($host_user){
             $validHost = self::host_getHostArray($post);
             $validHost[':id'] = $post['hostId'];
+            $hostId=$post['hostId'];
             $host = HostData::updateHost($validHost);  
         }
         else{
@@ -114,7 +113,7 @@ class HostController
             $validHost[':created_user_id'] = $userId;
             $validHost[':trv_users_id'] = $userId;
             $validHost[':host_accepted_terms'] = 'y';
-            $host = HostData::insertHost($validHost);  
+            $host = $hostId = HostData::insertHost($validHost);  
         }
         $user =  HostData::updateUser(array(
             ':id' => $userId,
@@ -124,10 +123,40 @@ class HostController
             ));
         if($user && $host) 
         {
+            $venue=false;
             $user = UserData::selectUserById($userId);
-            $host = HostData::getHostByUser($userId);
-            $venue = VenueData::getVenueByUser($userId);
-
+            $host = HostData::getHost($hostId);
+            if($hostId>0 && v::key('venueIds', v::arrayVal())->validate($post) && !empty($post['venueIds']) ){
+                foreach ($post['venueIds'] as $key => $venueId)
+                {
+                    $assignment_condition=array(
+                        ':host_id' => $hostId,     
+                        ':venue_id' => $venueId
+                        );
+                    $host_assignment_exists=HostData::getHostVenueAssignment($assignment_condition);
+                    if(!$host_assignment_exists){
+                        $assignment = array(
+                            ':host_id' => $hostId,
+                            ':venue_id' => $venueId,
+                            ":created_user_id" =>  APIAuth::getUserId(),
+                            ":last_updated_by" =>  APIAuth::getUserId()
+                            );
+                        HostData::insertHostVenueAssignment($assignment);
+                        $venueData = VenueData::getVenue($venueId); 
+                        if($venueData->triviaDay!='' && $venueData->triviaTime!='')
+                        {
+                            $hostScheduleId = HostData::insertHostTriviaSchedules(array(
+                                ':host_id' => $hostId,     
+                                ':venue_id' => $venueId,                    
+                                ':trivia_day' => $venueData->triviaDay, 
+                                ':trivia_time' => $venueData->triviaTime, 
+                                ":created_user_id" => APIAuth::getUserId(),
+                                ":last_updated_by" => APIAuth::getUserId()
+                                ));
+                        }
+                    }
+                }
+            }
             if((v::key('disabled', v::stringType()->length(1,5))->validate($post)) && 
                 ($post['disabled'] === true || $post['disabled'] === 'true')) 
             {
@@ -138,14 +167,12 @@ class HostController
             {
                 HostData::enableHost($validHost[':id']);
             }
-
-            return $app->render(200, array('msg' => 'Host has been saved.', 'user' => $user, 'host' => $host,'venue'=>$venue));
+            return $app->render(200, array('msg' => 'Host has been saved.', 'user' => $user, 'host' => $host));
         }
         else {
             return $app->render(400,  array('msg' => 'Could not update host.'));
         }
     }
-
     static function saveHost($app, $hostId) {
         $post = $app->request->post();
         $results = self::hosts_validateHostParams($post);
@@ -157,7 +184,6 @@ class HostController
         if(!HostData::updateHost($validHost)) {
             return $app->render(400,  array('msg' => 'Could not update host. Please try again later.'));
         }
-
         if((v::key('disabled', v::stringType()->length(1,5))->validate($post)) && 
             ($post['disabled'] === true || $post['disabled'] === 'true')) 
         {
@@ -170,7 +196,83 @@ class HostController
         }
         return $app->render(200, array('msg' => "Host was successfully saved.", 'hostId' => $hostId));
     }
+    static function updateTrivia($app, $hostId) {
+        $dayNames = array('sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday');
+        $post = $app->request->post();
 
+        if(!v::key('venueId', v::intVal())->validate($post))  
+        {
+            return $app->render(400,  array('msg' => 'Invalid Venue Id.'));
+        }
+        $venueId=$post['venueId'];
+        $venue = VenueData::getVenue($venueId);
+        if(!$venue) {
+            return $app->render(400,  array('msg' => 'Could not select venue.'));
+        }
+
+        if ((!v::key('triviaDay', v::stringType())->validate($post)) || (v::key('triviaDay', v::stringType())->validate($post) && !in_array(strtolower($post['triviaDay']), $dayNames))) {
+           return $app->render(400,array('msg' => 'Invalid day of the week provided. Check your parameters and try again.'));
+        } else if ((!v::key('triviaTime', v::stringType())->validate($post)) ||
+            (v::key('triviaTime', v::stringType())->validate($post) && !preg_match('/^(1[0-2]|0?[1-9]):[0-5][0-9] (AM|PM)$/i', $post['triviaTime']))) {
+             return $app->render(400,array('error' => true, 'msg' => 'Invalid time provided. Check your parameters and try again.'));
+        } 
+
+        $venueScheduleId = HostData::manageHostTriviaShcedule(array(
+            ':trivia_day' => $post['triviaDay'], 
+            ':trivia_time' => $post['triviaTime'], 
+            ":created_user_id" => APIAuth::getUserId(),
+            ":last_updated_by" => APIAuth::getUserId(),
+            ':venue_id' => $venueId,
+            ':host_id' => $hostId
+            ),$hostId,$venueId);
+        if($venueScheduleId){
+            return $app->render(200, array('msg' => "Host was successfully saved.", 'hostId' => $hostId));
+        }
+        else{
+            return $app->render(400,  array('msg' => 'Could not select venue.'));
+        }
+        
+    }
+    static function removeVenue($app,$hostId)
+    {
+        $post = $app->request->post();
+
+        if(!v::intVal()->validate($hostId)) {
+            return $app->render(400,  array('msg' => 'Could not select host. Check your parameters and try again.'));
+        }
+        $host = HostData::getHost($hostId);
+        if($host) 
+        {
+            $venueId = $post['venueId'];
+
+            $assignment_condition=array(
+                ':host_id' => $hostId,     
+                ':venue_id' => $venueId
+                );
+            $host_assignment_exists=HostData::getHostVenueAssignment($assignment_condition);
+
+            if($host_assignment_exists)
+            {
+                $host_delete_process = HostData::deleteVenueData($hostId,$venueId);
+
+                if(!$host_assignment_exists)
+                {
+                    return $app->render(400,  array('msg' => 'Venue not exist.Check your parameters and try again.'));
+                }
+                else
+                {
+                    return $app->render(200,  array('msg' => 'Venue has been deleted.'));
+                }
+            }
+            else{
+                return $app->render(400,  array('msg' => 'Could not select venue with this host. Check your parameters and try again.'));
+            }
+        } 
+        else 
+        {
+            return $app->render(400,  array('msg' => 'Could not select host.'));
+        }
+    }
     static function deleteHost($app, $hostId) {
         if(HostData::deleteHost($hostId)) {
             return $app->render(200,  array('msg' => 'Host has been deleted.'));
@@ -178,7 +280,6 @@ class HostController
             return $app->render(400,  array('msg' => 'Could not delete host. Check your parameters and try again.'));
         }
     }
-
     private static function hosts_validateHostParams($post) 
     {
         $result = array('error' => false);
@@ -188,7 +289,7 @@ class HostController
             !v::key('host_zip', v::stringType())->validate($post)) 
         {
             $result = array('error' => true, 'msg' => 'Invalid host parameters. Check your imput and try again.');
-        } 
+        }
         else if(v::key('userId', v::stringType())->validate($post) && !self::host_updateUserPassword($post, $post['userId'])) 
         {
             $result = array('error' => true, 'msg' => 'Could not update users password. Check your parameters and try again.');
@@ -208,9 +309,24 @@ class HostController
             $result = array('error' => true, 'msg' => 'Invalid facebook url provided. Check your parameters and try again.');
         } 
 
+
+        if(v::key('venueIds', v::arrayVal())->validate($post) && !empty($post['venueIds']))
+        {
+            foreach ($post['venueIds'] as $i => $venueId) {
+                if(!v::intVal()->validate($venueId)){
+                    $result = array('error' => true, 'msg' => 'Invalid venue Ids');
+                }
+                else{
+                    $venueExists=VenueData::getVenue($venueId);
+                    if(!$venueExists)
+                    {
+                        $result = array('error' => true, 'msg' => 'Invalid venue Id');
+                    }
+                }
+            }
+        }
         return $result;
     }
-
     private static function host_getHostArray($post) {
         return array(
             ':address' => $post['host_address'], 
@@ -225,10 +341,8 @@ class HostController
             ":last_updated_by" => APIAuth::getUserId()
             );
     }
-
     private static function host_updateUserPassword($post, $userId) {
         $success = true;
-
         if(v::key('password', v::stringType())->validate($post) && 
             v::key('passwordB', v::stringType())->validate($post) && $post['password']!='' && $post['passwordB']!='') {
             if(!AuthControllerNative::validatePasswordRequirements($post, 'password')) {
@@ -238,7 +352,6 @@ class HostController
                 $success = AuthData::updateUserPassword($data);
             }
         }
-
         return $success;
     }
 }

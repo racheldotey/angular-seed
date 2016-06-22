@@ -36,8 +36,8 @@ class HostRoutes {
             /*
              * id, 
              */
-            $app->post("/update/:hostId/", function ($hostId) use ($app) {
-                HostController::saveHost($app, $hostId);
+            $app->post("/update/trivia/:hostId/", function ($hostId) use ($app) {
+                HostController::updateTrivia($app, $hostId);
             });
 
 
@@ -48,7 +48,17 @@ class HostRoutes {
                 HostController::deleteHost($app, $hostId);
             })->via('DELETE', 'POST');
 
-			 
+			     
+                 
+
+             /*
+             * id
+             */
+            $app->map("/delete/venue/:hostId/", function ($hostId) use ($app) {
+                HostController::removeVenue($app, $hostId);
+            })->via('DELETE', 'POST');
+
+
 
          });
 }

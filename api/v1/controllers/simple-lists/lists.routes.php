@@ -43,5 +43,10 @@ class ListRoutes {
             })->via('GET', 'POST');
             
         });
+        $app->group('/simple-list-public', $authenticateForRole('public'), function () use ($app) {
+			       $app->map("/venues", function () use ($app) {
+                ListsController::getVenuesList($app);
+            })->via('GET', 'POST');
+		});	
     }
 }

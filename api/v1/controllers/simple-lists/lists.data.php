@@ -24,8 +24,15 @@ class ListsData {
     }
         
     static function selectVenues() {
-        return DBConn::selectAll("SELECT `id`, `name`, CONCAT(`state`, ', ', `city`, ' - ', `name`) AS label "
-                . "FROM " . DBConn::prefix() . "venues WHERE disabled IS NULL ORDER BY label;");
+        //return DBConn::selectAll("SELECT `id`, `name`, CONCAT(`state`, ', ', `city`, ' - ', `name`) AS label "
+        //        . "FROM " . DBConn::prefix() . "venues WHERE disabled IS NULL ORDER BY label;");
+		 return DBConn::selectAll("SELECT v.id, v.name AS name, CONCAT(`state`, ', ', `city`, ' - ', `name`) AS label,"
+                . "vs.trivia_day AS triviaDay, vs.trivia_time AS triviaTime "
+                . "FROM " . DBConn::prefix() . "venues AS v "
+                . "LEFT JOIN " . DBConn::prefix() . "venue_roles AS vr ON vr.venue_id = v.id "
+                . "LEFT JOIN " . DBConn::prefix() . "users AS u ON u.id = vr.user_id "
+                . "LEFT JOIN " . DBConn::prefix() . "users AS u2 ON u2.id = v.created_user_id "
+                . "LEFT JOIN " . DBConn::prefix() . "venues_trivia_schedules AS vs ON vs.venue_id = v.id ORDER BY v.name;");
     }
     
     static function selectTeams() {
