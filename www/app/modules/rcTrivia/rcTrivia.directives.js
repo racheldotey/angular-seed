@@ -12,45 +12,31 @@ app.factory('LeaderboardResizing', [function() {
             
         var api = {};
         
-        api.footerHeight = 0;
+        var padding = 10;
+        var otherPageElementsHeight = 0;
         
-        api.getUIGridHeight = function($scope) {
-                // Height of the entire page - Expanded in the beginning dont use
-                //var pageHeight = $(document).height();
-                // The height of everything except the grid.
-                //var everythingElseHeight = visibleWindowHeight - Math.round(currentGridHeight);
-                
+        var initHeightVariables = function() {
+            var pageHeaderHeight = ($('nav.navbar').height()) ? $('nav.navbar').height() : 0;
+            var leaderboardHeaderHeight = ($('div.page.leaderboard > div.leaderboard-header').height()) ? $('div.page.leaderboard > div.leaderboard-header').height() : 0;
+            var leaderboardFooterHeight = ($('div.page.leaderboard > div.leaderboard-footer').height()) ? $('div.page.leaderboard > div.leaderboard-footer').height() : 0;
+            var footerContentHeight = ($('footer.footer').height()) ? $('footer.footer').height() : 0;
+               
+            otherPageElementsHeight = pageHeaderHeight + leaderboardHeaderHeight + leaderboardFooterHeight + footerContentHeight + padding;
+            
+            console.log(pageHeaderHeight + " + " + leaderboardHeaderHeight +  " + " + leaderboardFooterHeight +  " + " + footerContentHeight +  " + " + padding + " = " + otherPageElementsHeight);
+        };
+        
+        api.getUIGridHeight = function() {
+            if(otherPageElementsHeight === 0) {
+                initHeightVariables();
+            }
+            
+            var newHeight = $(window).height() - otherPageElementsHeight;
+            newHeight = (newHeight > 100) ? parseInt(newHeight) : 100;
 
-                // Height of the visible window area (screen size)
-                var visibleWindowHeight = $(window).height();
-                
-                var pageHeaderHeight = ($('nav.navbar').height()) ? $('nav.navbar').height() : 0;
-                var leaderboardHeaderHeight = ($('div.page.leaderboard > div.leaderboard-header').height()) ? $('div.page.leaderboard > div.leaderboard-header').height() : 0;
-                var leaderboardFooterHeight = ($('div.page.leaderboard > div.leaderboard-footer').height()) ? $('div.page.leaderboard > div.leaderboard-footer').height() : 0;
-                var footerContentHeight = ($('footer.footer').height()) ? $('footer.footer').height() : 0;
-                
-                // Whats left height
-                var whatsLeftHeight = visibleWindowHeight - (pageHeaderHeight + leaderboardHeaderHeight + leaderboardFooterHeight + footerContentHeight);
-                
-                // Current height of the table
-                var currentGridHeight = $('grid').height();
-                
-                // Do the maths
-                var newHeight = currentGridHeight + whatsLeftHeight;
-                newHeight = (newHeight > 100) ? parseInt(Math.floor(newHeight)) : 100;
-                
-                console.log('');
-                console.log('visibleWindowHeight : ' + visibleWindowHeight);
-                console.log('pageHeaderHeight : ' + pageHeaderHeight);
-                console.log('leaderboardHeaderHeight : ' + leaderboardHeaderHeight);
-                console.log('leaderboardFooterHeight : ' + leaderboardFooterHeight);
-                console.log('footerContentHeight : ' + footerContentHeight);
-                console.log('whatsLeftHeight : ' + whatsLeftHeight);
-                console.log('newHeight : ' + newHeight);
-                console.log('');
-                // Change the inner scrollable tables height
-                return newHeight;
-            };
+            // Change the inner scrollable tables height
+            return newHeight;
+        };
             
         return api;
     }]);
