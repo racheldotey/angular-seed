@@ -54,12 +54,10 @@ class LeaderboardController {
         return false;
     }
     
+        return ((float)$b['sort'] - (float)$a['sort']);
+    }
     private function sortAndTrimLeaderboardResults($leaderboard, $limit) {
-        function compareSortColumn($a, $b) {
-            return ((float)$a['sort'] - (float)$b['sort']);
-        }
 
-        usort($leaderboard, "compareSortColumn");
         return array_slice($leaderboard, 0, (int)$limit);
     }
     
