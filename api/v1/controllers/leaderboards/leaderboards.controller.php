@@ -24,7 +24,7 @@ class LeaderboardController {
             return false; 
         }
         
-        $salsaVenueData = self::getHotSalsaVenuesList();
+        $salsaVenueData = LeaderboardListsController::getHotSalsaVenuesList();
         if(!$salsaVenueData || !isset($salsaVenueData["addresses"])) {
             return false; 
         }
@@ -52,6 +52,15 @@ class LeaderboardController {
             }
         }
         return false;
+    }
+    
+    private function sortAndTrimLeaderboardResults($leaderboard, $limit) {
+        function compareSortColumn($a, $b) {
+            return ((float)$a['sort'] - (float)$b['sort']);
+        }
+
+        usort($leaderboard, "compareSortColumn");
+        return array_slice($leaderboard, 0, (int)$limit);
     }
     
     // Global Player Score Leaderboard
@@ -114,7 +123,7 @@ class LeaderboardController {
                     'hotSalsaHomeJointId' => (isset($salsaPlayer['jointId'])) ? $salsaPlayer['jointId'] : 0
                 );
                     
-                $result['sort'] = ($result['mobileScore'] > $result['liveScore']) ? $result['mobileScore'] : $result['liveScore'];
+                $result['sort'] = (float)$result['mobileScore'] + (float)$result['liveScore'];
                 
                 if($result['userId'] > 0) {
                     $mergedUserIds[] = $result['userId'];
@@ -124,7 +133,7 @@ class LeaderboardController {
             }
         }
         
-        $localData = LeaderboardData::selectPlayerScoreLeaderboards($count, $mergedUserIds);
+        $localData = LeaderboardData::selectPlayerScoreLeaderboards($limit, $mergedUserIds);
         if($localData) {
             foreach($localData AS $localPlayer) {
                 $result = array(
@@ -148,7 +157,8 @@ class LeaderboardController {
         }
             
         if(count($results) > 0) {
-            return $app->render(200, array('leaderboard' => $results));
+            $leaderboard = self::sortAndTrimLeaderboardResults($results, $limit);
+            return $app->render(200, array('leaderboard' => $leaderboard));
         } else {
             return $app->render(400,  array('msg' => 'Could not select Global Player Score Leaderboard.'));
         }
@@ -206,7 +216,7 @@ class LeaderboardController {
                     'hotSalsaHomeJointId' => (isset($salsaTeam['jointId'])) ? $salsaTeam['jointId'] : 0
                 );
                     
-                $result['sort'] = ($result['mobileScore'] > $result['liveScore']) ? $result['mobileScore'] : $result['liveScore'];
+                $result['sort'] = (float)$result['mobileScore'] + (float)$result['liveScore'];
                 
                 if($result['teamId'] > 0) {
                     $mergedTeamIds[] = $result['teamId'];
@@ -216,7 +226,7 @@ class LeaderboardController {
             }
         }
                 
-        $localData = LeaderboardData::selectTeamScoreLeaderboards($count, $mergedTeamIds);
+        $localData = LeaderboardData::selectTeamScoreLeaderboards($limit, $mergedTeamIds);
         if($localData) {
             foreach($localData AS $localTeam) {
                 $result = array(
@@ -235,7 +245,8 @@ class LeaderboardController {
         }
             
         if(count($results) > 0) {
-            return $app->render(200, array('leaderboard' => $results));
+            $leaderboard = self::sortAndTrimLeaderboardResults($results, $limit);
+            return $app->render(200, array('leaderboard' => $leaderboard));
         } else {
             return $app->render(400,  array('msg' => 'Could not select Global Team Score Leaderboard.'));
         }
@@ -479,7 +490,7 @@ class LeaderboardController {
                     'homeJointId' => ($team && isset($team['homeVenueId'])) ? $team['homeVenueId'] : 0,
                     'hotSalsaHomeJointId' => (isset($salsaPlayer['jointId'])) ? $salsaPlayer['jointId'] : 0
                 );                    
-                $result['sort'] = ($result['mobileCheckins'] > $result['liveCheckins']) ? $result['mobileCheckins'] : $result['liveCheckins'];
+                $result['sort'] = (float)$result['mobileCheckins'] + (float)$result['liveCheckins'];
                 
                 if($result['userId'] > 0) {
                     $mergedUserIds[] = $result['userId'];
@@ -489,7 +500,7 @@ class LeaderboardController {
             }
         }
         
-        $localData = LeaderboardData::selectPlayerScoreLeaderboards($count, $mergedUserIds);
+        $localData = LeaderboardData::selectPlayerScoreLeaderboards($limit, $mergedUserIds);
         if($localData) {
             foreach($localData AS $localPlayer) {
                 $result = array(
@@ -513,7 +524,8 @@ class LeaderboardController {
         }
             
         if(count($results) > 0) {
-            return $app->render(200, array('leaderboard' => $results));
+            $leaderboard = self::sortAndTrimLeaderboardResults($results, $limit);
+            return $app->render(200, array('leaderboard' => $leaderboard));
         } else {
             return $app->render(400,  array('msg' => 'Could not select Global Player Checkin Leaderboard.'));
         }
@@ -572,8 +584,7 @@ class LeaderboardController {
                     'homeJointId' => ($team && isset($team['homeVenueId'])) ? $team['homeVenueId'] : 0,
                     'hotSalsaHomeJointId' => (isset($salsaTeam['jointId'])) ? $salsaTeam['jointId'] : 0
                 );
-                    
-                $result['sort'] = ($result['mobileCheckins'] > $result['liveCheckins']) ? $result['mobileCheckins'] : $result['liveCheckins'];
+                $result['sort'] = (float)$result['mobileCheckins'] + (float)$result['liveCheckins'];
                 
                 if($result['teamId'] > 0) {
                     $mergedTeamIds[] = $result['teamId'];
@@ -583,7 +594,7 @@ class LeaderboardController {
             }
         }
                 
-        $localData = LeaderboardData::selectTeamScoreLeaderboards($count, $mergedTeamIds);
+        $localData = LeaderboardData::selectTeamScoreLeaderboards($limit, $mergedTeamIds);
         if($localData) {
             foreach($localData AS $localTeam) {
                 $result = array(
@@ -602,7 +613,8 @@ class LeaderboardController {
         }
             
         if(count($results) > 0) {
-            return $app->render(200, array('leaderboard' => $results));
+            $leaderboard = self::sortAndTrimLeaderboardResults($results, $limit);
+            return $app->render(200, array('leaderboard' => $leaderboard));
         } else {
             return $app->render(400,  array('msg' => 'Could not select Global Team Checkin Leaderboard.'));
         }
