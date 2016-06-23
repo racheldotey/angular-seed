@@ -90,14 +90,14 @@ class LeaderboardData {
         }
     }
 
-    static function selectTeamLiveScoreByNameAndVenue($teamName, $homeVenue) {
+    static function selectTeamLiveScoreByNameAndVenue($teamName, $homeVenue) {        
         return DBConn::selectOne("SELECT t.id AS teamId, t.name AS teamName, "
                 . "IFNULL(s.score, '0') AS score, v.id AS homeVenueId, v.name AS homeVenue "
                 . "FROM " . DBConn::prefix() . "teams AS t "
                 . "LEFT JOIN " . DBConn::prefix() . "game_score_teams AS s ON s.game_id = t.current_game_id AND s.team_id = t.id "
                 . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = t.home_venue_id "
-                . "WHERE v.name = :home_venue_name AND t.name = :team_name LIMIT 1;", 
-                array(':team_name' => $teamName, ':home_venue_name' => $homeVenue));
+                . "WHERE t.name = :team_name AND v.name = :home_venue_name LIMIT 1;", 
+                array(':team_name' => $teamName, ':home_venue_name' => $homeVenue), \PDO::FETCH_ASSOC);
     }
     
     static function selectTeamLiveCheckinsByNameAndVenue($teamName, $homeVenue) {

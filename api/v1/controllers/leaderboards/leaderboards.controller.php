@@ -76,38 +76,51 @@ class LeaderboardController {
         $mergedUserIds = array();
         if($salsaData && isset($salsaData['scores'])) {
             /* {
-             *      "status":"success",
-             *      "scores":[
-             *          {"name":"billman_c@hotmail.com",
-             *          "userId":"1770",
-             *          "score":"783",
-             *          "confirmed":"0",
-             *          "lastName":"Rustad",
-             *          "firstName":"Conrad",
-             *          "emailAddress":"billman_c@hotmail.com",
-             *          "facebookId":"10154054462631407",
-             *          "teamName":"Super Villans",
-             *          "photoUser":"http://cfxcdnorigin.hotsalsainteractive.com/hotsalsainteractive/userPhoto/1463168056.png","hasPhoto":1,"upgraded":1}
-             *      ]
-             * } */
+            "status":"success",
+            "scores":[ {
+                "name":"billman_c@hotmail.com",
+                "userId":"1770",
+                "score":"783",
+                "confirmed":"0",
+                "lastName":"Rustad",
+                "firstName":"Conrad",
+                "emailAddress":"billman_c@hotmail.com",
+                "facebookId":"10154054462631407",
+                "teamName":"Super Villans",
+                "photoUser":"http://cfxcdnorigin.hotsalsainteractive.com/hotsalsainteractive/userPhoto/1463168056.png",
+                "hasPhoto":1,
+                "upgraded":1,
+                "addresses": {
+                    "sdkAddressId":"12",
+                    "name":"The Saratoga Winery",
+                    "city":"Saratoga Springs",
+                    "state":"NY",
+                    "address":"462 New York 29",
+                    "postalCode":"12866",
+                    "country":"US",
+                    "image":"http://cfxcdnorigin.hotsalsainteractive.com/hotsalsainteractive/address/1459206559.png",
+                    "hasTrivia":1,
+                    "triviaDay":"Thursday",
+                    "triviaTime":"7:00 PM"
+                }
+                }
+                ]
+            } */
             foreach($salsaData['scores'] AS $salsaPlayer) {
                 $first = (isset($salsaPlayer['firstName'])) ? $salsaPlayer['firstName'] : '';
                 $last = (isset($salsaPlayer['lastName'])) ? $salsaPlayer['lastName'] : '';
                 $email = (isset($salsaPlayer['emailAddress'])) ? $salsaPlayer['emailAddress'] : '';
                 
                 $teamName = (isset($salsaPlayer['teamName'])) ? $salsaPlayer['teamName'] : '';
-                $homeJoint = (isset($salsaPlayer['addresses']) && isset($salsaPlayer['addresses'][0]) && isset($salsaPlayer['addresses'][0]['name'])) ? 
-                        $salsaPlayer['addresses'][0]['name'] : '';
+                $homeJoint = (isset($salsaPlayer['addresses']) && isset($salsaPlayer['addresses']['name'])) ? 
+                        $salsaPlayer['addresses']['name'] : '';
                 
                 $user = LeaderboardData::selectUserIdByEmail($email);
                 $team = LeaderboardData::selectTeamLiveScoreByNameAndVenue($teamName, $homeJoint);
-                if(!$team) {
-                    $team = array();
-                }
                         
                 $result = array(
                     'mobileScore' => (isset($salsaPlayer['score'])) ? $salsaPlayer['score'] : 0,
-                    'liveScore' => ($team && isset($team['score'])) ? $team['score'] : 0,
+                    'liveScore' => ($team) ? $team['score'] : 0,
                     
                     'player' => "{$first} {$last}", 
                     'userId' => ($user && $user->id) ? $user->id : 0,
@@ -176,44 +189,55 @@ class LeaderboardController {
         $results = array();
         $mergedTeamIds = array();
         if($salsaData && isset($salsaData['scores'])) {
-            /*  {
-             *      "status":"success",
-             *      "scores":[{  
-             *          "name":"Answerers",
-             *          "score":"71",
-             *          "players":[{  
-             *              "userId":"1031",
-             *              "confirmed":"0",
-             *              "lastName":"Test",
-             *              "firstName":"Frank",
-             *              "emailAddress":"Frank@test.go",
-             *              "facebookId":"10207653889717859",
-             *              "teamName":"Answerers",
-             *              "photoUser":"http://cfxcdnorigin.hotsalsainteractive.com/hotsalsainteractive/userPhoto/1458942803.png",
-             *              "hasPhoto":0,
-             *              "upgraded":0
-             *         }]
-             * } */
+            /* {
+            "status":"success",
+            "scores":[{
+                "name":"Norse Gods",
+                "score":"101",
+                "addresses":{
+                    "sdkAddressId":"2",
+                    "name":"British Open English Pub",
+                    "city":"Scottsdale",
+                    "state":"AZ",
+                    "address":"1334 North Scottsdale Road",
+                    "postalCode":"85257",
+                    "country":"US",
+                    "image":"http://cfxcdnorigin.hotsalsainteractive.com/hotsalsainteractive/address/1458596177.png",
+                    "hasTrivia":1,
+                    "triviaDay":"Friday",
+                    "triviaTime":"8:00 PM"
+                },
+                "players":[{
+                    "userId":"959",
+                    "confirmed":"1",
+                    "lastName":"Goncharov",
+                    "firstName":"Pavel",
+                    "emailAddress":"pgonch1@gmail.com",
+                    "facebookId":"",
+                    "teamName":"Norse Gods",
+                    "photoUser":"http://cfxcdnorigin.hotsalsainteractive.com/hotsalsainteractive/userPhoto/1463161893.png",
+                    "hasPhoto":1,
+                    "upgraded":1
+                }]
+            }]
+        } */
             foreach($salsaData['scores'] AS $salsaTeam) {
                 $teamName = (isset($salsaTeam['name'])) ? $salsaTeam['name'] : '';
-                $homeJoint = (isset($salsaTeam['addresses']) && isset($salsaTeam['addresses'][0]) && isset($salsaTeam['addresses'][0]['name'])) ? 
-                        $salsaTeam['addresses'][0]['name'] : '';
+                $homeJoint = (isset($salsaTeam['addresses']) && isset($salsaTeam['addresses']['name'])) ? 
+                        $salsaTeam['addresses']['name'] : '';
                 
                 $team = LeaderboardData::selectTeamLiveScoreByNameAndVenue($teamName, $homeJoint);
-                if(!$team) {
-                    $team = array();
-                }
                 
                 $result = array( 
                     'mobileScore' => (isset($salsaTeam['score'])) ? $salsaTeam['score'] : 0,
-                    'liveScore' => ($team && isset($team['score'])) ? $team['score'] : 0,
+                    'liveScore' => ($team) ? $team['score'] : 0,
                     
                     'teamName' => $teamName,
-                    'teamId' => ($team && isset($team['teamId'])) ? $team['teamId'] : 0,
+                    'teamId' => ($team) ? $team['teamId'] : 0,
                     'hotSalsaTeamId' => (isset($salsaTeam['teamId'])) ? $salsaTeam['teamId'] : 0,
                     
                     'homeJoint' => $homeJoint,
-                    'homeJointId' => ($team && isset($team['homeVenueId'])) ? $team['homeVenueId'] : 0,
+                    'homeJointId' => ($team) ? $team['homeVenueId'] : 0,
                     'hotSalsaHomeJointId' => (isset($salsaTeam['jointId'])) ? $salsaTeam['jointId'] : 0
                 );
                     
@@ -314,17 +338,15 @@ class LeaderboardController {
                 $email = (isset($salsaPlayer['emailAddress'])) ? $salsaPlayer['emailAddress'] : '';
                 
                 $teamName = (isset($salsaPlayer['teamName'])) ? $salsaPlayer['teamName'] : '';
-                $homeJoint = (isset($salsaPlayer['homeJoint'])) ? $salsaPlayer['homeJoint'] : '';
+                $homeJoint = (isset($salsaPlayer['addresses']) && isset($salsaPlayer['addresses']['name'])) ? 
+                        $salsaPlayer['addresses']['name'] : '';
                         
                 $user = LeaderboardData::selectUserIdByEmail($email);
                 $team = LeaderboardData::selectTeamLiveScoreByNameAndVenue($teamName, $homeJoint);
-                if(!$team) {
-                    $team = array();
-                }
                         
                 $results[] = array(
                     'mobileScore' => (isset($salsaPlayer['score'])) ? $salsaPlayer['score'] : 0,
-                    'liveScore' => ($team && isset($team['score'])) ? $team['score'] : 0,
+                    'liveScore' => ($team) ? $team['score'] : 0,
                     
                     'player' => "{$first} {$last}", 
                     'userId' => ($user && $user->id) ? $user->id : 0,
@@ -333,11 +355,11 @@ class LeaderboardController {
                     'img' => (isset($salsaPlayer['photoUser'])) ? $salsaPlayer['photoUser'] : '', 
                             
                     'teamName' => $teamName,
-                    'teamId' => ($team && isset($team['teamId'])) ? $team['teamId'] : 0, 
+                    'teamId' => ($team) ? $team['teamId'] : 0, 
                     'hotSalsaTeamId' => (isset($salsaPlayer['teamId'])) ? $salsaPlayer['teamId'] : 0,
                             
                     'homeJoint' => $homeJoint,
-                    'homeJointId' => ($team && isset($team['homeVenueId'])) ? $team['homeVenueId'] : 0,
+                    'homeJointId' => ($team) ? $team['homeVenueId'] : 0,
                     'hotSalsaHomeJointId' => (isset($salsaPlayer['jointId'])) ? $salsaPlayer['jointId'] : 0
                 );
             }
@@ -408,20 +430,17 @@ class LeaderboardController {
                 $homeJoint = (isset($salsaData['addresses']['name'])) ? $salsaData['addresses']['name'] : '';
                 
                 $team = LeaderboardData::selectTeamLiveScoreByNameAndVenue($teamName, $homeJoint);
-                if(!$team) {
-                    $team = array();
-                }
                 
                 $results[] = array( 
                     'mobileScore' => (isset($salsaTeam['score'])) ? $salsaTeam['score'] : 0,
-                    'liveScore' => ($team && isset($team['score'])) ? $team['score'] : 0,
+                    'liveScore' => ($team) ? $team['score'] : 0,
                     
                     'teamName' => $teamName,
-                    'teamId' => ($team && isset($team['teamId'])) ? $team['teamId'] : 0,
+                    'teamId' => ($team) ? $team['teamId'] : 0,
                     'hotSalsaTeamId' => (isset($salsaTeam['teamId'])) ? $salsaTeam['teamId'] : 0,
                     
                     'homeJoint' => $homeJoint,
-                    'homeJointId' => ($team && isset($team['homeVenueId'])) ? $team['homeVenueId'] : 0,
+                    'homeJointId' => ($team) ? $team['homeVenueId'] : 0,
                     'hotSalsaHomeJointId' => (isset($salsaTeam['jointId'])) ? $salsaTeam['jointId'] : 0
                 );
             }
@@ -573,7 +592,7 @@ class LeaderboardController {
                     $team = array();
                 }
                 
-                $result[] = array( 
+                $result = array( 
                     'mobileCheckins' => (isset($salsaTeam['checkinCount'])) ? $salsaTeam['checkinCount'] : 0,
                     'liveCheckins' => ($team && isset($team['gameCheckins'])) ? $team['gameCheckins'] : 0,
                     
