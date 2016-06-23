@@ -34,6 +34,13 @@ angular.module('rcAuth.user', [])
             angular.isDefined(user.apiToken)) {
             // Set the user session
             self.user = user;
+            
+            var roles = [];
+            for(var i = 0; i <  user.roles.length; i++) {
+                roles.push(parseInt(user.roles[i]));
+            }
+            self.user.roles = roles;
+            
             return self.user;
         } else {
             return false;
@@ -48,6 +55,13 @@ angular.module('rcAuth.user', [])
             user.apiKey = self.user.apiKey;
             user.apiToken = self.user.apiToken;
             self.user = user;
+            
+            var roles = [];
+            for(var i = 0; i <  user.roles.length; i++) {
+                roles.push(parseInt(user.roles[i]));
+            }
+            self.user.roles = roles;
+            
             return self.user;
         } else {
             return false;

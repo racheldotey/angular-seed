@@ -29,11 +29,11 @@ app.constant('AUTH_COOKIES', {
 // Roles used for authorization and to determin
 // page access when navigating the website.
 app.constant('USER_ROLES', {
-    guest: "1",
-    admin: "2",
-    user: "3",
-    host: "4",
-    venue: "5"
+    guest: 1,
+    admin: 2,
+    user: 3,
+    host: 4,
+    venue: 5
 });
 
 app.constant('FACEBOOK_CONFIG', {
