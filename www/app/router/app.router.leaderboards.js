@@ -66,7 +66,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
         
         // Global Player Checkins Leaderboard - iFrame
         $stateProvider.state('app.iframeLeaderboard.globalPlayerCheckins', {
-            bodyClass: 'leaderboard player checkins',
+            bodyClass: 'leaderboard player checkins iframe-compatible',
             title: 'Global Player Checkins Leaderboard',
             url: '/global/players/checkins/:count',
             views: {
@@ -92,7 +92,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
         
         // Global Player Score Leaderboard - iFrame
         $stateProvider.state('app.iframeLeaderboard.globalPlayers', {
-            bodyClass: 'leaderboard players',
+            bodyClass: 'leaderboard players iframe-compatible',
             title: 'Global Player Score Leaderboard',
             url: '/global/players/score/:count',
             views: {
@@ -118,7 +118,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
         
         // Global Team Checkin Leaderboard - iFrame
         $stateProvider.state('app.iframeLeaderboard.globalTeamCheckins', {
-            bodyClass: 'leaderboard team checkins',
+            bodyClass: 'leaderboard team checkins iframe-compatible',
             title: 'Global Team Checkin Leaderboard',
             url: '/global/teams/checkins/:count',
             views: {
@@ -144,7 +144,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
         
         // Global Team Score Leaderboard - iFrame
         $stateProvider.state('app.iframeLeaderboard.globalTeams', {
-            bodyClass: 'leaderboard teams',
+            bodyClass: 'leaderboard teams iframe-compatible',
             title: 'Global Team Score Leaderboard',
             url: '/global/teams/score/:count',
             views: {
@@ -170,7 +170,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
         
         // Per Joint Player Checkins Leaderboard - iFrame
         $stateProvider.state('app.iframeLeaderboard.venuePlayerCheckins', {
-            bodyClass: 'leaderboard players',
+            bodyClass: 'leaderboard players iframe-compatible',
             title: 'Per Joint Player Checkins Leaderboard',
             url: '/joint/players/checkins/:venueId/:count',
             views: {
@@ -196,7 +196,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
         
         // Per Joint Player Score Leaderboard - iFrame
         $stateProvider.state('app.iframeLeaderboard.venuePlayers', {
-            bodyClass: 'leaderboard venue players',
+            bodyClass: 'leaderboard venue players iframe-compatible',
             title: 'Per Joint Player Score Leaderboard',
             url: '/joint/players/score/:venueId/:count',
             views: {
@@ -222,7 +222,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
         
         // Per Joint Team Checkins Leaderboard - iFrame
         $stateProvider.state('app.iframeLeaderboard.venueTeamCheckins', {
-            bodyClass: 'leaderboard players',
+            bodyClass: 'leaderboard players iframe-compatible',
             title: 'Per Joint Team Checkins Leaderboard',
             url: '/joint/teams/checkins/:venueId/:count',
             views: {
@@ -248,7 +248,7 @@ app.config(['$stateProvider', '$urlRouterProvider', 'USER_ROLES', function ($sta
         
         // Per Joint Team Score Leaderboard - iFrame
         $stateProvider.state('app.iframeLeaderboard.venueTeams', {
-            bodyClass: 'leaderboard venue teams',
+            bodyClass: 'leaderboard venue teams iframe-compatible',
             title: 'Per Joint Team Score Leaderboard',
             url: '/joint/teams/score/:venueId/:count',
             views: {

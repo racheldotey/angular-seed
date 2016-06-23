@@ -91,8 +91,10 @@ angular.module('AuthService', [
                 } else {
                     // Confirm that the user is logged in
                     factory.isAuthenticated().then(function (results) {
-
-                        if (!UserSession.get()) {
+                        var userSession = UserSession.get();
+                        if (!userSession) {
+                            console.log('Couldent get user session, ', userSession);
+                        console.log('Couldent get user session, ', results);
                             reject(AUTH_EVENTS.notAuthenticated);
                         } else if (VisibilityService.isVisibleToUser(authorizedRole, UserSession.roles())) {
                             resolve(true);
@@ -101,6 +103,7 @@ angular.module('AuthService', [
                         }
 
                     }, function (results) {
+                        console.log('Couldent get user session, ', results);
                         // Reject because the user was not logged in
                         reject(AUTH_EVENTS.notAuthenticated);
                     });

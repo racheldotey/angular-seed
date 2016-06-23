@@ -24,7 +24,7 @@ class LeaderboardController {
             return false; 
         }
         
-        $salsaVenueData = LeaderboardListsController::getHotSalsaVenuesList();
+        $salsaVenueData = HotSalsaRequest::makeRequest(HotSalsaRequest::$HOT_SALSA_URL_VENUE_LIST);
         if(!$salsaVenueData || !isset($salsaVenueData["addresses"])) {
             return false; 
         }

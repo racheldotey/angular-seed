@@ -31,11 +31,7 @@ angular.module('app.leaderboards.venuePlayers', ['ui.grid', 'ui.grid.autoResize'
             ];
                     
             $scope.setLeaderboardHeight = function() {
-                if($scope.grid.data && $scope.grid.data.length) {
-                    LeaderboardResizing.setUIGridHeight();
-                } else {
-                    angular.element(document.getElementsByClassName('grid')[0]).css('height', '50px');
-                }
+                $scope.gridHeight = LeaderboardResizing.getUIGridHeight();//($scope.grid.data.length > 0) ? LeaderboardResizing.getUIGridHeight() : 50;
             };
             
             // Responsive leaderboard height on window resize

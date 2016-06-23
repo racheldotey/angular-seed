@@ -16,19 +16,14 @@ class LeaderboardData {
                 . "WHERE u.email = :email LIMIT 1;", array(':email' => $email));
     }
 
-    private static function selectPlayerLiveScoreByEmail($email, $teamName, $homeVenue) {
-        // We only match the api to the db record for the player with
-        // this email if they are on the same team and that team has 
-        // the same home venue
-        return DBConn::selectOne("SELECT u.id AS userId, t.id AS teamId, t.name AS teamName, "
-                . "IFNULL(s.score, '0') AS score, v.id AS homeVenueId, v.name AS homeVenue "
+    static function getHomeJointForTeamByUserId($userId) {
+        return DBConn::selectOne("SELECT t.name AS teamName, v.name AS homeVenue "
                 . "FROM " . DBConn::prefix() . "users AS u "
                 . "LEFT JOIN " . DBConn::prefix() . "team_members AS tm ON tm.user_id = u.id "
                 . "LEFT JOIN " . DBConn::prefix() . "teams AS t ON t.id = tm.team_id "
-                . "LEFT JOIN " . DBConn::prefix() . "game_score_teams AS s ON s.game_id = t.current_game_id AND s.team_id = t.id "
                 . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = t.home_venue_id "
-                . "WHERE u.email = :email AND v.name = :home_venue_name AND t.name = :team_name LIMIT 1;", 
-                array(':email' => $email, ':team_name' => $teamName, ':home_venue_name' => $homeVenue));
+                . "WHERE u.id = :user_id LIMIT 1;", 
+                array(':user_id' => $userId));
     }
     
     static function selectPlayerScoreLeaderboards($count, $mergedUserIds = array()) {

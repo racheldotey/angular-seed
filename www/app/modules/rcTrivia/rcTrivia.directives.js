@@ -14,7 +14,7 @@ app.factory('LeaderboardResizing', [function() {
         
         api.footerHeight = 0;
         
-        api.setUIGridHeight = function() {
+        api.getUIGridHeight = function($scope) {
                 // Height of the entire page - Expanded in the beginning dont use
                 //var pageHeight = $(document).height();
                 // The height of everything except the grid.
@@ -24,14 +24,16 @@ app.factory('LeaderboardResizing', [function() {
                 // Height of the visible window area (screen size)
                 var visibleWindowHeight = $(window).height();
                 
-                var pageContentHeight = angular.element(document.getElementsByClassName('layout')[0]).height();
-                var footerContentHeight = angular.element(document.getElementsByClassName('footer')[0]).height();
+                var pageHeaderHeight = ($('nav.navbar').height()) ? $('nav.navbar').height() : 0;
+                var leaderboardHeaderHeight = ($('div.page.leaderboard > div.leaderboard-header').height()) ? $('div.page.leaderboard > div.leaderboard-header').height() : 0;
+                var leaderboardFooterHeight = ($('div.page.leaderboard > div.leaderboard-footer').height()) ? $('div.page.leaderboard > div.leaderboard-footer').height() : 0;
+                var footerContentHeight = ($('footer.footer').height()) ? $('footer.footer').height() : 0;
                 
                 // Whats left height
-                var whatsLeftHeight = visibleWindowHeight - (pageContentHeight + footerContentHeight);
+                var whatsLeftHeight = visibleWindowHeight - (pageHeaderHeight + leaderboardHeaderHeight + leaderboardFooterHeight + footerContentHeight);
                 
                 // Current height of the table
-                var currentGridHeight = angular.element(document.getElementsByClassName('grid')[0]).height();
+                var currentGridHeight = $('grid').height();
                 
                 // Do the maths
                 var newHeight = currentGridHeight + whatsLeftHeight;
@@ -39,13 +41,15 @@ app.factory('LeaderboardResizing', [function() {
                 
                 console.log('');
                 console.log('visibleWindowHeight : ' + visibleWindowHeight);
-                console.log('pageContentHeight : ' + pageContentHeight);
+                console.log('pageHeaderHeight : ' + pageHeaderHeight);
+                console.log('leaderboardHeaderHeight : ' + leaderboardHeaderHeight);
+                console.log('leaderboardFooterHeight : ' + leaderboardFooterHeight);
                 console.log('footerContentHeight : ' + footerContentHeight);
                 console.log('whatsLeftHeight : ' + whatsLeftHeight);
                 console.log('newHeight : ' + newHeight);
                 console.log('');
                 // Change the inner scrollable tables height
-                angular.element(document.getElementsByClassName('grid')[0]).css('height', newHeight + 'px');
+                return newHeight;
             };
             
         return api;
