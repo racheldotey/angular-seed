@@ -2,128 +2,12 @@
 require_once dirname(__FILE__) . '/leaderboards.data.php';
  require_once dirname(dirname(dirname(__FILE__))) . '/config/config.php';
  require_once dirname(dirname(dirname(__FILE__))) . '/services/api.auth.php';
+ require_once dirname(dirname(dirname(__FILE__))) . '/services/HotSalsaRequest.php';
 
 use \Respect\Validation\Validator as v;
 
 
 class LeaderboardController {
-    
-    /* Global List of Teams API
-     * /location/getTeamNames 
-     *  
-     * Per Joint List of Teams API
-     * Input: locationId (optional)
-     * /location/getTeamNames?locationId=11 
-     */
-    private static $HOT_SALSA_URL_TEAMS_LIST = '/location/getTeamNames';
-    
-    /* Global List of Joints API
-     * /locationList 
-     */
-    private static $HOT_SALSA_URL_VENUE_LIST = '/locationList';
-    
-    /* Global Player Score Leaderboard API
-     * /trivia/gameNight/cumilativeScore?scoreType=player&count=10&startDate= optional&endDate=optional
-     * 
-     * Global Team Score Leaderboard API
-     * /trivia/gameNight/cumilativeScore?scoreType=team&count=10&startDate= optional&endDate=optional 
-     * 
-     * Per Joint Player Score Leaderboard APIs
-     * /trivia/gameNight/cumilativeScore?scoreType=player&scoreLevel=bar&locationId=11&count=10&startDate=optional&endDate=optional
-     * 
-     * Per Joint Team Score Leaderboard API
-     * /trivia/gameNight/cumilativeScore?scoreType=team&scoreLevel=bar&locationId=11&count=10&startDate= optional&endDate=optional
-     */
-    private static $HOT_SALSA_URL_MOBILE_SCORE = '/trivia/gameNight/cumilativeScore';
-    
-    /* Global Player Checkins Leaderboard API
-     * /location/getCheckins?scoreType=player&count=10
-     * 
-     * Global Team Checkins Leaderboard API
-     * /location/getCheckins?scoreType=team&count=10
-     * 
-     * Per Joint Player Checkins Leaderboard API
-     * /location/getCheckins?scoreType=player&scoreLevel=bar&locationId=11&count=10
-     * 
-     * Per Joint Team Checkins Leaderboard API
-     * /location/getCheckins?scoreType=team&scoreLevel=bar&locationId=11&count=10
-     */
-    private static $HOT_SALSA_URL_GAME_CHECKINS = '/location/getCheckins';
-    
-    private static function makeHotSalsaRequest($apiPath) { 
-        $log = new Logging('leaderboards');
-            
-        $url = APIConfig::get('HOT_SALSA_API_URL');
-        $version = APIConfig::get('HOT_SALSA_APP_VERSION');
-        $code = APIConfig::get('HOT_SALSA_URL_CODE');
-        $key = APIConfig::get('HOT_SALSA_AUTH_KEY');
-        $os = APIConfig::get('HOT_SALSA_OS');
-        $package = APIConfig::get('HOT_SALSA_PACKAGE_CODE');
-
-        if (!$url || !$version || !$code || !$key || !$os || !$package) {
-            $log->write("Could not attempt call. The Hot Salsa signup hook is enabled but a system variable is disabled or missing.");
-            $log->write(array(
-                'apiUrl' => $url,
-                'appVersion' => $version,
-                'code' => $code,
-                'authKey' => $key,
-                'os' => $os,
-                'packageCode' => $package
-            ));
-            return false;
-        }
-
-        $params = array(
-            'appVersion' => $version,
-            'code' => $code,
-            'authKey' => $key,
-            'os' => $os,
-            'packageCode' => $package
-        );
-        
-        // create curl resource 
-        $ch = curl_init();
-        
-        // set url 
-        curl_setopt($ch, CURLOPT_URL, $url . $apiPath);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-
-        //return the transfer as a string 
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-        // $output contains the output string 
-        $curlOutput = curl_exec($ch);
-
-        if (!$curlOutput) {
-            // No Results = Error
-            $error = (curl_error($ch)) ? curl_error($ch) : 'ERROR: No results';
-            $info = (curl_getinfo($ch)) ? json_encode(curl_getinfo($ch)) : 'ERROR: No Info';
-            
-            $log->write($error);
-            $log->write($info);
-            
-            curl_close($ch);
-            
-            return false;
-        }
-        
-        // Results
-        $curlResult = json_decode($curlOutput, true);
-        
-        if (!isset($curlResult['status']) || $curlResult['status'] === 'failed') {
-            $error = (isset($curlResult['status'])) ? $curlResult['status'] : 'ERROR: Unknown error occured';
-            
-            $log->write($error);
-            
-            curl_close($ch);
-            
-            return false;
-        } 
-        curl_close($ch);
-        return $curlResult;
-    }
-    
     private static function getHotSalsaLocationId($venueId) {
         // Leave for hooking into later
         return $venueId;
@@ -170,14 +54,13 @@ class LeaderboardController {
         return false;
     }
     
-    
     // Global Player Score Leaderboard
     static function getGlobalPlayersLeaderboard($app, $count) {
         $limit = (!v::intVal()->validate($count)) ? '10' : $count;
         
         // /trivia/gameNight/cumilativeScore?scoreType=player&count=10&startDate= optional&endDate=optional
-        $url = self::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreType=player&count={$limit}";
-        $salsaData = self::makeHotSalsaRequest($url);
+        $url = HotSalsaRequest::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreType=player&count={$limit}";
+        $salsaData = HotSalsaRequest::makeRequest($url);
         
         $results = array();
         $mergedUserIds = array();
@@ -203,7 +86,8 @@ class LeaderboardController {
                 $email = (isset($salsaPlayer['emailAddress'])) ? $salsaPlayer['emailAddress'] : '';
                 
                 $teamName = (isset($salsaPlayer['teamName'])) ? $salsaPlayer['teamName'] : '';
-                $homeJoint = (isset($salsaPlayer['homeJoint'])) ? $salsaPlayer['homeJoint'] : '';
+                $homeJoint = (isset($salsaPlayer['addresses']) && isset($salsaPlayer['addresses'][0]) && isset($salsaPlayer['addresses'][0]['name'])) ? 
+                        $salsaPlayer['addresses'][0]['name'] : '';
                 
                 $user = LeaderboardData::selectUserIdByEmail($email);
                 $team = LeaderboardData::selectTeamLiveScoreByNameAndVenue($teamName, $homeJoint);
@@ -275,9 +159,9 @@ class LeaderboardController {
         $limit = (!v::intVal()->validate($count)) ? '10' : $count;
         
         // /trivia/gameNight/cumilativeScore?scoreType=team&count=10&startDate= optional&endDate=optional 
-        $url = self::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreType=team&count={$limit}";
+        $url = HotSalsaRequest::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreType=team&count={$limit}";
         
-        $salsaData = self::makeHotSalsaRequest($url);
+        $salsaData = HotSalsaRequest::makeRequest($url);
         $results = array();
         $mergedTeamIds = array();
         if($salsaData && isset($salsaData['scores'])) {
@@ -301,7 +185,8 @@ class LeaderboardController {
              * } */
             foreach($salsaData['scores'] AS $salsaTeam) {
                 $teamName = (isset($salsaTeam['name'])) ? $salsaTeam['name'] : '';
-                $homeJoint = (isset($salsaTeam['homeJoint'])) ? $salsaTeam['homeJoint'] : '';
+                $homeJoint = (isset($salsaTeam['addresses']) && isset($salsaTeam['addresses'][0]) && isset($salsaTeam['addresses'][0]['name'])) ? 
+                        $salsaTeam['addresses'][0]['name'] : '';
                 
                 $team = LeaderboardData::selectTeamLiveScoreByNameAndVenue($teamName, $homeJoint);
                 if(!$team) {
@@ -373,9 +258,9 @@ class LeaderboardController {
         $locationId = self::getHotSalsaLocationId($venueId);
         
         // /trivia/gameNight/cumilativeScore?scoreType=player&scoreLevel=bar&locationId=11&count=10&startDate=optional&endDate=optional
-        $url = self::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreType=player&scoreLevel=bar&locationId={$locationId}&count={$limit}";
+        $url = HotSalsaRequest::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreType=player&scoreLevel=bar&locationId={$locationId}&count={$limit}";
         
-        $salsaData = self::makeHotSalsaRequest($url);
+        $salsaData = HotSalsaRequest::makeRequest($url);
         /*
         {  
             "status":"success",
@@ -467,9 +352,9 @@ class LeaderboardController {
         $locationId = self::getHotSalsaLocationId($venueId);
         
         // /trivia/gameNight/cumilativeScore?scoreType=team&scoreLevel=bar&locationId=11&count=10&startDate= optional&endDate=optional
-        $url = self::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreType=team&scoreLevel=bar&locationId={$locationId}&count={$limit}";
+        $url = HotSalsaRequest::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreType=team&scoreLevel=bar&locationId={$locationId}&count={$limit}";
         
-        $salsaData = self::makeHotSalsaRequest($url);
+        $salsaData = HotSalsaRequest::makeRequest($url);
         /* {  
            "status":"success",
            "addresses":{  
@@ -539,8 +424,8 @@ class LeaderboardController {
         $limit = (!v::intVal()->validate($count)) ? '10' : $count;
         
         // /location/getCheckins?scoreType=player&count=10
-        $url = self::$HOT_SALSA_URL_GAME_CHECKINS . "?scoreType=player&count={$limit}";
-        $salsaData = self::makeHotSalsaRequest($url);
+        $url = HotSalsaRequest::$HOT_SALSA_URL_GAME_CHECKINS . "?scoreType=player&count={$limit}";
+        $salsaData = HotSalsaRequest::makeRequest($url);
         /* {  
             "status":"success",
             "checkins":[  
@@ -639,8 +524,8 @@ class LeaderboardController {
         $limit = (!v::intVal()->validate($count)) ? '10' : $count;
         
         // /location/getCheckins?scoreType=team&count=10
-        $url = self::$HOT_SALSA_URL_GAME_CHECKINS . "?scoreType=team&count={$limit}";
-        $data = self::makeHotSalsaRequest($url);
+        $url = HotSalsaRequest::$HOT_SALSA_URL_GAME_CHECKINS . "?scoreType=team&count={$limit}";
+        $data = HotSalsaRequest::makeRequest($url);
         /* { 
             "status":"success",
             "checkins":[  
@@ -740,9 +625,9 @@ class LeaderboardController {
         $locationId = self::getHotSalsaLocationId($venueId);
         
         // /location/getCheckins?scoreType=player&scoreLevel=bar&locationId=11&count=10
-        $url = self::$HOT_SALSA_URL_GAME_CHECKINS . "?scoreType=player&scoreLevel=bar&locationId={$locationId}&count={$limit}";
+        $url = HotSalsaRequest::$HOT_SALSA_URL_GAME_CHECKINS . "?scoreType=player&scoreLevel=bar&locationId={$locationId}&count={$limit}";
         
-        $salsaData = self::makeHotSalsaRequest($url);
+        $salsaData = HotSalsaRequest::makeRequest($url);
         /* {  
             "status":"success",
             "checkins":[  
@@ -819,9 +704,9 @@ class LeaderboardController {
         $locationId = self::getHotSalsaLocationId($venueId);
         
         // /location/getCheckins?scoreType=team&scoreLevel=bar&locationId=11&count=10
-        $url = self::$HOT_SALSA_URL_GAME_CHECKINS . "?scoreType=team&scoreLevel=bar&locationId={$locationId}&count={$limit}";
+        $url = HotSalsaRequest::$HOT_SALSA_URL_GAME_CHECKINS . "?scoreType=team&scoreLevel=bar&locationId={$locationId}&count={$limit}";
         
-        $salsaData = self::makeHotSalsaRequest($url);
+        $salsaData = HotSalsaRequest::makeRequest($url);
         /* {  
             "status":"success",
             "checkins":[  
@@ -872,12 +757,14 @@ class LeaderboardController {
             return $app->render(400,  array('msg' => 'Could not select Per Joint Team Checkins Leaderboard.'));
         }
     }
-    
+}
+
+class LeaderboardListsController {
     /* Venue Lists */
     
     static function getMergedVenuesList($app) {
         $localData = LeaderboardData::selectVenueList();
-        $salsaData = self::makeHotSalsaRequest(self::$HOT_SALSA_URL_VENUE_LIST);
+        $salsaData = HotSalsaRequest::makeRequest(HotSalsaRequest::$HOT_SALSA_URL_VENUE_LIST);
         if (!$localData && !$salsaData) {
             return $app->render(400,  array('msg' => 'Could not select list of joints.'));
         } else if (!$localData) {
@@ -949,7 +836,7 @@ class LeaderboardController {
     
     static function getHotSalsaVenuesList($app) {
         // /locationList
-        $salsaData = self::makeHotSalsaRequest(self::$HOT_SALSA_URL_VENUE_LIST);
+        $salsaData = HotSalsaRequest::makeRequest(HotSalsaRequest::$HOT_SALSA_URL_VENUE_LIST);
         /*
         {  
             "status":"success",
@@ -995,9 +882,9 @@ class LeaderboardController {
     
     private static function getHotSalsaTeamsList() {
         // /locationList
-        $url = self::$HOT_SALSA_URL_TEAMS_LIST;
+        $url = HotSalsaRequest::$HOT_SALSA_URL_TEAMS_LIST;
         
-        $salsaData = self::makeHotSalsaRequest($url);
+        $salsaData = HotSalsaRequest::makeRequest($url);
         /*{  
             "status":"success",
             "teamNames":[{  

@@ -4,7 +4,7 @@
 class LeaderboardData {
     
     static function selectVenueList() {
-        return DBConn::selectAll("SELECT v.id, v.name, v.address, "
+        return DBConn::selectAll("SELECT v.id AS localId, 0 AS hotSalsaId, v.name, v.address, "
                 . "v.address_b AS addressb, v.city, v.state, v.zip "
                 . "FROM " . DBConn::prefix() . "venues AS v "
                 . "ORDER BY v.state, v.city, v.name;"

@@ -48,12 +48,17 @@ class LeaderboardRoutes {
 
             // List of Joints / Venues
             $app->map("/list-joints/local/", function () use ($app) {
-                LeaderboardController::getLocalVenuesList($app);
+                LeaderboardListsController::getLocalVenuesList($app);
             })->via('GET', 'POST');
             
             // List of Joints / Venues
             $app->map("/list-joints/hot-salsa/", function () use ($app) {
-                LeaderboardController::getHotSalsaVenuesList($app);
+                LeaderboardListsController::getHotSalsaVenuesList($app);
+            })->via('GET', 'POST');
+            
+            // List of Joints / Venues
+            $app->map("/list-joints/", function () use ($app) {
+                LeaderboardListsController::getMergedVenuesList($app);
             })->via('GET', 'POST');
         });
     }
