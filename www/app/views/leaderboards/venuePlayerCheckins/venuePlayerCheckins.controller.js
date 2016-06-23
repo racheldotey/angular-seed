@@ -13,7 +13,7 @@ angular.module('app.leaderboards.venuePlayerCheckins', ['ui.grid', 'ui.grid.auto
             
             $scope.title = $rootScope.title;
             $scope.selected = { venue : {} };
-            $scope.showLimit = $stateParams.count;
+            $scope.showLimit = $stateParams.limit;
             
             $scope.grid = {};
             $scope.grid.enableSorting = true;           // Column sort order
@@ -43,13 +43,13 @@ angular.module('app.leaderboards.venuePlayerCheckins', ['ui.grid', 'ui.grid.auto
             ($scope.refreshGrid = function(limit, venueId) {
                 return $q(function(resolve, reject) {
                     var venue = (angular.isDefined(venueId) && parseInt(venueId)) ? venueId : $stateParams.venueId;
-                    var count = (angular.isDefined(limit) && parseInt(limit)) ? limit : $stateParams.count;
+                    var count = (angular.isDefined(limit) && parseInt(limit)) ? limit : $stateParams.limit;
 
-                    ApiRoutesLeaderboards.getVenuePlayerCheckinsLeaderboard(venue, count).then(function (result) {
+                    ApiRoutesLeaderboards.getVenuePlayerCheckinsLeaderboard(venue, count, $stateParams.startDate, $stateParams.endDate).then(function (result) {
                         $scope.grid.data = result.leaderboard;
                         $scope.setLeaderboardHeight();
-                        if ($stateParams.count !== count || $stateParams.venueId !== venue) {
-                            $state.go($state.current.name, {count: count, venueId: venue}, {notify: false});
+                        if ($stateParams.limit !== count || $stateParams.venueId !== venue) {
+                            $state.go($state.current.name, {limit: count, venueId: venue, startDate:$stateParams.startDate, endDate:$stateParams.endDate}, {notify: false});
                         }
                         resolve(true);
                     }, function (error) {

@@ -64,12 +64,26 @@ class LeaderboardController {
         return array_slice($leaderboard, 0, (int)$limit);
     }
     
-    // Global Player Score Leaderboard
-    static function getGlobalPlayersLeaderboard($app, $count) {
-        $limit = (!v::intVal()->validate($count)) ? '10' : $count;
+    private static function getStartDateFromRequest($app) {
+        return (!v::key('limit', v::date('Y-m-d'))->validate($app->request->get()));
         
+    }
+    
+    private static function getEndDateFromRequest($app) {
+        
+    }
+    
+    // Global Player Score Leaderboard
+    static function getGlobalPlayersLeaderboard($app) {
+        $limit = (!v::key('limit', v::intVal())->validate($app->request->get())) ? 10 : $app->request->get('limit');
+        $startDate = (!v::key('startDate', v::date('Y-m-d'))->validate($app->request->get())) ? false : $app->request->get('startDate');
+        $endDate = (!v::key('endDate', v::date('Y-m-d'))->validate($app->request->get())) ? false : $app->request->get('endDate');
+                
         // /trivia/gameNight/cumilativeScore?scoreType=player&count=10&startDate= optional&endDate=optional
         $url = HotSalsaRequest::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreType=player&count={$limit}";
+        if($startDate) { $url = $url . "&startDate={$startDate}"; }
+        if($endDate) { $url = $url . "&endDate={$endDate}"; }
+        // CURL Hot Salsa
         $salsaData = HotSalsaRequest::makeRequest($url);
         
         $results = array();
@@ -172,19 +186,23 @@ class LeaderboardController {
             
         if(count($results) > 0) {
             $leaderboard = self::sortAndTrimLeaderboardResults($results, $limit);
-            return $app->render(200, array('leaderboard' => $leaderboard));
+            return $app->render(200, array('leaderboard' => $leaderboard, 'startDate' => $startDate, 'endDate' => $endDate));
         } else {
             return $app->render(400,  array('msg' => 'Could not select Global Player Score Leaderboard.'));
         }
     }
 
     // Global Team Score Leaderboard
-    static function getGlobalTeamsLeaderboard($app, $count) {
-        $limit = (!v::intVal()->validate($count)) ? '10' : $count;
+    static function getGlobalTeamsLeaderboard($app) {
+        $limit = (!v::key('limit', v::intVal())->validate($app->request->get())) ? 10 : $app->request->get('limit');
+        $startDate = (!v::key('startDate', v::date('Y-m-d'))->validate($app->request->get())) ? false : $app->request->get('startDate');
+        $endDate = (!v::key('endDate', v::date('Y-m-d'))->validate($app->request->get())) ? false : $app->request->get('endDate');
         
         // /trivia/gameNight/cumilativeScore?scoreType=team&count=10&startDate= optional&endDate=optional 
         $url = HotSalsaRequest::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreType=team&count={$limit}";
-        
+        if($startDate) { $url = $url . "&startDate={$startDate}"; }
+        if($endDate) { $url = $url . "&endDate={$endDate}"; }
+        // CURL Hot Salsa
         $salsaData = HotSalsaRequest::makeRequest($url);
         $results = array();
         $mergedTeamIds = array();
@@ -271,14 +289,14 @@ class LeaderboardController {
             
         if(count($results) > 0) {
             $leaderboard = self::sortAndTrimLeaderboardResults($results, $limit);
-            return $app->render(200, array('leaderboard' => $leaderboard));
+            return $app->render(200, array('leaderboard' => $leaderboard, 'startDate' => $startDate, 'endDate' => $endDate));
         } else {
             return $app->render(400,  array('msg' => 'Could not select Global Team Score Leaderboard.'));
         }
     }
 
     // Per Joint Player Score Leaderboard
-    static function getVenuePlayersLeaderboard($app, $venueId, $count) {
+    static function getVenuePlayersLeaderboard($app, $venueId) {
         if(!v::intVal()->validate($venueId)) {
             return $app->render(400,  array('msg' => 'Invalid Joint ID. Check your parameters and try again.'));
         } elseif ($venueId === '0') {
@@ -289,13 +307,17 @@ class LeaderboardController {
             }
         }
         
-        $limit = (!v::intVal()->validate($count)) ? '10' : $count;
+        $limit = (!v::key('limit', v::intVal())->validate($app->request->get())) ? 10 : $app->request->get('limit');
+        $startDate = (!v::key('startDate', v::date('Y-m-d'))->validate($app->request->get())) ? false : $app->request->get('startDate');
+        $endDate = (!v::key('endDate', v::date('Y-m-d'))->validate($app->request->get())) ? false : $app->request->get('endDate');
         
         $locationId = self::getHotSalsaLocationId($venueId);
         
         // /trivia/gameNight/cumilativeScore?scoreType=player&scoreLevel=bar&locationId=11&count=10&startDate=optional&endDate=optional
         $url = HotSalsaRequest::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreType=player&scoreLevel=bar&locationId={$locationId}&count={$limit}";
-        
+        if($startDate) { $url = $url . "&startDate={$startDate}"; }
+        if($endDate) { $url = $url . "&endDate={$endDate}"; }
+        // CURL Hot Salsa
         $salsaData = HotSalsaRequest::makeRequest($url);
         /*
         {  
@@ -363,14 +385,14 @@ class LeaderboardController {
                     'hotSalsaHomeJointId' => (isset($salsaPlayer['jointId'])) ? $salsaPlayer['jointId'] : 0
                 );
             }
-            return $app->render(200, array('leaderboard' => $results));
+            return $app->render(200, array('leaderboard' => $results, 'startDate' => $startDate, 'endDate' => $endDate));
         } else {
             return $app->render(400,  array('msg' => 'Could not select Per Joint Player Score Leaderboard.'));
         }
     }
 
     // Per Joint Team Score Leaderboard
-    static function getVenueTeamsLeaderboard($app, $venueId, $count) {
+    static function getVenueTeamsLeaderboard($app, $venueId) {
         if(!v::intVal()->validate($venueId)) {
             return $app->render(400,  array('msg' => 'Invalid Joint ID. Check your parameters and try again.'));
         } elseif ($venueId === '0') {
@@ -381,13 +403,17 @@ class LeaderboardController {
             }
         }
                 
-        $limit = (!v::intVal()->validate($count)) ? '10' : $count;
+        $limit = (!v::key('limit', v::intVal())->validate($app->request->get())) ? 10 : $app->request->get('limit');
+        $startDate = (!v::key('startDate', v::date('Y-m-d'))->validate($app->request->get())) ? false : $app->request->get('startDate');
+        $endDate = (!v::key('endDate', v::date('Y-m-d'))->validate($app->request->get())) ? false : $app->request->get('endDate');
         
         $locationId = self::getHotSalsaLocationId($venueId);
         
         // /trivia/gameNight/cumilativeScore?scoreType=team&scoreLevel=bar&locationId=11&count=10&startDate= optional&endDate=optional
         $url = HotSalsaRequest::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreType=team&scoreLevel=bar&locationId={$locationId}&count={$limit}";
-        
+        if($startDate) { $url = $url . "&startDate={$startDate}"; }
+        if($endDate) { $url = $url . "&endDate={$endDate}"; }
+        // CURL Hot Salsa
         $salsaData = HotSalsaRequest::makeRequest($url);
         /* {  
            "status":"success",
@@ -444,18 +470,23 @@ class LeaderboardController {
                     'hotSalsaHomeJointId' => (isset($salsaTeam['jointId'])) ? $salsaTeam['jointId'] : 0
                 );
             }
-            return $app->render(200, array('leaderboard' => $results));
+            return $app->render(200, array('leaderboard' => $results, 'startDate' => $startDate, 'endDate' => $endDate));
         } else {
             return $app->render(400,  array('msg' => 'Could not select Per Joint Team Score Leaderboard.'));
         }
     }
     
     // Global Player Checkin Leaderboard
-    static function getGlobalPlayerCheckinsLeaderboard($app, $count) {
-        $limit = (!v::intVal()->validate($count)) ? '10' : $count;
+    static function getGlobalPlayerCheckinsLeaderboard($app) {
+        $limit = (!v::key('limit', v::intVal())->validate($app->request->get())) ? 10 : $app->request->get('limit');
+        $startDate = (!v::key('startDate', v::date('Y-m-d'))->validate($app->request->get())) ? false : $app->request->get('startDate');
+        $endDate = (!v::key('endDate', v::date('Y-m-d'))->validate($app->request->get())) ? false : $app->request->get('endDate');
         
         // /location/getCheckins?scoreType=player&count=10
         $url = HotSalsaRequest::$HOT_SALSA_URL_GAME_CHECKINS . "?scoreType=player&count={$limit}";
+        if($startDate) { $url = $url . "&startDate={$startDate}"; }
+        if($endDate) { $url = $url . "&endDate={$endDate}"; }
+        // CURL Hot Salsa
         $salsaData = HotSalsaRequest::makeRequest($url);
         /* {  
             "status":"success",
@@ -545,18 +576,23 @@ class LeaderboardController {
             
         if(count($results) > 0) {
             $leaderboard = self::sortAndTrimLeaderboardResults($results, $limit);
-            return $app->render(200, array('leaderboard' => $leaderboard));
+            return $app->render(200, array('leaderboard' => $leaderboard, 'startDate' => $startDate, 'endDate' => $endDate));
         } else {
             return $app->render(400,  array('msg' => 'Could not select Global Player Checkin Leaderboard.'));
         }
     }
 
     // Global Team Checkin Leaderboard
-    static function getGlobalTeamCheckinsLeaderboard($app, $count) {
-        $limit = (!v::intVal()->validate($count)) ? '10' : $count;
+    static function getGlobalTeamCheckinsLeaderboard($app) {
+        $limit = (!v::key('limit', v::intVal())->validate($app->request->get())) ? 10 : $app->request->get('limit');
+        $startDate = (!v::key('startDate', v::date('Y-m-d'))->validate($app->request->get())) ? false : $app->request->get('startDate');
+        $endDate = (!v::key('endDate', v::date('Y-m-d'))->validate($app->request->get())) ? false : $app->request->get('endDate');
         
         // /location/getCheckins?scoreType=team&count=10
         $url = HotSalsaRequest::$HOT_SALSA_URL_GAME_CHECKINS . "?scoreType=team&count={$limit}";
+        if($startDate) { $url = $url . "&startDate={$startDate}"; }
+        if($endDate) { $url = $url . "&endDate={$endDate}"; }
+        // CURL Hot Salsa
         $data = HotSalsaRequest::makeRequest($url);
         /* { 
             "status":"success",
@@ -634,14 +670,14 @@ class LeaderboardController {
             
         if(count($results) > 0) {
             $leaderboard = self::sortAndTrimLeaderboardResults($results, $limit);
-            return $app->render(200, array('leaderboard' => $leaderboard));
+            return $app->render(200, array('leaderboard' => $leaderboard, 'startDate' => $startDate, 'endDate' => $endDate));
         } else {
             return $app->render(400,  array('msg' => 'Could not select Global Team Checkin Leaderboard.'));
         }
     }
 
     // Per Joint Player Checkins Leaderboard
-    static function getVenuePlayerCheckinsLeaderboard($app, $venueId, $count) {
+    static function getVenuePlayerCheckinsLeaderboard($app, $venueId) {
         if(!v::intVal()->validate($venueId)) {
             return $app->render(400,  array('msg' => 'Invalid Joint ID. Check your parameters and try again.'));
         } elseif ($venueId === '0') {
@@ -652,13 +688,17 @@ class LeaderboardController {
             }
         }
         
-        $limit = (!v::intVal()->validate($count)) ? '10' : $count;
+        $limit = (!v::key('limit', v::intVal())->validate($app->request->get())) ? 10 : $app->request->get('limit');
+        $startDate = (!v::key('startDate', v::date('Y-m-d'))->validate($app->request->get())) ? false : $app->request->get('startDate');
+        $endDate = (!v::key('endDate', v::date('Y-m-d'))->validate($app->request->get())) ? false : $app->request->get('endDate');
         
         $locationId = self::getHotSalsaLocationId($venueId);
         
         // /location/getCheckins?scoreType=player&scoreLevel=bar&locationId=11&count=10
         $url = HotSalsaRequest::$HOT_SALSA_URL_GAME_CHECKINS . "?scoreType=player&scoreLevel=bar&locationId={$locationId}&count={$limit}";
-        
+        if($startDate) { $url = $url . "&startDate={$startDate}"; }
+        if($endDate) { $url = $url . "&endDate={$endDate}"; }
+        // CURL Hot Salsa
         $salsaData = HotSalsaRequest::makeRequest($url);
         /* {  
             "status":"success",
@@ -713,14 +753,14 @@ class LeaderboardController {
                     'hotSalsaHomeJointId' => (isset($salsaPlayer['jointId'])) ? $salsaPlayer['jointId'] : 0
                 );
             }
-            return $app->render(200, array('leaderboard' => $results));
+            return $app->render(200, array('leaderboard' => $results, 'startDate' => $startDate, 'endDate' => $endDate));
         } else {
             return $app->render(400,  array('msg' => 'Could not select Per Joint Player Checkins Leaderboard.'));
         }
     }
 
     // Per Joint Team Checkins Leaderboard
-    static function getVenueTeamCheckinsLeaderboard($app, $venueId, $count) {
+    static function getVenueTeamCheckinsLeaderboard($app, $venueId) {
         if(!v::intVal()->validate($venueId)) {
             return $app->render(400,  array('msg' => 'Invalid Joint ID. Check your parameters and try again.'));
         } elseif ($venueId === '0') {
@@ -731,13 +771,17 @@ class LeaderboardController {
             }
         }
         
-        $limit = (!v::intVal()->validate($count)) ? '10' : $count;
+        $limit = (!v::key('limit', v::intVal())->validate($app->request->get())) ? 10 : $app->request->get('limit');
+        $startDate = (!v::key('startDate', v::date('Y-m-d'))->validate($app->request->get())) ? false : $app->request->get('startDate');
+        $endDate = (!v::key('endDate', v::date('Y-m-d'))->validate($app->request->get())) ? false : $app->request->get('endDate');
         
         $locationId = self::getHotSalsaLocationId($venueId);
         
         // /location/getCheckins?scoreType=team&scoreLevel=bar&locationId=11&count=10
         $url = HotSalsaRequest::$HOT_SALSA_URL_GAME_CHECKINS . "?scoreType=team&scoreLevel=bar&locationId={$locationId}&count={$limit}";
-        
+        if($startDate) { $url = $url . "&startDate={$startDate}"; }
+        if($endDate) { $url = $url . "&endDate={$endDate}"; }
+        // CURL Hot Salsa
         $salsaData = HotSalsaRequest::makeRequest($url);
         /* {  
             "status":"success",
@@ -784,7 +828,7 @@ class LeaderboardController {
                     'hotSalsaHomeJointId' => (isset($salsaTeam['jointId'])) ? $salsaTeam['jointId'] : 0
                 );
             }
-            return $app->render(200, array('leaderboard' => $results));
+            return $app->render(200, array('leaderboard' => $results, 'startDate' => $startDate, 'endDate' => $endDate));
         } else {
             return $app->render(400,  array('msg' => 'Could not select Per Joint Team Checkins Leaderboard.'));
         }

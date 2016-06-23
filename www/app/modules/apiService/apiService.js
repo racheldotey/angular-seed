@@ -61,8 +61,9 @@ angular.module('api.v1', [
      * @param {string} path Path to api request.
      * @param {string} err Error message.
      * @return {Object} Returns a promise. */
-    api.get = function(path, err) {
-        return api.post(path, {}, err);
+    api.get = function(path, err, queryData) {
+        var fullPath = (queryData) ? path + '?' + $.param(queryData) : path;
+        return api.post(fullPath, {}, err);
         /*
          Temporary until I can get the Authentication header to not 404 my api....
         // Return a promise

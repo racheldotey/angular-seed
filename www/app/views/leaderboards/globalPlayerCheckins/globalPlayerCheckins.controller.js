@@ -12,7 +12,7 @@ angular.module('app.leaderboards.globalPlayerCheckins', ['ui.grid', 'ui.grid.aut
             $scope.alertProxy = {};
             
             $scope.title = $rootScope.title;
-            $scope.showLimit = $stateParams.count;
+            $scope.showLimit = (angular.isDefined($stateParams.limit) && parseInt($stateParams.limit)) ? $stateParams.limit : 10;
             
             $scope.grid = {};
             $scope.grid.enableSorting = true;           // Column sort order
@@ -42,13 +42,13 @@ angular.module('app.leaderboards.globalPlayerCheckins', ['ui.grid', 'ui.grid.aut
             
             ($scope.refreshGrid = function(limit) {
                 return $q(function(resolve, reject) {
-                    var count = (angular.isDefined(limit) && parseInt(limit)) ? limit : $stateParams.count;
+                    var count = (angular.isDefined(limit) && parseInt(limit)) ? limit : $stateParams.limit;
 
-                    ApiRoutesLeaderboards.getGlobalPlayerCheckinsLeaderboard(count).then(function (result) {
+                    ApiRoutesLeaderboards.getGlobalPlayerCheckinsLeaderboard(count, $stateParams.startDate, $stateParams.endDate).then(function (result) {
                         $scope.grid.data = result.leaderboard;
                         $scope.setLeaderboardHeight();
-                        if ($stateParams.count !== count) {
-                            $state.go($state.current.name, {count: count}, {notify: false});
+                        if ($stateParams.limit !== count) {
+                            $state.go($state.current.name, {limit: count, startDate:$stateParams.startDate, endDate:$stateParams.endDate}, {notify: false});
                         }
                         resolve(true);
                     }, function (error) {

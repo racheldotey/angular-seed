@@ -7,43 +7,43 @@ class LeaderboardRoutes {
         
         $app->group('/leaderboard', $authenticateForRole('public'), function () use ($app) {
             
-            $app->map("/global/players/score/:count/", function ($count) use ($app) {
-                LeaderboardController::getGlobalPlayersLeaderboard($app, $count);
+            $app->map("/global/players/score/", function () use ($app) {
+                LeaderboardController::getGlobalPlayersLeaderboard($app);
             })->via('GET', 'POST');
 
             // Global Team Score Leaderboard
-            $app->map("/global/teams/score/:count/", function ($count) use ($app) {
-                LeaderboardController::getGlobalTeamsLeaderboard($app, $count);
+            $app->map("/global/teams/score/", function () use ($app) {
+                LeaderboardController::getGlobalTeamsLeaderboard($app);
             })->via('GET', 'POST');
 
             // Per Joint Player Score Leaderboard
-            $app->map("/joint/players/score/:venueId/:count/", function ($venueId, $count) use ($app) {
-                LeaderboardController::getVenuePlayersLeaderboard($app, $venueId, $count);
+            $app->map("/joint/players/score/:venueId/", function ($venueId) use ($app) {
+                LeaderboardController::getVenuePlayersLeaderboard($app, $venueId);
             })->via('GET', 'POST');
 
             // Per Joint Team Score Leaderboard
-            $app->map("/joint/teams/score/:venueId/:count/", function ($venueId, $count) use ($app) {
-                LeaderboardController::getVenueTeamsLeaderboard($app, $venueId, $count);
+            $app->map("/joint/teams/score/:venueId/", function ($venueId) use ($app) {
+                LeaderboardController::getVenueTeamsLeaderboard($app, $venueId);
             })->via('GET', 'POST');
 
             // Global Player Checkin Leaderboard
-            $app->map("/global/players/checkins/:count/", function ($count) use ($app) {
-                LeaderboardController::getGlobalPlayerCheckinsLeaderboard($app, $count);
+            $app->map("/global/players/checkins/", function () use ($app) {
+                LeaderboardController::getGlobalPlayerCheckinsLeaderboard($app);
             })->via('GET', 'POST');
 
             // Global Team Checkin Leaderboard
-            $app->map("/global/teams/checkins/:count/", function ($count) use ($app) {
-                LeaderboardController::getGlobalTeamCheckinsLeaderboard($app, $count);
+            $app->map("/global/teams/checkins/", function () use ($app) {
+                LeaderboardController::getGlobalTeamCheckinsLeaderboard($app);
             })->via('GET', 'POST');
 
             // Per Joint Player Checkins Leaderboard
-            $app->map("/joint/players/checkins/:venueId/:count/", function ($venueId, $count) use ($app) {
-                LeaderboardController::getVenuePlayerCheckinsLeaderboard($app, $venueId, $count);
+            $app->map("/joint/players/checkins/:venueId/", function ($venueId) use ($app) {
+                LeaderboardController::getVenuePlayerCheckinsLeaderboard($app, $venueId);
             })->via('GET', 'POST');
 
             // Per Joint Team Checkins Leaderboard
-            $app->map("/joint/teams/checkins/:venueId/:count/", function ($venueId, $count) use ($app) {
-                LeaderboardController::getVenueTeamCheckinsLeaderboard($app, $venueId, $count);
+            $app->map("/joint/teams/checkins/:venueId/", function ($venueId) use ($app) {
+                LeaderboardController::getVenueTeamCheckinsLeaderboard($app, $venueId);
             })->via('GET', 'POST');
 
             // List of Joints / Venues
