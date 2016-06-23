@@ -12,14 +12,14 @@ app.factory('LeaderboardResizing', [function() {
             
         var api = {};
         
-        var padding = 10;
+        var padding = 20;
         var otherPageElementsHeight = 0;
         
         var initHeightVariables = function() {
-            var pageHeaderHeight = ($('nav.navbar').height()) ? $('nav.navbar').height() : 0;
-            var leaderboardHeaderHeight = ($('div.page.leaderboard > div.leaderboard-header').height()) ? $('div.page.leaderboard > div.leaderboard-header').height() : 0;
-            var leaderboardFooterHeight = ($('div.page.leaderboard > div.leaderboard-footer').height()) ? $('div.page.leaderboard > div.leaderboard-footer').height() : 0;
-            var footerContentHeight = ($('footer.footer').height()) ? $('footer.footer').height() : 0;
+            var pageHeaderHeight = ($('nav.navbar').outerHeight(true)) ? Math.ceil($('nav.navbar').outerHeight(true)) : 0;
+            var leaderboardHeaderHeight = ($('div.page.leaderboard > div.leaderboard-header').outerHeight(true)) ? Math.ceil($('div.page.leaderboard > div.leaderboard-header').outerHeight(true)) : 0;
+            var leaderboardFooterHeight = ($('div.page.leaderboard > div.leaderboard-footer').outerHeight(true)) ? Math.ceil($('div.page.leaderboard > div.leaderboard-footer').outerHeight(true)) : 0;
+            var footerContentHeight = ($('footer.footer').outerHeight(true)) ? Math.ceil($('footer.footer').outerHeight(true)) : 0;
                
             otherPageElementsHeight = pageHeaderHeight + leaderboardHeaderHeight + leaderboardFooterHeight + footerContentHeight + padding;
             

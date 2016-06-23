@@ -1,6 +1,6 @@
 <div class="page leaderboard">
 
-    <div class="row">
+    <div class="leaderboard-header row">
         <div class="col-xs-12 col-sm-6">
             <h3 ng-bind="title" style="margin-top: 0;">Leaderboard</h3>
         </div>
@@ -20,7 +20,7 @@
     
     <div data-rc-bootstrap-alerts="alertProxy"></div>
     
-    <div id="leaderboard" ui-grid="grid" ui-grid-auto-resize class="grid grid-dark"></div>
+    <div id="leaderboard" ui-grid="grid" ui-grid-auto-resize class="grid grid-dark" style="height:{{gridHeight}}px;"}}"></div>
     <div class="leaderboard-footer row">
         <div class="col-xs-12" ng-hide="grid.data.length">
             <p>No Leaderboard Data Found</p>

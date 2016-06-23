@@ -30,12 +30,9 @@ angular.module('app.leaderboards.globalPlayers', ['ui.grid', 'ui.grid.autoResize
                 { field: 'liveScore', displayName:'Live Team Score', type: 'number', cellFilter: 'numberEx', maxWidth: 175 }
             ];
             
+            $scope.gridHeight = 50;       
             $scope.setLeaderboardHeight = function() {
-                if($scope.grid.data && $scope.grid.data.length) {
-                    LeaderboardResizing.setUIGridHeight();
-                } else {
-                    angular.element(document.getElementsByClassName('grid')[0]).css('height', '50px');
-                }
+                $scope.gridHeight = ($scope.grid.data.length > 0) ? LeaderboardResizing.getUIGridHeight() : 50;
             };
             
             // Responsive leaderboard height on window resize
