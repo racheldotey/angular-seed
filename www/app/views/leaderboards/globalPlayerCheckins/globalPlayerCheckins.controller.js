@@ -26,8 +26,8 @@ angular.module('app.leaderboards.globalPlayerCheckins', ['ui.grid', 'ui.grid.aut
                 { field: 'player', displayName:'Player Name', cellClass: 'text-verticle-center' },
                 { field: 'teamName', displayName:'Team Name', cellClass: 'text-verticle-center' },
                 { field: 'homeJoint', displayName:'Team Home Joint', cellClass: 'text-verticle-center' },
-                { field: 'mobileCheckins', displayName:'Mobile Checkins', cellClass: 'text-verticle-center', type: 'number', sort: { direction: uiGridConstants.DESC, priority: 1 }, maxWidth: 175 },
-                { field: 'liveCheckins', displayName:'Live Team Checkins', cellClass: 'text-verticle-center', type: 'number', maxWidth: 175 }
+                { field: 'mobileCheckins', displayName:'Mobile Checkins', cellClass: 'text-verticle-center text-center', type: 'number', sort: { direction: uiGridConstants.DESC, priority: 1 }, maxWidth: 175 },
+                { field: 'liveCheckins', displayName:'Live Team Checkins', cellClass: 'text-verticle-center text-center', type: 'number', maxWidth: 175 }
             ];
             
             $scope.gridHeight = 50;       
@@ -48,7 +48,7 @@ angular.module('app.leaderboards.globalPlayerCheckins', ['ui.grid', 'ui.grid.aut
                         $scope.grid.data = result.leaderboard;
                         $scope.setLeaderboardHeight();
                         if ($stateParams.limit !== count) {
-                            $state.go($state.current.name, {limit: count, startDate:$stateParams.startDate, endDate:$stateParams.endDate}, {notify: false});
+                            $state.go($state.current.name, {limit: count, startDate:$stateParams.startDate, endDate:$stateParams.endDate}, {notify: true});
                         }
                         resolve(true);
                     }, function (error) {

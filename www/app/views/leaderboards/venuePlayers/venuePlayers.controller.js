@@ -26,8 +26,8 @@ angular.module('app.leaderboards.venuePlayers', ['ui.grid', 'ui.grid.autoResize'
                 { field: 'img', displayName:'', cellClass: 'leaderboard-img-cell text-center text-verticle-center', enableSorting: false, cellTemplate: '<img ng-src="{{COL_FIELD}}" class="leaderboard-img" />', maxWidth: 110 },
                 { field: 'player', displayName:'Player Name', cellClass: 'text-verticle-center' },
                 { field: 'teamName', displayName:'Team Name', cellClass: 'text-verticle-center' },
-                { field: 'mobileScore', displayName:'Mobile Score', cellClass: 'text-verticle-center', type: 'number', sort: { direction: uiGridConstants.DESC, priority: 1 }, maxWidth: 175 },
-                { field: 'liveScore', displayName:'Live Team Score', cellClass: 'text-verticle-center', type: 'number', cellFilter: 'numberEx', maxWidth: 175 }
+                { field: 'mobileScore', displayName:'Mobile Score', cellClass: 'text-verticle-center text-center', type: 'number', sort: { direction: uiGridConstants.DESC, priority: 1 }, maxWidth: 175 },
+                { field: 'liveScore', displayName:'Live Team Score', cellClass: 'text-verticle-center text-center', type: 'number', cellFilter: 'numberEx', maxWidth: 175 }
             ];
             
             $scope.gridHeight = 50;       
@@ -49,7 +49,7 @@ angular.module('app.leaderboards.venuePlayers', ['ui.grid', 'ui.grid.autoResize'
                         $scope.grid.data = result.leaderboard;
                         $scope.setLeaderboardHeight();
                         if ($stateParams.limit !== count || $stateParams.venueId !== venue) {
-                            $state.go($state.current.name, {limit: count, venueId: venue, startDate:$stateParams.startDate, endDate:$stateParams.endDate}, {notify: false});
+                            $state.go($state.current.name, {limit: count, venueId: venue, startDate:$stateParams.startDate, endDate:$stateParams.endDate}, {notify: true});
                         }
                         resolve(true);
                     }, function (error) {

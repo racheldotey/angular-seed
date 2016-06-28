@@ -23,8 +23,8 @@ angular.module('app.leaderboards.venueTeamCheckins', ['ui.grid', 'ui.grid.autoRe
             $scope.grid.data = [];
             $scope.grid.columnDefs = [
                 { field: 'teamName', displayName:'Team Name', cellClass: 'text-verticle-center' },
-                { field: 'mobileCheckins', displayName:'Mobile Checkins', cellClass: 'text-verticle-center', type: 'number', sort: { direction: uiGridConstants.DESC, priority: 1 }, maxWidth: 175 },
-                { field: 'liveCheckins', displayName:'Live Team Checkins', cellClass: 'text-verticle-center', type: 'number', maxWidth: 175 }
+                { field: 'mobileCheckins', displayName:'Mobile Checkins', cellClass: 'text-verticle-center text-center text-center', type: 'number', sort: { direction: uiGridConstants.DESC, priority: 1 }, maxWidth: 175 },
+                { field: 'liveCheckins', displayName:'Live Team Checkins', cellClass: 'text-verticle-center text-center text-center', type: 'number', maxWidth: 175 }
             ];
             
             $scope.gridHeight = 50;       
@@ -46,7 +46,7 @@ angular.module('app.leaderboards.venueTeamCheckins', ['ui.grid', 'ui.grid.autoRe
                         $scope.grid.data = result.leaderboard;
                         $scope.setLeaderboardHeight();
                         if ($stateParams.limit !== count || $stateParams.venueId !== venue) {
-                            $state.go($state.current.name, {limit: count, venueId: venue, startDate:$stateParams.startDate, endDate:$stateParams.endDate}, {notify: false});
+                            $state.go($state.current.name, {limit: count, venueId: venue, startDate:$stateParams.startDate, endDate:$stateParams.endDate}, {notify: true});
                         }
                         resolve(true);
                     }, function (error) {
