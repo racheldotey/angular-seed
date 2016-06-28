@@ -64,15 +64,6 @@ class LeaderboardController {
         return array_slice($leaderboard, 0, (int)$limit);
     }
     
-    private static function getStartDateFromRequest($app) {
-        return (!v::key('limit', v::date('Y-m-d'))->validate($app->request->get()));
-        
-    }
-    
-    private static function getEndDateFromRequest($app) {
-        
-    }
-    
     // Global Player Score Leaderboard
     static function getGlobalPlayersLeaderboard($app) {
         $limit = (!v::key('limit', v::intVal())->validate($app->request->get())) ? 10 : $app->request->get('limit');
@@ -130,7 +121,7 @@ class LeaderboardController {
                         $salsaPlayer['addresses']['name'] : '';
                 
                 $user = LeaderboardData::selectUserIdByEmail($email);
-                $team = LeaderboardData::selectTeamLiveScoreByNameAndVenue($teamName, $homeJoint);
+                $team = LeaderboardData::selectTeamLiveScoreByNameAndVenue($teamName, $homeJoint, $startDate, $endDate);
                         
                 $result = array(
                     'mobileScore' => (isset($salsaPlayer['score'])) ? $salsaPlayer['score'] : 0,
@@ -161,7 +152,7 @@ class LeaderboardController {
             }
         }
         
-        $localData = LeaderboardData::selectPlayerScoreLeaderboards($limit, $mergedUserIds);
+        $localData = LeaderboardData::selectPlayerScoreLeaderboards($limit, $startDate, $endDate, $mergedUserIds);
         if($localData) {
             foreach($localData AS $localPlayer) {
                 $result = array(
@@ -244,7 +235,7 @@ class LeaderboardController {
                 $homeJoint = (isset($salsaTeam['addresses']) && isset($salsaTeam['addresses']['name'])) ? 
                         $salsaTeam['addresses']['name'] : '';
                 
-                $team = LeaderboardData::selectTeamLiveScoreByNameAndVenue($teamName, $homeJoint);
+                $team = LeaderboardData::selectTeamLiveScoreByNameAndVenue($teamName, $homeJoint, $startDate, $endDate);
                 
                 $result = array( 
                     'mobileScore' => (isset($salsaTeam['score'])) ? $salsaTeam['score'] : 0,
@@ -269,7 +260,7 @@ class LeaderboardController {
             }
         }
                 
-        $localData = LeaderboardData::selectTeamScoreLeaderboards($limit, $mergedTeamIds);
+        $localData = LeaderboardData::selectTeamScoreLeaderboards($limit, $startDate, $endDate, $mergedTeamIds);
         if($localData) {
             foreach($localData AS $localTeam) {
                 $result = array(
@@ -364,7 +355,7 @@ class LeaderboardController {
                         $salsaPlayer['addresses']['name'] : '';
                         
                 $user = LeaderboardData::selectUserIdByEmail($email);
-                $team = LeaderboardData::selectTeamLiveScoreByNameAndVenue($teamName, $homeJoint);
+                $team = LeaderboardData::selectTeamLiveScoreByNameAndVenue($teamName, $homeJoint, $startDate, $endDate);
                         
                 $results[] = array(
                     'mobileScore' => (isset($salsaPlayer['score'])) ? $salsaPlayer['score'] : 0,
@@ -455,7 +446,7 @@ class LeaderboardController {
                 $teamName = (isset($salsaTeam['name'])) ? $salsaTeam['name'] : '';
                 $homeJoint = (isset($salsaData['addresses']['name'])) ? $salsaData['addresses']['name'] : '';
                 
-                $team = LeaderboardData::selectTeamLiveScoreByNameAndVenue($teamName, $homeJoint);
+                $team = LeaderboardData::selectTeamLiveScoreByNameAndVenue($teamName, $homeJoint, $startDate, $endDate);
                 
                 $results[] = array( 
                     'mobileScore' => (isset($salsaTeam['score'])) ? $salsaTeam['score'] : 0,
@@ -518,7 +509,7 @@ class LeaderboardController {
                 $homeJoint = (isset($salsaPlayer['homeJoint'])) ? $salsaPlayer['homeJoint'] : '';
                         
                 $user = LeaderboardData::selectUserIdByEmail($email);
-                $team = LeaderboardData::selectTeamLiveCheckinsByNameAndVenue($teamName, $homeJoint);
+                $team = LeaderboardData::selectTeamLiveCheckinsByNameAndVenue($teamName, $homeJoint, $startDate, $endDate);
                 if(!$team) {
                     $team = array();
                 }
@@ -551,7 +542,7 @@ class LeaderboardController {
             }
         }
         
-        $localData = LeaderboardData::selectPlayerScoreLeaderboards($limit, $mergedUserIds);
+        $localData = LeaderboardData::selectPlayerScoreLeaderboards($limit, $startDate, $endDate, $mergedUserIds);
         if($localData) {
             foreach($localData AS $localPlayer) {
                 $result = array(
@@ -623,7 +614,7 @@ class LeaderboardController {
                 $teamName = (isset($salsaTeam['teamName'])) ? $salsaTeam['teamName'] : '';
                 $homeJoint = (isset($salsaTeam['homeJoint'])) ? $salsaTeam['homeJoint'] : '';
                 
-                $team = LeaderboardData::selectTeamLiveCheckinsByNameAndVenue($teamName, $homeJoint);
+                $team = LeaderboardData::selectTeamLiveCheckinsByNameAndVenue($teamName, $homeJoint, $startDate, $endDate);
                 if(!$team) {
                     $team = array();
                 }
@@ -650,7 +641,7 @@ class LeaderboardController {
             }
         }
                 
-        $localData = LeaderboardData::selectTeamScoreLeaderboards($limit, $mergedTeamIds);
+        $localData = LeaderboardData::selectTeamScoreLeaderboards($limit, $startDate, $endDate, $mergedTeamIds);
         if($localData) {
             foreach($localData AS $localTeam) {
                 $result = array(
@@ -729,7 +720,7 @@ class LeaderboardController {
                 $homeJoint = (isset($salsaPlayer['homeJoint'])) ? $salsaPlayer['homeJoint'] : '';
                         
                 $user = LeaderboardData::selectUserIdByEmail($email);
-                $team = LeaderboardData::selectTeamLiveCheckinsByNameAndVenue($teamName, $homeJoint);
+                $team = LeaderboardData::selectTeamLiveCheckinsByNameAndVenue($teamName, $homeJoint, $startDate, $endDate);
                 if(!$team) {
                     $team = array();
                 }
@@ -810,7 +801,7 @@ class LeaderboardController {
                 $teamName = (isset($salsaTeam['teamName'])) ? $salsaTeam['teamName'] : '';
                 $homeJoint = (isset($salsaTeam['homeJoint'])) ? $salsaTeam['homeJoint'] : '';
                 
-                $team = LeaderboardData::selectTeamLiveCheckinsByNameAndVenue($teamName, $homeJoint);
+                $team = LeaderboardData::selectTeamLiveCheckinsByNameAndVenue($teamName, $homeJoint, $startDate, $endDate);
                 if(!$team) {
                     $team = array();
                 }

@@ -22,9 +22,9 @@ angular.module('app.leaderboards.venueTeamCheckins', ['ui.grid', 'ui.grid.autoRe
                            
             $scope.grid.data = [];
             $scope.grid.columnDefs = [
-                { field: 'teamName', displayName:'Team Name' },
-                { field: 'mobileCheckins', displayName:'Mobile Checkins', type: 'number', sort: { direction: uiGridConstants.DESC, priority: 1 }, maxWidth: 175 },
-                { field: 'liveCheckins', displayName:'Live Team Checkins', type: 'number', maxWidth: 175 }
+                { field: 'teamName', displayName:'Team Name', cellClass: 'text-verticle-center' },
+                { field: 'mobileCheckins', displayName:'Mobile Checkins', cellClass: 'text-verticle-center', type: 'number', sort: { direction: uiGridConstants.DESC, priority: 1 }, maxWidth: 175 },
+                { field: 'liveCheckins', displayName:'Live Team Checkins', cellClass: 'text-verticle-center', type: 'number', maxWidth: 175 }
             ];
             
             $scope.gridHeight = 50;       

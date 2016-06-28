@@ -26,7 +26,7 @@ class LeaderboardData {
                 array(':user_id' => $userId));
     }
     
-    static function selectPlayerScoreLeaderboards($count, $mergedUserIds = array()) {
+    static function selectPlayerScoreLeaderboards($count, $startDate, $endDate, $mergedUserIds = array()) {
         if(count($mergedUserIds) > 0) {
             //$variables = $mergedUserIds;
             $placeholders = str_repeat ('?, ',  count ($mergedUserIds) - 1) . '?';
@@ -62,7 +62,7 @@ class LeaderboardData {
         }
     }
     
-    static function selectTeamScoreLeaderboards($count, $mergedTeamIds = array()) {
+    static function selectTeamScoreLeaderboards($count, $startDate, $endDate, $mergedTeamIds = array()) {
         if(count($mergedTeamIds) > 0) {
             //$variables = $mergedTeamIds;
             $placeholders = str_repeat ('?, ',  count ($mergedTeamIds) - 1) . '?';
@@ -90,7 +90,7 @@ class LeaderboardData {
         }
     }
 
-    static function selectTeamLiveScoreByNameAndVenue($teamName, $homeVenue) {        
+    static function selectTeamLiveScoreByNameAndVenue($teamName, $homeVenue,  $startDate, $endDate) {        
         return DBConn::selectOne("SELECT t.id AS teamId, t.name AS teamName, "
                 . "IFNULL(s.score, '0') AS score, v.id AS homeVenueId, v.name AS homeVenue "
                 . "FROM " . DBConn::prefix() . "teams AS t "
@@ -100,7 +100,7 @@ class LeaderboardData {
                 array(':team_name' => $teamName, ':home_venue_name' => $homeVenue), \PDO::FETCH_ASSOC);
     }
     
-    static function selectTeamLiveCheckinsByNameAndVenue($teamName, $homeVenue) {
+    static function selectTeamLiveCheckinsByNameAndVenue($teamName, $homeVenue,  $startDate, $endDate) {
         return DBConn::selectOne("SELECT t.id AS teamId, t.name AS teamName, v.id AS homeVenueId, "
                 . "v.name AS homeVenue, COUNT(c.game_id) AS gameCheckins "
                 . "FROM " . DBConn::prefix() . "teams AS t "

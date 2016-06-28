@@ -22,9 +22,9 @@ angular.module('app.leaderboards.venueTeams', ['ui.grid', 'ui.grid.autoResize'])
                       
             $scope.grid.data = [];
             $scope.grid.columnDefs = [
-                { field: 'teamName', displayName:'Team Name' },
-                { field: 'mobileScore', displayName:'Mobile Score', type: 'number', sort: { direction: uiGridConstants.DESC, priority: 1 }, maxWidth: 175 },
-                { field: 'liveScore', displayName:'Live Team Score', type: 'number', cellFilter: 'numberEx', maxWidth: 175 }
+                { field: 'teamName', displayName:'Team Name', cellClass: 'text-verticle-center' },
+                { field: 'mobileScore', displayName:'Mobile Score', cellClass: 'text-verticle-center', type: 'number', sort: { direction: uiGridConstants.DESC, priority: 1 }, maxWidth: 175 },
+                { field: 'liveScore', displayName:'Live Team Score', cellClass: 'text-verticle-center', type: 'number', cellFilter: 'numberEx', maxWidth: 175 }
             ];
             
             $scope.gridHeight = 50;       

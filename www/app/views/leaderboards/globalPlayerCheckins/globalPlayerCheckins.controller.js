@@ -22,12 +22,12 @@ angular.module('app.leaderboards.globalPlayerCheckins', ['ui.grid', 'ui.grid.aut
             $scope.grid.rowHeight = 100;                
             $scope.grid.data = [];
             $scope.grid.columnDefs = [
-                { field: 'img', displayName:'', cellClass: 'leaderboard-img-cell text-center', enableSorting: false, cellTemplate: '<img ng-src="{{COL_FIELD}}" class="leaderboard-img" />', maxWidth: 110 },
-                { field: 'player', displayName:'Player Name' },
-                { field: 'teamName', displayName:'Team Name' },
-                { field: 'homeJoint', displayName:'Team Home Joint' },
-                { field: 'mobileCheckins', displayName:'Mobile Checkins', type: 'number', sort: { direction: uiGridConstants.DESC, priority: 1 }, maxWidth: 175 },
-                { field: 'liveCheckins', displayName:'Live Team Checkins', type: 'number', maxWidth: 175 }
+                { field: 'img', displayName:'', cellClass: 'leaderboard-img-cell text-center text-verticle-center', enableSorting: false, cellTemplate: '<img ng-src="{{COL_FIELD}}" class="leaderboard-img" />', maxWidth: 110 },
+                { field: 'player', displayName:'Player Name', cellClass: 'text-verticle-center' },
+                { field: 'teamName', displayName:'Team Name', cellClass: 'text-verticle-center' },
+                { field: 'homeJoint', displayName:'Team Home Joint', cellClass: 'text-verticle-center' },
+                { field: 'mobileCheckins', displayName:'Mobile Checkins', cellClass: 'text-verticle-center', type: 'number', sort: { direction: uiGridConstants.DESC, priority: 1 }, maxWidth: 175 },
+                { field: 'liveCheckins', displayName:'Live Team Checkins', cellClass: 'text-verticle-center', type: 'number', maxWidth: 175 }
             ];
             
             $scope.gridHeight = 50;       

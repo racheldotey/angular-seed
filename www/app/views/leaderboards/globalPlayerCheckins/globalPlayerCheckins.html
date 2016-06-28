@@ -13,11 +13,11 @@
             <p>No Leaderboard Data Found</p>
         </div>
         
-        <div class="col-xs-12 col-sm-6" ng-show="grid.data.length">
+        <div class="col-xs-6 hidden-xs" ng-show="grid.data.length">
             <p>Total Items: {{grid.data.length}}</p>
         </div>
         
-        <div class="col-xs-12 col-sm-6" ng-show="grid.data.length">
+        <div class="col-xs-6 hidden-xs" ng-show="grid.data.length">
             <div class="grid-length text-right">
                 <label>Show <select name="gridResultsLength" class="input-sm" ng-model="showLimit" ng-change="refreshGrid(showLimit)">
                         <option value="10">10</option>
