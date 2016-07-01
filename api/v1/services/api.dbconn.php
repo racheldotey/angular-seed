@@ -40,8 +40,7 @@ class DBConn {
                  */
                 \PDO::ATTR_PERSISTENT => true,
                 // Error Mode: Throw Exceptions
-                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-                \PDO::ATTR_EMULATE_PREPARES => false
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
             );
             
             $invocation = ($c['dbHost']) ? "host={$c['dbHost']}" : "unix_socket={$c['dbUnixSocket']}";
@@ -75,7 +74,7 @@ class DBConn {
     /*
      * Log the last PDO error
      */
-    private static function logError($error) {
+    public static function logError($error) {
         // If the logger hasnt been instantiated
         if(!self::$logger) {
             // Create a new instance of the system Logging class
@@ -94,6 +93,18 @@ class DBConn {
         $offset = ($p - 1) * $l;
         
         return "LIMIT {$offset}, {$l}";
+    }
+    
+    public static function setPDOAttribute($attribute, $value) {
+        $pdo = self::connect();
+        
+        try {
+            $pdo->setAttribute($attribute, $value);
+            return true;
+        } catch (\PDOException $e) {
+            self::logPDOError($q);
+            return false;
+        }
     }
     
     /*

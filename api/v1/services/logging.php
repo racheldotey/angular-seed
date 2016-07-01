@@ -33,7 +33,7 @@ class Logging {
     
     private function getExceptionString($e) {
         // If the api is in debug mode return a more verbose message
-        return ($this->debugMode) ? "{$e}\r\n" : $e->getMessage();
+        return ($this->debugMode) ? "{$e} " : $e->getMessage();
     }
     
     

@@ -59,7 +59,6 @@ class LeaderboardController {
     }
     
     static private function sortAndTrimLeaderboardResults($leaderboard, $limit) {
-
         usort($leaderboard, array('API\LeaderboardController', 'CustomeCompareOnSortColumn'));
         return array_slice($leaderboard, 0, (int)$limit);
     }
@@ -179,7 +178,7 @@ class LeaderboardController {
             $leaderboard = self::sortAndTrimLeaderboardResults($results, $limit);
             return $app->render(200, array('leaderboard' => $leaderboard, 'startDate' => $startDate, 'endDate' => $endDate));
         } else {
-            return $app->render(400,  array('msg' => 'Could not select Global Player Score Leaderboard.'));
+            return $app->render(400,  array('msg' => 'Could not select Global Player Score Leaderboard.', 'url' => $url));
         }
     }
 
@@ -282,7 +281,7 @@ class LeaderboardController {
             $leaderboard = self::sortAndTrimLeaderboardResults($results, $limit);
             return $app->render(200, array('leaderboard' => $leaderboard, 'startDate' => $startDate, 'endDate' => $endDate));
         } else {
-            return $app->render(400,  array('msg' => 'Could not select Global Team Score Leaderboard.'));
+            return $app->render(400,  array('msg' => 'Could not select Global Team Score Leaderboard.', 'url' => $url));
         }
     }
 
@@ -378,7 +377,7 @@ class LeaderboardController {
             }
             return $app->render(200, array('leaderboard' => $results, 'startDate' => $startDate, 'endDate' => $endDate));
         } else {
-            return $app->render(400,  array('msg' => 'Could not select Per Joint Player Score Leaderboard.'));
+            return $app->render(400,  array('msg' => 'Could not select Per Joint Player Score Leaderboard.', 'url' => $url));
         }
     }
 
@@ -463,7 +462,7 @@ class LeaderboardController {
             }
             return $app->render(200, array('leaderboard' => $results, 'startDate' => $startDate, 'endDate' => $endDate));
         } else {
-            return $app->render(400,  array('msg' => 'Could not select Per Joint Team Score Leaderboard.'));
+            return $app->render(400,  array('msg' => 'Could not select Per Joint Team Score Leaderboard.', 'url' => $url));
         }
     }
     
@@ -569,7 +568,7 @@ class LeaderboardController {
             $leaderboard = self::sortAndTrimLeaderboardResults($results, $limit);
             return $app->render(200, array('leaderboard' => $leaderboard, 'startDate' => $startDate, 'endDate' => $endDate));
         } else {
-            return $app->render(400,  array('msg' => 'Could not select Global Player Checkin Leaderboard.'));
+            return $app->render(400,  array('msg' => 'Could not select Global Player Checkin Leaderboard.', 'url' => $url));
         }
     }
 
@@ -663,7 +662,7 @@ class LeaderboardController {
             $leaderboard = self::sortAndTrimLeaderboardResults($results, $limit);
             return $app->render(200, array('leaderboard' => $leaderboard, 'startDate' => $startDate, 'endDate' => $endDate));
         } else {
-            return $app->render(400,  array('msg' => 'Could not select Global Team Checkin Leaderboard.'));
+            return $app->render(400,  array('msg' => 'Could not select Global Team Checkin Leaderboard.', 'url' => $url));
         }
     }
 
@@ -746,7 +745,7 @@ class LeaderboardController {
             }
             return $app->render(200, array('leaderboard' => $results, 'startDate' => $startDate, 'endDate' => $endDate));
         } else {
-            return $app->render(400,  array('msg' => 'Could not select Per Joint Player Checkins Leaderboard.'));
+            return $app->render(400,  array('msg' => 'Could not select Per Joint Player Checkins Leaderboard.', 'url' => $url));
         }
     }
 
@@ -821,7 +820,7 @@ class LeaderboardController {
             }
             return $app->render(200, array('leaderboard' => $results, 'startDate' => $startDate, 'endDate' => $endDate));
         } else {
-            return $app->render(400,  array('msg' => 'Could not select Per Joint Team Checkins Leaderboard.'));
+            return $app->render(400,  array('msg' => 'Could not select Per Joint Team Checkins Leaderboard.', 'url' => $url));
         }
     }
 }
