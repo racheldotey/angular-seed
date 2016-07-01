@@ -255,10 +255,11 @@ class DatatablesData {
 
     private static function selectGameScoreboard($qGames) {
         $qScores = DBConn::preparedQuery("SELECT s.team_id AS teamId, s.score AS gameScore, "
-            . "s.game_rank AS gameRank, s.game_winner AS gameWinner, t.name AS teamName "
-            . "FROM " . DBConn::prefix() . "game_score_teams AS s "
-            . "LEFT JOIN " . DBConn::prefix() . "teams AS t ON s.team_id = t.id "
-            . "WHERE s.game_id = :game_id ORDER BY s.game_rank");
+                        . "s.game_rank AS gameRank, s.game_winner AS gameWinner, t.name AS teamName,COALESCE(c.sequence,0) AS teamSequence "
+                        . "FROM " . DBConn::prefix() . "game_score_teams AS s "
+                        . "LEFT JOIN " . DBConn::prefix() . "teams AS t ON s.team_id = t.id "
+                        . "LEFT JOIN " . DBConn::prefix() . "logs_game_checkins AS c ON c.team_id = t.id AND c.game_id = s.game_id "
+                        . "WHERE s.game_id = :game_id ORDER BY s.game_rank");
 
         $elements = Array();
 
