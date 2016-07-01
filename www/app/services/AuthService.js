@@ -23,10 +23,10 @@ angular.module('AuthService', [
         factory.getUser = function () {
             return UserSession.get();
         };
+
         
         var authenticateUser = function(label, resolve, reject) {
             var prefix = (label) ? label : 'error'; 
-
             var credentials = CookieService.getAuthCookie();
             if (credentials) {
                 API.getAuthenticatedUser(credentials)
@@ -49,7 +49,6 @@ angular.module('AuthService', [
                 return resolve('User is not authenticated.');
             }
         };
-        
         factory.init = function () {
             return $q(function (resolve, reject) {
                 var user = UserSession.get();
@@ -66,7 +65,7 @@ angular.module('AuthService', [
                 return authenticateUser('authReload', resolve, reject);
             });
         };
-        
+
         factory.isAuthenticated = function () {
             return $q(function (resolve, reject) {
                 var user = UserSession.get();
@@ -76,7 +75,7 @@ angular.module('AuthService', [
                 return authenticateUser('isAuthenticated', resolve, reject);
             });
         };
-        
+       
         /* Authentication for Visibility */
 
         factory.isAuthorized = function (authorizedRole) {
@@ -91,10 +90,8 @@ angular.module('AuthService', [
                 } else {
                     // Confirm that the user is logged in
                     factory.isAuthenticated().then(function (results) {
-                        var userSession = UserSession.get();
-                        if (!userSession) {
-                            console.log('Couldent get user session, ', userSession);
-                        console.log('Couldent get user session, ', results);
+
+                        if (!UserSession.get()) {
                             reject(AUTH_EVENTS.notAuthenticated);
                         } else if (VisibilityService.isVisibleToUser(authorizedRole, UserSession.roles())) {
                             resolve(true);
@@ -103,7 +100,6 @@ angular.module('AuthService', [
                         }
 
                     }, function (results) {
-                        console.log('Couldent get user session, ', results);
                         // Reject because the user was not logged in
                         reject(AUTH_EVENTS.notAuthenticated);
                     });
@@ -233,21 +229,43 @@ angular.module('AuthService', [
             if (angular.isDefined(doNotLogin) && doNotLogin === true) {
                 resolve("Player added. You may now login with the following email, '" + data.user.email + "'.");
             }
-            var user = UserSession.create(data.user);
-            if (user) {
-                // Save valid login apiKey and apiToken in a cookie
-                // for the sent life in hours as its expiration.
-                CookieService.setAuthCookie(data.user.apiKey, data.user.apiToken, data.sessionLifeHours);
-                // Broadcast the successful login (Triggers redirect)
-                $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
-                // Resolve the current user
-                return resolve(user);
-            } else {
-                $log.error(data);
-                return reject("Error: Could not sign up user. Please try again later.");
+            else {
+                var user = UserSession.create(data.user);
+                if (user) {
+                    // Save valid login apiKey and apiToken in a cookie
+                    // for the sent life in hours as its expiration.
+                    CookieService.setAuthCookie(data.user.apiKey, data.user.apiToken, data.sessionLifeHours);
+                    // Broadcast the successful login (Triggers redirect)
+                    $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
+                    // Resolve the current user
+                    return resolve(user);
+                } else {
+                    $log.error(data);
+                    return reject("Error: Could not sign up user. Please try again later.");
+                }
             }
         };
-
+        var postSignupSuccessHostVenue = function (data, doNotLogin, resolve, reject) {
+            if (angular.isDefined(doNotLogin) && doNotLogin === true) {
+                data.msg = "Venue added. You may now login with the following email, '" + data.user.email + "'.";
+                resolve(data);
+            }
+            else {
+                var user = UserSession.create(data.user);
+                if (user) {
+                    // Save valid login apiKey and apiToken in a cookie
+                    // for the sent life in hours as its expiration.
+                    CookieService.setAuthCookie(data.user.apiKey, data.user.apiToken, data.sessionLifeHours);
+                    // Broadcast the successful login (Triggers redirect)
+                    $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
+                    // Resolve the current user
+                    return resolve(user);
+                } else {
+                    $log.error(data);
+                    return reject("Error: Could not sign up user. Please try again later.");
+                }
+            }
+        };
         factory.signup = function (newUser, doNotLogin) {
             /* 
              * Regular Signup:
@@ -382,7 +400,6 @@ angular.module('AuthService', [
                 });
             });
         };
-        
         factory.hostSignup = function (newUser, doNotLogin) {
             /* 
              * Regular Signup:
@@ -406,7 +423,6 @@ angular.module('AuthService', [
                         });
             });
         };
-        
         factory.hostFacebookSignup = function (doNotLogin) {
             /* Facebook Signup:
              * var newUser = {
@@ -457,14 +473,13 @@ angular.module('AuthService', [
                 // API.postHostVenueSignup(newUser)
                 API.postHostVenueSignup(newUser)
                         .then(function (data) {
-                            return postSignupSuccess(data, doNotLogin, resolve, reject);
+                            return postSignupSuccessHostVenue(data, doNotLogin, resolve, reject);
                         }, function (error) {
                             $log.error(error);
                             reject(error);
                         });
             });
         };
-        
         /* Password Managment */
 
         factory.forgotpassword = function (credentials) {
@@ -510,7 +525,6 @@ angular.module('AuthService', [
 
 
         };
-        
         return factory;
 
     }]);

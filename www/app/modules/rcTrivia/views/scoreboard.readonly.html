@@ -16,7 +16,7 @@
             <div data-rc-trivia-scoreboard-round-navigation class="game-round-navigation"></div>
         </div>
         
-        <table id="scoreboard" 
+        <!--<table id="scoreboard" 
                data-datatable="ng" 
                data-dt-options="dtScoreboard.options" 
                data-dt-instance="dtScoreboard.instance">
@@ -53,9 +53,18 @@
                     </td>
                 </tr>
             </tbody>
-        </table>
+        </table>-->
+
+      
 
     </section>
+    <div class="grid grid-dark" ui-grid="uiGames.options" ng-style="getTableHeight()" ui-grid-pagination ui-grid-resize-columns ui-grid-pinning ui-grid-auto-resize>
+        <div class="no-rows-ui-grid" ng-show="!uiGames.options.data.length">
+            <div class="msg">
+                <span>No data available in table</span>
+            </div>
+        </div>
+    </div>
 
     <footer id="scoreboard-about-game">
         <address>
@@ -71,3 +80,8 @@
         </address>
     </footer>
 </div>
+<script type="text/ng-template" id="subgrid">
+    <div class="grid" ui-grid-expandable ui-grid="row.entity.subGridOptions">
+    </div>
+
+</script>

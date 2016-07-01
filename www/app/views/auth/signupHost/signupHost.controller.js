@@ -85,7 +85,7 @@ angular.module('app.auth.signupHost', [])
                     $scope.signupAlerts.error('Please Select one of the Existing Joint,and click on Add Joint to add it as your joint.');
                 }
                 else if (!$scope.newUser.host_accepted_terms) {
-                    AlertConfirmService.confirm('Do you agree to our <a href="http://www.triviajoint.com/joint-terms-and-conditions/" target="_blank">Terms of Service</a>?', 'Terms of Service Agreement').result.then(function (resp) {
+                    AlertConfirmService.confirm('Do you agree to our <a href="http://www.triviajoint.com/host-terms-and-conditions.html" target="_blank">Terms of Service</a>?', 'Terms of Service Agreement').result.then(function (resp) {
                         $scope.newUser.host_accepted_terms = true;
                         AuthService.hostSignup($scope.newUser).then(function (results) {
                             $log.debug(results);
@@ -129,7 +129,7 @@ angular.module('app.auth.signupHost', [])
                 else if ($scope.newUser.venueIds == null || $scope.newUser.venueIds == undefined || ($scope.newUser.venueIds).length <= 0) {
                     $scope.signupAlerts.error('Please Select one of the Existing Joint,and click on Add Joint to add it as your joint.');
                 } else if (!$scope.newUser.host_accepted_terms) {
-                    AlertConfirmService.confirm('Do you agree to our <a href="http://www.triviajoint.com/joint-terms-and-conditions/" target="_blank">Terms of Service</a>?', 'Terms of Service Agreement').result.then(function (resp) {
+                    AlertConfirmService.confirm('Do you agree to our <a href="http://www.triviajoint.com/host-terms-and-conditions.html" target="_blank">Terms of Service</a>?', 'Terms of Service Agreement').result.then(function (resp) {
                         $scope.newUser.host_accepted_terms = true;
                         AuthService.hostFacebookSignup().then(function (resp) {
                             $log.debug(resp);
@@ -188,12 +188,44 @@ angular.module('app.auth.signupHost', [])
                 });
             };
 
-            $scope.buttonAddNewVenue = function () {
-                if (!angular.isDefined($scope.VenuesDropDown.venue.value)) {
-                    $scope.signupJoinSelectionAlerts.error("Please select at least one joint from the Existing Joint or add a new joint");
-                    return;
+            //$scope.buttonAddNewVenue = function () {
+            //    if (!angular.isDefined($scope.VenuesDropDown.venue.value)) {
+            //        $scope.signupJoinSelectionAlerts.error("Please select at least one joint from the Existing Joint or add a new joint");
+            //        return;
+            //    }
+            //    else {
+            //        var selectedVenueId = $scope.VenuesDropDown.venue.value.id;
+            //        if (($scope.NewVenueHostList).length) {
+            //            var isContains = $scope.NewVenueHostList.filter(function (obj) {
+            //                return obj.id == selectedVenueId;
+            //            })[0];
+            //            if (isContains != undefined && isContains.id != null && isContains.id != undefined) {
+            //                $scope.signupJoinSelectionAlerts.error("Selected Joint is already added in your selection.Please select new joint");
+            //            }
+            //            else {
+            //                $scope.NewVenueHostList.push($scope.VenuesDropDown.venue.value);
+            //            }
+            //        } else {
+            //            $scope.NewVenueHostList.push($scope.VenuesDropDown.venue.value);
+            //        }
+
+            //    }
+
+            //}
+            $scope.buttonDeleteHostVenue = function (venueId) {
+                $scope.NewVenueHostList = $scope.NewVenueHostList.filter(function (obj) {
+                    return obj.id != venueId;
+                });
+            }
+            $scope.handlePhoneChangeEvent = function ($phone) {
+                $scope.showPhoneValidation = false;
+                if ($phone === undefined || $phone.length < 10) {
+                    $scope.showPhoneValidation = true;
                 }
-                else {
+            }
+
+            $scope.$watch("VenuesDropDown.venue.value", function (newValue, oldValue) {
+                if (angular.isDefined(newValue) && angular.isDefined(newValue.id)) {
                     var selectedVenueId = $scope.VenuesDropDown.venue.value.id;
                     if (($scope.NewVenueHostList).length) {
                         var isContains = $scope.NewVenueHostList.filter(function (obj) {
@@ -208,14 +240,6 @@ angular.module('app.auth.signupHost', [])
                     } else {
                         $scope.NewVenueHostList.push($scope.VenuesDropDown.venue.value);
                     }
-                   
                 }
-            }
-
-            $scope.handlePhoneChangeEvent = function ($phone) {
-                $scope.showPhoneValidation = false;
-                if ($phone === undefined || $phone.length < 10) {
-                    $scope.showPhoneValidation = true;
-                }
-            }
+            });
         }]);

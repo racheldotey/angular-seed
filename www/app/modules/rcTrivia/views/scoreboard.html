@@ -62,17 +62,14 @@
         </div>
         
         <form class="form-inline">
-        <table id="scoreboard" 
+        <!--<table id="scoreboard" 
                data-datatable="ng" 
                data-dt-options="dtScoreboard.options" 
                data-dt-instance="dtScoreboard.instance">
             <thead>
                 <tr>
                     <th><p>Team Names</p></th>
-                    <!--
-                    <th><p class="text-center">Game<br/>Score / Rank</p></th>
-                    <th><p class="text-center">Round #{{game.round.number}}<br/>Score / Rank</p></th>
-                    -->
+                  
                     <th class="question" ng-repeat="question in game.rounds[game.currentRoundNumber].questions">
                         <a href="" ng-click="buttonEditQuestion(question.number)">
                             <p class="text-center"><strong>#{{question.number}}<span ng-if="getQuestionType(question.number) === 'default'"> - {{question.maxPoints | numberEx}} pts</span></strong></p>
@@ -84,10 +81,7 @@
             <tbody>
                 <tr ng-repeat="team in game.teams track by $index" data-team-id="{{team.teamId}}">
                     <th class="team"><p>{{team.name}}</p></th>
-                    <!--
-                    <th class="game-score text-center">{{team.gameScore | numberEx}} / {{team.gameRank}}</th>
-                    <th class="round-score text-center">{{team.rounds[game.currentRoundNumber].roundScore | numberEx}} / {{team.rounds[game.currentRoundNumber].roundRank}}</th>
-                    -->
+                   
                     <td class="question-score" ng-repeat="teamScore in team.rounds[game.currentRoundNumber].questions">
                         <div ng-if="getQuestionType(teamScore.number) === 'wager'">
                             <div ng-show="displayQuickScoreButtons" class="input-group input-group-sm" title="Teams Wager">
@@ -173,7 +167,15 @@
                 </tr>
             </tbody>
 
-        </table>
+        </table>-->
+            <br />
+            <div class="grid grid-dark" ui-grid="uiGames.options" ng-style="getTableHeight()" ui-grid-pagination ui-grid-resize-columns ui-grid-pinning ui-grid-auto-resize ui-grid-edit ui-grid-move-columns>
+                <div class="no-rows-ui-grid" ng-show="!uiGames.options.data.length">
+                    <div class="msg">
+                        <span>No data available in table</span>
+                    </div>
+                </div>
+            </div>
 
         </form>
     </section>

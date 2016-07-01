@@ -14,6 +14,7 @@ angular.module('app.modal.trivia.editHost', [])
         /* Holds the add / edit form on the modal */
         $scope.form = {};
         $scope.showPhoneValidation = false;
+        $scope.showPasswordRules = false;
         $scope.isNewJointAddedInList = false;
         $scope.venueLogo = {};
         $scope.newUser = {
@@ -69,10 +70,10 @@ angular.module('app.modal.trivia.editHost', [])
                 return 'view';
             }
         };
-      
         // for dropdownselected data
         $scope.VenuesDropDown = [];
         $scope.publicVenuesList = [];
+        console.log("called");
         ApiRoutesSimpleLists.simplePublicVenuesList().then(function (result) {
             $scope.publicVenuesList = result;
         });
@@ -81,7 +82,7 @@ angular.module('app.modal.trivia.editHost', [])
         if (editing != undefined && editing.venues != undefined && (editing.venues).length > 0) {
             $scope.hostVenueList = editing.venues;
         }
-      
+
         $scope.dtInstance = {};
         $scope.dtOptions = DTOptionsBuilder
             .newOptions()
@@ -143,6 +144,18 @@ angular.module('app.modal.trivia.editHost', [])
 
         /* Item to display and edit */
         $scope.editing = angular.copy($scope.saved);
+        var passwordValidator = /^(?=.*\d)(?=.*[A-Za-z])[A-Za-z0-9_!@#$%^&*+=-]{8,55}$/;
+        $scope.onChangeValidatePassword = function () {
+            $scope.showPasswordRules = (!passwordValidator.test($scope.newUser.password));
+            $scope.onChangeValidateConfirmPassword();
+        };
+
+        $scope.onChangeValidateConfirmPassword = function () {
+            if ($scope.newUser.passwordB) {
+                $scope.showPasswordMissmatch = ($scope.newUser.password !== $scope.newUser.passwordB);
+            }
+        };
+
         /* Click event for the Save button */
         $scope.buttonSave = function () {
             if (!$scope.form.modalForm.$valid) {
@@ -232,49 +245,14 @@ angular.module('app.modal.trivia.editHost', [])
 
         }
         /*click event for editing of trivia time and day values*/
-        
+
         /* Click event for adding Selected Joint to host */
-        $scope.buttonAddHostVenue = function () {
-            var assignTohostVenueListArray = {
-                'venue_id': '',
-                'venue': '',
-                'venue_triviaDay': '',
-                'venue_triviaTime': '',
-            }
-            if (!angular.isDefined($scope.VenuesDropDown.venue.value)) {
-                $scope.signupJoinSelectionAlerts.error("Please select at least one joint from the Existing Joint or add a new joint ");
-                return;
-            }
-            var venueId = $scope.VenuesDropDown.venue.value.id;
-            if (($scope.hostVenueList).length > 0) {
-                var isContains = $scope.hostVenueList.filter(function (obj) {
-                    return obj.venue_id == venueId;
-                })[0];
-                if (isContains != undefined && isContains.venue_id != null && isContains.venue_id != undefined) {
-                    $scope.signupJoinSelectionAlerts.error("Selected joint is already exists in your list.Please select new joint");
-                }
-                else {
-                    assignTohostVenueListArray.venue_id = $scope.VenuesDropDown.venue.value.id;
-                    assignTohostVenueListArray.venue = $scope.VenuesDropDown.venue.value.name;
-                    assignTohostVenueListArray.venue_triviaDay = $scope.VenuesDropDown.venue.value.triviaDay;
-                    assignTohostVenueListArray.venue_triviaTime = $scope.VenuesDropDown.venue.value.triviaTime;
-                    $scope.hostVenueList.push(assignTohostVenueListArray);
-                    $scope.editing.venueIds.push(venueId);
-                    $scope.isNewJointAddedInList = true;
-                    $scope.signupJoinSelectionAlerts.success("Joint is added in your selection (Note - Change takes effect only after click on Save button for saving the joint)");
-                }
-            }
-            else {
-                assignTohostVenueListArray.venue_id = $scope.VenuesDropDown.venue.value.id;
-                assignTohostVenueListArray.venue = $scope.VenuesDropDown.venue.value.name;
-                assignTohostVenueListArray.venue_triviaDay = $scope.VenuesDropDown.venue.value.triviaDay;
-                assignTohostVenueListArray.venue_triviaTime = $scope.VenuesDropDown.venue.value.triviaTime;
-                $scope.hostVenueList.push(assignTohostVenueListArray);
-                $scope.editing.venueIds.push(venueId);
-                $scope.isNewJointAddedInList = true;
-                $scope.signupJoinSelectionAlerts.success("Joint is added in your selection (Note - Change takes effect only after click on Save button for saving the joint)");
-            }
+        $scope.buttonDeleteNewHostVenue = function (venueId) {
+            $scope.hostVenueList = $scope.hostVenueList.filter(function (obj) {
+                return obj.id != venueId;
+            });
         }
+      
 
         $scope.buttonOpenNewVenueModal = function () {
             var modalInstance = TriviaModalService.openAddHostJoint();
@@ -294,29 +272,132 @@ angular.module('app.modal.trivia.editHost', [])
             });
         };
 
-        $scope.buttonAddNewVenue = function () {
-            if (!angular.isDefined($scope.VenuesDropDown.venue.value)) {
-                $scope.signupJoinSelectionAlerts.error("Please select at least one joint from the Existing Joint or add a new joint ");
-                return;
-            }
-            else {
-                var selectedVenueId = $scope.VenuesDropDown.venue.value.id;
-                if (($scope.hostVenueList).length) {
-                    var isContains = $scope.hostVenueList.filter(function (obj) {
-                        return obj.id == selectedVenueId;
-                    })[0];
-                    if (isContains != undefined && isContains.id != null && isContains.id != undefined) {
-                        $scope.signupJoinSelectionAlerts.error("Selected Joint is already added in your selection.Please select new joint");
-                    }
-                    else {
+        //$scope.buttonAddHostVenue = function () {
+        //    var assignTohostVenueListArray = {
+        //        'venue_id': '',
+        //        'venue': '',
+        //        'venue_triviaDay': '',
+        //        'venue_triviaTime': '',
+        //    }
+        //    if (!angular.isDefined($scope.VenuesDropDown.venue.value)) {
+        //        $scope.signupJoinSelectionAlerts.error("Please select at least one joint from the Existing Joint or add a new joint ");
+        //        return;
+        //    }
+        //    var venueId = $scope.VenuesDropDown.venue.value.id;
+        //    if (($scope.hostVenueList).length > 0) {
+        //        var isContains = $scope.hostVenueList.filter(function (obj) {
+        //            return obj.venue_id == venueId;
+        //        })[0];
+        //        if (isContains != undefined && isContains.venue_id != null && isContains.venue_id != undefined) {
+        //            $scope.signupJoinSelectionAlerts.error("Selected joint is already exists in your list.Please select new joint");
+        //        }
+        //        else {
+        //            assignTohostVenueListArray.venue_id = $scope.VenuesDropDown.venue.value.id;
+        //            assignTohostVenueListArray.venue = $scope.VenuesDropDown.venue.value.name;
+        //            assignTohostVenueListArray.venue_triviaDay = $scope.VenuesDropDown.venue.value.triviaDay;
+        //            assignTohostVenueListArray.venue_triviaTime = $scope.VenuesDropDown.venue.value.triviaTime;
+        //            $scope.hostVenueList.push(assignTohostVenueListArray);
+        //            $scope.editing.venueIds.push(venueId);
+        //            $scope.isNewJointAddedInList = true;
+        //            $scope.signupJoinSelectionAlerts.success("Joint is added in your selection (Note - Change takes effect only after click on Save button for saving the joint)");
+        //        }
+        //    }
+        //    else {
+        //        assignTohostVenueListArray.venue_id = $scope.VenuesDropDown.venue.value.id;
+        //        assignTohostVenueListArray.venue = $scope.VenuesDropDown.venue.value.name;
+        //        assignTohostVenueListArray.venue_triviaDay = $scope.VenuesDropDown.venue.value.triviaDay;
+        //        assignTohostVenueListArray.venue_triviaTime = $scope.VenuesDropDown.venue.value.triviaTime;
+        //        $scope.hostVenueList.push(assignTohostVenueListArray);
+        //        $scope.editing.venueIds.push(venueId);
+        //        $scope.isNewJointAddedInList = true;
+        //        $scope.signupJoinSelectionAlerts.success("Joint is added in your selection (Note - Change takes effect only after click on Save button for saving the joint)");
+        //    }
+        //}
+
+        //$scope.buttonAddNewVenue = function () {
+        //    if (!angular.isDefined($scope.VenuesDropDown.venue.value)) {
+        //        $scope.signupJoinSelectionAlerts.error("Please select at least one joint from the Existing Joint or add a new joint ");
+        //        return;
+        //    }
+        //    else {
+        //        var selectedVenueId = $scope.VenuesDropDown.venue.value.id;
+        //        if (($scope.hostVenueList).length) {
+        //            var isContains = $scope.hostVenueList.filter(function (obj) {
+        //                return obj.id == selectedVenueId;
+        //            })[0];
+        //            if (isContains != undefined && isContains.id != null && isContains.id != undefined) {
+        //                $scope.signupJoinSelectionAlerts.error("Selected Joint is already added in your selection.Please select new joint");
+        //            }
+        //            else {
+        //                $scope.hostVenueList.push($scope.VenuesDropDown.venue.value);
+        //            }
+        //        } else {
+        //            $scope.hostVenueList.push($scope.VenuesDropDown.venue.value);
+        //        }
+
+        //    }
+        //}
+        $scope.$watch("VenuesDropDown.venue.value", function (newValue, oldValue) {
+            if (angular.isDefined(newValue) && angular.isDefined(newValue.id)) {
+                if ($scope.getMode() == 'new') {
+                    var selectedVenueId = $scope.VenuesDropDown.venue.value.id;
+                    if (($scope.hostVenueList).length) {
+                        var isContains = $scope.hostVenueList.filter(function (obj) {
+                            return obj.id == selectedVenueId;
+                        })[0];
+                        if (isContains != undefined && isContains.id != null && isContains.id != undefined) {
+                            $scope.signupJoinSelectionAlerts.error("Selected Joint is already added in your selection.Please select new joint");
+                        }
+                        else {
+                            $scope.hostVenueList.push($scope.VenuesDropDown.venue.value);
+                        }
+                    } else {
                         $scope.hostVenueList.push($scope.VenuesDropDown.venue.value);
                     }
-                } else {
-                    $scope.hostVenueList.push($scope.VenuesDropDown.venue.value);
                 }
-
+                else if ($scope.getMode() == 'edit') {
+                    var assignTohostVenueListArray = {
+                        'venue_id': '',
+                        'venue': '',
+                        'venue_triviaDay': '',
+                        'venue_triviaTime': '',
+                    }
+                    //if (!angular.isDefined($scope.VenuesDropDown.venue.value)) {
+                    //    $scope.signupJoinSelectionAlerts.error("Please select at least one joint from the Existing Joint or add a new joint ");
+                    //    return;
+                    //}
+                    var venueId = $scope.VenuesDropDown.venue.value.id;
+                    if (($scope.hostVenueList).length > 0) {
+                        var isContains = $scope.hostVenueList.filter(function (obj) {
+                            return obj.venue_id == venueId;
+                        })[0];
+                        if (isContains != undefined && isContains.venue_id != null && isContains.venue_id != undefined) {
+                            $scope.signupJoinSelectionAlerts.error("Selected joint is already exists in your list.Please select new joint");
+                        }
+                        else {
+                            assignTohostVenueListArray.venue_id = $scope.VenuesDropDown.venue.value.id;
+                            assignTohostVenueListArray.venue = $scope.VenuesDropDown.venue.value.name;
+                            assignTohostVenueListArray.venue_triviaDay = $scope.VenuesDropDown.venue.value.triviaDay;
+                            assignTohostVenueListArray.venue_triviaTime = $scope.VenuesDropDown.venue.value.triviaTime;
+                            $scope.hostVenueList.push(assignTohostVenueListArray);
+                            $scope.editing.venueIds.push(venueId);
+                            $scope.isNewJointAddedInList = true;
+                            $scope.signupJoinSelectionAlerts.success("Joint is added in your selection (Note - Change takes effect only after click on Save button for saving the joint)");
+                        }
+                    }
+                    else {
+                        assignTohostVenueListArray.venue_id = $scope.VenuesDropDown.venue.value.id;
+                        assignTohostVenueListArray.venue = $scope.VenuesDropDown.venue.value.name;
+                        assignTohostVenueListArray.venue_triviaDay = $scope.VenuesDropDown.venue.value.triviaDay;
+                        assignTohostVenueListArray.venue_triviaTime = $scope.VenuesDropDown.venue.value.triviaTime;
+                        $scope.hostVenueList.push(assignTohostVenueListArray);
+                        $scope.editing.venueIds.push(venueId);
+                        $scope.isNewJointAddedInList = true;
+                        $scope.signupJoinSelectionAlerts.success("Joint is added in your selection (Note - Change takes effect only after click on Save button for saving the joint)");
+                    }
+                }
             }
-        }
+        });
 
         $scope.buttonAddNewHost = function () {
             $scope.newUser.venueIds = $scope.hostVenueList.map(function (a) { return a.id; });
@@ -358,6 +439,7 @@ angular.module('app.modal.trivia.editHost', [])
             else return 'displaytemplate';
         };
         $scope.editHostVenue = function (hostVenue) {
+            console.log("Host Venue=" + JSON.stringify(hostVenue));
             var currentDateTime = new Date();
             var minutes = currentDateTime.getMinutes();
             var hours = currentDateTime.getHours();
@@ -379,7 +461,7 @@ angular.module('app.modal.trivia.editHost', [])
             else {
                 $scope.defaultDayTime.triviaDay = hostVenue.venue_triviaDay;
             }
-            
+
             $scope.selectedHostVenue = angular.copy(hostVenue);
         };
         $scope.resetDisplayTemplate = function () {
@@ -391,11 +473,11 @@ angular.module('app.modal.trivia.editHost', [])
                 return;
             }
             else {
-                var hostData= {
+                var hostData = {
                     'hostId': $scope.editing.hostId,
                     'venueId': $scope.selectedHostVenue.venue_id,
-                    'triviaDay':  $scope.defaultDayTime.triviaDay,
-                    'triviaTime':  $filter('date')($scope.defaultDayTime.triviaTimeDate, 'h:mm a'),
+                    'triviaDay': $scope.defaultDayTime.triviaDay,
+                    'triviaTime': $filter('date')($scope.defaultDayTime.triviaTimeDate, 'h:mm a'),
                 }
                 ApiRoutesUsers.updateHostVenue(hostData).then(function (result) {
                     $scope.selectedHostVenue.venue_triviaTime = $filter('date')($scope.defaultDayTime.triviaTimeDate, 'h:mm a');

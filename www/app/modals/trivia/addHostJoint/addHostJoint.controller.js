@@ -84,10 +84,10 @@ angular.module('app.modal.trivia.addHostJoint', [])
         else
         {
             $scope.saved.triviaTime = $filter('date')($scope.saved.triviaTimeDate, 'h:mm a');
-            AuthService.hostVenueSignup($scope.saved).then(function (result) {
+            AuthService.hostVenueSignup($scope.saved, true).then(function (result) {
                 var strToSend = {
                     'venueId': result.user.venueId,
-                    'msg': 'Joint added successfully.'
+                    'msg': result.msg,
                 }
                 $uibModalInstance.close(strToSend);
             }, function (error) {
@@ -106,3 +106,4 @@ angular.module('app.modal.trivia.addHostJoint', [])
         }
     }
 }]);
+

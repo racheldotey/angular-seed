@@ -8,6 +8,7 @@
 
     <div data-rc-bootstrap-alerts="alertProxy"></div>
 
+
     <form name="form.modalForm" role="form" novalidate autocomplete="off">
 
         <div data-rc-bootstrap-alerts="alertProxy"></div>
@@ -65,7 +66,7 @@
 
         <div class="form-group row">
             <div class="col-xs-8">
-                <input type="text" name="phone" class="form-control" placeholder="Joint Phone" ng-model="saved.phone" ui-mask="(999) 999-9999" ui-mask-placeholder ui-mask-placeholder-char="_" ui-options="{clearOnBlur: false}" ng-model-options="{ updateOn: 'blur' }" ng-change="handlePhoneChangeEvent(newUser.phone)" required />
+                <input type="text" name="phone" class="form-control" placeholder="Joint Phone" ng-model="saved.phone" ui-mask="(999) 999-9999" ui-mask-placeholder ui-mask-placeholder-char="_" ui-options="{clearOnBlur: false}" ng-model-options="{ updateOn: 'blur' }" ng-change="handlePhoneChangeEvent(saved.phone)" required />
             </div>
             <div class="col-xs-4">
                 <input type="text" class="form-control" placeholder="Ext" ng-model="saved.phone_extension" maxlength="5" />

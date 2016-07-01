@@ -10,7 +10,7 @@
 angular.module('theApp', [
     'ui.bootstrap',
     'ui.bootstrap.showErrors',
-    'ui.select', 
+    'ui.select',
     'datatables',
     'datatables.bootstrap',
     'datatables.fixedcolumns',
@@ -28,5 +28,18 @@ angular.module('theApp', [
     'app.run.dev',
     'app.filters',
     'app.services',
-    'ui.mask'
+    'ui.mask',
+    'ui.grid',
+    'ui.grid.edit',
+    'ui.grid.rowEdit',
+    'ui.grid.cellNav',
+    'ui.grid.pagination',
+    'ui.grid.selection',
+    'ui.grid.expandable',
+    'ui.grid.pinning',
+    'ui.grid.resizeColumns',
+    'ui.grid.autoResize',
+    'ui.grid.moveColumns',
+    'ngSanitize'
+
 ]);

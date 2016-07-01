@@ -67,19 +67,19 @@
 
     <div class="form-group row">
         <div class="col-xs-12">
-            <input ng-model="newUser.host_address" type="text" class="form-control" name="address" placeholder="Joint Address" maxlength="255" required>
+            <input ng-model="newUser.host_address" type="text" class="form-control" name="address" placeholder="Host Address" maxlength="255" required>
         </div>
     </div>
 
     <div class="form-group row">
         <div class="col-xs-12">
-            <input ng-model="newUser.host_addressb" type="text" class="form-control" name="addressb" placeholder="Joint Address Con't" maxlength="255">
+            <input ng-model="newUser.host_addressb" type="text" class="form-control" name="addressb" placeholder="Host Address Con't" maxlength="255">
         </div>
     </div>
 
     <div class="form-group row">
         <div class="col-xs-6">
-            <input ng-model="newUser.host_city" type="text" class="form-control" name="city" placeholder="Joint City" maxlength="255" required>
+            <input ng-model="newUser.host_city" type="text" class="form-control" name="city" placeholder="Host City" maxlength="255" required>
         </div>
 
         <div class="col-xs-3">
@@ -99,7 +99,7 @@
 
     <div class="form-group row">
         <div class="col-xs-8">
-            <input type="text" class="form-control" placeholder="Joint Phone" ng-model="newUser.phone" ui-mask="(999) 999-9999" ui-mask-placeholder ui-mask-placeholder-char="_"  ui-options="{clearOnBlur: false}" ng-model-options="{ updateOn: 'blur' }" ng-change="handlePhoneChangeEvent(newUser.phone)"  required />
+            <input type="text" class="form-control" placeholder="Host Phone" ng-model="newUser.phone" ui-mask="(999) 999-9999" ui-mask-placeholder ui-mask-placeholder-char="_"  ui-options="{clearOnBlur: false}" ng-model-options="{ updateOn: 'blur' }" ng-change="handlePhoneChangeEvent(newUser.phone)"  required />
         </div>
         <div class="col-xs-4">
             <input type="text" class="form-control" placeholder="Ext" ng-model="newUser.phone_extension"  maxlength="5" />
@@ -114,36 +114,40 @@
         </div>
         <div class="form-group row">
             <div class="col-xs-12">
-                <input ng-model="newUser.host_website" class="form-control" name="website" placeholder="Joint Website (http://...)" maxlength="255" type="url" url-input >
+                <input ng-model="newUser.host_website" class="form-control" name="website" placeholder="Host Website (http://...)" maxlength="255" type="url" url-input >
             </div>
         </div>
 
         <div class="form-group row">
             <div class="col-xs-12">
-                <input ng-model="newUser.host_facebook" class="form-control" name="facebook" placeholder="Joint Facebook Page (http://...)" maxlength="255" type="url" url-input ng-pattern='/(?:https?:\/\/)?(?:www\.)?facebook\.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[\w\-]*\/)*([\w\-\.]*)/'>
+                <input ng-model="newUser.host_facebook" class="form-control" name="facebook" placeholder="Host Facebook Page (http://...)" maxlength="255" type="url" url-input ng-pattern='/(?:https?:\/\/)?(?:www\.)?facebook\.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[\w\-]*\/)*([\w\-\.]*)/'>
             </div>
         </div>
         <hr />
     
     <div class="form-group row">
         <div class="col-xs-12">
-            <p>Please select and/or add the Joint location(s) where you host live trivia games</p>
-        </div>
+            <!--<p>Please select and/or add the Joint location(s) where you host live trivia games</p>-->
+            <p><b>Enter the Joints where you currently host live trivia games</b></p>
+</div>
     </div>
         <div class="form-group row">
             
             <div class="col-md-6">
                 <div class="form-group" ng-cloak>
-                    <label>Existing Joint</label>
+                    <label>Please select an existing joint:</label>
                     <div rc-trivia-select-list-venue="VenuesDropDown.venue" teams-list-data="publicVenuesList"></div>
                 </div>
             </div>
 
             <div class="col-md-3 pull-left" style="text-align:right">
                 <div class="form-group">
-                    <div class="" style="margin-top:28px">
+                    <div class="" style="margin-top:30px">
                         <div class="btn-group btn-group-sm" uib-dropdown>
-                            <button id="split-button" type="button" class="btn btn-info" ng-click="buttonAddNewVenue()"><i class="fa fa-plus"></i> Add Joint</button>
+                           or click here to
+                            <!--<div class="btn-group btn-group-sm" uib-dropdown>
+                                <button id="split-button" type="button" class="btn btn-info" ng-click="buttonAddNewVenue()"><i class="fa fa-plus"></i> Add Joint</button>
+                            </div>-->
                         </div>
                     </div>
                 </div>
@@ -166,6 +170,7 @@
                             <th>Joint Name</th>
                             <th>Trivia Day</th>
                             <th>Trivia Time</th>
+                            <th>&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -173,6 +178,9 @@
                             <td class="is-table-column"> {{Venue.name}} </td>
                             <td class="is-table-column"> {{Venue.triviaDay}} </td>
                             <td class="is-table-column"> {{Venue.triviaTime}} </td>
+                            <td>
+                                <button ng-hide="!Venue.id" ng-click="buttonDeleteHostVenue(Venue.id)" type="button" class="btn btn-primary btn-xs pull-right"><span class="fa fa-lg fa-trash-o"></span></button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
