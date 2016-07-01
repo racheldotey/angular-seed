@@ -29,7 +29,7 @@ angular.module('app.leaderboards.globalTeamCheckins', ['ui.grid', 'ui.grid.autoR
             
             $scope.gridHeight = 50;       
             $scope.setLeaderboardHeight = function() {
-                $scope.gridHeight = ($scope.grid.data.length > 0) ? LeaderboardResizing.getUIGridHeight() : 50;
+                $scope.gridHeight = ($scope.grid.data && $scope.grid.data.length > 0) ? LeaderboardResizing.getUIGridHeight() : 50;
             };
             
             // Responsive leaderboard height on window resize
@@ -42,7 +42,7 @@ angular.module('app.leaderboards.globalTeamCheckins', ['ui.grid', 'ui.grid.autoR
                     var count = (angular.isDefined(limit) && parseInt(limit)) ? limit : $stateParams.limit;
 
                     ApiRoutesLeaderboards.getGlobalTeamCheckinsLeaderboard(count, $stateParams.startDate, $stateParams.endDate).then(function (result) {
-                        $scope.grid.data = result.leaderboard;
+                        $scope.grid.data = (angular.isDefined(result.leaderboard) && angular.isArray(result.leaderboard)) ? result.leaderboard : $scope.grid.data;
                         $scope.setLeaderboardHeight();
                         if ($stateParams.limit !== count) {
                             $state.go($state.current.name, {limit: count, startDate:$stateParams.startDate, endDate:$stateParams.endDate}, {notify: true});
