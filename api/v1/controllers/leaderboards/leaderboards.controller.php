@@ -174,7 +174,7 @@ class LeaderboardController {
             }
         }
             
-        if(count($results) > 0) {
+        if(isset($results) && count($results) > 0) {
             $leaderboard = self::sortAndTrimLeaderboardResults($results, $limit);
             return $app->render(200, array('leaderboard' => $leaderboard, 'startDate' => $startDate, 'endDate' => $endDate));
         } else {
@@ -278,8 +278,8 @@ class LeaderboardController {
                 $results[] = $result;
             }
         }
-            
-        if(count($results) > 0) {
+        
+        if(isset($results) && count($results) > 0) {
             $leaderboard = self::sortAndTrimLeaderboardResults($results, $limit);
             return $app->render(200, array('leaderboard' => $leaderboard, 'startDate' => $startDate, 'endDate' => $endDate));
         } else {
@@ -379,6 +379,9 @@ class LeaderboardController {
                     'hotSalsaHomeJointId' => (isset($salsaPlayer['jointId'])) ? $salsaPlayer['jointId'] : 0
                 );
             }
+        }
+        
+        if(isset($results) && count($results) > 0) {
             return $app->render(200, array('leaderboard' => $results, 'startDate' => $startDate, 'endDate' => $endDate));
         } else {
             $msg = APIConfig::get('TRIVIA_LEADERBOARD_NO_DATA_USER_MESSAGE');
@@ -466,7 +469,11 @@ class LeaderboardController {
                     'hotSalsaHomeJointId' => (isset($salsaTeam['jointId'])) ? $salsaTeam['jointId'] : 0
                 );
             }
-            return $app->render(200, array('leaderboard' => $results, 'startDate' => $startDate, 'endDate' => $endDate));
+        
+        }
+        
+        if(isset($results) && count($results) > 0) {
+            return $app->render(200, array('leaderboard' => $results, 'startDate' => $startDate, 'endDate' => $endDate, 'url' => $url, 'salsacalldata' => $salsaData));
         } else {
             $msg = APIConfig::get('TRIVIA_LEADERBOARD_NO_DATA_USER_MESSAGE');
             $msg = ($msg) ? $msg : 'Could not select Per Joint Team Score Leaderboard.';
@@ -571,8 +578,8 @@ class LeaderboardController {
                 $results[] = $result;
             }
         }
-            
-        if(count($results) > 0) {
+        
+        if(isset($results) && count($results) > 0) {
             $leaderboard = self::sortAndTrimLeaderboardResults($results, $limit);
             return $app->render(200, array('leaderboard' => $leaderboard, 'startDate' => $startDate, 'endDate' => $endDate));
         } else {
@@ -667,8 +674,8 @@ class LeaderboardController {
                 $results[] = $result;
             }
         }
-            
-        if(count($results) > 0) {
+        
+        if(isset($results) && count($results) > 0) {
             $leaderboard = self::sortAndTrimLeaderboardResults($results, $limit);
             return $app->render(200, array('leaderboard' => $leaderboard, 'startDate' => $startDate, 'endDate' => $endDate));
         } else {
@@ -755,6 +762,9 @@ class LeaderboardController {
                     'hotSalsaHomeJointId' => (isset($salsaPlayer['jointId'])) ? $salsaPlayer['jointId'] : 0
                 );
             }
+        }
+        
+        if(isset($results) && count($results) > 0) {
             return $app->render(200, array('leaderboard' => $results, 'startDate' => $startDate, 'endDate' => $endDate));
         } else {
             $msg = APIConfig::get('TRIVIA_LEADERBOARD_NO_DATA_USER_MESSAGE');
@@ -832,6 +842,9 @@ class LeaderboardController {
                     'hotSalsaHomeJointId' => (isset($salsaTeam['jointId'])) ? $salsaTeam['jointId'] : 0
                 );
             }
+        }
+        
+        if(isset($results) && count($results) > 0) {
             return $app->render(200, array('leaderboard' => $results, 'startDate' => $startDate, 'endDate' => $endDate));
         } else {
             $msg = APIConfig::get('TRIVIA_LEADERBOARD_NO_DATA_USER_MESSAGE');
