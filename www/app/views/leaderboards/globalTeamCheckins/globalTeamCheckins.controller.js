@@ -49,6 +49,9 @@ angular.module('app.leaderboards.globalTeamCheckins', ['ui.grid', 'ui.grid.autoR
                         }
                         resolve(true);
                     }, function (error) {
+                        if(angular.isString(error)) {
+                            $scope.errorMessage = error;
+                        }
                         $scope.setLeaderboardHeight();
                         console.log(error);
                         $scope.alertProxy.error(error);

@@ -50,6 +50,9 @@ angular.module('app.leaderboards.venueTeamCheckins', ['ui.grid', 'ui.grid.autoRe
                         }
                         resolve(true);
                     }, function (error) {
+                        if(angular.isString(error)) {
+                            $scope.errorMessage = error;
+                        }
                         $scope.setLeaderboardHeight();
                         console.log(error);
                         $scope.alertProxy.error(error);

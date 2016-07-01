@@ -20,11 +20,11 @@
     
     <div data-rc-bootstrap-alerts="alertProxy"></div>
     
-    <div id="leaderboard" ui-grid="grid" ui-grid-auto-resize class="grid grid-dark" style="height:{{gridHeight}}px;"}}"></div>
+    <div id="leaderboard" ng-show="grid.data.length" ui-grid="grid" ui-grid-auto-resize class="grid grid-dark" style="height:{{gridHeight}}px;"></div>
     
     <div class="leaderboard-footer row">
         <div class="col-xs-12" ng-hide="grid.data.length">
-            <p>No Leaderboard Data Found</p>
+            <p>{{ errorMessage || 'No Leaderboard Data Found' }}</p>
         </div>
         
         <div class="col-xs-6 hidden-xs" ng-show="grid.data.length">

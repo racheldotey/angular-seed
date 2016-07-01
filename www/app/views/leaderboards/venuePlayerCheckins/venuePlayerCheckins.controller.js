@@ -53,6 +53,9 @@ angular.module('app.leaderboards.venuePlayerCheckins', ['ui.grid', 'ui.grid.auto
                         }
                         resolve(true);
                     }, function (error) {
+                        if(angular.isString(error)) {
+                            $scope.errorMessage = error;
+                        }
                         $scope.setLeaderboardHeight();
                         console.log(error);
                         $scope.alertProxy.error(error);
