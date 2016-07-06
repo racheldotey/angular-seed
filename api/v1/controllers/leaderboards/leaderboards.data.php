@@ -6,22 +6,22 @@ class LeaderboardData {
     static function selectVenueList() {
         return DBConn::selectAll("SELECT v.id AS localId, 0 AS hotSalsaId, v.name, v.address, "
                 . "v.address_b AS addressb, v.city, v.state, v.zip "
-                . "FROM trv_venues AS v "
+                . "FROM " . DBConn::prefix() . "venues AS v "
                 . "ORDER BY v.state, v.city, v.name;"
         );
     }
 
     static function selectUserIdByEmail($email) {
-        return DBConn::selectOne("SELECT u.id FROM trv_users AS u "
+        return DBConn::selectOne("SELECT u.id FROM " . DBConn::prefix() . "users AS u "
                 . "WHERE u.email = :email LIMIT 1;", array(':email' => $email));
     }
 
     static function getHomeJointForTeamByUserId($userId) {
         return DBConn::selectOne("SELECT t.name AS teamName, v.name AS homeVenue "
-                . "FROM trv_users AS u "
-                . "LEFT JOIN trv_team_members AS tm ON tm.user_id = u.id "
-                . "LEFT JOIN trv_teams AS t ON t.id = tm.team_id "
-                . "LEFT JOIN trv_venues AS v ON v.id = t.home_venue_id "
+                . "FROM " . DBConn::prefix() . "users AS u "
+                . "LEFT JOIN " . DBConn::prefix() . "team_members AS tm ON tm.user_id = u.id "
+                . "LEFT JOIN " . DBConn::prefix() . "teams AS t ON t.id = tm.team_id "
+                . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = t.home_venue_id "
                 . "WHERE u.id = :user_id LIMIT 1;", 
                 array(':user_id' => $userId));
     }
@@ -70,12 +70,12 @@ class LeaderboardData {
                     . "t.id AS teamId, t.name AS teamName, "
                     . "v.id AS homeJointId, v.name AS homeJoint, "
                     . "COALESCE(SUM(s.score),0) AS score, count(s.game_id) AS gameCheckins "
-                    . "FROM trv_team_members AS m "
-                    . "JOIN trv_users AS u ON u.id = m.user_id "
-                    . "JOIN trv_teams AS t ON t.id = m.team_id "
-                    . "JOIN trv_game_score_teams AS s ON s.team_id = t.id "
-                    . "JOIN trv_games AS g ON g.id = s.game_id "
-                    . "LEFT JOIN trv_venues AS v ON v.id = t.home_venue_id "
+                    . "FROM " . DBConn::prefix() . "team_members AS m "
+                    . "JOIN " . DBConn::prefix() . "users AS u ON u.id = m.user_id "
+                    . "JOIN " . DBConn::prefix() . "teams AS t ON t.id = m.team_id "
+                    . "JOIN " . DBConn::prefix() . "game_score_teams AS s ON s.team_id = t.id "
+                    . "JOIN " . DBConn::prefix() . "games AS g ON g.id = s.game_id "
+                    . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = t.home_venue_id "
                     . "WHERE u.id NOT IN($placeholders) "
                     . $dates
                     . "GROUP BY u.id "
@@ -92,12 +92,12 @@ class LeaderboardData {
                 . "t.id AS teamId, t.name AS teamName, "
                 . "v.id AS homeJointId, v.name AS homeJoint, "
                 . "COALESCE(SUM(s.score),0) AS score, count(s.game_id) AS gameCheckins "
-                . "FROM trv_team_members AS m "
-                . "JOIN trv_users AS u ON u.id = m.user_id "
-                . "JOIN trv_teams AS t ON t.id = m.team_id "
-                . "JOIN trv_game_score_teams AS s ON s.team_id = t.id "
-                . "JOIN trv_games AS g ON g.id = s.game_id "
-                . "LEFT JOIN trv_venues AS v ON v.id = t.home_venue_id "
+                . "FROM " . DBConn::prefix() . "team_members AS m "
+                . "JOIN " . DBConn::prefix() . "users AS u ON u.id = m.user_id "
+                . "JOIN " . DBConn::prefix() . "teams AS t ON t.id = m.team_id "
+                . "JOIN " . DBConn::prefix() . "game_score_teams AS s ON s.team_id = t.id "
+                . "JOIN " . DBConn::prefix() . "games AS g ON g.id = s.game_id "
+                . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = t.home_venue_id "
                 . $dates
                 . "GROUP BY u.id "
                 . "ORDER BY score DESC "
@@ -129,12 +129,12 @@ class LeaderboardData {
                     . "t.id AS teamId, t.name AS teamName, "
                     . "v.id AS homeJointId, v.name AS homeJoint, "
                     . "COALESCE(SUM(s.score),0) AS score, count(s.game_id) AS gameCheckins "
-                    . "FROM trv_team_members AS m "
-                    . "JOIN trv_users AS u ON u.id = m.user_id "
-                    . "JOIN trv_teams AS t ON t.id = m.team_id "
-                    . "JOIN trv_game_score_teams AS s ON s.team_id = t.id "
-                    . "JOIN trv_games AS g ON g.id = s.game_id "
-                    . "LEFT JOIN trv_venues AS v ON v.id = t.home_venue_id "
+                    . "FROM " . DBConn::prefix() . "team_members AS m "
+                    . "JOIN " . DBConn::prefix() . "users AS u ON u.id = m.user_id "
+                    . "JOIN " . DBConn::prefix() . "teams AS t ON t.id = m.team_id "
+                    . "JOIN " . DBConn::prefix() . "game_score_teams AS s ON s.team_id = t.id "
+                    . "JOIN " . DBConn::prefix() . "games AS g ON g.id = s.game_id "
+                    . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = t.home_venue_id "
                     . "WHERE u.id NOT IN($placeholders) "
                     . $dates
                     . "GROUP BY u.id "
@@ -151,12 +151,12 @@ class LeaderboardData {
                 . "t.id AS teamId, t.name AS teamName, "
                 . "v.id AS homeJointId, v.name AS homeJoint, "
                 . "COALESCE(SUM(s.score),0) AS score, count(s.game_id) AS gameCheckins "
-                . "FROM trv_team_members AS m "
-                . "JOIN trv_users AS u ON u.id = m.user_id "
-                . "JOIN trv_teams AS t ON t.id = m.team_id "
-                . "JOIN trv_game_score_teams AS s ON s.team_id = t.id "
-                . "JOIN trv_games AS g ON g.id = s.game_id "
-                . "LEFT JOIN trv_venues AS v ON v.id = t.home_venue_id "
+                . "FROM " . DBConn::prefix() . "team_members AS m "
+                . "JOIN " . DBConn::prefix() . "users AS u ON u.id = m.user_id "
+                . "JOIN " . DBConn::prefix() . "teams AS t ON t.id = m.team_id "
+                . "JOIN " . DBConn::prefix() . "game_score_teams AS s ON s.team_id = t.id "
+                . "JOIN " . DBConn::prefix() . "games AS g ON g.id = s.game_id "
+                . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = t.home_venue_id "
                 . $dates
                 . "GROUP BY u.id "
                 . "ORDER BY score DESC "
@@ -184,10 +184,10 @@ class LeaderboardData {
             $leaderboard = DBConn::selectAll("SELECT t.id AS teamId, t.name AS teamName, "
                     . "v.id AS homeJointId, v.name AS homeJoint, "
                     . "COALESCE(SUM(s.score),0) AS score, count(s.game_id) AS gameCheckins "
-                    . "FROM trv_teams AS t "
-                    . "JOIN trv_game_score_teams AS s ON s.team_id = t.id "
-                    . "JOIN trv_games AS g ON g.id = s.game_id "
-                    . "LEFT JOIN trv_venues AS v ON v.id = t.home_venue_id "
+                    . "FROM " . DBConn::prefix() . "teams AS t "
+                    . "JOIN " . DBConn::prefix() . "game_score_teams AS s ON s.team_id = t.id "
+                    . "JOIN " . DBConn::prefix() . "games AS g ON g.id = s.game_id "
+                    . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = t.home_venue_id "
                     . "WHERE t.id NOT IN($placeholders) "
                     . $dates
                     . "GROUP BY s.team_id "
@@ -201,10 +201,10 @@ class LeaderboardData {
             $leaderboard = DBConn::selectAll("SELECT t.id AS teamId, t.name AS teamName, "
                 . "v.id AS homeJointId, v.name AS homeJoint, "
                 . "COALESCE(SUM(s.score),0) AS score, count(s.game_id) AS gameCheckins "
-                . "FROM trv_teams AS t "
-                . "JOIN trv_game_score_teams AS s ON s.team_id = t.id "
-                . "JOIN trv_games AS g ON g.id = s.game_id "
-                . "LEFT JOIN trv_venues AS v ON v.id = t.home_venue_id "
+                . "FROM " . DBConn::prefix() . "teams AS t "
+                . "JOIN " . DBConn::prefix() . "game_score_teams AS s ON s.team_id = t.id "
+                . "JOIN " . DBConn::prefix() . "games AS g ON g.id = s.game_id "
+                . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = t.home_venue_id "
                 . $dates
                 . "GROUP BY s.team_id "
                 . "LIMIT :limit;", array(':limit' => (int)$count));
@@ -224,10 +224,10 @@ class LeaderboardData {
         DBConn::setPDOAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
         $results = DBConn::selectAll("SELECT t.id AS teamId, t.name AS teamName, "
                 . "IFNULL(s.score, '0') AS score, v.id AS homeJointId, v.name AS homeJoint "
-                . "FROM trv_teams AS t "
-                . "LEFT JOIN trv_game_score_teams AS s ON s.team_id = t.id "
-                . "LEFT JOIN trv_games AS g ON g.id = s.game_id "
-                . "LEFT JOIN trv_venues AS v ON v.id = t.home_venue_id "
+                . "FROM " . DBConn::prefix() . "teams AS t "
+                . "LEFT JOIN " . DBConn::prefix() . "game_score_teams AS s ON s.team_id = t.id "
+                . "LEFT JOIN " . DBConn::prefix() . "games AS g ON g.id = s.game_id "
+                . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = t.home_venue_id "
                 . "WHERE v.name = :venue_name AND v.city = :venue_city "
                 . $dates
                 . "GROUP BY t.id LIMIT $count;",  
@@ -247,10 +247,10 @@ class LeaderboardData {
         DBConn::setPDOAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
         $results = DBConn::selectOne("SELECT t.id AS teamId, t.name AS teamName, "
                 . "IFNULL(s.score, '0') AS score, v.id AS homeVenueId, v.name AS homeVenue "
-                . "FROM trv_teams AS t "
-                . "LEFT JOIN trv_game_score_teams AS s ON s.team_id = t.id "
-                . "LEFT JOIN trv_games AS g ON g.id = s.game_id "
-                . "LEFT JOIN trv_venues AS v ON v.id = t.home_venue_id "
+                . "FROM " . DBConn::prefix() . "teams AS t "
+                . "LEFT JOIN " . DBConn::prefix() . "game_score_teams AS s ON s.team_id = t.id "
+                . "LEFT JOIN " . DBConn::prefix() . "games AS g ON g.id = s.game_id "
+                . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = t.home_venue_id "
                 . "WHERE t.name = :team_name AND v.name = :home_venue_name "
                 . $dates
                 . "LIMIT 1;", 
@@ -270,10 +270,10 @@ class LeaderboardData {
         DBConn::setPDOAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
         $results = DBConn::selectAll("SELECT t.id AS teamId, t.name AS teamName, v.id AS homeJointId, "
                 . "v.name AS homeJoint, COUNT(s.game_id) AS gameCheckins "
-                . "FROM trv_teams AS t "
-                . "LEFT JOIN trv_game_score_teams AS s ON s.team_id = t.id "
-                . "LEFT JOIN trv_games AS g ON g.id = s.game_id "
-                . "LEFT JOIN trv_venues AS v ON v.id = t.home_venue_id "
+                . "FROM " . DBConn::prefix() . "teams AS t "
+                . "LEFT JOIN " . DBConn::prefix() . "game_score_teams AS s ON s.team_id = t.id "
+                . "LEFT JOIN " . DBConn::prefix() . "games AS g ON g.id = s.game_id "
+                . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = t.home_venue_id "
                 . "WHERE v.name = :venue_name AND v.city = :venue_city "
                 . $dates
                 . "GROUP BY t.id LIMIT $count;",   
@@ -293,10 +293,10 @@ class LeaderboardData {
         DBConn::setPDOAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
         $results = DBConn::selectOne("SELECT t.id AS teamId, t.name AS teamName, v.id AS homeVenueId, "
                 . "v.name AS homeVenue, COUNT(s.game_id) AS gameCheckins "
-                . "FROM trv_teams AS t "
-                . "LEFT JOIN trv_game_score_teams AS s ON s.team_id = t.id "
-                . "LEFT JOIN trv_games AS g ON g.id = s.game_id "
-                . "LEFT JOIN trv_venues AS v ON v.id = t.home_venue_id "
+                . "FROM " . DBConn::prefix() . "teams AS t "
+                . "LEFT JOIN " . DBConn::prefix() . "game_score_teams AS s ON s.team_id = t.id "
+                . "LEFT JOIN " . DBConn::prefix() . "games AS g ON g.id = s.game_id "
+                . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = t.home_venue_id "
                 . "WHERE v.name = :home_venue_name AND t.name = :team_name "
                 . $dates
                 . "GROUP BY s.team_id LIMIT 1;",
