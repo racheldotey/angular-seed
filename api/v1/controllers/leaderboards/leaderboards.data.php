@@ -159,7 +159,7 @@ class LeaderboardData {
         }
              
         return DBConn::selectAll("SELECT t.id AS teamId, t.name AS teamName, "
-                . "IFNULL(s.score, '0') AS score, v.id AS homeVenueId, v.name AS homeVenue "
+                . "IFNULL(s.score, '0') AS score, v.id AS homeJointId, v.name AS homeJoint "
                 . "FROM " . DBConn::prefix() . "teams AS t "
                 . "LEFT JOIN " . DBConn::prefix() . "game_score_teams AS s ON s.team_id = t.id "
                 . "LEFT JOIN " . DBConn::prefix() . "games AS g ON g.id = s.game_id "
@@ -167,7 +167,7 @@ class LeaderboardData {
                 . "WHERE v.name = :venue_name AND v.city = :venue_city "
                 . $dates
                 . "LIMIT $count;",  
-                array(':venue_name' => $venueName, ':venue_city' => $venueCity), \PDO::FETCH_ASSOC);
+                array(':venue_name' => $venueName, ':venue_city' => $venueCity));
     }
 
     static function selectTeamLiveScoreByNameAndVenue($teamName, $homeVenue,  $startDate, $endDate) {   
@@ -193,9 +193,9 @@ class LeaderboardData {
         if($dates !== '') {
             $dates = "AND $dates ";
         }
-        
-        return DBConn::selectAll("SELECT t.id AS teamId, t.name AS teamName, v.id AS homeVenueId, "
-                . "v.name AS homeVenue, COUNT(s.game_id) AS gameCheckins "
+
+        return DBConn::selectAll("SELECT t.id AS teamId, t.name AS teamName, v.id AS homeJointId, "
+                . "v.name AS homeJoint, COUNT(s.game_id) AS gameCheckins "
                 . "FROM " . DBConn::prefix() . "teams AS t "
                 . "LEFT JOIN " . DBConn::prefix() . "game_score_teams AS s ON s.team_id = t.id "
                 . "LEFT JOIN " . DBConn::prefix() . "games AS g ON g.id = s.game_id "
@@ -205,7 +205,7 @@ class LeaderboardData {
                 . $dates
                 . "GROUP BY s.team_id"
                 . "LIMIT $count;",   
-                array(':venue_name' => $venueName, ':venue_city' => $venueCity), \PDO::FETCH_ASSOC);
+                array(':venue_name' => $venueName, ':venue_city' => $venueCity));
     }
     
     static function selectTeamLiveCheckinsByNameAndVenue($teamName, $homeVenue,  $startDate, $endDate) {
