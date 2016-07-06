@@ -152,6 +152,24 @@ class LeaderboardData {
         return $leaderboard;
     }
 
+    static function selectTeamLiveScoreByVenueAndCity($venueName, $venueCity, $count, $startDate, $endDate, $mergedTeamIds = array()) {   
+        $dates = self::getWhereStartAndEnd($startDate, $endDate);
+        if($dates !== '') {
+            $dates = "AND $dates ";
+        }
+             
+        return DBConn::selectAll("SELECT t.id AS teamId, t.name AS teamName, "
+                . "IFNULL(s.score, '0') AS score, v.id AS homeVenueId, v.name AS homeVenue "
+                . "FROM " . DBConn::prefix() . "teams AS t "
+                . "LEFT JOIN " . DBConn::prefix() . "game_score_teams AS s ON s.team_id = t.id "
+                . "LEFT JOIN " . DBConn::prefix() . "games AS g ON g.id = s.game_id "
+                . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = t.home_venue_id "
+                . "WHERE v.name = :venue_name AND v.city = :venue_city "
+                . $dates
+                . "LIMIT $count;",  
+                array(':venue_name' => $venueName, ':venue_city' => $venueCity), \PDO::FETCH_ASSOC);
+    }
+
     static function selectTeamLiveScoreByNameAndVenue($teamName, $homeVenue,  $startDate, $endDate) {   
         $dates = self::getWhereStartAndEnd($startDate, $endDate);
         if($dates !== '') {
@@ -168,6 +186,26 @@ class LeaderboardData {
                 . $dates
                 . "LIMIT 1;", 
                 array(':team_name' => $teamName, ':home_venue_name' => $homeVenue), \PDO::FETCH_ASSOC);
+    }
+    
+    static function selectTeamLiveCheckinsByVenueAndCity($venueName, $venueCity, $count, $startDate, $endDate, $mergedTeamIds = array()) {
+        $dates = self::getWhereStartAndEnd($startDate, $endDate);
+        if($dates !== '') {
+            $dates = "AND $dates ";
+        }
+        
+        return DBConn::selectAll("SELECT t.id AS teamId, t.name AS teamName, v.id AS homeVenueId, "
+                . "v.name AS homeVenue, COUNT(s.game_id) AS gameCheckins "
+                . "FROM " . DBConn::prefix() . "teams AS t "
+                . "LEFT JOIN " . DBConn::prefix() . "game_score_teams AS s ON s.team_id = t.id "
+                . "LEFT JOIN " . DBConn::prefix() . "games AS g ON g.id = s.game_id "
+                . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = t.home_venue_id "
+                . "LEFT JOIN " . DBConn::prefix() . "logs_game_checkins AS c ON c.team_id = t.id "
+                . "WHERE v.name = :home_venue_name AND t.name = :team_name "
+                . $dates
+                . "GROUP BY s.team_id"
+                . "LIMIT $count;",   
+                array(':venue_name' => $venueName, ':venue_city' => $venueCity), \PDO::FETCH_ASSOC);
     }
     
     static function selectTeamLiveCheckinsByNameAndVenue($teamName, $homeVenue,  $startDate, $endDate) {
