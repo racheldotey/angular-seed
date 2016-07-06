@@ -30,8 +30,8 @@ angular.module('apiRoutes.Leaderboards', [])
     };
     
     // Per Joint Player Score Leaderboard
-    api.getVenuePlayersLeaderboard = function (venueId, limit, startDate, endDate) {
-        var queryData = {};
+    api.getVenuePlayersLeaderboard = function (venueId, venueName, venueCity, limit, startDate, endDate) {
+        var queryData = { 'jointName' : venueName, 'jointCity' : venueCity };
         if(limit) { queryData.limit = limit; }
         if(startDate) { queryData.startDate = startDate; }
         if(endDate) { queryData.endDate = endDate; }
@@ -39,8 +39,8 @@ angular.module('apiRoutes.Leaderboards', [])
     };
     
     // Per Joint Team Score Leaderboard
-    api.getVenueTeamsLeaderboard = function (venueId, limit, startDate, endDate) {
-        var queryData = {};
+    api.getVenueTeamsLeaderboard = function (venueId, venueName, venueCity, limit, startDate, endDate) {
+        var queryData = { 'jointName' : venueName, 'jointCity' : venueCity };
         if(limit) { queryData.limit = limit; }
         if(startDate) { queryData.startDate = startDate; }
         if(endDate) { queryData.endDate = endDate; }
@@ -66,8 +66,8 @@ angular.module('apiRoutes.Leaderboards', [])
     };
     
     // Per Joint Player Checkins Leaderboard
-    api.getVenuePlayerCheckinsLeaderboard = function (venueId, limit, startDate, endDate) {
-        var queryData = {};
+    api.getVenuePlayerCheckinsLeaderboard = function (venueId, venueName, venueCity, limit, startDate, endDate) {
+        var queryData = { 'jointName' : venueName, 'jointCity' : venueCity };
         if(limit) { queryData.limit = limit; }
         if(startDate) { queryData.startDate = startDate; }
         if(endDate) { queryData.endDate = endDate; }
@@ -75,8 +75,8 @@ angular.module('apiRoutes.Leaderboards', [])
     };
     
     // Per Joint Team Checkins Leaderboard
-    api.getVenueTeamCheckinsLeaderboard = function (venueId, limit, startDate, endDate) {
-        var queryData = {};
+    api.getVenueTeamCheckinsLeaderboard = function (venueId, venueName, venueCity, limit, startDate, endDate) {
+        var queryData = { 'jointName' : venueName, 'jointCity' : venueCity };
         if(limit) { queryData.limit = limit; }
         if(startDate) { queryData.startDate = startDate; }
         if(endDate) { queryData.endDate = endDate; }

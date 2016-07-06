@@ -37,12 +37,12 @@ angular.module('app.leaderboards.venueTeamCheckins', ['ui.grid', 'ui.grid.autoRe
                 $scope.setLeaderboardHeight();
             });
             
-            ($scope.refreshGrid = function(limit, venueId) {
+            $scope.refreshGrid = function(limit, venueId, venueName, venueCity) {
                 return $q(function(resolve, reject) {
                     var venue = (angular.isDefined(venueId) && parseInt(venueId)) ? venueId : $stateParams.venueId;
                     var count = (angular.isDefined(limit) && parseInt(limit)) ? limit : $stateParams.limit;
 
-                    ApiRoutesLeaderboards.getVenueTeamCheckinsLeaderboard(venue, count, $stateParams.startDate, $stateParams.endDate).then(function (result) {
+                    ApiRoutesLeaderboards.getVenueTeamCheckinsLeaderboard(venue, venueName, venueCity, count, $stateParams.startDate, $stateParams.endDate).then(function (result) {
                         $scope.grid.data = (angular.isDefined(result.leaderboard) && angular.isArray(result.leaderboard)) ? result.leaderboard : $scope.grid.data;
                         $scope.setLeaderboardHeight();
                         if ($stateParams.limit !== count || $stateParams.venueId !== venue) {
@@ -55,11 +55,16 @@ angular.module('app.leaderboards.venueTeamCheckins', ['ui.grid', 'ui.grid.autoRe
                         }
                         $scope.setLeaderboardHeight();
                         console.log(error);
-                        $scope.alertProxy.error(error);
+                        $scope.alertProxy.error(error);                  
+                        for(var i = 0; i < $scope.venueList.length; i++) {
+                            if($scope.venueList[i].id === $stateParams.venueId) {
+                                $scope.selected.venue = $scope.venueList[i];
+                            }
+                        }
                         reject(error);
                     });
                 });
-            })($scope.showLimit);
+            };
             
             // Venue Button
             ApiRoutesLeaderboards.getListOfJoints().then(
@@ -69,22 +74,19 @@ angular.module('app.leaderboards.venueTeamCheckins', ['ui.grid', 'ui.grid.autoRe
                     for(var i = 0; i < $scope.venueList.length; i++) {
                         if($scope.venueList[i].id === $stateParams.venueId) {
                             $scope.selected.venue = $scope.venueList[i];
+                            $scope.refreshGrid(true, $scope.selected.venue.id, $scope.selected.venue.name, $scope.selected.venue.city);
                         }
                     }
                 }, function (error) {
                     console.log(error);
-                    $scope.alertProxy.error(error);                  
-                    for(var i = 0; i < $scope.venueList.length; i++) {
-                        if($scope.venueList[i].id === $stateParams.venueId) {
-                            $scope.selected.venue = $scope.venueList[i];
-                        }
-                    }
+                    $scope.alertProxy.error(error);
                     $scope.venueList = [];
+                    $scope.refreshGrid();
                 });
                 
             $scope.$watch("selected.venue", function(newValue, oldValue) {
                 if(angular.isDefined(newValue) && angular.isDefined(newValue.id) && $stateParams.venueId != newValue.id) {
-                    $scope.refreshGrid(true, newValue.id).then(function(response) {
+                    $scope.refreshGrid(true, newValue.id, newValue.name, newValue.city).then(function(response) {
                         
                     }, function(error) {
                         newValue = oldValue;
