@@ -51,9 +51,11 @@ class LeaderboardData {
     static function selectPlayerScoreLeaderboards($count, $startDate, $endDate, $mergedUserIds = array()) {
         $dates = self::getWhereStartAndEnd($startDate, $endDate);
         
-        DBConn::setPDOAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
-        if(count($mergedUserIds) > 0) {
-            //$variables = $mergedUserIds;
+        if(false && count($mergedUserIds) > 0) {
+            // TO DO: Debug the WHERE NOT IN clause and 
+            // the use of PDO::ATTR_EMULATE_PREPARES on Google Cloud
+            // This code works locally.
+            DBConn::setPDOAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
             $placeholders = str_repeat ('?, ',  count ($mergedUserIds) - 1) . '?';
             $variables[] = (int)$count;
             
@@ -72,33 +74,17 @@ class LeaderboardData {
                     . "JOIN " . DBConn::prefix() . "game_score_teams AS s ON s.team_id = t.id "
                     . "JOIN " . DBConn::prefix() . "games AS g ON g.id = s.game_id "
                     . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = t.home_venue_id "
-                    . "WHERE NOT IN($placeholders) "
+                    . "WHERE u.id NOT IN($placeholders) "
                     . $dates
                     . "GROUP BY u.id "
                     . "ORDER BY score DESC "
                     . "LIMIT ?;", $variables);
+            DBConn::setPDOAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
         } else {   
             if($dates !== '') {
                 $dates = "WHERE $dates ";
             }
-            
-            
-            DBConn::logError("SELECT u.id AS userId, u.name_first AS firstName, "
-                . "u.name_last AS lastName, u.email, "
-                . "t.id AS teamId, t.name AS teamName, "
-                . "v.id AS homeJointId, v.name AS homeJoint, "
-                . "COALESCE(SUM(s.score),0) AS score, count(s.game_id) AS gameCheckins "
-                . "FROM " . DBConn::prefix() . "team_members AS m "
-                . "JOIN " . DBConn::prefix() . "users AS u ON u.id = m.user_id "
-                . "JOIN " . DBConn::prefix() . "teams AS t ON t.id = m.team_id "
-                . "JOIN " . DBConn::prefix() . "game_score_teams AS s ON s.team_id = t.id "
-                . "JOIN " . DBConn::prefix() . "games AS g ON g.id = s.game_id "
-                . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = t.home_venue_id "
-                . $dates
-                . "GROUP BY u.id "
-                . "ORDER BY score DESC "
-                . "LIMIT :limit;");
-            
+                        
             $leaderboard = DBConn::selectAll("SELECT u.id AS userId, u.name_first AS firstName, "
                 . "u.name_last AS lastName, u.email, "
                 . "t.id AS teamId, t.name AS teamName, "
@@ -115,23 +101,23 @@ class LeaderboardData {
                 . "ORDER BY score DESC "
                 . "LIMIT :limit;", array(':limit' => (int)$count));
         }
-        DBConn::setPDOAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
         return $leaderboard;
     }
     
     static function selectTeamScoreLeaderboards($count, $startDate, $endDate, $mergedTeamIds = array()) {
         $dates = self::getWhereStartAndEnd($startDate, $endDate);
         
-        DBConn::setPDOAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
-        if(count($mergedTeamIds) > 0) {
-            //$variables = $mergedTeamIds;
+        if(false && count($mergedTeamIds) > 0) {
+            // TO DO: Debug the WHERE NOT IN clause and 
+            // the use of PDO::ATTR_EMULATE_PREPARES on Google Cloud
+            // This code works locally.
+            DBConn::setPDOAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
             $placeholders = str_repeat ('?, ',  count ($mergedTeamIds) - 1) . '?';
             $variables[] = (int)$count;
-            
             if($dates !== '') {
                 $dates = "AND $dates ";
             }
-
+            
             DBConn::setPDOAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
             $leaderboard = DBConn::selectAll("SELECT t.id AS teamId, t.name AS teamName, "
                     . "v.id AS homeJointId, v.name AS homeJoint, "
@@ -140,11 +126,12 @@ class LeaderboardData {
                     . "JOIN " . DBConn::prefix() . "game_score_teams AS s ON s.team_id = t.id "
                     . "JOIN " . DBConn::prefix() . "games AS g ON g.id = s.game_id "
                     . "LEFT JOIN " . DBConn::prefix() . "venues AS v ON v.id = t.home_venue_id "
-                    . "WHERE NOT IN($placeholders) "
+                    . "WHERE t.id NOT IN($placeholders) "
                     . $dates
                     . "GROUP BY s.team_id "
                     . "ORDER BY score DESC "
                     . "LIMIT ?;", $variables);
+            DBConn::setPDOAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
         } else {    
             if($dates !== '') {
                 $dates = "WHERE $dates ";
@@ -162,7 +149,6 @@ class LeaderboardData {
                 . "ORDER BY score DESC "
                 . "LIMIT :limit;", array(':limit' => (int)$count));
         }
-        DBConn::setPDOAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
         return $leaderboard;
     }
 

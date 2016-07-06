@@ -45,6 +45,7 @@ class APIConfig {
             'systemPath' => dirname(__FILE__)
         ));
         
+        // Use the API URL
         if($_SERVER['HTTP_HOST'] === 'api.seed.dev') {
             // Localhost
             self::$config = $default;

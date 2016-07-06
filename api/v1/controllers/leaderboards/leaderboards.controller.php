@@ -154,29 +154,32 @@ class LeaderboardController {
         $localData = LeaderboardData::selectPlayerScoreLeaderboards($limit, $startDate, $endDate, $mergedUserIds);
         if($localData) {
             foreach($localData AS $localPlayer) {
-                $result = array(
-                    'mobileScore' => 0,
-                    'liveScore' => $localPlayer->score,
-                    'player' => $localPlayer->firstName . " " . $localPlayer->lastName,
-                    'userId' => $localPlayer->userId,
-                    'hotSalsaUserId' => 0,
-                    'email' => $localPlayer->email,
-                    'img' => '',
-                    'teamName' => $localPlayer->teamName,
-                    'teamId' => $localPlayer->teamId,
-                    'hotSalsaTeamId' => 0,
-                    'homeJoint' => $localPlayer->homeJoint,
-                    'homeJointId' => $localPlayer->homeJointId,
-                    'hotSalsaHomeJointId' => 0,
-                    'sort' => $localPlayer->score
-                );
-                $results[] = $result;
+                // Skip any duplicate results
+                if(!array_search($localPlayer->userId, $mergedUserIds, false)) {
+                    $result = array(
+                        'mobileScore' => 0,
+                        'liveScore' => $localPlayer->score,
+                        'player' => $localPlayer->firstName . " " . $localPlayer->lastName,
+                        'userId' => $localPlayer->userId,
+                        'hotSalsaUserId' => 0,
+                        'email' => $localPlayer->email,
+                        'img' => '',
+                        'teamName' => $localPlayer->teamName,
+                        'teamId' => $localPlayer->teamId,
+                        'hotSalsaTeamId' => 0,
+                        'homeJoint' => $localPlayer->homeJoint,
+                        'homeJointId' => $localPlayer->homeJointId,
+                        'hotSalsaHomeJointId' => 0,
+                        'sort' => $localPlayer->score
+                    );
+                    $results[] = $result;
+                }
             }
         }
             
         if(isset($results) && count($results) > 0) {
             $leaderboard = self::sortAndTrimLeaderboardResults($results, $limit);
-            return $app->render(200, array('leaderboard' => $leaderboard, 'startDate' => $startDate, 'endDate' => $endDate));
+            return $app->render(200, array('leaderboard' => $leaderboard, 'startDate' => $startDate, 'endDate' => $endDate, 'url' => $url, 'mobile' => $salsaData,  'local' => $localData));
         } else {
             $msg = APIConfig::get('TRIVIA_LEADERBOARD_NO_DATA_USER_MESSAGE');
             $msg = ($msg) ? $msg : 'Could not select Global Player Score Leaderboard.';
@@ -189,13 +192,15 @@ class LeaderboardController {
         $limit = (!v::key('limit', v::intVal())->validate($app->request->get())) ? 10 : $app->request->get('limit');
         $startDate = (!v::key('startDate', v::date('Y-m-d'))->validate($app->request->get())) ? false : $app->request->get('startDate');
         $endDate = (!v::key('endDate', v::date('Y-m-d'))->validate($app->request->get())) ? false : $app->request->get('endDate');
-        
+            
         // /trivia/gameNight/cumilativeScore?scoreType=team&count=10&startDate= optional&endDate=optional 
         $url = HotSalsaRequest::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreType=team&count={$limit}";
         if($startDate) { $url = $url . "&startDate={$startDate}"; }
         if($endDate) { $url = $url . "&endDate={$endDate}"; }
+
         // CURL Hot Salsa
-        $salsaData = HotSalsaRequest::makeRequest($url);
+        $salsaData = HotSalsaRequest::makeRequest($url);        
+        
         $results = array();
         $mergedTeamIds = array();
         if($salsaData && isset($salsaData['scores'])) {
@@ -264,24 +269,27 @@ class LeaderboardController {
         $localData = LeaderboardData::selectTeamScoreLeaderboards($limit, $startDate, $endDate, $mergedTeamIds);
         if($localData) {
             foreach($localData AS $localTeam) {
-                $result = array(
-                    'mobileScore' => 0,
-                    'liveScore' => $localTeam->score,
-                    'teamName' => $localTeam->teamName,
-                    'teamId' => $localTeam->teamId,
-                    'hotSalsaTeamId' => 0,
-                    'homeJoint' => $localTeam->homeJoint,
-                    'homeJointId' => $localTeam->homeJointId,
-                    'hotSalsaHomeJointId' => 0,
-                    'sort' => $localTeam->score
-                );
-                $results[] = $result;
+                // Skip any duplicate results
+                if(!array_search($localTeam->teamId, $mergedTeamIds, false)) {
+                    $result = array(
+                        'mobileScore' => 0,
+                        'liveScore' => $localTeam->score,
+                        'teamName' => $localTeam->teamName,
+                        'teamId' => $localTeam->teamId,
+                        'hotSalsaTeamId' => 0,
+                        'homeJoint' => $localTeam->homeJoint,
+                        'homeJointId' => $localTeam->homeJointId,
+                        'hotSalsaHomeJointId' => 0,
+                        'sort' => $localTeam->score
+                    );
+                    $results[] = $result;
+                }
             }
         }
         
         if(isset($results) && count($results) > 0) {
             $leaderboard = self::sortAndTrimLeaderboardResults($results, $limit);
-            return $app->render(200, array('leaderboard' => $leaderboard, 'startDate' => $startDate, 'endDate' => $endDate));
+            return $app->render(200, array('leaderboard' => $leaderboard, 'startDate' => $startDate, 'endDate' => $endDate, 'url' => $url, 'mobile' => $salsaData, 'local' => $localData));
         } else {
             $msg = APIConfig::get('TRIVIA_LEADERBOARD_NO_DATA_USER_MESSAGE');
             $msg = ($msg) ? $msg : 'Could not select Global Team Score Leaderboard.';
@@ -382,7 +390,7 @@ class LeaderboardController {
         }
         
         if(isset($results) && count($results) > 0) {
-            return $app->render(200, array('leaderboard' => $results, 'startDate' => $startDate, 'endDate' => $endDate));
+            return $app->render(200, array('leaderboard' => $results, 'startDate' => $startDate, 'endDate' => $endDate, 'url' => $url, 'mobile' => $salsaData));
         } else {
             $msg = APIConfig::get('TRIVIA_LEADERBOARD_NO_DATA_USER_MESSAGE');
             $msg = ($msg) ? $msg : 'Could not select Per Joint Player Score Leaderboard.';
@@ -473,7 +481,7 @@ class LeaderboardController {
         }
         
         if(isset($results) && count($results) > 0) {
-            return $app->render(200, array('leaderboard' => $results, 'startDate' => $startDate, 'endDate' => $endDate, 'url' => $url, 'salsacalldata' => $salsaData));
+            return $app->render(200, array('leaderboard' => $results, 'startDate' => $startDate, 'endDate' => $endDate, 'url' => $url, 'mobile' => $salsaData));
         } else {
             $msg = APIConfig::get('TRIVIA_LEADERBOARD_NO_DATA_USER_MESSAGE');
             $msg = ($msg) ? $msg : 'Could not select Per Joint Team Score Leaderboard.';
@@ -559,29 +567,32 @@ class LeaderboardController {
         $localData = LeaderboardData::selectPlayerScoreLeaderboards($limit, $startDate, $endDate, $mergedUserIds);
         if($localData) {
             foreach($localData AS $localPlayer) {
-                $result = array(
-                    'mobileCheckins' => 0,
-                    'liveCheckins' => $localPlayer->gameCheckins,
-                    'player' => $localPlayer->firstName . " " . $localPlayer->lastName,
-                    'userId' => $localPlayer->userId,
-                    'hotSalsaUserId' => 0,
-                    'email' => $localPlayer->email,
-                    'img' => '',
-                    'teamName' => $localPlayer->teamName,
-                    'teamId' => $localPlayer->teamId,
-                    'hotSalsaTeamId' => 0,
-                    'homeJoint' => $localPlayer->homeJoint,
-                    'homeJointId' => $localPlayer->homeJointId,
-                    'hotSalsaHomeJointId' => 0,
-                    'sort' => $localPlayer->gameCheckins
-                );
-                $results[] = $result;
+                // Skip any duplicate results
+                if(!array_search($localPlayer->userId, $mergedUserIds, false)) {
+                    $result = array(
+                        'mobileCheckins' => 0,
+                        'liveCheckins' => $localPlayer->gameCheckins,
+                        'player' => $localPlayer->firstName . " " . $localPlayer->lastName,
+                        'userId' => $localPlayer->userId,
+                        'hotSalsaUserId' => 0,
+                        'email' => $localPlayer->email,
+                        'img' => '',
+                        'teamName' => $localPlayer->teamName,
+                        'teamId' => $localPlayer->teamId,
+                        'hotSalsaTeamId' => 0,
+                        'homeJoint' => $localPlayer->homeJoint,
+                        'homeJointId' => $localPlayer->homeJointId,
+                        'hotSalsaHomeJointId' => 0,
+                        'sort' => $localPlayer->gameCheckins
+                    );
+                    $results[] = $result;
+                }
             }
         }
         
         if(isset($results) && count($results) > 0) {
             $leaderboard = self::sortAndTrimLeaderboardResults($results, $limit);
-            return $app->render(200, array('leaderboard' => $leaderboard, 'startDate' => $startDate, 'endDate' => $endDate));
+            return $app->render(200, array('leaderboard' => $leaderboard, 'startDate' => $startDate, 'endDate' => $endDate, 'url' => $url, 'mobile' => $salsaData, 'local' => $localData));
         } else {
             $msg = APIConfig::get('TRIVIA_LEADERBOARD_NO_DATA_USER_MESSAGE');
             $msg = ($msg) ? $msg : 'Could not select Global Player Checkin Leaderboard.';
@@ -600,7 +611,7 @@ class LeaderboardController {
         if($startDate) { $url = $url . "&startDate={$startDate}"; }
         if($endDate) { $url = $url . "&endDate={$endDate}"; }
         // CURL Hot Salsa
-        $data = HotSalsaRequest::makeRequest($url);
+        $salsaData = HotSalsaRequest::makeRequest($url);
         /* { 
             "status":"success",
             "checkins":[  
@@ -625,8 +636,8 @@ class LeaderboardController {
          } */
         $results = array();
         $mergedTeamIds = array();
-        if($data && isset($data['checkins'])) {
-            foreach($data['checkins'] AS $salsaTeam) {
+        if($salsaData && isset($salsaData['checkins'])) {
+            foreach($salsaData['checkins'] AS $salsaTeam) {
                 $teamName = (isset($salsaTeam['teamName'])) ? $salsaTeam['teamName'] : '';
                 $homeJoint = (isset($salsaTeam['homeJoint'])) ? $salsaTeam['homeJoint'] : '';
                 
@@ -660,24 +671,27 @@ class LeaderboardController {
         $localData = LeaderboardData::selectTeamScoreLeaderboards($limit, $startDate, $endDate, $mergedTeamIds);
         if($localData) {
             foreach($localData AS $localTeam) {
-                $result = array(
-                    'mobileCheckins' => 0,
-                    'liveCheckins' => $localTeam->gameCheckins,
-                    'teamName' => $localTeam->teamName,
-                    'teamId' => $localTeam->teamId,
-                    'hotSalsaTeamId' => 0,
-                    'homeJoint' => $localTeam->homeJoint,
-                    'homeJointId' => $localTeam->homeJointId,
-                    'hotSalsaHomeJointId' => 0,
-                    'sort' => $localTeam->gameCheckins
-                );
-                $results[] = $result;
+                // Skip any duplicate results
+                if(!array_search($localTeam->teamId, $mergedTeamIds, false)) {
+                    $result = array(
+                        'mobileCheckins' => 0,
+                        'liveCheckins' => $localTeam->gameCheckins,
+                        'teamName' => $localTeam->teamName,
+                        'teamId' => $localTeam->teamId,
+                        'hotSalsaTeamId' => 0,
+                        'homeJoint' => $localTeam->homeJoint,
+                        'homeJointId' => $localTeam->homeJointId,
+                        'hotSalsaHomeJointId' => 0,
+                        'sort' => $localTeam->gameCheckins
+                    );
+                    $results[] = $result;
+                }
             }
         }
         
         if(isset($results) && count($results) > 0) {
             $leaderboard = self::sortAndTrimLeaderboardResults($results, $limit);
-            return $app->render(200, array('leaderboard' => $leaderboard, 'startDate' => $startDate, 'endDate' => $endDate));
+            return $app->render(200, array('leaderboard' => $leaderboard, 'startDate' => $startDate, 'endDate' => $endDate, 'url' => $url, 'mobile' => $salsaData, 'local' => $localData));
         } else {
             $msg = APIConfig::get('TRIVIA_LEADERBOARD_NO_DATA_USER_MESSAGE');
             $msg = ($msg) ? $msg : 'Could not select Global Team Checkin Leaderboard.';
@@ -765,7 +779,7 @@ class LeaderboardController {
         }
         
         if(isset($results) && count($results) > 0) {
-            return $app->render(200, array('leaderboard' => $results, 'startDate' => $startDate, 'endDate' => $endDate));
+            return $app->render(200, array('leaderboard' => $results, 'startDate' => $startDate, 'endDate' => $endDate, 'url' => $url, 'mobile' => $salsaData));
         } else {
             $msg = APIConfig::get('TRIVIA_LEADERBOARD_NO_DATA_USER_MESSAGE');
             $msg = ($msg) ? $msg : 'Could not select Per Joint Player Checkins Leaderboard.';
@@ -845,7 +859,7 @@ class LeaderboardController {
         }
         
         if(isset($results) && count($results) > 0) {
-            return $app->render(200, array('leaderboard' => $results, 'startDate' => $startDate, 'endDate' => $endDate));
+            return $app->render(200, array('leaderboard' => $results, 'startDate' => $startDate, 'endDate' => $endDate, 'url' => $url, 'mobile' => $salsaData));
         } else {
             $msg = APIConfig::get('TRIVIA_LEADERBOARD_NO_DATA_USER_MESSAGE');
             $msg = ($msg) ? $msg : 'Could not select Per Joint Team Checkins Leaderboard.';

@@ -68,7 +68,7 @@ class DBConn {
             self::$logger = new Logging('pdo_exception');
         }
         // Write the error arry to the log file
-        self::$logger->write($pdo->errorInfo());
+        self::$logger->write("An unknown PDO error occured");
     }
     
     /*
@@ -102,7 +102,7 @@ class DBConn {
             $pdo->setAttribute($attribute, $value);
             return true;
         } catch (\PDOException $e) {
-            self::logPDOError($q);
+            self::logPDOError($pdo);
             return false;
         }
     }
@@ -128,7 +128,7 @@ class DBConn {
                 return ($id === false) ? false : $id;
             }
         } catch (\PDOException $e) {
-            self::logPDOError($q);
+            self::logPDOError($pdo);
             return false;
         }
     }
@@ -148,7 +148,7 @@ class DBConn {
             $q = $pdo->prepare($query);            
             return $q->execute($data);
         } catch (\PDOException $e) {
-            self::logPDOError($q);
+            self::logPDOError($pdo);
             return false;
         }
     }
@@ -176,7 +176,7 @@ class DBConn {
             $q->execute($data);
             return $q->fetchAll($style);
         } catch (\PDOException $e) {
-            self::logPDOError($q);
+            self::logPDOError($pdo);
             return false;
         }
     }
@@ -201,7 +201,7 @@ class DBConn {
             $q->execute($data);
             return $q->fetch($style);
         } catch (\PDOException $e) {
-            self::logPDOError($q);
+            self::logPDOError($pdo);
             return false;
         }
     }
@@ -228,7 +228,7 @@ class DBConn {
             $found = $q->fetchAll(\PDO::FETCH_COLUMN);
             return ($found && isset($found[0]) && count($found) === 1) ? $found[0] : $found;
         } catch (\PDOException $e) {
-            self::logPDOError($q);
+            self::logPDOError($pdo);
             return false;
         }
     }
@@ -249,7 +249,7 @@ class DBConn {
             $q->execute($data);
             return $q->rowCount();
         } catch (\PDOException $e) {
-            self::logPDOError($q);
+            self::logPDOError($pdo);
             return false;
         }
     }
@@ -267,7 +267,7 @@ class DBConn {
             $q = $pdo->prepare($query);
             return $q;
         } catch (\PDOException $e) {
-            self::logPDOError($q);
+            self::logPDOError($pdo);
             return false;
         }
     }
@@ -288,7 +288,7 @@ class DBConn {
             $q->execute($data);
             return $q;
         } catch (\PDOException $e) {
-            self::logPDOError($q);
+            self::logPDOError($pdo);
             return false;
         }
     }

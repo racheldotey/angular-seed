@@ -73,7 +73,12 @@ angular.module('app.leaderboards.venueTeamCheckins', ['ui.grid', 'ui.grid.autoRe
                     }
                 }, function (error) {
                     console.log(error);
-                    $scope.alertProxy.error(error);
+                    $scope.alertProxy.error(error);                  
+                    for(var i = 0; i < $scope.venueList.length; i++) {
+                        if($scope.venueList[i].id === $stateParams.venueId) {
+                            $scope.selected.venue = $scope.venueList[i];
+                        }
+                    }
                     $scope.venueList = [];
                 });
                 

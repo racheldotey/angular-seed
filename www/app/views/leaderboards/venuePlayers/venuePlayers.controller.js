@@ -58,7 +58,12 @@ angular.module('app.leaderboards.venuePlayers', ['ui.grid', 'ui.grid.autoResize'
                         }
                         $scope.setLeaderboardHeight();
                         console.log(error);
-                        $scope.alertProxy.error(error);
+                        $scope.alertProxy.error(error);                  
+                        for(var i = 0; i < $scope.venueList.length; i++) {
+                            if($scope.venueList[i].id === $stateParams.venueId) {
+                                $scope.selected.venue = $scope.venueList[i];
+                            }
+                        }
                         reject(error);
                     });
                 });
