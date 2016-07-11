@@ -69,8 +69,8 @@ class LeaderboardController {
         $startDate = (!v::key('startDate', v::date('Y-m-d'))->validate($app->request->get())) ? false : $app->request->get('startDate');
         $endDate = (!v::key('endDate', v::date('Y-m-d'))->validate($app->request->get())) ? false : $app->request->get('endDate');
                 
-        // /trivia/gameNight/cumilativeScore?scoreType=player&count=10&startDate= optional&endDate=optional
-        $url = HotSalsaRequest::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreType=player&count={$limit}";
+        // /trivia/gameNight/cumilativeScore?scoreGroup=player&count=10&startDate= optional&endDate=optional
+        $url = HotSalsaRequest::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreGroup=player&count={$limit}";
         if($startDate) { $url = $url . "&startDate={$startDate}"; }
         if($endDate) { $url = $url . "&endDate={$endDate}"; }
         // CURL Hot Salsa
@@ -130,7 +130,7 @@ class LeaderboardController {
                     'userId' => ($user && $user->id) ? $user->id : 0,
                     'hotSalsaUserId' => (isset($salsaPlayer['userId'])) ? $salsaPlayer['userId'] : 0,
                     'email' => $email, 
-                    'img' => (isset($salsaPlayer['photoUser'])) ? $salsaPlayer['photoUser'] : '', 
+                    'img' => (isset($salsaPlayer['photoUser'])) ? $salsaPlayer['photoUser'] : APIConfig::get('WEBSITE_URL') . 'media/images/default-player-image.png', 
                             
                     'teamName' => $teamName,
                     'teamId' => ($team && isset($team['teamId'])) ? $team['teamId'] : 0, 
@@ -163,7 +163,7 @@ class LeaderboardController {
                         'userId' => $localPlayer->userId,
                         'hotSalsaUserId' => 0,
                         'email' => $localPlayer->email,
-                        'img' => '',
+                        'img' => APIConfig::get('WEBSITE_URL') . 'media/images/default-player-image.png',
                         'teamName' => $localPlayer->teamName,
                         'teamId' => $localPlayer->teamId,
                         'hotSalsaTeamId' => 0,
@@ -193,8 +193,8 @@ class LeaderboardController {
         $startDate = (!v::key('startDate', v::date('Y-m-d'))->validate($app->request->get())) ? false : $app->request->get('startDate');
         $endDate = (!v::key('endDate', v::date('Y-m-d'))->validate($app->request->get())) ? false : $app->request->get('endDate');
 
-        // /trivia/gameNight/cumilativeScore?scoreType=team&count=10&startDate= optional&endDate=optional 
-        $url = HotSalsaRequest::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreType=team&count={$limit}";
+        // /trivia/gameNight/cumilativeScore?scoreGroup=team&count=10&startDate= optional&endDate=optional 
+        $url = HotSalsaRequest::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreGroup=team&count={$limit}";
         if($startDate) { $url = $url . "&startDate={$startDate}"; }
         if($endDate) { $url = $url . "&endDate={$endDate}"; }
 
@@ -317,8 +317,8 @@ class LeaderboardController {
         
         $locationId = self::getHotSalsaLocationId($venueId);
         
-        // /trivia/gameNight/cumilativeScore?scoreType=player&scoreLevel=bar&locationId=11&count=10&startDate=optional&endDate=optional
-        $url = HotSalsaRequest::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreType=player&scoreLevel=bar&locationId={$locationId}&count={$limit}";
+        // /trivia/gameNight/cumilativeScore?scoreGroup=player&scoreLevel=bar&locationId=11&count=10&startDate=optional&endDate=optional
+        $url = HotSalsaRequest::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreGroup=player&scoreLevel=bar&locationId={$locationId}&count={$limit}";
         if($startDate) { $url = $url . "&startDate={$startDate}"; }
         if($endDate) { $url = $url . "&endDate={$endDate}"; }
         // CURL Hot Salsa
@@ -380,7 +380,7 @@ class LeaderboardController {
                     'userId' => ($user && $user->id) ? $user->id : 0,
                     'hotSalsaUserId' => (isset($salsaPlayer['userId'])) ? $salsaPlayer['userId'] : 0,
                     'email' => $email, 
-                    'img' => (isset($salsaPlayer['photoUser'])) ? $salsaPlayer['photoUser'] : '', 
+                    'img' => (isset($salsaPlayer['photoUser'])) ? $salsaPlayer['photoUser'] : APIConfig::get('WEBSITE_URL') . 'media/images/default-player-image.png', 
                             
                     'teamName' => $teamName,
                     'teamId' => ($team) ? $team['teamId'] : 0, 
@@ -415,7 +415,7 @@ class LeaderboardController {
                             'userId' => $localPlayer->userId,
                             'hotSalsaUserId' => 0,
                             'email' => $localPlayer->email,
-                            'img' => '',
+                            'img' => APIConfig::get('WEBSITE_URL') . 'media/images/default-player-image.png',
                             'teamName' => $localPlayer->teamName,
                             'teamId' => $localPlayer->teamId,
                             'hotSalsaTeamId' => 0,
@@ -460,8 +460,8 @@ class LeaderboardController {
                     
         $locationId = self::getHotSalsaLocationId($venueId);
         
-        // /trivia/gameNight/cumilativeScore?scoreType=team&scoreLevel=bar&locationId=11&count=10&startDate= optional&endDate=optional
-        $url = HotSalsaRequest::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreType=team&scoreLevel=bar&locationId={$locationId}&count={$limit}";
+        // /trivia/gameNight/cumilativeScore?scoreGroup=team&scoreLevel=bar&locationId=11&count=10&startDate= optional&endDate=optional
+        $url = HotSalsaRequest::$HOT_SALSA_URL_MOBILE_SCORE . "?scoreGroup=team&scoreLevel=bar&locationId={$locationId}&count={$limit}";
         if($startDate) { $url = $url . "&startDate={$startDate}"; }
         if($endDate) { $url = $url . "&endDate={$endDate}"; }
         // CURL Hot Salsa
@@ -622,7 +622,7 @@ class LeaderboardController {
                     'userId' => ($user && $user->id) ? $user->id : 0,
                     'hotSalsaUserId' => (isset($salsaPlayer['userId'])) ? $salsaPlayer['userId'] : 0,
                     'email' => $email, 
-                    'img' => (isset($salsaPlayer['photoUser'])) ? $salsaPlayer['photoUser'] : '', 
+                    'img' => (isset($salsaPlayer['photoUser'])) ? $salsaPlayer['photoUser'] : APIConfig::get('WEBSITE_URL') . 'media/images/default-player-image.png', 
                             
                     'teamName' => $teamName,
                     'teamId' => ($team && isset($team['teamId'])) ? $team['teamId'] : 0, 
@@ -654,7 +654,7 @@ class LeaderboardController {
                         'userId' => $localPlayer->userId,
                         'hotSalsaUserId' => 0,
                         'email' => $localPlayer->email,
-                        'img' => '',
+                        'img' => APIConfig::get('WEBSITE_URL') . 'media/images/default-player-image.png',
                         'teamName' => $localPlayer->teamName,
                         'teamId' => $localPlayer->teamId,
                         'hotSalsaTeamId' => 0,
@@ -847,7 +847,7 @@ class LeaderboardController {
                     'userId' => ($user && $user->id) ? $user->id : 0,
                     'hotSalsaUserId' => (isset($salsaPlayer['userId'])) ? $salsaPlayer['userId'] : 0,
                     'email' => $email, 
-                    'img' => (isset($salsaPlayer['photoUser'])) ? $salsaPlayer['photoUser'] : '', 
+                    'img' => (isset($salsaPlayer['photoUser'])) ? $salsaPlayer['photoUser'] : APIConfig::get('WEBSITE_URL') . 'media/images/default-player-image.png', 
                             
                     'teamName' => $teamName,
                     'teamId' => ($team && isset($team['teamId'])) ? $team['teamId'] : 0, 
@@ -882,7 +882,7 @@ class LeaderboardController {
                             'userId' => $localPlayer->userId,
                             'hotSalsaUserId' => 0,
                             'email' => $localPlayer->email,
-                            'img' => '',
+                            'img' => APIConfig::get('WEBSITE_URL') . 'media/images/default-player-image.png',
                             'teamName' => $localPlayer->teamName,
                             'teamId' => $localPlayer->teamId,
                             'hotSalsaTeamId' => 0,

@@ -1,7 +1,7 @@
 <div class="page leaderboard">
     
     <div class="leaderboard-header">
-        <h3 ng-bind="title" style="margin-top: 0;">Leaderboard</h3>
+        <h3 ng-bind="title" style="margin-top: 0;" ng-hide="$state.includes('app.iframeLeaderboard')">Leaderboard</h3>
     </div>
     
     <div data-rc-bootstrap-alerts="alertProxy"></div>

@@ -17,16 +17,16 @@ class HotSalsaRequest {
     public static $HOT_SALSA_URL_VENUE_LIST = '/locationList';
     
     /* Global Player Score Leaderboard API
-     * /trivia/gameNight/cumilativeScore?scoreType=player&count=10&startDate= optional&endDate=optional
+     * /trivia/gameNight/cumilativeScore?scoreGroup=player&count=10&startDate=optional&endDate=optional
      * 
      * Global Team Score Leaderboard API
-     * /trivia/gameNight/cumilativeScore?scoreType=team&count=10&startDate= optional&endDate=optional 
+     * /trivia/gameNight/cumilativeScore?scoreGroup=team&count=10&startDate=optional&endDate=optional 
      * 
      * Per Joint Player Score Leaderboard APIs
-     * /trivia/gameNight/cumilativeScore?scoreType=player&scoreLevel=bar&locationId=11&count=10&startDate=optional&endDate=optional
+     * /trivia/gameNight/cumilativeScore?scoreGroup=player&scoreLevel=bar&locationId=11&count=10&startDate=optional&endDate=optional
      * 
      * Per Joint Team Score Leaderboard API
-     * /trivia/gameNight/cumilativeScore?scoreType=team&scoreLevel=bar&locationId=11&count=10&startDate= optional&endDate=optional
+     * /trivia/gameNight/cumilativeScore?scoreGroup=team&scoreLevel=bar&locationId=11&count=10&startDate= optional&endDate=optional
      */
     public static $HOT_SALSA_URL_MOBILE_SCORE = '/trivia/gameNight/cumilativeScore';
     

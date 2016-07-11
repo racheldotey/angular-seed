@@ -8,6 +8,8 @@ angular.module('app.leaderboards.globalPlayers', ['ui.grid', 'ui.grid.autoResize
     .controller('GlobalPlayersLeaderboardCtrl', ['$window', '$state', '$stateParams', '$rootScope', '$scope', '$q', 'uiGridConstants', 'ApiRoutesLeaderboards', 'LeaderboardResizing',
         function($window, $state, $stateParams, $rootScope, $scope, $q, uiGridConstants, ApiRoutesLeaderboards, LeaderboardResizing) {
         
+            $scope.$state = $state;
+            
             /* Used to restrict alert bars */
             $scope.alertProxy = {};
             
