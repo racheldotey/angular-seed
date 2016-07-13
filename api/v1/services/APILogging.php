@@ -5,10 +5,10 @@ require_once dirname(__FILE__) . '/ApiConfig.php';
 
 class ApiLogging {
     
-    // Path to the log file
+    /* Path to the log file */
     private $defaultLogFile = '';
     
-    // Is the API in debug mode
+    /* Is the API in debug mode */
     private $ApiConfig;
     
     function __construct($ApiConfig, $logName = 'log') {

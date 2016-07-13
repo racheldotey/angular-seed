@@ -1,5 +1,5 @@
 <?php namespace API;
- require_once dirname(dirname(dirname(__FILE__))) . '/services/api.dbconn.php';
+ require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/services/api.dbconn.php';
 
 class AuthData {
     

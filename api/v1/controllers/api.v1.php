@@ -3,23 +3,11 @@ namespace API;
 
 require_once dirname(dirname(__FILE__)) . '/services/ApiConfig.php';     // API Coifg File (Add your settings!)
 require_once dirname(dirname(__FILE__)) . '/services/ApiLogging.php';  // Router Module
-require_once dirname(dirname(__FILE__)) . '/services/api.auth.php'; // Auth Service
 require_once dirname(dirname(__FILE__)) . '/slimMiddleware/JsonResponseView.php'; // Response middleware to neatly format API responses to JSON
 require_once dirname(dirname(__FILE__)) . '/slimMiddleware/RouteAuthenticationMiddleware.php'; // Slim PHP Middleware to authenticate incomming requests for individual routes
 
 /* API Route Controllers */
-require_once dirname(__FILE__) . '/action-tracking/actions.routes.php';
-require_once dirname(__FILE__) . '/api-test/test.routes.php';
-require_once dirname(__FILE__) . '/auth/auth.routes.php';
-require_once dirname(__FILE__) . '/datatables/datatables.routes.php';
-require_once dirname(__FILE__) . '/emails/emails.routes.php';
-require_once dirname(__FILE__) . '/field-visibility/fields.routes.php';
-require_once dirname(__FILE__) . '/groups/groups.routes.php';
-require_once dirname(__FILE__) . '/roles/roles.routes.php';
-require_once dirname(__FILE__) . '/simple-lists/lists.routes.php';
-require_once dirname(__FILE__) . '/system/system.routes.php';
-require_once dirname(__FILE__) . '/system-variables/config.routes.php';
-require_once dirname(__FILE__) . '/user/user.routes.php';
+require_once dirname(__FILE__) . '/system/auth/auth.routes.php';
 
 /* @author  Rachel L Carbone <hello@rachellcarbone.com> */
 
@@ -32,11 +20,13 @@ class V1Controller {
         /* Create a new Slim app */
         $slimApp = $this->createSlim($systemConfig->get('debugMode'));
 
-        /* Format the API Response as JSON */
-        //$slimApp->add(new \API\JsonResponseView());
+        /* Add Authentication */
+        $slimApp->add(new \API\RouteAuthenticationMiddleware());
+
+        $this->addDefaultRoutes($slimApp);
 
         /* Add API Routes */
-        $this->addRoutes($slimApp, $systemConfig->get('debugMode'));
+        $this->addApiRoutes($slimApp, $systemConfig->get('debugMode'));
 
         /* Start Slim */
         $slimApp->run();
@@ -48,10 +38,8 @@ class V1Controller {
         $slimContainer = $this->getSlimContainer($slimSettings, $debugEnabled);
 
         /* Create new Slim PHP API App */
-        // http://www.slimframework.com/docs/objects/application.html
-        $slimApp = new \Slim\App($slimContainer);
-        
-        return $slimApp;
+        // http://www.slimframework.com/docs/objects/application.html        
+        return new \Slim\App($slimContainer);
     }
 
     private function getSlimConfig($debugEnabled) {
@@ -138,17 +126,15 @@ class V1Controller {
         return $slimContainer;
     }
     
-    public function addRoutes($slimApp, $debugEnabled) {
+    private function addApiRoutes($slimApp, $debugEnabled) {
         
         $authenticateForRole = function ($role = 'public') use ($slimApp) {
             return function () use ($slimApp, $role) {
                 APIAuth::isAuthorized($slimApp, $role);
             };
         };
-
-        $this->addDefaultRoutes($slimApp);
-        //$this->addErrorRoutes($slimApp, $debugEnabled);
         
+
         /*
         TestRoutes::addRoutes($slimApp, $authenticateForRole);
         ActionRoutes::addRoutes($slimApp, $authenticateForRole);
@@ -166,11 +152,33 @@ class V1Controller {
     }
     
     private function addDefaultRoutes($slimApp) {
+        $authenticateForRole = function ($role = 'public') use ($slimApp) {
+            return function () use ($slimApp, $role) {
+                APIAuth::isAuthorized($slimApp, $role);
+            };
+        };
+
+        $authenticateForRole = function ($request, $response, $next, $role = 'public') {
+            // /route/{name}
+            /*
+            $routeParams = $request->getAttribute('routeInfo')[2];
+            $name = strtoupper($routeParams['name']);
+
+            $response = $next($request, $response);
+            $response->write($name);
+            */
+            $response->write($role);
+            
+            $response = $next($request, $response);
+
+            return $response;
+        };
+
         $slimApp->any('/', function ($request, $response, $args) {
             return $this->view->render($response, 200, 'Congratulations, you have reached the Slim PHP API v1.1!');
-        });
+        })->add($authenticateForRole('public'));
         
-        $slimApp->any('/about-this-api', function ($request, $response, $args) {
+        $slimApp->any('/about', function ($request, $response, $args) {
             $data = array(
                 'title' => 'Angular Seed Slim PHP API',
                 'version' => $this['_ApiConfig']->get('apiVersion'),

@@ -93,14 +93,23 @@ class JsonResponseView {
         /* Fetch return object. */
         $output = $this->fetch($response, $status, $data);
 
-        /* Set response content type */
-        $response = $response->withJson($output, $output['meta']['status']);
+        /* Set response to a neatly formatted JSON string
+         * Content-type: application/json;charset=utf-8
+         *
+         * http://www.slimframework.com/docs/objects/response.html#returning-json
+         * http://php.net/manual/en/json.constants.php
+         * 
+         * JSON_PRETTY_PRINT - Use whitespace in returned data to format it. Available since PHP 5.4.0.
+         * JSON_NUMERIC_CHECK - Encodes numeric strings as numbers. Available since PHP 5.3.3.
+         * JSON_PRESERVE_ZERO_FRACTION - Ensures that float values are always encoded as a float value. Available since PHP 5.6.6.
+         */
+        $response = $response->withJson($output, $output['meta']['status'], \JSON_PRETTY_PRINT, \JSON_NUMERIC_CHECK);
         
         return $response;
     }
     
     /**
-     * Formats data into a neatly formatted response array.
+     * Formats response data into a uniform associative array.
      *
      * @param \Psr\Http\Message\ResponseInterface      $response PSR7 response
      * @param int                $status Http status code
