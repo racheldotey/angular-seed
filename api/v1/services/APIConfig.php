@@ -72,6 +72,10 @@ class ApiConfig {
      */
     private function setApiConfig() {
         $default = array(
+            'repoTitle' => 'Angular Seed Slim PHP API',
+            'codeRepoUrl' => 'https://gitlab.com/rachellcarbone/angular-seed',
+            'author' => 'Rachel L Carbone <hello@rachellcarbone.com>',
+            'authorWebsite' => 'http://www.rachellcarbone.com',
             'apiVersion' => 'v1',
             'debugMode' => true,
             'dbHost' => 'localhost',

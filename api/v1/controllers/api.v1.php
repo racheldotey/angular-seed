@@ -1,6 +1,7 @@
 <?php
 namespace API;
 
+require_once dirname(dirname(__FILE__)) . '/services/ApiDBConn.php';     // API Coifg File (Add your settings!)
 require_once dirname(dirname(__FILE__)) . '/services/ApiConfig.php';     // API Coifg File (Add your settings!)
 require_once dirname(dirname(__FILE__)) . '/services/ApiLogging.php';  // Router Module
 require_once dirname(dirname(__FILE__)) . '/slimMiddleware/JsonResponseView.php'; // Response middleware to neatly format API responses to JSON
@@ -14,32 +15,28 @@ require_once dirname(__FILE__) . '/system/auth/auth.routes.php';
 class V1Controller {
 
     public function run() {
-        /* Get our system config */
-        $systemConfig = new ApiConfig();
+        /* Get our api config */
+        $apiConfig = new ApiConfig();
+        $debug = $apiConfig->get('debugMode');
         
         /* Create a new Slim app */
-        $slimApp = $this->createSlim($systemConfig->get('debugMode'));
+        $slimSettings = $this->getSlimConfig($debug);
+        
+        $slimContainer = $this->getSlimContainer($slimSettings, $debug);
 
-        /* Add Authentication */
-        $slimApp->add(new \API\RouteAuthenticationMiddleware());
-
-        $this->addDefaultRoutes($slimApp);
+        /* Create new Slim PHP API App */
+        // http://www.slimframework.com/docs/objects/application.html        
+        $slimApp = new \Slim\App($slimContainer);
 
         /* Add API Routes */
-        $this->addApiRoutes($slimApp, $systemConfig->get('debugMode'));
+        $this->addDefaultRoutes($slimApp, $slimContainer);
+        $this->addApiRoutes($slimApp, $debug);
 
         /* Start Slim */
         $slimApp->run();
     }
 
     private function createSlim($debugEnabled) {
-        $slimSettings = $this->getSlimConfig($debugEnabled);
-        
-        $slimContainer = $this->getSlimContainer($slimSettings, $debugEnabled);
-
-        /* Create new Slim PHP API App */
-        // http://www.slimframework.com/docs/objects/application.html        
-        return new \Slim\App($slimContainer);
     }
 
     private function getSlimConfig($debugEnabled) {
@@ -86,34 +83,31 @@ class V1Controller {
 
         /* Add app services to the container */
 
-        /* An instance of \API\ApiConfig */
-        $slimContainer['_ApiConfig'] = function($this) {
-            /* Return the System Config Class */
-            $ApiConfig = new \API\ApiConfig(); 
-            return $ApiConfig;
+        $slimContainer['ApiConfig'] = function($this) {
+            // Return the System Config Class */
+            return new \API\ApiConfig();
         };
 
-        /* Create an instance of \API\ApiLogging */
-        $slimContainer['_ApiLogging'] = function($container) {
-            /* Set PHP Error Handler to ApiLogging */
-            $logging = new \API\ApiLogging($container['_ApiConfig'], 'api'); 
-            return $logging;
+        $slimContainer['ApiLogging'] = function($container) {
+            // Set PHP Error Handler to ApiLogging */
+            return new \API\ApiLogging($container->ApiConfig, 'api');
         };
 
-        /* Create an instance of \API\DBConn */
-        $slimContainer['_DBConn'] = function($container) {
-            /* Return the Database Connection Class */
-            $db = new \API\DBConn($container['_ApiConfig'], $container['_ApiLogging']); 
-            return $db;
+        $slimContainer['DBConn'] = function($container) {
+            // Return the Database Connection Class */
+            return new \API\ApiDBConn($container->ApiConfig, $container->ApiLogging);
         };
 
-        /* An instance of \API\SystemConfig */
-        $slimContainer['_SystemConfig'] = function($container) {
-            /* Return the System Config Class */
-            $systemConfig = new \API\SystemConfig($container['_DBConn'], $container['_ApiLogging']); 
-            return $systemConfig;
+        $slimContainer['SystemConfig'] = function($container) {
+            // Return the System Config Class
+            return new \API\SystemConfig($container->DBConn, $container->ApiLogging);
         }; 
+
         
+        /* Add our JSON Response view middleware 
+         *
+         * Allows us to use $this->view->render($response, 200, 'Data to return'); inside of routes.
+         */
         $slimContainer['view'] = new \API\JsonResponseView();
 
         /* Dev Mode / Debug Settings */
@@ -126,15 +120,7 @@ class V1Controller {
         return $slimContainer;
     }
     
-    private function addApiRoutes($slimApp, $debugEnabled) {
-        
-        $authenticateForRole = function ($role = 'public') use ($slimApp) {
-            return function () use ($slimApp, $role) {
-                APIAuth::isAuthorized($slimApp, $role);
-            };
-        };
-        
-
+    private function addApiRoutes(\Slim\App $slimApp, $debugEnabled) {
         /*
         TestRoutes::addRoutes($slimApp, $authenticateForRole);
         ActionRoutes::addRoutes($slimApp, $authenticateForRole);
@@ -151,46 +137,25 @@ class V1Controller {
         */
     }
     
-    private function addDefaultRoutes($slimApp) {
-        $authenticateForRole = function ($role = 'public') use ($slimApp) {
-            return function () use ($slimApp, $role) {
-                APIAuth::isAuthorized($slimApp, $role);
-            };
-        };
-
-        $authenticateForRole = function ($request, $response, $next, $role = 'public') {
-            // /route/{name}
-            /*
-            $routeParams = $request->getAttribute('routeInfo')[2];
-            $name = strtoupper($routeParams['name']);
-
-            $response = $next($request, $response);
-            $response->write($name);
-            */
-            $response->write($role);
-            
-            $response = $next($request, $response);
-
-            return $response;
-        };
-
+    private function addDefaultRoutes(\Slim\App $slimApp, \Interop\Container\ContainerInterface $slimContainer) {
         $slimApp->any('/', function ($request, $response, $args) {
             return $this->view->render($response, 200, 'Congratulations, you have reached the Slim PHP API v1.1!');
-        })->add($authenticateForRole('public'));
+        })->add(new \API\APIAuthenticationService($slimContainer, 'adminx'));
         
         $slimApp->any('/about', function ($request, $response, $args) {
             $data = array(
-                'title' => 'Angular Seed Slim PHP API',
-                'version' => $this['_ApiConfig']->get('apiVersion'),
-                'author' => 'Rachel L Carbone <hello@rachellcarbone.com>',
-                'website' => 'https://gitlab.com/rachellcarbone/angular-seed'
+                'title' => $this->ApiConfig->get('repoTitle'),
+                'version' => $this->ApiConfig->get('apiVersion'),
+                'codeRepoUrl' => $this->ApiConfig->get('codeRepoUrl'),
+                'author' => $this->ApiConfig->get('author'),
+                'authorWebsite' => $this->ApiConfig->get('authorWebsite')
             );
             return $this->view->render($response, 200, $data);
-        });
+        })->add(new \API\APIAuthenticationService($slimContainer, 'admin'));
         
     }
     
-    private function addErrorHandlers($slimContainer) {
+    private function addErrorHandlers(\Interop\Container\ContainerInterface $slimContainer) {
         /*
          * Override the default Not Found Handler
          *
@@ -211,8 +176,8 @@ class V1Controller {
                     }
                 }
                 // Log the 500
-                $container['_ApiLogging']->log($msg, 'error', 'api_errors');
-                $container['_ApiLogging']->logException($exception, 'error', 'api_errors');
+                $container->ApiLogging->log($msg, 'error', 'api_errors');
+                $container->ApiLogging->logException($exception, 'error', 'api_errors');
 
                 // Return nice JSON 500 Message
                 return $container['view']->render($response, 500, 'Unknown System Error');
@@ -243,7 +208,7 @@ class V1Controller {
                 $msg .= ' Accepted Methods: ' . implode(', ', $methods);
 
                 // Log the 405
-                $container['_ApiLogging']->log($msg, 'debug');
+                $container->ApiLogging->log($msg, 'debug');
 
                 // Return nice JSON 405 Message
                 return $container['view']->render($response, 405, 'This header method is not defined for this route. Accepted method(s) are: ' . implode(', ', $methods));
@@ -270,7 +235,7 @@ class V1Controller {
                     }
                 }
                 // Log the 404
-                $container['_ApiLogging']->log($msg, 'debug');
+                $container->ApiLogging->log($msg, 'debug');
 
                 // Return nice JSON 404 Message
                 return $container['view']->render($response, 404, 'This API route is not defined.');

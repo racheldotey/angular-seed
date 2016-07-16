@@ -2,20 +2,52 @@
 
 /* @author  Rachel L Carbone <hello@rachellcarbone.com> */
 
-class RouteAuthenticationMiddleware {
+use \Respect\Validation\Validator as v;
+
+class APIAuthenticationService {
     
     const APISESSIONNAME = 'API_AUTHENTICATED_USER_ID';
 
+    private $slimContainer;
+
+    private $db;
+
+    private $ApiLogging;
+
+    private $requiredRole;
+
+    private $user;
+
     /**
-     * Slim PHP Middleware to turn API Responses into a clean formatted JSON oject.
+     * Set the required role.
      *
-     * To use this class as a middleware, you can use ->add( new ExampleMiddleware() ); 
-     * function chain after the $app, Route, or group(), which in the code below, 
-     * any one of these, could represent $subject.
-     * 
-     * $subject->add( new ExampleMiddleware() );
-     *
-     * http://www.slimframework.com/docs/concepts/middleware.html
+     * @param  \Interop\Container\ContainerInterface $slimContainer Slim Container
+     * @param  String                                $role Required Role to Access Route
+     */
+    public function __construct(\Interop\Container\ContainerInterface $slimContainer, $role) {
+        // Hold onto the Slim Container
+        $this->slimContainer = $slimContainer;
+        // Get the Database Controller
+        $this->db = $slimContainer->get('DBConn');
+        // Get the Database Controller
+        $this->ApiLogging = $slimContainer->get('ApiLogging');
+
+        // Select array of roles from the database
+        // ex array('guest', 'member', 'admin');
+        $acceptedRoles = $this->selectAllRoleSlugs();
+
+        // Ensure the required role is in the database
+        if(in_array(strtolower($role), $acceptedRoles)) {
+            $this->requiredRole = strtolower($role);
+        } else {
+            // This is an unknow role, all access will be denied 
+            // except by the super admin (see _invoke() below).
+            $this->requiredRole = false;
+        }
+    }
+
+    /**
+     * Validate accepted role for this route.
      *
      * @param  \Psr\Http\Message\ServerRequestInterface $request  PSR7 request
      * @param  \Psr\Http\Message\ResponseInterface      $response PSR7 response
@@ -23,52 +55,95 @@ class RouteAuthenticationMiddleware {
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function __invoke($request, $response, $next)
-    {
-        $response->getBody()->write('BEFORE');
-        $response = $next($request, $response);
-        $response->getBody()->write('AFTER');
+    public function __invoke($request, $response, $next) {
 
-        return $response;
-    }
-    
-    static function isAuthorized($app, $role = 'public') {
-        $user = self::authorizeApiToken($app);
-        if($user) {
-            // Save that user id
-            $_SESSION[self::APISESSIONNAME] = $user;
-            return true;
-        } else if(strtolower($role) === 'public') {
-            return true;
-        } else {
-            $response = array('data' => array(
-                'msg' => 'Unauthorized API Access', 
-                'sent' => $app->request->post()), 
-                'user' => $user,
-                'meta' => array('error' => true, 'status' => 401));
-            //$response = array('data' => array('msg' => 'Unauthorized API Access'), 'meta' => array('error' => true, 'status' => 401));
-            $app->halt(401, json_encode($response));
-            return false;
-        }
-    }
-    
-    private static function authorizeApiToken($app) {
-        if(!v::key('apiKey', v::stringType())->validate($app->request->post()) || 
-           !v::key('apiToken', v::stringType())->validate($app->request->post())) {
-            return false;
-        }
-        $user = AuthData::selectUserByIdentifierToken($app->request->post('apiKey'));
-        if(!$user) {
-            return "user";
-        }
-        if(!password_verify($app->request->post('apiToken'), $user->apiToken)) {
-            return "password";
-        }
-        // Go now. Be free little brother.
-        return $user->id;
+        $authorized = $this->isAuthorized($request, $response);
+
+        return ($authorized === true) ? $next($request, $response) : $authorized;
     }
     
     static function getUserId() {        
         return (isset($_SESSION[self::APISESSIONNAME])) ? $_SESSION[self::APISESSIONNAME] : '0';
+    }
+
+    private function isAuthorized($request, $response) {
+        $post = $request->getParsedBody();
+        
+        /* If this is a public route */
+        if(strtolower($this->requiredRole) === 'public' || 
+            strtolower($this->requiredRole) === 'guest') {
+
+            // Try to get the user id, but allow access no matter what
+            if(v::key('apiKey', v::stringType())->validate($post) &&
+                v::key('apiToken', v::stringType())->validate($post)) {
+                
+                // Try to login user
+                $session = $this->selectUserSession($post['apiKey']);
+                $_SESSION[$this->APISESSIONNAME] = ($session) ? $session->userId : '0';
+            }
+            
+            return true; // Public access
+        }
+        
+        /* Check parameters for non public routes. */
+        if(!v::key('apiKey', v::stringType())->validate($post) || 
+           !v::key('apiToken', v::stringType())->validate($post)) {
+               
+            // 400 Bad Request
+            return $this->slimContainer->view->render($response, 400, 'Invalid API Request Access Key and Token Pair - Check your parameters and try again.');
+        }
+        
+        /* Does user have a session */
+        $session = $this->selectUserSession($post['apiKey']);
+        if($session && password_verify($post['apiToken'], $session->apiToken)) {
+            
+            /* Hold onto the UserId for use in the API Call. */
+            $_SESSION[$this->APISESSIONNAME] = $session->userId;
+            
+            /* Does user have an expired session */
+            $now = new \DateTime();
+            $expires = (is_null($session->expires)) ? $now : new \DateTime($session->expires);
+
+            // If the expiration is NULL it never expires
+            if(!is_null($session->expires) && $now > $expires) {
+                // 401 Unauthorized
+                return $this->slimContainer->view->render($response, 401, 'Session timed out. Please login again.');
+            }
+            
+            $userRoles = $this->selectUserRoles($session->userId);
+            if(!$userRoles || !in_array($this->requiredRole, $userRoles)) {
+                // 403 Forbidden
+                return $this->slimContainer->view->render($response, 403, 'Unauthorized API Access. Session does not have access to this content.');
+            } else {
+                /* SUCCESS - User is logged in and does have access to this request. */
+                return true; // Ideal Endpoint
+            }
+        }
+        
+        // 401 Unauthorized
+        return $this->slimContainer->view->render($response, 401, 'Unauthorized API Access.');
+    }
+    
+    /* Database Methods */
+    
+    private function selectAllRoleSlugs() {
+        return  $this->db->selectColumn("SELECT slug FROM " .  $this->db->prefix() . "auth_roles WHERE disabled = 0;");
+    }
+    
+    private function selectUserSession($identifier) {
+        return $this->db->selectOne("SELECT t.id AS sessionId, user_id AS userId, "
+                . "token AS apiToken, identifier AS apiKey, t.expires "
+                . "FROM " . $this->db->prefix() . "tokens_auth AS t "
+                . "JOIN " . $this->db->prefix() . "users AS u ON u.id = t.user_id "
+                . "WHERE identifier = :identifier AND u.disabled IS NULL "
+                . "ORDER BY t.expires DESC LIMIT 1;", array(':identifier' => $identifier));
+    }
+    
+    private function selectUserRoles($userId) {
+        return $this->db->selectColumn("SELECT DISTINCT(r.slug) "
+                . "FROM " . $this->db->prefix() . "auth_lookup_user_group AS ug "
+                . "JOIN " . $this->db->prefix() . "auth_lookup_group_role AS gr ON ug.auth_group_id = gr.auth_group_id "
+                . "JOIN " . $this->db->prefix() . "auth_roles AS r ON r.id = gr.auth_role_id "
+                . "WHERE ug.user_id = :id;", array(':id' => $userId));
     }
 }

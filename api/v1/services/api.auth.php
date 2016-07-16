@@ -49,5 +49,4 @@ class APIAuth {
     static function getUserId() {        
         return (isset($_SESSION[self::APISESSIONNAME])) ? $_SESSION[self::APISESSIONNAME] : '0';
     }
-    
 }

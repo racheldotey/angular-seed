@@ -5,7 +5,7 @@
 class SystemVariables {
 
     /* \API\DBConn */
-    private $dbConn = false;
+    private $db = false;
 
     /* \API\ApiLogging */
     private $ApiLogging = false;
@@ -26,7 +26,7 @@ class SystemVariables {
      */
     public function __construct($dbConn, $ApiLogging = false) {
 
-        $this->dbConn = $dbConn;
+        $this->db = $dbConn;
 
         $this->ApiLogging = $ApiLogging;
 
@@ -78,8 +78,8 @@ class SystemVariables {
      */
     private function setSystemVariables() {
         /* Select the system variables from the database */
-        $qVariables = $this->dbConn->executeQuery("SELECT name, value "
-                . "FROM " . $this->dbConn->prefix() . "system_config WHERE disabled = 0;");
+        $qVariables = $this->db->executeQuery("SELECT name, value "
+                . "FROM " . $this->db->prefix() . "system_config WHERE disabled = 0;");
         
         /* Format the variables into an associatiave array for easier lookup */
         $variables = Array();
