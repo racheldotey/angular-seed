@@ -4,7 +4,7 @@
 
 use \Respect\Validation\Validator as v;
 
-class APIAuthenticationService {
+class ApiAuthMiddleware {
     
     const APISESSIONNAME = 'API_AUTHENTICATED_USER_ID';
 
@@ -66,39 +66,57 @@ class APIAuthenticationService {
         return (isset($_SESSION[self::APISESSIONNAME])) ? $_SESSION[self::APISESSIONNAME] : '0';
     }
 
-    private function isAuthorized($request, $response) {
+    private function getCredentials($request) {
         $post = $request->getParsedBody();
+        $get = $request->getQueryParams();
+
+        if(v::key('apiKey', v::stringType())->validate($post) ||
+            v::key('apiToken', v::stringType())->validate($post)) {
+            return array(
+                'apiKey' => (v::key('apiKey', v::stringType())->validate($post)) ? $post['apiKey'] : false,
+                'apiToken' => (v::key('apiToken', v::stringType())->validate($post)) ? $post['apiToken'] : false
+            );
+        } else {
+            return array(
+                'apiKey' => (v::key('apiKey', v::stringType())->validate($get)) ? $get['apiKey'] : false,
+                'apiToken' => (v::key('apiToken', v::stringType())->validate($get)) ? $get['apiToken'] : false
+            );
+        }
+    }
+
+    private function isAuthorized($request, $response) {
+        return true; // Public access
+
+        $credentials = $this->getCredentials($request);
         
         /* If this is a public route */
         if(strtolower($this->requiredRole) === 'public' || 
             strtolower($this->requiredRole) === 'guest') {
 
             // Try to get the user id, but allow access no matter what
-            if(v::key('apiKey', v::stringType())->validate($post) &&
-                v::key('apiToken', v::stringType())->validate($post)) {
+            if($credentials['apiKey'] && $credentials['apiToken']) {
                 
                 // Try to login user
-                $session = $this->selectUserSession($post['apiKey']);
-                $_SESSION[$this->APISESSIONNAME] = ($session) ? $session->userId : '0';
+                $session = $this->selectUserSession($credentials['apiKey']);
+                $_SESSION[self::APISESSIONNAME] = ($session) ? $session->userId : '0';
             }
             
             return true; // Public access
         }
         
         /* Check parameters for non public routes. */
-        if(!v::key('apiKey', v::stringType())->validate($post) || 
-           !v::key('apiToken', v::stringType())->validate($post)) {
+        if(!$credentials['apiKey'] || !$credentials['apiToken']) {
                
             // 400 Bad Request
             return $this->slimContainer->view->render($response, 400, 'Invalid API Request Access Key and Token Pair - Check your parameters and try again.');
         }
         
         /* Does user have a session */
-        $session = $this->selectUserSession($post['apiKey']);
-        if($session && password_verify($post['apiToken'], $session->apiToken)) {
+        $session = $this->selectUserSession($credentials['apiKey']);
+        if($session && password_verify($credentials['apiToken'], $session->apiToken)) {
             
             /* Hold onto the UserId for use in the API Call. */
-            $_SESSION[$this->APISESSIONNAME] = $session->userId;
+            $_SESSION[self::APISESSIONNAME] = $session->userId;
             
             /* Does user have an expired session */
             $now = new \DateTime();

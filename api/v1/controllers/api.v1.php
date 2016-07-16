@@ -5,7 +5,7 @@ require_once dirname(dirname(__FILE__)) . '/services/ApiDBConn.php';     // API 
 require_once dirname(dirname(__FILE__)) . '/services/ApiConfig.php';     // API Coifg File (Add your settings!)
 require_once dirname(dirname(__FILE__)) . '/services/ApiLogging.php';  // Router Module
 require_once dirname(dirname(__FILE__)) . '/slimMiddleware/JsonResponseView.php'; // Response middleware to neatly format API responses to JSON
-require_once dirname(dirname(__FILE__)) . '/slimMiddleware/RouteAuthenticationMiddleware.php'; // Slim PHP Middleware to authenticate incomming requests for individual routes
+require_once dirname(dirname(__FILE__)) . '/slimMiddleware/ApiAuthMiddleware.php'; // Slim PHP Middleware to authenticate incomming requests for individual routes
 
 /* API Route Controllers */
 require_once dirname(__FILE__) . '/system/auth/auth.routes.php';
@@ -140,7 +140,7 @@ class V1Controller {
     private function addDefaultRoutes(\Slim\App $slimApp, \Interop\Container\ContainerInterface $slimContainer) {
         $slimApp->any('/', function ($request, $response, $args) {
             return $this->view->render($response, 200, 'Congratulations, you have reached the Slim PHP API v1.1!');
-        })->add(new \API\APIAuthenticationService($slimContainer, 'adminx'));
+        })->add(new \API\ApiAuthMiddleware($slimContainer, 'adminx'));
         
         $slimApp->any('/about', function ($request, $response, $args) {
             $data = array(
@@ -151,7 +151,7 @@ class V1Controller {
                 'authorWebsite' => $this->ApiConfig->get('authorWebsite')
             );
             return $this->view->render($response, 200, $data);
-        })->add(new \API\APIAuthenticationService($slimContainer, 'admin'));
+        })->add(new \API\ApiAuthMiddleware($slimContainer, 'admin'));
         
     }
     
