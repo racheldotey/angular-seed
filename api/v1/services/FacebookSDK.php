@@ -1,11 +1,19 @@
-<?php namespace API;
-require_once dirname(__FILE__) . '/auth.controller.native.php';
+<?php namespace \API;
 
 use \Respect\Validation\Validator as v;
 
-class AuthControllerFacebook {
-    
-    static function checkLoginStatus() {
+class FacebookSDK {
+
+    private $ApiConfig;
+
+    private $ApiLogging;
+
+    public function __construct($ApiConfig, $ApiLogging) {
+        $this->ApiConfig = $ApiConfig;
+        $this->ApiLogging = $ApiLogging;
+    }
+
+    public function checkLoginStatus() {
         $profile = false;
         $accessToken = self::getActiveAccessToken();
         if($accessToken) {
@@ -14,20 +22,13 @@ class AuthControllerFacebook {
         return $profile;
     }
     
-    private static function getFBConn() {
+    private function getFBConn() {
         // TODO: Connect this to the config
         return new \Facebook\Facebook([
             'app_id' => "892044264250192",
             'app_secret' => "680ed93062e7d97347a593cab43533f2",
             'default_graph_version' => 'v2.5'
-        ]); // Dev
-        /*
-        return new \Facebook\Facebook([
-            'app_id' => "1538616896450172",
-            'app_secret' => "f42275546311eb9094e9a2767a051086",
-            'default_graph_version' => 'v2.5'
-        ]); // Triv
-         */
+        ]);
     }
     
     /*
@@ -37,7 +38,7 @@ class AuthControllerFacebook {
      * 
      * https://developers.facebook.com/docs/php/howto/example_access_token_from_javascript
      */
-    private static function getActiveAccessToken() {
+    private function getActiveAccessToken() {
         $fb = self::getFBConn();
 
         $helper = $fb->getJavaScriptHelper();
@@ -81,7 +82,7 @@ class AuthControllerFacebook {
      * verified
      * email
      */
-    static function getProfile($accessToken) {
+    public function getProfile($accessToken) {
         $fb = self::getFBConn();
 
         try {
@@ -102,7 +103,7 @@ class AuthControllerFacebook {
         return $response->getGraphUser();
     }
     
-    static function login($app) {
+    public function login($app) {
         // Get Post Data
         $post = $app->request->post();
         
@@ -158,7 +159,7 @@ class AuthControllerFacebook {
         nameLast:Cantyoutell
         timezone:-5
      */
-    static function signup($app) {
+    public function signup($app) {
         // Get Post Data
         $post = $app->request->post();
         
@@ -226,11 +227,12 @@ class AuthControllerFacebook {
     /*
      * return String|bool Failed message or true 
      */
-    private static function validateFacebookProfile($post) {
+    private function validateFacebookProfile($post) {
         return (v::key('accessToken', v::stringType())->validate($post) &&
            v::key('facebookId', v::stringType())->validate($post) &&
            v::key('nameFirst', v::stringType())->validate($post) &&
            v::key('nameLast', v::stringType())->validate($post) &&
            v::key('email', v::email())->validate($post));
     }
+
 }

@@ -9,7 +9,7 @@ require_once dirname(dirname(__FILE__)) . '/slimMiddleware/JsonResponseView.php'
 require_once dirname(dirname(__FILE__)) . '/slimMiddleware/RouteTrailingSlashMiddleware.php'; // Remove the requested routes trailing slash
 
 /* API Route Controllers */
-require_once dirname(__FILE__) . '/system/auth/auth.routes.php';
+require_once dirname(__FILE__) . '/auth/auth.routes.php';
 
 /* @author  Rachel L Carbone <hello@rachellcarbone.com> */
 
@@ -20,13 +20,10 @@ class V1Controller {
         $apiConfig = new ApiConfig();
         $debug = $apiConfig->get('debugMode');
         
-        /* Create a new Slim app */
-        $slimSettings = $this->getSlimConfig($debug);
-        
-        $slimContainer = $this->getSlimContainer($slimSettings, $debug);
-
         /* Create new Slim PHP API App */
-        // http://www.slimframework.com/docs/objects/application.html        
+        // http://www.slimframework.com/docs/objects/application.html       
+        $slimSettings = $this->getSlimConfig($debug);
+        $slimContainer = $this->getSlimContainer($slimSettings, $debug);
         $slimApp = new \Slim\App($slimContainer);
 
         /* 301 redirect routes with trailing slashes to the non slashed option ("/user" instead of "/user/") */
@@ -34,7 +31,7 @@ class V1Controller {
 
         /* Add API Routes */
         $this->addDefaultRoutes($slimApp, $slimContainer);
-        $this->addApiRoutes($slimApp, $debug);
+        $this->addApiRoutes($slimApp);
 
         /* Start Slim */
         $slimApp->run();
@@ -112,7 +109,7 @@ class V1Controller {
          *
          * Allows us to use $this->view->render($response, 200, 'Data to return'); inside of routes.
          */
-        $slimContainer['view'] = new \API\JsonResponseView();
+        $slimContainer['view'] = new \API\JsonResponseView($slimContainer);
 
         /* Dev Mode / Debug Settings */
         /* if(!$debugEnabled) { 
@@ -124,11 +121,13 @@ class V1Controller {
         return $slimContainer;
     }
     
-    private function addApiRoutes(\Slim\App $slimApp, $debugEnabled) {
+    private function addApiRoutes(\Slim\App $slimApp) {
+        // Authentication
+        $authRoutes = new AuthRoutes();
+        $authRoutes->addRoutes($slimApp);
+
         /*
-        TestRoutes::addRoutes($slimApp, $authenticateForRole);
         ActionRoutes::addRoutes($slimApp, $authenticateForRole);
-        AuthRoutes::addRoutes($slimApp, $authenticateForRole);
         DatatableRoutes::addRoutes($slimApp, $authenticateForRole);
         EmailRoutes::addRoutes($slimApp, $authenticateForRole);
         FieldRoutes::addRoutes($slimApp, $authenticateForRole);
@@ -144,7 +143,7 @@ class V1Controller {
     private function addDefaultRoutes(\Slim\App $slimApp, \Interop\Container\ContainerInterface $slimContainer) {
         $slimApp->any('/', function ($request, $response, $args) {
             return $this->view->render($response, 200, 'Congratulations, you have reached the Slim PHP API v1.1!');
-        })->add(new \API\ApiAuthMiddleware($slimContainer, 'adminx'));
+        })->add(new \API\ApiAuthMiddleware($slimContainer, 'admin'));
         
         $slimApp->any('/about', function ($request, $response, $args) {
             $data = array(
@@ -155,7 +154,7 @@ class V1Controller {
                 'authorWebsite' => $this->ApiConfig->get('authorWebsite')
             );
             return $this->view->render($response, 200, $data);
-        })->add(new \API\ApiAuthMiddleware($slimContainer, 'admin'));
+        })->add(new \API\ApiAuthMiddleware($slimContainer, 'public'));
         
     }
     
