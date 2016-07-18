@@ -4,8 +4,9 @@ namespace API;
 require_once dirname(dirname(__FILE__)) . '/services/ApiDBConn.php';     // API Coifg File (Add your settings!)
 require_once dirname(dirname(__FILE__)) . '/services/ApiConfig.php';     // API Coifg File (Add your settings!)
 require_once dirname(dirname(__FILE__)) . '/services/ApiLogging.php';  // Router Module
-require_once dirname(dirname(__FILE__)) . '/slimMiddleware/JsonResponseView.php'; // Response middleware to neatly format API responses to JSON
 require_once dirname(dirname(__FILE__)) . '/slimMiddleware/ApiAuthMiddleware.php'; // Slim PHP Middleware to authenticate incomming requests for individual routes
+require_once dirname(dirname(__FILE__)) . '/slimMiddleware/JsonResponseView.php'; // Response middleware to neatly format API responses to JSON
+require_once dirname(dirname(__FILE__)) . '/slimMiddleware/RouteTrailingSlashMiddleware.php'; // Remove the requested routes trailing slash
 
 /* API Route Controllers */
 require_once dirname(__FILE__) . '/system/auth/auth.routes.php';
@@ -27,6 +28,9 @@ class V1Controller {
         /* Create new Slim PHP API App */
         // http://www.slimframework.com/docs/objects/application.html        
         $slimApp = new \Slim\App($slimContainer);
+
+        /* 301 redirect routes with trailing slashes to the non slashed option ("/user" instead of "/user/") */
+        $slimApp->add(new \API\RouteTrailingSlashMiddleware());
 
         /* Add API Routes */
         $this->addDefaultRoutes($slimApp, $slimContainer);
