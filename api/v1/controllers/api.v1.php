@@ -11,6 +11,8 @@ require_once dirname(dirname(__FILE__)) . '/slimMiddleware/RouteTrailingSlashMid
 /* API Route Controllers */
 require_once dirname(__FILE__) . '/auth/auth.routes.php';
 
+use Psr7Middlewares\Middleware\TrailingSlash;
+
 /* @author  Rachel L Carbone <hello@rachellcarbone.com> */
 
 class V1Controller {
@@ -27,7 +29,7 @@ class V1Controller {
         $slimApp = new \Slim\App($slimContainer);
 
         /* 301 redirect routes with trailing slashes to the non slashed option ("/user" instead of "/user/") */
-        $slimApp->add(new \API\RouteTrailingSlashMiddleware());
+        $slimApp->add(new \Psr7Middlewares\Middleware\TrailingSlash(false)); // true adds the trailing slash (false removes it)
 
         /* Add API Routes */
         $this->addDefaultRoutes($slimApp, $slimContainer);
