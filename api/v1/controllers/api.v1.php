@@ -93,17 +93,17 @@ class V1Controller {
 
         $slimContainer['ApiLogging'] = function($container) {
             // Set PHP Error Handler to ApiLogging */
-            return new \API\ApiLogging($container->ApiConfig, 'api');
+            return new \API\ApiLogging($container->get('ApiConfig'), 'api');
         };
 
         $slimContainer['DBConn'] = function($container) {
             // Return the Database Connection Class */
-            return new \API\ApiDBConn($container->ApiConfig, $container->ApiLogging);
+            return new \API\ApiDBConn($container->get('ApiConfig'), $container->get('ApiLogging'));
         };
 
         $slimContainer['SystemConfig'] = function($container) {
             // Return the System Config Class
-            return new \API\SystemConfig($container->DBConn, $container->ApiLogging);
+            return new \API\SystemConfig($container->get('DBConn'), $container->get('ApiLogging'));
         }; 
 
         
