@@ -1,7 +1,7 @@
 {
     "name": "angular-seed/api-v1",
     "description": "Angular Seed Project!",
-    "version": "0.1.1",
+    "version": "0.1.3",
     "keywords": [],
     "homepage": "https://gitlab.com/rachellcarbone/angular-seed",
     "authors": [
@@ -9,7 +9,7 @@
             "name": "Rachel L Carbone",
             "email": "hello@rachellcarbone.com",
             "homepage": "http://www.rachellcarbone.com",
-            "role": "Lead Developer & Project Manager"
+            "role": "Lead Developer"
         }
     ],
     "support": {
@@ -19,9 +19,9 @@
     },
     "require": {
         "slim/slim": "^3.4",
-        "entomb/slim-json-api": "^1.2",
         "respect/validation": "^1.1",
         "phpmailer/phpmailer": "^5.2",
-        "facebook/php-sdk-v4": "^5.2"
+        "facebook/php-sdk-v4": "^5.2",
+        "oscarotero/psr7-middlewares": "^3.16"
     }
 }
