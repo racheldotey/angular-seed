@@ -14,75 +14,7 @@ use \Respect\Validation\Validator as v;
 
 class AuthController {
 
-    ///// 
-    ///// Authentication
-    ///// 
 
-    /*
-     * apiKey, apiToken
-     */
-    static function isAuthenticated($app) {
-        $found = AuthControllerNative::isAuthenticated($app);
-        if ($found['authenticated']) {
-            return $app->render(200, $found);
-        } else {
-            return $app->render(401, $found);
-        }
-    }
-
-    ///// 
-    ///// Sign Up
-    ///// 
-
-    /* email, nameFirst, nameLast, password */
-
-    static function signup($app) {
-        $result = AuthControllerNative::signup($app);
-        if ($result['registered']) {
-            AuthHooks::signup($app, $result);
-            if (isset($result['user']->teams[0])) {
-                ApiMailer::sendWebsiteSignupJoinTeamConfirmation($result['user']->teams[0]->name, $result['user']->email, "{$result['user']->nameFirst} {$result['user']->nameLast}");
-            } else {
-                ApiMailer::sendWebsiteSignupConfirmation($result['user']->email, "{$result['user']->nameFirst} {$result['user']->nameLast}");
-            }
-            return $app->render(200, $result);
-        } else {
-            return $app->render(400, $result);
-        }
-    }
-
-    /* email, nameFirst, nameLast, facebookId, accessToken */
-
-    static function facebookSignup($app) {
-        $result = AuthControllerFacebook::signup($app);
-        if ($result['registered']) {
-            AuthHooks::signup($app, $result);
-            if (isset($result['user']->teams[0])) {
-                ApiMailer::sendWebsiteSignupJoinTeamConfirmation($result['user']->teams[0]->name, $result['user']->email, "{$result['user']->nameFirst} {$result['user']->nameLast}");
-            } else {
-                ApiMailer::sendWebsiteSignupConfirmation($result['user']->email, "{$result['user']->nameFirst} {$result['user']->nameLast}");
-            }
-            return $app->render(200, $result);
-        } else {
-            return $app->render(400, $result);
-        }
-    }
-
-    ///// 
-    ///// Authentication
-    ///// 
-
-    /*
-     * email, password, remember
-     */
-    static function login($app) {
-        $result = AuthControllerNative::login($app);
-        if ($result['authenticated']) {
-            return $app->render(200, $result);
-        } else {
-            return $app->render(401, $result);
-        }
-    }
 
     static function forgotpassword($app) {
         $result = AuthControllerNative::forgotpassword($app);
@@ -111,30 +43,6 @@ class AuthController {
         }
     }
 
-    static function facebookLogin($app) {
-        $result = AuthControllerFacebook::login($app);
-        if ($result['authenticated']) {
-            return $app->render(200, $result);
-        } else {
-            return $app->render(401, $result);
-        }
-    }
-
-    ///// 
-    ///// Logout
-    ///// 
-
-    /*
-     * logout (apiKey)
-     */
-    static function logout($app) {
-        if (AuthControllerNative::logout($app)) {
-            return $app->render(200, array('msg' => "User sucessfully logged out."));
-        } else {
-            return $app->render(400, array('msg' => "User could not be logged out. Check your parameters and try again."));
-        }
-    }
-
     static function changeUserPassword($app) {
         $post = $app->request->post();
         if ((!v::key('userId', v::stringType())->validate($post) && !v::key('email', v::stringType())->validate($post)) ||
@@ -158,16 +66,6 @@ class AuthController {
                 return $app->render(400, array('msg' => "Password could not be changed. Try again later."));
             }
         }
-    }
-
-    ///// 
-    // System Admin
-    // TODO: Create system functions class
-    ///// 
-    // TODO: Add this to Cron Job
-    static function deleteExpiredAuthTokens($app) {
-        AuthData::deleteExpiredAuthTokens();
-        return $app->render(200, array('msg' => "Deleted expired auth tokens."));
     }
 
 }

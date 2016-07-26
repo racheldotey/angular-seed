@@ -23,7 +23,8 @@ angular.module('rcAuth.user', [])
                 angular.isDefined(user.nameFirst) &&
                 angular.isDefined(user.nameLast) &&
                 angular.isDefined(user.email) && 
-                angular.isDefined(user.roles));
+                angular.isDefined(user.roles) && 
+                angular.isDefined(user.notifications));
     };
     
     // Create a user session

@@ -6,35 +6,8 @@ use \Respect\Validation\Validator as v;
 class AuthControllerNative {
     static $maxattempts = 6;
     static $passwordRules = "Passwords must be at least 8 characters long, contain no whitespace, have at least one letter and one number and any of the following !@#$%^&*_+=-.";
-    ///// 
-    ///// Authentication
-    ///// 
-    
-    static function isAuthenticated($app) {
-        $post = $app->request->post();
-        if(!v::key('apiKey', v::stringType())->validate($post) || 
-           !v::key('apiToken', v::stringType())->validate($post)) 
-        {
-            return array('authenticated' => false, 'msg' => 'Unauthenticated: Invalid request. Check your parameters and try again.');
-        }
-        $user = AuthData::selectUserByIdentifierToken($post['apiKey']);
-        if(!$user) {
-        // Validate existing user
-            return array('authenticated' => false, 'msg' => 'Unauthenticated: No User');
-        } else if (!password_verify($post['apiToken'], $user->apiToken)) {
-        // Validate Password
-            return array('authenticated' => false, 'msg' => 'Unauthenticated: Invalid Cookie');
-        }
-        // Go now. Be free little brother.
-        if(isset($user->apiKey)){ 
-            unset($user->apiKey);
-        }
-        if(isset($user->apiToken)){ 
-            unset($user->apiToken);
-        }
-        return array('authenticated' => true, 'user' => $user);
-    }
-    
+
+
     // Signup Function
     static function signup($app) {
         // Get Post Data
@@ -277,102 +250,9 @@ class AuthControllerNative {
         }
     }
     
-    static function login($app) {
-        $post = $app->request->post();
-        // If anone is logged in currently, log them out
-        self::login_logoutCurrentAccount($post);
-        // Validate input parameters
-        if(!v::key('email', v::email())->validate($post) || 
-           !v::key('password', v::stringType())->validate($post)) 
-        {
-            return array('authenticated' => false, 'msg' => 'Login failed. Check your parameters and try again.');
-        }
-        // Validate the user email and password
-        $found = self::login_validateFoundUser($post);
-        if(!$found['authenticated']) { 
-            return $found;
-        }
-        // Create logged in token
-        $token = self::createAuthToken($app, $found['user']->id);
-        if($token) {
-            $found['user']->apiKey = $token['apiKey'];
-            $found['user']->apiToken = $token['apiToken'];
-            $found['sessionLifeHours'] = $token['sessionLifeHours'];
-            // Send the session life back (in hours) for the cookies
-            return $found;
-        } else {
-            return array('authenticated' => false, 'msg' => 'Login failed to create token.');   
-        }
-    }
-    
-    static function createAuthToken($app, $userId) {
-        $token = array();
-        $token['apiKey'] = hash('sha512', uniqid());
-        $token['apiToken'] = hash('sha512', uniqid());
-        $token['sessionLifeHours'] = self::login_getSessionExpirationInHours($app->request->post());
-        // Congrats - you're logged in!
-        $saved = AuthData::insertAuthToken(array(
-            ':user_id' => $userId,
-            ':identifier' => $token['apiKey'],
-            ':token' => password_hash($token['apiToken'], PASSWORD_DEFAULT),
-            ':ip_address' => $app->request->getIp(),
-            ':user_agent' => $app->request->getUserAgent(),
-            ':expires' => date('Y-m-d H:i:s', time() + ($token['sessionLifeHours'] * 60 * 60))
-            ));
-        AuthData::insertLoginLocation(array(
-            ':user_id' => $userId,
-            ':ip_address' => $app->request->getIp(),
-            ':user_agent' => $app->request->getUserAgent()
-            ));
-        return ($saved) ? $token : false;
-    }
-    
-    private static function login_validateFoundUser($post) {
-        $user = AuthData::selectUserAndPasswordByEmail($post['email']);
-        if(!$user) {
-            // Validate existing user
-            // TODO: Maxe max login a config variable
-            return array('authenticated' => false, 'maxattempts' => self::$maxattempts, 'msg' => 'Login failed. A user with that email could not be found.');
-        } else if (!password_verify($post['password'], $user->password)) {
-            // Validate Password
-            return array('authenticated' => false, 'maxattempts' => self::$maxattempts, 'msg' => 'Login failed. Username and password combination did not match.' );
-        }
-        // Safty first
-        unset($user->password);
-        return array('authenticated' => true, 'user' => $user);
-    }
-    
-    private static function login_getSessionExpirationInHours($post) {
-        $remember = false;
-        if (v::key('remember')->validate($post)) {
-            // TODO: Implement cusitom boolean Respect\Validator
-            // Converting to boolean did not work well, 
-            // This allows a wider range of true false values
-            $remember = ($post['remember'] === 1 || 
-                $post['remember'] === '1' || 
-                $post['remember'] === true || 
-                $post['remember'] === 'true');
-        }
-        // TODO: Change this to use config var
-        return (!$remember) ? 1 : 3 * 24; // 1 Hours or 3 days if remember was checked
-    }
     
     
-    ///// 
-    ///// Logout
-    ///// 
     
-    static function logout($app) {
-        return self::login_logoutCurrentAccount($app->request->post());
-    }
-    
-    private static function login_logoutCurrentAccount($post) {
-        if(v::key('logout', v::stringType())->validate($post)) {
-            AuthData::deleteAuthToken(array(':identifier' => $post['logout']));
-            return true;
-        }
-        return false;
-    }
     ///// 
     ///// Password Managment
     ///// 
