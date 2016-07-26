@@ -20,7 +20,7 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li class="trigger-collapse" rc-auth-visible-if="user" data-ui-sref-active="active"><a data-ui-sref="app.member.dashboard">Dashboard</a></li>
-                <li data-uib-dropdown data-is-open="userNavDropdownIsOpen">
+                <li data-uib-dropdown data-is-open="userNavDropdownIsOpen" rc-auth-visible-if="user">
                     <a data-uib-dropdown-toggle>Hi {{userDisplayName}} <b class="caret"></b></a>
                     <ul data-uib-dropdown-menu>
                         <li class="trigger-collapse" data-ui-sref-active="active"><a data-ui-sref="app.public.landing">Public Landing</a></li>
@@ -35,7 +35,6 @@
                 </li>
                 <li data-ui-sref-active="active" ng-if="!userDisplayName"><a data-ui-sref="app.auth.login">Login</a></li>
                 <li data-ui-sref-active="active" ng-if="!userDisplayName"><a data-ui-sref="app.auth.signup">Sign Up</a></li>
-                <li data-ui-sref-active="active" ng-if="!userDisplayName"><a data-ui-sref="app.auth.signupVenue">Venue Sign Up</a></li>
             </ul>
         </div>
         

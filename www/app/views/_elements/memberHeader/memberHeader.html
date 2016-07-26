@@ -15,7 +15,7 @@
             <ul class="nav navbar-nav">
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li data-uib-dropdown data-is-open="userNavDropdownIsOpen">
+                <li data-uib-dropdown data-is-open="userNavDropdownIsOpen" rc-auth-visible-if="user">
                     <a data-uib-dropdown-toggle>Hi {{userDisplayName}} <b class="caret"></b></a>
                     <ul data-uib-dropdown-menu>
                         <li class="trigger-collapse" data-ui-sref-active="active"><a data-ui-sref="app.public.landing">Public Landing</a></li>
