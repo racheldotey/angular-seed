@@ -67,3 +67,32 @@ html body {
         font-size: .9em;
     }
 }
+
+hr {
+    border-top: 1px solid #dddddd;
+}
+.hr-with-text {
+	display: flex;
+	flex-basis: 100%;
+	align-items: center;
+	color: #777;
+	margin: 8px 0px;
+}
+.hr-with-text::before {
+	content: "";
+	flex-grow: 1;
+	background: #dddddd;
+	height: 1px;
+	font-size: 0px;
+	line-height: 0px;
+	margin: 0px 8px 0px 0px;
+}
+.hr-with-text::after {
+	content: "";
+	flex-grow: 1;
+	background: #dddddd;
+	height: 1px;
+	font-size: 0px;
+	line-height: 0px;
+	margin: 0px 0px 0px 8px ;
+}

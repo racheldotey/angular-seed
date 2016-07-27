@@ -385,6 +385,34 @@ html body code {
 .modal-body .meta p {
   margin: 0 0 5px;
 }
+hr {
+  border-top: 1px solid #dddddd;
+}
+.hr-with-text {
+  display: flex;
+  flex-basis: 100%;
+  align-items: center;
+  color: #777;
+  margin: 8px 0px;
+}
+.hr-with-text::before {
+  content: "";
+  flex-grow: 1;
+  background: #dddddd;
+  height: 1px;
+  font-size: 0px;
+  line-height: 0px;
+  margin: 0px 8px 0px 0px;
+}
+.hr-with-text::after {
+  content: "";
+  flex-grow: 1;
+  background: #dddddd;
+  height: 1px;
+  font-size: 0px;
+  line-height: 0px;
+  margin: 0px 0px 0px 8px ;
+}
 /*
  * Layout(s) Styles
  * 
@@ -423,18 +451,6 @@ body > .layout-view > .layout > .container {
 .footer > .container {
   padding-right: 15px;
   padding-left: 15px;
-}
-code {
-  font-size: 80%;
-}
-.clear-both {
-  clear: both;
-}
-.clear-left {
-  clear: left;
-}
-.clear-right {
-  clear: right;
 }
 /*
  * Header(s) Styles
