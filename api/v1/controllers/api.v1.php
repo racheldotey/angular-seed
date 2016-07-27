@@ -1,20 +1,25 @@
 <?php
 namespace API;
 
-require_once dirname(dirname(__FILE__)) . '/services/ApiConfig.php';     // API Coifg File (Add your settings!)
-require_once dirname(dirname(__FILE__)) . '/services/ApiDBConn.php';     // API DB Conection File
-require_once dirname(dirname(__FILE__)) . '/services/ApiLogging.php';  // Router Module
-require_once dirname(dirname(__FILE__)) . '/services/SystemVariables.php';     // API Coifg File (Add your settings!)
-
-require_once dirname(dirname(__FILE__)) . '/slimMiddleware/ApiAuthMiddleware.php'; // Slim PHP Middleware to authenticate incomming requests for individual routes
-require_once dirname(dirname(__FILE__)) . '/slimMiddleware/JsonResponseView.php'; // Response middleware to neatly format API responses to JSON
-
-/* API Route Abstract Classes */
+// Custom Respect Validators
 require_once dirname(dirname(__FILE__)) . '/customValidators/POSTBooleanTrue.php';
+
+// API Abstract Classes
 require_once dirname(dirname(__FILE__)) . '/abstractClasses/RouteController.php';
 require_once dirname(dirname(__FILE__)) . '/abstractClasses/RouteDBController.php';
 
-/* API Route Controllers */
+// Services (common methods used by controllers)
+require_once dirname(dirname(__FILE__)) . '/services/ApiConfig.php';                // API Coifg File (Add your settings!)
+require_once dirname(dirname(__FILE__)) . '/services/ApiDBConn.php';                // API DB Conection File
+require_once dirname(dirname(__FILE__)) . '/services/ApiLogging.php';               // Router Module
+require_once dirname(dirname(__FILE__)) . '/services/SystemVariables.php';          // System Variable from the database
+require_once dirname(dirname(__FILE__)) . '/services/AuthSessionGenerator.php';     // Login Session Generator used by several controllers
+
+// Custom Slim PHP Middleware
+require_once dirname(dirname(__FILE__)) . '/slimMiddleware/ApiAuthMiddleware.php';  // Slim PHP Middleware to authenticate incomming requests for individual routes
+require_once dirname(dirname(__FILE__)) . '/slimMiddleware/JsonResponseView.php';   // Response middleware to neatly format API responses to JSON
+
+// API Route Controllers 
 require_once dirname(__FILE__) . '/auth/auth.routes.php';
 
 use Psr7Middlewares\Middleware\TrailingSlash;

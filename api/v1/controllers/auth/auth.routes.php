@@ -9,7 +9,11 @@ class AuthRoutes {
     public function addRoutes(\Slim\App $slimApp) {
         
         $slimApp->group('/auth', function () {
-            
+
+            //////////////////////////////
+            // Authentication Controller /
+            //////////////////////////////
+
             /**
              * @api {post} /auth/authenticate Confirm api key and token pair represents an active user login session.
              * @apiName Authenticate
@@ -81,6 +85,9 @@ class AuthRoutes {
 
             $this->post('/logout', '\API\AuthenticationController:logout');
 
+            //////////////////////////////
+            // Signup Controller /////////
+            //////////////////////////////
             
             /**
              * @api {post} /auth/signup Standard user signup.
@@ -122,7 +129,10 @@ class AuthRoutes {
             /* email, nameFirst, nameLast, facebookId, accessToken */
 
             $this->post('/signup/facebook', '\API\SignupController:facebookSignup');
-                        
+
+            //////////////////////////////
+            // Signup Controller  ////////
+            //////////////////////////////
             
             $this->post('/forgot-password/request-email', '\API\PasswordManagmentController:requestResetEmail');
             

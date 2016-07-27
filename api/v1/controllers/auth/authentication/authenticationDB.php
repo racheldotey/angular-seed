@@ -2,16 +2,6 @@
 
 class AuthenticationDB extends RouteDBController {
     
-    public function insertAuthToken($validToken) {
-        return $this->DBConn->insert("INSERT INTO {$this->prefix}tokens_auth(identifier, token, user_id, expires, ip_address, user_agent) "
-                . "VALUES (:identifier, :token, :user_id, :expires, :ip_address, :user_agent);", $validToken);
-    }
-    
-    public function insertLoginLocation($validLog) {
-        return $this->DBConn->insert("INSERT INTO {$this->prefix}logs_login_location(user_id, ip_address, user_agent) "
-                . "VALUES (:user_id, :ip_address, :user_agent);", $validLog);
-    }
-    
     public function selectUserByIdentifierToken($identifier) {
         $user = $this->DBConn->selectOne("SELECT u.id, name_first AS nameFirst, name_last AS nameLast, "
                 . "email, phone, token AS apiToken, identifier AS apiKey "

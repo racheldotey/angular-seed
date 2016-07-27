@@ -3,17 +3,22 @@
 require_once dirname(__FILE__) . '/signupDB.php';
 
 use \Respect\Validation\Validator as v;
+v::with('API\\Validation\\Rules');
 
-class SignupController {
+class SignupController extends RouteController {
 
     protected $SystemVariables;
     protected $SignupDB;
+    protected $AuthSessionGenerator;
     protected $passwordRegex;
     protected $passwordRegexDescription;
    
     public function __construct(\Interop\Container\ContainerInterface $slimContainer) {
+        parent::__construct($slimContainer);
+
         $this->SignupDB = new SignupDB($slimContainer->get('DBConn'));
         $this->SystemVariables = $slimContainer->get('SystemVariables');
+        $this->AuthSessionGenerator = new AuthSessionGenerator($slimContainer);
 
         $this->passwordRegex = $this->SystemVariables->get('USER_PASSWORD_REGEX');
         $this->passwordRegexDescription = $this->SystemVariables->get('USER_PASSWORD_REGEX_DESCRIPTION');
@@ -63,8 +68,8 @@ class SignupController {
             ':name_last' => (v::key('nameLast', v::stringType())->validate($post)) ? $post['nameLast'] : '',
             ':phone' => (v::key('phone', v::stringType())->validate($post)) ? $post['phone'] : NULL,
             ':password' => password_hash($post['password'], PASSWORD_DEFAULT),
-            ':accepted_terms' => (v::key('acceptTerms')->validate($post) && (bool)$post['acceptTerms']) ? 1 : 0,
-            ':recieve_newsletter' => (v::key('acceptNewsletter')->validate($post) && (bool)$post['acceptNewsletter']) ? 1 : 0
+            ':accepted_terms' => (v::key('acceptTerms', v::POSTBooleanTrue())->validate($post)) ? 1 : 0,
+            ':recieve_newsletter' => (v::key('acceptNewsletter', v::POSTBooleanTrue())->validate($post)) ? 1 : 0
             ));
         if(!$userId) {
             /// FAIL - If Inserting the user failed
@@ -79,17 +84,12 @@ class SignupController {
         }
         
         // If a token was sent, update token status
-        if(v::key('token', v::stringType())->validate($post)) {
-            $inviteTeamId = $this->SignupDB->selectSignupInvite($post['token']);
-            $this->SignupDB->updateAcceptSignupPlayerInvite(array(':user_id' => $userId, ':token' => $post['token']));
+        if(v::key('inviteToken', v::stringType())->validate($post)) {
+            $this->SignupDB->updateAcceptSignupInvite(array(':user_id' => $userId, ':token' => $post['inviteToken']));
         }
          
-        // Save "Where did you hear about us" and any other additional questions
-        // This is "quiet" in that it may not execute if no paramters match
-        // And it doesnt set the response for the api call
-        InfoController::quietlySaveAdditional($post, $user->id);
         // Create an authorization
-        $token = self::createAuthToken($app, $user->id);
+        $token = $this->AuthSessionGenerator->createAuthToken($post, $user->id);
         if($token) {
             // Create the return object
             $found = array('user' => $user);
@@ -97,10 +97,10 @@ class SignupController {
             $found['user']->apiToken = $token['apiToken'];
             $found['sessionLifeHours'] = $token['sessionLifeHours'];
             $found['registered'] = true;
-            return $found;
+            return $this->slimContainer->view->render($response, 200, $found);  
         } else {
             /// FAIL - If the auth token couldnt be created and saved
-            return array('registered' => false, 'msg' => 'Signup failed to create auth token.');    
+            return $this->slimContainer->view->render($response, 400, array('registered' => false, 'msg' => 'Signup failed to create auth token.'));     
         }
     }
 

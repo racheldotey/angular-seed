@@ -3,18 +3,19 @@
 require_once dirname(__FILE__) . '/authenticationDB.php';
 
 use \Respect\Validation\Validator as v;
-v::with('API\\Validation\\Rules');
 
 class AuthenticationController extends RouteController {
 
     protected $SystemVariables;
     protected $AuthenticationDB;
+    protected $AuthSessionGenerator;
    
     public function __construct(\Interop\Container\ContainerInterface $slimContainer) {
         parent::__construct($slimContainer);
 
         $this->SystemVariables = $slimContainer->get('SystemVariables');
         $this->AuthenticationDB = new AuthenticationDB($slimContainer->get('DBConn'));
+        $this->AuthSessionGenerator = new AuthSessionGenerator($slimContainer);
     }
     
     public function isAuthenticated($request, $response, $args) {
@@ -22,7 +23,7 @@ class AuthenticationController extends RouteController {
 
         // Validate sent params
         if(!v::key('apiKey', v::stringType())->validate($post) || 
-           !v::key('apiToken', v::stringType())->validate($post)) {
+            !v::key('apiToken', v::stringType())->validate($post)) {
             return $this->slimContainer->view->render($response, 401, array('authenticated' => false, 'msg' => 'Unauthenticated: Invalid request. Check your parameters and try again.'));
         }
 
@@ -35,7 +36,7 @@ class AuthenticationController extends RouteController {
         }
 
         // Remove Api Key and Token from user object
-        if(isset($user->apiKey)){ unset($user->apiKey); }
+        if(isset($user->apiKey)) { unset($user->apiKey); }
         if(isset($user->apiToken)) {  unset($user->apiToken); }
 
         // Return successful authenticated
@@ -49,10 +50,6 @@ class AuthenticationController extends RouteController {
         $this->logoutToken($post);
 
         // Validate input parameters
-        if(!v::key('testbool', v::POSTBooleanTrue())->validate($post)) {
-            return $this->slimContainer->view->render($response, 401, array('authenticated' => false, 'msg' => 'testbool failed.', 'testbool' => $post['testbool']));
-        }
-
         if(!v::key('email', v::email())->validate($post) || 
            !v::key('password', v::stringType())->validate($post)) {
             return $this->slimContainer->view->render($response, 401, array('authenticated' => false, 'msg' => 'Login failed. Check your parameters and try again.'));
@@ -69,7 +66,7 @@ class AuthenticationController extends RouteController {
         }
 
         // Create logged in token
-        $token = $this->createAuthToken($post, $user->id);
+        $token = $this->AuthSessionGenerator->createAuthToken($post, $user->id);
         if($token) {
             // User was found and has the correct password: Unset password
             unset($user->password);
@@ -80,42 +77,6 @@ class AuthenticationController extends RouteController {
         } else {
             return $this->slimContainer->view->render($response, 401, array('authenticated' => false, 'msg' => 'Login failed to create token.'));   
         }
-    }
-    
-    private function createAuthToken($post, $userId) {
-        // IF the remember flag was sent
-        if(v::key('remember', v::stringType())->validate($post)) {
-            $hours = intval($this->SystemVariables->get('AUTH_COOKIE_TIMEOUT_HOURS_REMEMBER'));
-            $timeoutInHours = (!$hours) ? 24 : $hours;
-        } else {
-            $hours = intval($this->SystemVariables->get('AUTH_COOKIE_TIMEOUT_HOURS'));
-            $timeoutInHours = (!$hours) ? 3 : $hours;
-        }
-
-        $token = array(
-            'apiKey' => hash('sha512', uniqid()),
-            'apiToken' => hash('sha512', uniqid()),
-            'sessionLifeHours' => $timeoutInHours
-        );
-
-        // Save token to create session
-        $saved = $this->AuthenticationDB->insertAuthToken(array(
-            ':user_id' => $userId,
-            ':identifier' => $token['apiKey'],
-            ':token' => password_hash($token['apiToken'], PASSWORD_DEFAULT),
-            ':ip_address' => $_SERVER['REMOTE_ADDR'],
-            ':user_agent' => (!isset($_SERVER['HTTP_USER_AGENT'])) ? 'User Agent Not Set' : $_SERVER['HTTP_USER_AGENT'],
-            ':expires' => date('Y-m-d H:i:s', time() + ($token['sessionLifeHours'] * 60 * 60))
-        ));
-
-        // Save login statistical info
-        $this->AuthenticationDB->insertLoginLocation(array(
-            ':user_id' => $userId,
-            ':ip_address' => $_SERVER['REMOTE_ADDR'],
-            ':user_agent' => (!isset($_SERVER['HTTP_USER_AGENT'])) ? 'User Agent Not Set' : $_SERVER['HTTP_USER_AGENT']
-        ));
-
-        return ($saved) ? $token : false;
     }
     
     public function facebookLogin($request, $response, $args) {
