@@ -21,6 +21,7 @@ angular.module('theApp', [
     'ngImgCrop',
     'ngSanitize',
     'angular-md5',
+    'ngNotificationsBar',
     'api.v1',
     'rcDirectives',
     'rcCart',

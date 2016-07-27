@@ -23,6 +23,7 @@
         <link rel="stylesheet" type="text/css" href="bower_components/ng-img-crop/compile/minified/ng-img-crop.css">
         <link rel="stylesheet" type="text/css" href="bower_components/ui-select/dist/select.css">
         <link rel="stylesheet" type="text/css" href="bower_components/angular-ui-grid/ui-grid.min.css">
+        <link rel="stylesheet" type="text/css" href="bower_components/ng-notifications-bar/dist/ngNotificationsBar.min.css">
         <link rel="stylesheet" type="text/css" href="lib/datatables/datatables.min.css"/>
         
         <!-- Style Sheets -->
@@ -30,16 +31,17 @@
         
         <!-- Facebook Login SDK -->
         <script>
-	(function(d, s, id){
-	     var js, fjs = d.getElementsByTagName(s)[0];
-	     if (d.getElementById(id)) {return;}
-	     js = d.createElement(s); js.id = id;
-	     js.src = "//connect.facebook.net/en_US/sdk.js";
-	     fjs.parentNode.insertBefore(js, fjs);
-	   }(document, 'script', 'facebook-jssdk'));
+	    (function(d, s, id){
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {return;}
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
 	</script>
     </head>
     <body class="{{bodyClass}}">
+        <notifications-bar class="notifications"></notifications-bar>
         
         <!-- Views in Layout -->
         <div data-ui-view="layout" class="layout-view"></div>
@@ -70,6 +72,7 @@
         <script src="bower_components/angular-moment/angular-moment.min.js"></script>
         <script src="bower_components/angular-qtip2-directive/qtip2.js"></script>
         <script src="bower_components/ng-img-crop/compile/minified/ng-img-crop.js"></script>
+        <script src="bower_components/ng-notifications-bar/dist/ngNotificationsBar.min.js"></script>
         <script src="bower_components/ng-facebook-api/dist/ng-facebook-api.js"></script>
         <script src="bower_components/simple-angular-file-input/dist/angular-file-input.min.js"></script>
         <script src="bower_components/ng-file-upload/ng-file-upload-all.js"></script>

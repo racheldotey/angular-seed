@@ -11,8 +11,8 @@ var app = angular.module('app.config', [
   //'flow',
   //'ngNotificationsBar'
 ]);
-app.config(['$locationProvider', '$urlMatcherFactoryProvider', 
-    function ($locationProvider, $urlMatcherFactoryProvider) {
+app.config(['$locationProvider', '$urlMatcherFactoryProvider', 'notificationsConfigProvider', 
+    function ($locationProvider, $urlMatcherFactoryProvider, notificationsConfigProvider) {
         
         /*
          * Routing Setup
@@ -31,33 +31,23 @@ app.config(['$locationProvider', '$urlMatcherFactoryProvider',
         // http://angular-ui.github.io/ui-router/site/#/api/ui.router.util.$urlMatcherFactory
         $urlMatcherFactoryProvider.strictMode(false);
         
-        /*
-         * Tripple check that I dont need this.
-         * $locationProvider.hashPrefix('!');
-         */
-        
-        /*
-app.config(['$httpProvider', 'notificationsConfigProvider', 'flowFactoryProvider',
-    function ($httpProvider, notificationsConfigProvider, flowFactoryProvider) {
-        */
-
         /* Notifications Bar Config
          * Set global settings for the ng-notifications bar.
-         * https://github.com/alexbeletsky/ng-notifications-bar 
+         * https://github.com/alexbeletsky/ng-notifications-bar
+         * http://beletsky.net/ng-notifications-bar/ */
+        // auto hide
         notificationsConfigProvider.setAutoHide(true);
-        notificationsConfigProvider.setHideDelay(5000);
-        notificationsConfigProvider.setAcceptHTML(false);*/
 
+        // delay before hide
+        notificationsConfigProvider.setHideDelay(3000);
 
-        /* Flow JS File Upload Config
-         * Can be used with different implementations of Flow.js.
-         * https://github.com/flowjs/ng-flow 
-        flowFactoryProvider.defaults = {
-            singleFile: true,
-            permanentErrors: [404, 500, 501],
-            maxChunkRetries: 1,
-            chunkRetryInterval: 5000,
-            simultaneousUploads: 4
-        };*/
-        // flowFactoryProvider.factory = fustyFlowFactory;
+        // support HTML
+        notificationsConfigProvider.setAcceptHTML(false);
+
+        // Set an animation for hiding the notification
+        notificationsConfigProvider.setAutoHideAnimation('fadeOutNotifications');
+
+        // delay between animation and removing the nofitication
+        notificationsConfigProvider.setAutoHideAnimationDelay(1200);
+    
     }]);
