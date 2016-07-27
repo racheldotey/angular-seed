@@ -1,18 +1,24 @@
 <?php
 namespace API;
 
-require_once dirname(dirname(__FILE__)) . '/services/ApiDBConn.php';     // API Coifg File (Add your settings!)
 require_once dirname(dirname(__FILE__)) . '/services/ApiConfig.php';     // API Coifg File (Add your settings!)
+require_once dirname(dirname(__FILE__)) . '/services/ApiDBConn.php';     // API DB Conection File
 require_once dirname(dirname(__FILE__)) . '/services/ApiLogging.php';  // Router Module
+require_once dirname(dirname(__FILE__)) . '/services/SystemVariables.php';     // API Coifg File (Add your settings!)
+
 require_once dirname(dirname(__FILE__)) . '/slimMiddleware/ApiAuthMiddleware.php'; // Slim PHP Middleware to authenticate incomming requests for individual routes
 require_once dirname(dirname(__FILE__)) . '/slimMiddleware/JsonResponseView.php'; // Response middleware to neatly format API responses to JSON
-require_once dirname(dirname(__FILE__)) . '/slimMiddleware/RouteTrailingSlashMiddleware.php'; // Remove the requested routes trailing slash
+
+/* API Route Abstract Classes */
 require_once dirname(dirname(__FILE__)) . '/customValidators/POSTBooleanTrue.php';
+require_once dirname(dirname(__FILE__)) . '/abstractClasses/RouteController.php';
+require_once dirname(dirname(__FILE__)) . '/abstractClasses/RouteDBController.php';
 
 /* API Route Controllers */
 require_once dirname(__FILE__) . '/auth/auth.routes.php';
 
 use Psr7Middlewares\Middleware\TrailingSlash;
+use Psr7Middlewares\Middleware\Gzip;
 
 /* @author  Rachel L Carbone <hello@rachellcarbone.com> */
 
@@ -31,6 +37,7 @@ class V1Controller {
 
         /* 301 redirect routes with trailing slashes to the non slashed option ("/user" instead of "/user/") */
         $slimApp->add(new \Psr7Middlewares\Middleware\TrailingSlash(false)); // true adds the trailing slash (false removes it)
+        //$slimApp->add(new \Psr7Middlewares\Middleware\Gzip()); 
 
         /* Add API Routes */
         $this->addDefaultRoutes($slimApp, $slimContainer);
@@ -38,9 +45,6 @@ class V1Controller {
 
         /* Start Slim */
         $slimApp->run();
-    }
-
-    private function createSlim($debugEnabled) {
     }
 
     private function getSlimConfig($debugEnabled) {
@@ -102,9 +106,9 @@ class V1Controller {
             return new \API\ApiDBConn($container->get('ApiConfig'), $container->get('ApiLogging'));
         };
 
-        $slimContainer['SystemConfig'] = function($container) {
+        $slimContainer['SystemVariables'] = function($container) {
             // Return the System Config Class
-            return new \API\SystemConfig($container->get('DBConn'), $container->get('ApiLogging'));
+            return new \API\SystemVariables($container->get('DBConn'), $container->get('ApiLogging'));
         }; 
 
         

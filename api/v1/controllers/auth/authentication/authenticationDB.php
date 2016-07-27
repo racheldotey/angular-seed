@@ -1,14 +1,6 @@
 <?php namespace API;
 
-class AuthenticationDB {
-
-    protected $DBConn;
-    protected $prefix;
-
-    public function __construct($DBConn) {
-        $this->DBConn = $DBConn;
-        $this->prefix = $this->DBConn->prefix();
-    }
+class AuthenticationDB extends RouteDBController {
     
     public function insertAuthToken($validToken) {
         return $this->DBConn->insert("INSERT INTO {$this->prefix}tokens_auth(identifier, token, user_id, expires, ip_address, user_agent) "

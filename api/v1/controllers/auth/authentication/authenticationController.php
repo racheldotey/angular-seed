@@ -3,16 +3,17 @@
 require_once dirname(__FILE__) . '/authenticationDB.php';
 
 use \Respect\Validation\Validator as v;
+v::with('API\\Validation\\Rules');
 
-class AuthenticationController {
+class AuthenticationController extends RouteController {
 
-    protected $slimContainer;
-    protected $ApiConfig;
+    protected $SystemVariables;
     protected $AuthenticationDB;
    
     public function __construct(\Interop\Container\ContainerInterface $slimContainer) {
-        $this->slimContainer = $slimContainer;
-        $this->ApiConfig = $slimContainer->get('ApiConfig');
+        parent::__construct($slimContainer);
+
+        $this->SystemVariables = $slimContainer->get('SystemVariables');
         $this->AuthenticationDB = new AuthenticationDB($slimContainer->get('DBConn'));
     }
     
@@ -48,6 +49,10 @@ class AuthenticationController {
         $this->logoutToken($post);
 
         // Validate input parameters
+        if(!v::key('testbool', v::POSTBooleanTrue())->validate($post)) {
+            return $this->slimContainer->view->render($response, 401, array('authenticated' => false, 'msg' => 'testbool failed.', 'testbool' => $post['testbool']));
+        }
+
         if(!v::key('email', v::email())->validate($post) || 
            !v::key('password', v::stringType())->validate($post)) {
             return $this->slimContainer->view->render($response, 401, array('authenticated' => false, 'msg' => 'Login failed. Check your parameters and try again.'));
@@ -77,14 +82,13 @@ class AuthenticationController {
         }
     }
     
-    
     private function createAuthToken($post, $userId) {
         // IF the remember flag was sent
         if(v::key('remember', v::stringType())->validate($post)) {
-            $hours = intval($this->ApiConfig->get('AUTH_COOKIE_TIMEOUT_HOURS_REMEMBER'));
+            $hours = intval($this->SystemVariables->get('AUTH_COOKIE_TIMEOUT_HOURS_REMEMBER'));
             $timeoutInHours = (!$hours) ? 24 : $hours;
         } else {
-            $hours = intval($this->ApiConfig->get('AUTH_COOKIE_TIMEOUT_HOURS'));
+            $hours = intval($this->SystemVariables->get('AUTH_COOKIE_TIMEOUT_HOURS'));
             $timeoutInHours = (!$hours) ? 3 : $hours;
         }
 
@@ -119,9 +123,9 @@ class AuthenticationController {
 
         $result = AuthControllerFacebook::login($post);
         if ($result['authenticated']) {
-            return $this->slimContainer->view->render(200, $result);
+            return $this->slimContainer->view->render($response, 200, $result);
         } else {
-            return $this->slimContainer->view->render(401, $result);
+            return $this->slimContainer->view->render($response, 401, $result);
         }
 
         return $this->slimContainer->view->render($response, 200, 'facebook login');

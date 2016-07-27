@@ -4,23 +4,6 @@
 class AuthData {
     
   
-    static function insertUser($validUser) {
-        $userId = DBConn::insert("INSERT INTO " . DBConn::prefix() . "users(name_first, name_last, email, phone, password) "
-                . "VALUES (:name_first, :name_last, :email, :phone, :password);", $validUser);
-        if($userId) {
-            GroupData::addDefaultGroupToUser($userId);
-        }
-        return $userId;
-    }
-  
-    static function insertFacebookUser($validUser) {
-        $userId = DBConn::insert("INSERT INTO " . DBConn::prefix() . "users(name_first, name_last, email, facebook_id) "
-                . "VALUES (:name_first, :name_last, :email, :facebook_id);", $validUser);
-        if($userId) {
-            GroupData::addDefaultGroupToUser($userId);
-        }
-        return $userId;
-    }
     
     static function deleteAuthToken($identifier) {
         return DBConn::delete('DELETE FROM ' . DBConn::prefix() . 'tokens_auth WHERE identifier = :identifier;', $identifier);
@@ -44,9 +27,6 @@ class AuthData {
 
     /* Select User */
 
-    static function selectUserById($id) {
-        return self::selectUserWhere('id = :id', array(':id' => $id));
-    }
     
     static function selectUserByFacebookId($facebookId) {
         return self::selectUserWhere('facebook_id = :facebook_id', array(':facebook_id' => $facebookId));
@@ -80,33 +60,5 @@ class AuthData {
     
     static function selectUserPasswordById($userId) {
         return DBConn::selectColumn("SELECT password FROM " . DBConn::prefix() . "users WHERE id = :id LIMIT 1;", array(':id' => $userId));
-    }
-    
-    static function selectUserPasswordByEmail($email) {
-        return DBConn::selectColumn("SELECT password FROM " . DBConn::prefix() . "users WHERE email = :email LIMIT 1;", array(':email' => $email));
-    }
-    
-    // Player invite
-    
-    static function selectSignupInvite($token) {
-        return DBConn::selectColumn("SELECT team_id AS teamId FROM " . DBConn::prefix() . "tokens_player_invites "
-                . "WHERE user_id IS NULL AND response IS NULL AND expires >= NOW() "
-                . "AND token = :token LIMIT 1;", array(':token' => $token));
-    }
-    
-    static function updateAcceptSignupInvite($validInvite) {
-        return DBConn::update("UPDATE " . DBConn::prefix() . "tokens_player_invites "
-                . "SET user_id =:user_id, response='accepted', last_visited=NOW() "
-                . "WHERE token = :token LIMIT 1;", $validInvite);
-    }
-    
-    static function updateAcceptSignupTeamInvite($validInvite) {        
-        DBConn::insert("INSERT INTO " . DBConn::prefix() . "team_members(user_id, team_id, added_by) "
-                . "VALUES (:user_id, :team_id, :added_by);", 
-                array(':user_id' => $validInvite[':user_id'],  ':team_id' => $validInvite[':team_id'], ':added_by' => $validInvite[':user_id']));
-        
-        return DBConn::update("UPDATE " . DBConn::prefix() . "tokens_player_invites SET "
-                . "response='accepted', user_id = :user_id WHERE token = :token "
-                . "AND team_id = :team_id AND response IS NULL AND expires >= NOW() LIMIT 1;", $validInvite);
     }
 }
