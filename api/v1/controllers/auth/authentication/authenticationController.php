@@ -2,6 +2,8 @@
 
 require_once dirname(__FILE__) . '/authenticationDB.php';
 
+/* @author  Rachel L Carbone <hello@rachellcarbone.com> */
+
 use \Respect\Validation\Validator as v;
 
 class AuthenticationController extends RouteController {
@@ -14,8 +16,8 @@ class AuthenticationController extends RouteController {
         parent::__construct($slimContainer);
 
         $this->SystemVariables = $slimContainer->get('SystemVariables');
-        $this->AuthenticationDB = new AuthenticationDB($slimContainer->get('DBConn'));
-        $this->AuthSessionGenerator = new AuthSessionGenerator($slimContainer);
+        $this->AuthenticationDB = new AuthenticationDB($slimContainer->get('ApiDBConn'));
+        $this->AuthSessionGenerator = new AuthSessionGenerator($slimContainer->get('ApiDBConn'), $slimContainer->get('SystemVariables'), $slimContainer->get('ApiLogging'));
     }
     
     public function isAuthenticated($request, $response, $args) {
@@ -62,7 +64,17 @@ class AuthenticationController extends RouteController {
             return $this->slimContainer->view->render($response, 401, array('authenticated' => false, 'x' => $user, 'msg' => 'Login failed. A user with that email could not be found.'));
         } else if (!password_verify($post['password'], $user->password)) {
             // Validate Password
-            return $this->slimContainer->view->render($response, 401, array('authenticated' => false, 'msg' => 'Login failed. Username and password combination did not match.'));
+            
+            $attempts = $this->SystemVariables->get('AUTH_MAX_LOGIN_ATTEMPTS');
+            $minutes = $this->SystemVariables->get('AUTH_MAX_LOGIN_ATTEMPTS_TIMEOUT_MINUTES');
+
+            $result = array(
+                'authenticated' => false, 
+                'msg' => 'Login failed. Username and password combination did not match.',
+                'attempts' => ($attempts) ? intval($attempts) : 0,
+                'timeoutMin' => ($minutes) ? intval($minutes) : 0
+            );
+            return $this->slimContainer->view->render($response, 401, $result);
         }
 
         // Create logged in token

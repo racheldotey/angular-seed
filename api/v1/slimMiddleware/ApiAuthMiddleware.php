@@ -28,7 +28,7 @@ class ApiAuthMiddleware {
         // Hold onto the Slim Container
         $this->slimContainer = $slimContainer;
         // Get the Database Controller
-        $this->db = $slimContainer->get('DBConn');
+        $this->db = $slimContainer->get('ApiDBConn');
         // Get the Database Controller
         $this->ApiLogging = $slimContainer->get('ApiLogging');
 

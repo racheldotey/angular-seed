@@ -1,5 +1,7 @@
 <?php namespace API;
 
+/* @author  Rachel L Carbone <hello@rachellcarbone.com> */
+
 class SignupDB extends RouteDBController {
     
     public function selectUserById($id) {

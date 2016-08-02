@@ -1,19 +1,49 @@
 <?php namespace API;
 
+/* @author  Rachel L Carbone <hello@rachellcarbone.com> */
+
 use \Respect\Validation\Validator as v;
 v::with('API\\Validation\\Rules');
 
-class AuthSessionGenerator extends RouteDBController {
+class AuthSessionGenerator {
 
+    /*
+     * System Variables Class Instance
+     */
     private $SystemVariables;
 
+    /*
+     * System Logger Instance
+     */
     private $ApiLogging;
+    
+    /*
+     * System Database Helper Instance
+     */
+    private $DBConn;
+    
+    /*
+     * Database Table Prefix
+     */
+    private $dbTablePrefix;
 
-    public function __construct(\Interop\Container\ContainerInterface $slimContainer) {
-        parent:: __construct($slimContainer->get('DBConn'));
 
-        $this->SystemVariables = $slimContainer->get('SystemVariables');
-        $this->ApiLogging = $slimContainer->get('ApiLogging');
+    /**
+     * System Variables Handler to manage the use of variables stored in the database
+     * to be used throught the API.
+     * 
+     * $AuthSessionGenerator = new AuthSessionGenerator( new \API\ApiDBConn(), new \API\SystemVariables(), new \API\ApiLogging() );
+     *
+     * @param  \API\ApiDBConn       $dbConn  Database Connection Helper Method
+     * @param  \API\SystemVariables $SystemVariables  Database System Variables Helper Method
+     * @param  \API\ApiLogging      $ApiLogging  System Logging Helper Method
+     */
+    public function __construct(\API\ApiDBConn $ApiDBConn, \API\SystemVariables $SystemVariables, \API\ApiLogging $ApiLogging) {
+        $this->DBConn = $ApiDBConn;
+        $this->dbTablePrefix = $ApiDBConn->prefix();
+        
+        $this->SystemVariables = $SystemVariables;
+        $this->ApiLogging = $ApiLogging;
     }
     
     public function createAuthToken($post, $userId) {
@@ -53,12 +83,12 @@ class AuthSessionGenerator extends RouteDBController {
     }
     
     public function insertAuthToken($validToken) {
-        return $this->DBConn->insert("INSERT INTO {$this->prefix}tokens_auth(identifier, token, user_id, expires, ip_address, user_agent) "
+        return $this->DBConn->insert("INSERT INTO {$this->dbTablePrefix}tokens_auth(identifier, token, user_id, expires, ip_address, user_agent) "
                 . "VALUES (:identifier, :token, :user_id, :expires, :ip_address, :user_agent);", $validToken);
     }
     
     public function insertLoginLocation($validLog) {
-        return $this->DBConn->insert("INSERT INTO {$this->prefix}logs_login_location(user_id, ip_address, user_agent) "
+        return $this->DBConn->insert("INSERT INTO {$this->dbTablePrefix}logs_login_location(user_id, ip_address, user_agent) "
                 . "VALUES (:user_id, :ip_address, :user_agent);", $validLog);
     }
 }

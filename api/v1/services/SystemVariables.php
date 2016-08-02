@@ -4,29 +4,38 @@
 
 class SystemVariables {
 
-    /* \API\DBConn */
-    private $db = false;
+    /*
+     * System Database Helper Instance
+     */
+    protected $DBConn;
+    
+    /*
+     * Database Table Prefix
+     */
+    private $dbTablePrefix;
 
-    /* \API\ApiLogging */
-    private $ApiLogging = false;
+    /*
+     * System Logger Instance
+     */
+    private $ApiLogging;
 
-    /* Array of key => value pairs */
-    private $systemVariables = false;
+    /* 
+     * Array of key => value pairs 
+     */
+    private $systemVariables;
 
     /**
      * System Variables Handler to manage the use of variables stored in the database
      * to be used throught the API.
      * 
-     * $SystemVars = new SystemVariables( new \API\DBConn(), new \API\ApiLogging() );
+     * $SystemVars = new SystemVariables( new \API\ApiDBConn(), new \API\ApiLogging() );
      *
-     * @param  \API\DBConn      $dbConn  Database Connection Helper Method
+     * @param  \API\ApiDBConn   $dbConn  Database Connection Helper Method
      * @param  \API\ApiLogging  $ApiLogging optional System Logging Helper Method
-     *
-     * @return Array
      */
-    public function __construct($dbConn, $ApiLogging = false) {
-
-        $this->db = $dbConn;
+    public function __construct(\API\ApiDBConn $ApiDBConn, \API\ApiLogging $ApiLogging) {
+        $this->DBConn = $ApiDBConn;
+        $this->dbTablePrefix = $ApiDBConn->prefix();
 
         $this->ApiLogging = $ApiLogging;
 
@@ -78,8 +87,7 @@ class SystemVariables {
      */
     private function setSystemVariables() {
         /* Select the system variables from the database */
-        $qVariables = $this->db->executeQuery("SELECT name, value "
-                . "FROM " . $this->db->prefix() . "system_config WHERE disabled = 0;");
+        $qVariables = $this->DBConn->executeQuery("SELECT name, value FROM {$this->dbTablePrefix}system_config WHERE disabled = 0;");
         
         /* Format the variables into an associatiave array for easier lookup */
         $variables = Array();
@@ -109,7 +117,7 @@ class SystemVariables {
      */
     private function log($message) {
         if($this->ApiLogging) {
-            $this->ApiLogging->log($message, 'error');
+            $this->ApiLogging->log($message, LOG_ERR);
         } else {
             syslog(LOG_ERR, $message);
         }

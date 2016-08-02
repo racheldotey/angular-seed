@@ -106,14 +106,14 @@ class V1Controller {
             return new \API\ApiLogging($container->get('ApiConfig'), 'api');
         };
 
-        $slimContainer['DBConn'] = function($container) {
+        $slimContainer['ApiDBConn'] = function($container) {
             // Return the Database Connection Class */
             return new \API\ApiDBConn($container->get('ApiConfig'), $container->get('ApiLogging'));
         };
 
         $slimContainer['SystemVariables'] = function($container) {
             // Return the System Config Class
-            return new \API\SystemVariables($container->get('DBConn'), $container->get('ApiLogging'));
+            return new \API\SystemVariables($container->get('ApiDBConn'), $container->get('ApiLogging'));
         }; 
 
         
@@ -191,8 +191,8 @@ class V1Controller {
                     }
                 }
                 // Log the 500
-                $container->ApiLogging->log($msg, 'error', 'api_errors');
-                $container->ApiLogging->logException($exception, 'error', 'api_errors');
+                $container->ApiLogging->log($msg, LOG_ERR, 'api_errors');
+                $container->ApiLogging->logException($exception, LOG_ERR, 'api_errors');
 
                 // Return nice JSON 500 Message
                 return $container['view']->render($response, 500, 'Unknown System Error');
@@ -223,7 +223,7 @@ class V1Controller {
                 $msg .= ' Accepted Methods: ' . implode(', ', $methods);
 
                 // Log the 405
-                $container->ApiLogging->log($msg, 'debug');
+                $container->ApiLogging->log($msg, LOG_DEBUG);
 
                 // Return nice JSON 405 Message
                 return $container['view']->render($response, 405, 'This header method is not defined for this route. Accepted method(s) are: ' . implode(', ', $methods));
@@ -250,7 +250,7 @@ class V1Controller {
                     }
                 }
                 // Log the 404
-                $container->ApiLogging->log($msg, 'debug');
+                $container->ApiLogging->log($msg, LOG_DEBUG);
 
                 // Return nice JSON 404 Message
                 return $container['view']->render($response, 404, 'This API route is not defined.');

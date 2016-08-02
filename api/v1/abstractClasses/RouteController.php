@@ -1,5 +1,7 @@
 <?php namespace API;
 
+/* @author  Rachel L Carbone <hello@rachellcarbone.com> */
+
 use \Respect\Validation\Validator as v;
 v::with('API\\Validation\\Rules');
 

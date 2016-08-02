@@ -4,26 +4,15 @@
 
 class ApiConfig {
 
-    /* \API\ApiLogging */
-    private $ApiLogging = false;
-
-    /* Array of key => value pairs */
+    /* 
+     * Array of key => value pairs
+     */
     private $apiConfig = false;
 
     /**
-     * Api Config variables Handler to manage the use of variables stored in the database
-     * to be used throught the API.
-     * 
-     * $SystemVars = new ApiConfig( new \API\ApiLogging( 'error_log' ) );
-     *
-     * @param  \API\ApiLogging  $ApiLogging optional System Logging Helper Method
-     *
-     * @return Array
+     * Api Config variables Handler to manage the use of critical system variables.
      */
-    public function __construct($ApiLogging = false) {
-
-        $this->ApiLogging = $ApiLogging;
-
+    public function __construct() {
         /* Select and set the api config variables */
         $this->setApiConfig();
     }
@@ -31,7 +20,7 @@ class ApiConfig {
     /**
      * This method works two ways:
      * 
-     * One - Select a api config variable by its name, is the variable exists its value (mixed)
+     * One - Select a api config variable by its name, if the variable exists its value (String)
      *      will be returned, or if the variable doesn't exist false (bool) will be returned. 
      *
      * Two - Return the api config variable key => value pairs (array), or if there was an 
@@ -47,10 +36,19 @@ class ApiConfig {
     public function get($variableName = false) {        
         /* If a variable name was sent to the get function, 
          * try to select just that variable. */
-        if ($this->apiConfig && $variableName !== false) {
-            return (isset($this->apiConfig[$variableName])) ? $this->apiConfig[$variableName] : false;
+        if ($this->apiConfig && !$variableName) {
+            return $this->apiConfig;
+        } else if ($this->apiConfig && $variableName && isset($this->apiConfig[$variableName])) {
+            return $this->apiConfig[$variableName];
+        } else if ($this->apiConfig && $variableName && !isset($this->apiConfig[$variableName])) {
+            // Log the failure to set the api config variables
+            $this->log("Requested unset config variable: " . json_encode($variableName));
+            return false;
+        } else {
+            // Log the failure to set the api config variables
+            $this->log("Config variable error - Requested Variable: " . json_encode($variableName) . " Variable Array: " . json_encode($this->apiConfig));
+            return false;
         }
-        return $this->apiConfig;
     }
 
     /**
@@ -68,7 +66,7 @@ class ApiConfig {
     /**
      * Set the apiConfig array based on the current server address.
      *
-     * @return Array
+     * @return void
      */
     private function setApiConfig() {
         $default = array(
@@ -76,6 +74,7 @@ class ApiConfig {
             'codeRepoUrl' => 'https://gitlab.com/rachellcarbone/angular-seed',
             'author' => 'Rachel L Carbone <hello@rachellcarbone.com>',
             'authorWebsite' => 'http://www.rachellcarbone.com',
+            'systemAdminEmail' => 'rachellcarbone+99@gmail.com',
             'apiVersion' => 'v1',
             'debugMode' => true,
             'dbHost' => 'localhost',
@@ -102,15 +101,12 @@ class ApiConfig {
     }
 
     /**
-     * Helper function to log to logger if it's set or syslog if it isn't.
+     * Helper function to log config errors.
      *
      * @return void
      */
     private function log($message) {
-        if($this->ApiLogging) {
-            $this->ApiLogging->log($message, 'error');
-        } else {
-            syslog(LOG_ERR, $message);
-        }
+        syslog(LOG_EMERG, $message);
+        error_log($message, 0);
     }
 }

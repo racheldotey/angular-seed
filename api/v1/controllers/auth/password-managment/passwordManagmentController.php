@@ -2,6 +2,8 @@
 
 require_once dirname(__FILE__) . '/passwordManagmentDB.php';
 
+/* @author  Rachel L Carbone <hello@rachellcarbone.com> */
+
 use \Respect\Validation\Validator as v;
 
 class PasswordManagmentController {

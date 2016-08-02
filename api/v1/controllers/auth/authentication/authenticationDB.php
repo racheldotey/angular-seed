@@ -1,5 +1,7 @@
 <?php namespace API;
 
+/* @author  Rachel L Carbone <hello@rachellcarbone.com> */
+
 class AuthenticationDB extends RouteDBController {
     
     public function selectUserByIdentifierToken($identifier) {

@@ -2,6 +2,8 @@
 
 require_once dirname(__FILE__) . '/signupDB.php';
 
+/* @author  Rachel L Carbone <hello@rachellcarbone.com> */
+
 use \Respect\Validation\Validator as v;
 v::with('API\\Validation\\Rules');
 
@@ -16,33 +18,13 @@ class SignupController extends RouteController {
     public function __construct(\Interop\Container\ContainerInterface $slimContainer) {
         parent::__construct($slimContainer);
 
-        $this->SignupDB = new SignupDB($slimContainer->get('DBConn'));
+        $this->SignupDB = new SignupDB($slimContainer->get('ApiDBConn'));
         $this->SystemVariables = $slimContainer->get('SystemVariables');
-        $this->AuthSessionGenerator = new AuthSessionGenerator($slimContainer);
+        $this->AuthSessionGenerator = new AuthSessionGenerator($slimContainer->get('ApiDBConn'), $slimContainer->get('SystemVariables'), $slimContainer->get('ApiLogging'));
 
         $this->passwordRegex = $this->SystemVariables->get('USER_PASSWORD_REGEX');
         $this->passwordRegexDescription = $this->SystemVariables->get('USER_PASSWORD_REGEX_DESCRIPTION');
-    }
-    
-    public function signupb($request, $response, $args) {
-        $post = $request->getParsedBody();
-        
-        $result = AuthControllerNative::signup($app);
-        if ($result['registered']) {
-            AuthHooks::signup($app, $result);
-            if (isset($result['user']->teams[0])) {
-                ApiMailer::sendWebsiteSignupJoinTeamConfirmation($result['user']->teams[0]->name, $result['user']->email, "{$result['user']->nameFirst} {$result['user']->nameLast}");
-            } else {
-                ApiMailer::sendWebsiteSignupConfirmation($result['user']->email, "{$result['user']->nameFirst} {$result['user']->nameLast}");
-            }
-            return $this->slimContainer->view->render($response, 200, $result);
-        } else {
-            return $this->slimContainer->view->render($response, 400, $result);
-        }
-
-        return $this->slimContainer->view->render($response, 200, 'signup');
-    }
-    
+    }    
 
     // Signup Function
     public function signup($request, $response, $args) {
@@ -97,6 +79,9 @@ class SignupController extends RouteController {
             $found['user']->apiToken = $token['apiToken'];
             $found['sessionLifeHours'] = $token['sessionLifeHours'];
             $found['registered'] = true;
+
+            ApiMailer::sendWebsiteSignupConfirmation($result['user']->email, "{$result['user']->nameFirst} {$result['user']->nameLast}");
+
             return $this->slimContainer->view->render($response, 200, $found);  
         } else {
             /// FAIL - If the auth token couldnt be created and saved

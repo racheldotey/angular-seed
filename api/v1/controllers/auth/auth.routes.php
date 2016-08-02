@@ -4,6 +4,8 @@
  require_once dirname(__FILE__) . '/password-managment/passwordManagmentController.php';
  require_once dirname(__FILE__) . '/signup/signupController.php';
 
+/* @author  Rachel L Carbone <hello@rachellcarbone.com> */
+
 class AuthRoutes {
     
     public function addRoutes(\Slim\App $slimApp) {

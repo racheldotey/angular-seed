@@ -3,13 +3,14 @@
 /* @author  Rachel L Carbone <hello@rachellcarbone.com> */
 
 class ApiDBConn {
+    
     /*
      * PDO Instance
      */
     private $pdo;
     
     /*
-     * System Config Instance
+     * API Config Class Instance
      */
     private $ApiConfig;
     
@@ -23,23 +24,35 @@ class ApiDBConn {
      */
     private $dbTablePrefix;
     
-    function __construct($ApiConfig, $ApiLogging) {
-        // Logger
-        $this->ApiLogging = $ApiLogging;
+    /**
+     * API Database Connection Handler to manage the use of a PDO Database connection
+     * to be used for all database communication throughout the API.
+     * 
+     * $ApiDBConn = new ApiDBConn( new \API\ApiConfig(), new \API\ApiLogging() );
+     *
+     * @param  \API\ApiConfig       $ApiConfig Api Config Helper Method
+     * @param  \API\ApiLogging      $ApiLogging  System Logging Helper Method
+     */
+    function __construct(\API\ApiConfig $ApiConfig, \API\ApiLogging $ApiLogging) {
 
-        // API config
         $this->ApiConfig = $ApiConfig;
-        
+        $this->ApiLogging = $ApiLogging;
         // Get the API config
         $this->dbTablePrefix = $ApiConfig->get('dbTablePrefix');
     }
     
+    /*
+     * Retrieve the database table prefix set in the API Config file.
+     *
+     * @return String
+     */
     public function prefix() {
         return $this->dbTablePrefix;
     }
     
     /*
      * Create a PDO connection if one does not exist.
+     *
      * @return PDO Represents a connection between PHP and a database server.
      */
     private function connect() {
@@ -111,8 +124,7 @@ class ApiDBConn {
      * Preform insert opperation with PDO connection.
      * 
      * @param string A valid SQL statement template for the target database server.
-     * @param array An array of values with as many elements as there 
-     * are bound parameters in the SQL statement being executed.
+     * @param array An array of values with as many elements as there are bound parameters in the SQL statement being executed.
      * 
      * @return int|bool New row ID if success, FALSE if insert fails.
      */
@@ -137,8 +149,7 @@ class ApiDBConn {
      * Preform update opperation with PDO connection.
      * 
      * @param string A valid SQL statement template for the target database server.
-     * @param array|optional An array of values with as many elements as there 
-     * are bound parameters in the SQL statement being executed.
+     * @param array|optional An array of values with as many elements as there  are bound parameters in the SQL statement being executed.
      * 
      * @return bool Returns TRUE on success or FALSE on failure.
      */

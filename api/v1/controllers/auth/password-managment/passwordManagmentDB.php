@@ -1,5 +1,7 @@
 <?php namespace API;
 
+/* @author  Rachel L Carbone <hello@rachellcarbone.com> */
+
 class PasswordManagmentDB extends RouteDBController {
     
     static function deleteAuthToken($identifier) {
