@@ -18,6 +18,11 @@ class SystemVariables {
      * System Logger Instance
      */
     private $ApiLogging;
+    
+    /*
+     * Email Log File Name String
+     */
+    private $logFileName = 'system_variables_log';
 
     /* 
      * Array of key => value pairs 
@@ -117,7 +122,7 @@ class SystemVariables {
      */
     private function log($message) {
         if($this->ApiLogging) {
-            $this->ApiLogging->log($message, LOG_ERR);
+            $this->ApiLogging->log($message, LOG_ERR, $this->logFileName);
         } else {
             syslog(LOG_ERR, $message);
         }

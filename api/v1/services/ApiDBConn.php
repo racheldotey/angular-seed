@@ -20,6 +20,11 @@ class ApiDBConn {
     private $ApiLogging;
     
     /*
+     * Email Log File Name String
+     */
+    private $logFileName = 'pdo_exception';
+    
+    /*
      * Database Table Prefix
      */
     private $dbTablePrefix;
@@ -98,7 +103,7 @@ class ApiDBConn {
      */
     private function logPDOError($pdo) {
         // Write the error arry to the log file
-        $this->ApiLogging->write($pdo->errorInfo(), 'pdo_exception');
+        $this->ApiLogging->write($pdo->errorInfo(), LOG_ERR, $this->logFileName);
     }
     
     /*
@@ -106,7 +111,7 @@ class ApiDBConn {
      */
     private function logError($error) {
         // Write the error arry to the log file
-        $this->ApiLogging->write($error, 'pdo_exception');
+        $this->ApiLogging->write($error, LOG_ERR, $this->logFileName);
     }
     
     /* 

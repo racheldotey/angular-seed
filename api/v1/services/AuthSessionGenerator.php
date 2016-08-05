@@ -18,6 +18,11 @@ class AuthSessionGenerator {
     private $ApiLogging;
     
     /*
+     * Email Log File Name String
+     */
+    private $logFileName = 'auth_session_log';
+    
+    /*
      * System Database Helper Instance
      */
     private $DBConn;
@@ -79,7 +84,12 @@ class AuthSessionGenerator {
             ':user_agent' => (!isset($_SERVER['HTTP_USER_AGENT'])) ? 'User Agent Not Set' : $_SERVER['HTTP_USER_AGENT']
         ));
 
-        return ($saved) ? $token : false;
+        if ($saved) {
+            return $token;
+        } else {
+            $this->ApiLogging->write('ERROR: Could not create auth session. User could not be logged in.', LOG_ALERT, $this->logFileName);
+            return false;
+        }
     }
     
     public function insertAuthToken($validToken) {
