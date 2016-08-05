@@ -1,6 +1,7 @@
 <?php namespace API;
 
 require_once dirname(__FILE__) . '/signupDB.php';
+require_once dirname(__FILE__) . '/signupEmails.php';
 
 /* @author  Rachel L Carbone <hello@rachellcarbone.com> */
 
@@ -9,14 +10,17 @@ v::with('API\\Validation\\Rules');
 
 class SignupController extends RouteController {
 
-    protected $SystemVariables;
+    protected $SignupEmails;
     protected $SignupDB;
+    protected $SystemVariables;
     protected $AuthSessionGenerator;
     protected $passwordRegex;
     protected $passwordRegexDescription;
    
     public function __construct(\Interop\Container\ContainerInterface $slimContainer) {
         parent::__construct($slimContainer);
+
+        $this->SignupEmails = new SignupEmails($slimContainer->get('ApiDBConn'), $slimContainer->get('SystemVariables'), $slimContainer->get('ApiLogging'));
 
         $this->SignupDB = new SignupDB($slimContainer->get('ApiDBConn'));
         $this->SystemVariables = $slimContainer->get('SystemVariables');
@@ -32,15 +36,15 @@ class SignupController extends RouteController {
 
         // Validate Sent Input
         if (!v::key('email', v::email())->validate($post) || !v::key('password', v::stringType())->validate($post)) {
-            return $this->slimContainer->view->render($response, 400, array('registered' => false, 'msg' => 'Signup failed. Check your parameters and try again.'));
+            return $this->render($response, 400, array('registered' => false, 'msg' => 'Signup failed. Check your parameters and try again.'));
         } else if(!v::key('password', v::stringType()->regex($this->passwordRegex))->validate($post)) {
-            return $this->slimContainer->view->render($response, 400, array('registered' => false, 'msg' => "Signup failed. {$this->passwordRegexDescription}"));
+            return $this->render($response, 400, array('registered' => false, 'msg' => "Signup failed. {$this->passwordRegexDescription}"));
         }
 
         // Look for user with that email
         if($this->SignupDB->selectUserByEmail($post['email'])) { 
             /// FAIL - If a user with that email already exists
-            return $this->slimContainer->view->render($response, 400, array('registered' => false, 'msg' => 'Signup failed. A user with that email already exists.'));        
+            return $this->render($response, 400, array('registered' => false, 'msg' => 'Signup failed. A user with that email already exists.'));        
         }
 
         // Create and insert a new user
@@ -55,14 +59,14 @@ class SignupController extends RouteController {
             ));
         if(!$userId) {
             /// FAIL - If Inserting the user failed
-            return $this->slimContainer->view->render($response, 400, array('registered' => false, 'msg' => 'Signup failed. Could not save user.'));
+            return $this->render($response, 400, array('registered' => false, 'msg' => 'Signup failed. Could not save user.'));
         }
         
         // Select our new user
         $user = $this->SignupDB->selectUserById($userId);
         if(!$user) { 
             /// FAIL - If Inserting the user failed (hopefully this is redundant)
-            return $this->slimContainer->view->render($response, 400, array('registered' => false, 'msg' => 'Signup failed. Could not select user.'));    
+            return $this->render($response, 400, array('registered' => false, 'msg' => 'Signup failed. Could not select user.'));    
         }
         
         // If a token was sent, update token status
@@ -79,13 +83,17 @@ class SignupController extends RouteController {
             $found['user']->apiToken = $token['apiToken'];
             $found['sessionLifeHours'] = $token['sessionLifeHours'];
             $found['registered'] = true;
+            
+            $email = $this->SignupEmails->sendWebsiteSignupEmailConfirmation($found['user']->email, $found['user']->nameFirst, $found['user']->nameLast);
+            if ($email['error']) {
+                // log the error
+                $this->ApiLogging->write("EMAIL FAILURE\n Params:" . json_encode($found), LOG_ALERT);
+            }
 
-            ApiMailer::sendWebsiteSignupConfirmation($result['user']->email, "{$result['user']->nameFirst} {$result['user']->nameLast}");
-
-            return $this->slimContainer->view->render($response, 200, $found);  
+            return $this->render($response, 200, $found);  
         } else {
             /// FAIL - If the auth token couldnt be created and saved
-            return $this->slimContainer->view->render($response, 400, array('registered' => false, 'msg' => 'Signup failed to create auth token.'));     
+            return $this->render($response, 400, array('registered' => false, 'msg' => 'Signup failed to create auth token.'));     
         }
     }
 
@@ -100,12 +108,12 @@ class SignupController extends RouteController {
             } else {
                 ApiMailer::sendWebsiteSignupConfirmation($result['user']->email, "{$result['user']->nameFirst} {$result['user']->nameLast}");
             }
-            return $this->slimContainer->view->render($response, 200, $result);
+            return $this->render($response, 200, $result);
         } else {
-            return $this->slimContainer->view->render($response, 400, $result);
+            return $this->render($response, 400, $result);
         }
         
-        return $this->slimContainer->view->render($response, 200, 'facebookSignup');
+        return $this->render($response, 200, 'facebookSignup');
     }
 
 }

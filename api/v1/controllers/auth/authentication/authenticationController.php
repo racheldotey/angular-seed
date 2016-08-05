@@ -26,15 +26,15 @@ class AuthenticationController extends RouteController {
         // Validate sent params
         if(!v::key('apiKey', v::stringType())->validate($post) || 
             !v::key('apiToken', v::stringType())->validate($post)) {
-            return $this->slimContainer->view->render($response, 401, array('authenticated' => false, 'msg' => 'Unauthenticated: Invalid request. Check your parameters and try again.'));
+            return $this->render($response, 401, array('authenticated' => false, 'msg' => 'Unauthenticated: Invalid request. Check your parameters and try again.'));
         }
 
         // Find user, validate password
         $user = $this->AuthenticationDB->selectUserByIdentifierToken($post['apiKey']);
         if(!$user) {
-            return $this->slimContainer->view->render($response, 401, array('authenticated' => false, 'msg' => 'Unauthenticated: No User'));
+            return $this->render($response, 401, array('authenticated' => false, 'msg' => 'Unauthenticated: No User'));
         } else if (!password_verify($post['apiToken'], $user->apiToken)) {
-            return $this->slimContainer->view->render($response, 401, array('authenticated' => false, 'msg' => 'Unauthenticated: Invalid Cookie'));
+            return $this->render($response, 401, array('authenticated' => false, 'msg' => 'Unauthenticated: Invalid Cookie'));
         }
 
         // Remove Api Key and Token from user object
@@ -42,7 +42,7 @@ class AuthenticationController extends RouteController {
         if(isset($user->apiToken)) {  unset($user->apiToken); }
 
         // Return successful authenticated
-        return $this->slimContainer->view->render($response, 200, array('authenticated' => true, 'user' => $user));
+        return $this->render($response, 200, array('authenticated' => true, 'user' => $user));
     }
     
     public function login($request, $response, $args) {
@@ -54,14 +54,14 @@ class AuthenticationController extends RouteController {
         // Validate input parameters
         if(!v::key('email', v::email())->validate($post) || 
            !v::key('password', v::stringType())->validate($post)) {
-            return $this->slimContainer->view->render($response, 401, array('authenticated' => false, 'msg' => 'Login failed. Check your parameters and try again.'));
+            return $this->render($response, 401, array('authenticated' => false, 'msg' => 'Login failed. Check your parameters and try again.'));
         }
 
         // Validate the user email and password
         $user = $this->AuthenticationDB->selectUserAndPasswordByEmail($post['email']);
         if(!$user) {
             // Validate existing user
-            return $this->slimContainer->view->render($response, 401, array('authenticated' => false, 'x' => $user, 'msg' => 'Login failed. A user with that email could not be found.'));
+            return $this->render($response, 401, array('authenticated' => false, 'x' => $user, 'msg' => 'Login failed. A user with that email could not be found.'));
         } else if (!password_verify($post['password'], $user->password)) {
             // Validate Password
             
@@ -74,7 +74,6 @@ class AuthenticationController extends RouteController {
                 'attempts' => ($attempts) ? intval($attempts) : 0,
                 'timeoutMin' => ($minutes) ? intval($minutes) : 0
             );
-            return $this->slimContainer->view->render($response, 401, $result);
         }
 
         // Create logged in token
@@ -85,9 +84,9 @@ class AuthenticationController extends RouteController {
             $user->apiKey = $token['apiKey'];
             $user->apiToken = $token['apiToken'];
 
-            return $this->slimContainer->view->render($response, 200, array('authenticated' => true, 'user' => $user, 'sessionLifeHours' => $token['sessionLifeHours']));
+            return $this->render($response, 200, array('authenticated' => true, 'user' => $user, 'sessionLifeHours' => $token['sessionLifeHours']));
         } else {
-            return $this->slimContainer->view->render($response, 401, array('authenticated' => false, 'msg' => 'Login failed to create token.'));   
+            return $this->render($response, 401, array('authenticated' => false, 'msg' => 'Login failed to create token.'));   
         }
     }
     
@@ -96,21 +95,21 @@ class AuthenticationController extends RouteController {
 
         $result = AuthControllerFacebook::login($post);
         if ($result['authenticated']) {
-            return $this->slimContainer->view->render($response, 200, $result);
+            return $this->render($response, 200, $result);
         } else {
-            return $this->slimContainer->view->render($response, 401, $result);
+            return $this->render($response, 401, $result);
         }
 
-        return $this->slimContainer->view->render($response, 200, 'facebook login');
+        return $this->render($response, 200, 'facebook login');
     }
     
     public function logout($request, $response, $args) {
         $post = $request->getParsedBody();
 
         if ($this->logoutToken($post)) {
-            return $this->slimContainer->view->render($response, 200, "User sucessfully logged out.");
+            return $this->render($response, 200, "User sucessfully logged out.");
         } else {
-            return $this->slimContainer->view->render($response, 400, "User could not be logged out. Check your parameters and try again.");
+            return $this->render($response, 400, "User could not be logged out. Check your parameters and try again.");
         }
     }
 

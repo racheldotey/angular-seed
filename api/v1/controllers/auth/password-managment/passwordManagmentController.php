@@ -15,15 +15,15 @@ class PasswordManagmentController {
     }
     
     public function requestResetEmail($request, $response, $args) {
-        return $this->slimContainer->view->render($response, 200, 'requestResetEmail');
+        return $this->render($response, 200, 'requestResetEmail');
     }
     
     public function validateResetToken($request, $response, $args) {
-        return $this->slimContainer->view->render($response, 200, 'validateResetToken');
+        return $this->render($response, 200, 'validateResetToken');
     }
     
     public function changeUserPassword($request, $response, $args) {
-        return $this->slimContainer->view->render($response, 200, 'changeUserPassword');
+        return $this->render($response, 200, 'changeUserPassword');
     }
 
 

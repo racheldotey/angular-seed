@@ -13,9 +13,9 @@ require_once dirname(dirname(__FILE__)) . '/abstractClasses/RouteEmailsControlle
 require_once dirname(dirname(__FILE__)) . '/services/ApiConfig.php';                // API Coifg File (Add your settings!)
 require_once dirname(dirname(__FILE__)) . '/services/ApiDBConn.php';                // API DB Conection File
 require_once dirname(dirname(__FILE__)) . '/services/ApiLogging.php';               // Router Module
-require_once dirname(dirname(__FILE__)) . '/services/SystemVariables.php';          // System Variable from the database
 require_once dirname(dirname(__FILE__)) . '/services/AuthSessionGenerator.php';     // Login Session Generator used by several controllers
 require_once dirname(dirname(__FILE__)) . '/services/EmailService.php';             // Email Sender
+require_once dirname(dirname(__FILE__)) . '/services/SystemVariables.php';          // System Variable from the database
 
 // Custom Slim PHP Middleware
 require_once dirname(dirname(__FILE__)) . '/slimMiddleware/ApiAuthMiddleware.php';  // Slim PHP Middleware to authenticate incomming requests for individual routes
