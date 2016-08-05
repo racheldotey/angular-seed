@@ -226,20 +226,24 @@ angular.module('AuthService', [
         var postSignupSuccess = function (data, doNotLogin, resolve, reject) {
             // By default we want to login, so `doNotLogin` is optional
             if (angular.isDefined(doNotLogin) && doNotLogin === true) {
-                resolve("Player added. You may now login with the following email, '" + data.user.email + "'.");
-            }
-            var user = UserSession.create(data.user);
-            if (user) {
-                // Save valid login apiKey and apiToken in a cookie
-                // for the sent life in hours as its expiration.
-                CookieService.setAuthCookie(data.user.apiKey, data.user.apiToken, data.sessionLifeHours);
-                // Broadcast the successful login (Triggers redirect)
-                $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
-                // Resolve the current user
-                return resolve(user);
-            } else {
+                return resolve("Player added. You may now login with the following email, '" + data.user.email + "'.");
+            } else if(angular.isUndefined(data) || angular.isUndefined(data.user)) {
                 $log.error(data);
-                return reject("Error: Could not sign up user. Please try again later.");
+                return reject("An unknown error occured.");
+            } else {
+                var user = UserSession.create(data.user);
+                if (user) {
+                    // Save valid login apiKey and apiToken in a cookie
+                    // for the sent life in hours as its expiration.
+                    CookieService.setAuthCookie(data.user.apiKey, data.user.apiToken, data.sessionLifeHours);
+                    // Broadcast the successful login (Triggers redirect)
+                    $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
+                    // Resolve the current user
+                    return resolve(user);
+                } else {
+                    $log.error(data);
+                    return reject("Error: Could not sign up user. Please try again later.");
+                }
             }
         };
 
