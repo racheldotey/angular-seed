@@ -47,13 +47,13 @@ class ApiLogging {
         );
         
         $success = true;
-        foreach ($loggerSettings as $name => $value) {
-            $var = $this->ApiConfig->get($name);
+        foreach ($loggerSettings as $key => $value) {
+            $var = $this->ApiConfig->get($key);
 
             if ($var) {
-                $loggerSettings[$name] = $var;
+                $loggerSettings[$key] = $var;
             } else {
-                $this->log("ERROR RETRIEVING LOGGING SETTING <{$name}>", LOG_EMERG);
+                $this->log("ERROR RETRIEVING LOGGING SETTING <{$key}>", LOG_EMERG);
                 $success = false;
             }
         }
