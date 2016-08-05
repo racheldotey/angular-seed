@@ -7,6 +7,7 @@ require_once dirname(dirname(__FILE__)) . '/customValidators/POSTBooleanTrue.php
 // API Abstract Classes
 require_once dirname(dirname(__FILE__)) . '/abstractClasses/RouteController.php';
 require_once dirname(dirname(__FILE__)) . '/abstractClasses/RouteDBController.php';
+require_once dirname(dirname(__FILE__)) . '/abstractClasses/RouteEmailsController.php';
 
 // Services (common methods used by controllers)
 require_once dirname(dirname(__FILE__)) . '/services/ApiConfig.php';                // API Coifg File (Add your settings!)
@@ -14,6 +15,7 @@ require_once dirname(dirname(__FILE__)) . '/services/ApiDBConn.php';            
 require_once dirname(dirname(__FILE__)) . '/services/ApiLogging.php';               // Router Module
 require_once dirname(dirname(__FILE__)) . '/services/SystemVariables.php';          // System Variable from the database
 require_once dirname(dirname(__FILE__)) . '/services/AuthSessionGenerator.php';     // Login Session Generator used by several controllers
+require_once dirname(dirname(__FILE__)) . '/services/EmailService.php';             // Email Sender
 
 // Custom Slim PHP Middleware
 require_once dirname(dirname(__FILE__)) . '/slimMiddleware/ApiAuthMiddleware.php';  // Slim PHP Middleware to authenticate incomming requests for individual routes

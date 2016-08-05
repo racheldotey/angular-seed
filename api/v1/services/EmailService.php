@@ -10,16 +10,6 @@ class EmailService {
     private $SystemVariables;
     
     /*
-     * Database Connection Instance
-     */
-    private $DBConn;
-    
-    /*
-     * Database Table Prefix String
-     */
-    private $DBConnPrefix;
-    
-    /*
      * System Logger Instance
      */
     private $ApiLogging;
@@ -27,16 +17,21 @@ class EmailService {
     /*
      * Email Log File Name String
      */
-    private $logFileName;
+    private $logFileName = 'mailer_log';
 
-    public function __construct(\Interop\Container\ContainerInterface $slimContainer) {
-        $this->SystemVariables = $slimContainer->get('SystemVariables');
+    /**
+     * System Variables Handler to manage the use of variables stored in the database
+     * to be used throught the API.
+     * 
+     * $EmailService = new EmailService( new \API\SystemVariables(), new \API\ApiLogging() );
+     *
+     * @param  \API\SystemVariables $SystemVariables  Database System Variables Helper Method
+     * @param  \API\ApiLogging      $ApiLogging  System Logging Helper Method
+     */
+    public function __construct(\API\SystemVariables $SystemVariables, \API\ApiLogging $ApiLogging) {
+        $this->SystemVariables = $SystemVariables;
 
-        $this->DBConn = $slimContainer->get('ApiDBConn');
-        $this->DBConnPrefix = $this->DBConn->prefix();
-
-        $this->ApiLogging = $slimContainer->get('ApiLogging');
-        $this->logFileName = 'mailer_log';
+        $this->ApiLogging = $ApiLogging;
     }
 
     public function getPhpMailer() {        
@@ -73,7 +68,7 @@ class EmailService {
             if ($var && $var->disabled != 1) {
                 $mail->{$value} = $var->value;
             } else {
-                $this->ApiLogging->write(LOG_WARNING, "ERROR RETRIEVING SMTP SETTING <{$name}>", 'error', $this->logFileName);
+                $this->ApiLogging->write("ERROR RETRIEVING SMTP SETTING <{$name}>", LOG_WARNING, $this->logFileName);
                 $success = false;
             }
         }
@@ -81,75 +76,61 @@ class EmailService {
         return ($success) ? $mail : false;
     }
     
-    public function sendEmailFromTemplate($templateId, $recipientEmail, $recipientName = '', $bodyParams = [], $subjectParams = []) {
-        if (!filter_var($recipientEmail, FILTER_VALIDATE_EMAIL)) {
-            return array('error' => true, 'msg' => "The following email address is invalid: '{$recipientEmail}'.");
-        }
-        
+    /**
+     * Send an email using the PhpMailer library.
+     * 
+     * $EmailService->sendEmail( array(
+     *      'recipientName' => '',      optional
+     *      'recipientEmail' => '',
+     *      'fromName' => '',           optional
+     *      'fromEmail' => '',          optional
+     *      'replyName' => '',          optional
+     *      'replyEmail' => '',         optional
+     *      'subject' => '',
+     *      'htmlBody' => '',
+     *      'plainBody' => ''           optional
+     * ) );
+     *
+     * @param  array    $email  Array of email settings.
+     */
+    public function sendEmail($email) {        
         // Setup mailer for sending message
         $mail = $this->getPhpMailer();
         
         // Add Recipient - include name if it was sent
-        if(!$recipientName || $recipientName === '') {
-            $mail->addAddress($recipientEmail);
+        if(isset($email['recipientName'])) {
+            $mail->addAddress($email['recipientEmail'], $email['recipientName']);
         } else {
-            $mail->addAddress($recipientEmail, $recipientName);
-        }
-
-        // Retrieve template
-        $emailTemplate = $this->selectEmailTemplate($templateId);
-        if (!$emailTemplate) {
-            $this->ApiLogging->write(LOG_ERR, "ERROR RETRIEVING EMAIL TEMPLATE, templateId <{$templateId}>", 'error', $this->logFileName);
-            return array('error' => true, 'msg' => "Error generating email <{$templateId}>");
+            $mail->addAddress($email['recipientEmail']);
         }
 
         // If a from email is set
-        if($emailTemplate->fromEmail) {
-            $mail->setFrom($emailTemplate->fromEmail, $emailTemplate->fromName);
+        if(isset($email['fromEmail']) && isset($email['fromName'])) {
+            $mail->setFrom($email['fromEmail'], $email['fromName']);
         }
         
         // If a reply to email is set
-        if($emailTemplate->replyEmail) {
-            $mail->setFrom($emailTemplate->replyEmail, $emailTemplate->replyName);
+        if(isset($email['replyEmail']) && isset($email['replyName'])) {
+            $mail->addReplyTo($email['replyEmail'], $email['replyName']);
         }
         
-        // Substitute parameters into template   
-        $mail->Subject = $this->replaceTemplateVariables($emailTemplate->subject, $subjectParams);
-        $mail->Body = $this->replaceTemplateVariables($emailTemplate->bodyHtml, $bodyParams);
-        $mail->AltBody = $this->replaceTemplateVariables($emailTemplate->bodyPlain, $bodyParams);
+        // Add email content  
+        $mail->Subject = $email['subject'];
+        $mail->Body = $email['htmlBody'];
+
+        // Add optional AltBody / Plain text body
+        if(isset($email['plainBody'])) {
+            $mail->AltBody = $email['plainBody'];
+        }
         
         if ($mail->send()) {
-            return (!$recipientName || $recipientName === '') ? array('error' => false, 'msg' => "Success! Email Sent to \"{$recipientEmail}\"") :
-                    array('error' => false, 'msg' => "Success! Email Sent to \"{$recipientEmail}, {$recipientName}\"");
+            $this->ApiLogging->write("EMAIL FAILURE\nError <{$mail->ErrorInfo}>/n Params:/n" . json_encode($email), LOG_ERR, $this->logFileName);
+            return true;
         } else {
             // log the error
-            $this->ApiLogging->write(LOG_ERR, "EMAIL FAILURE\nError <{$mail->ErrorInfo}>/n Template Id:<{$templateId}> Sender: <{$emailTemplate->replyEmail}, {$emailTemplate->replyName}> Recipient: <{$recipientEmail}, {$recipientName}> Subject: <{$subject}> Body: <{$bodyPlain}>", 'error', $this->logFileName);
-            return (!$recipientName || $recipientName === '') ? array('error' => true, 'msg' => "Unknown Error: Error sending email to \"{$recipientEmail}, {$recipientName}\"") : 
-                array('error' => true, 'msg' => "Unknown Error: Error sending email to \"{$recipientEmail}, {$recipientName}\"");
-        }
-    }
+            $this->ApiLogging->write("EMAIL FAILURE\nError <{$mail->ErrorInfo}>/n Params:/n" . json_encode($email), LOG_ERR, $this->logFileName);
 
-    private function replaceTemplateVariables($templateText, $variableArray) {
-        // Template substitution is for parms named @EMAIL@, @FIRST_NAME@, etc     
-        foreach($variableArray AS $key => $value) {
-            $templateText = str_replace($key, $value, $templateText);
-        }
-        return $templateText;
-    }
-    
-    public function selectEmailTemplate($templateId) {
-        $template = $this->DBConn->selectOne("SELECT id, identifier, from_email AS fromEmail, from_name AS fromName, "
-                . "reply_email AS replyEmail, reply_name AS replyName, subject, body_html AS bodyHtml, body_plain AS bodyPlain "
-                . "FROM {$this->DBConnPrefix}email_templates WHERE identifier = :identifier LIMIT 1;", 
-                array(':identifier' => $templateId));
-        if (!$template) {
-            $this->ApiLogging->write(LOG_ERR, "ERROR RETRIEVING EMAIL TEMPLATE, templateId <{$templateId}>", 'error', $this->logFileName);
             return false;
         }
-        return $template;
-    }
-
-    private function log($text) {
-
     }
 }
