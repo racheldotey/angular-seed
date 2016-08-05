@@ -23,7 +23,7 @@ class SignupEmails extends RouteEmailsController {
             'FIRST_NAME' => $userFirstName,
             'LAST_NAME' => $userLastName
         ));
-         
+        
         return $this->sendEmailFromTemplate('NEW_USER_CONFIRMED', $userEmail, "$userFirstName $userLastName", $emailParams);
     }
     

@@ -84,11 +84,7 @@ class SignupController extends RouteController {
             $found['sessionLifeHours'] = $token['sessionLifeHours'];
             $found['registered'] = true;
             
-            $email = $this->SignupEmails->sendWebsiteSignupEmailConfirmation($found['user']->email, $found['user']->nameFirst, $found['user']->nameLast);
-            if ($email['error']) {
-                // log the error
-                $this->ApiLogging->write("EMAIL FAILURE\n Params:" . json_encode($found), LOG_ALERT);
-            }
+            $email = $this->sendEmailConfirmationTokenEmail($found['user']->email, $found['user']->nameFirst, $found['user']->nameLast);
 
             return $this->render($response, 200, $found);  
         } else {
@@ -116,4 +112,9 @@ class SignupController extends RouteController {
         return $this->render($response, 200, 'facebookSignup');
     }
 
+    private function sendEmailConfirmationTokenEmail($email, $nameFirst, $nameLast) {
+
+        
+        $email = $this->SignupEmails->sendWebsiteSignupEmailConfirmation('xxx', $email, $nameFirst, $nameLast);
+    }
 }

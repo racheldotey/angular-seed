@@ -17,7 +17,7 @@ class EmailService {
     /*
      * Email Log File Name String
      */
-    private $logFileName = 'mailer_log';
+    private $logFileName = 'email_service';
 
     /**
      * System Variables Handler to manage the use of variables stored in the database
@@ -63,12 +63,12 @@ class EmailService {
         );
         
         $success = true;
-        foreach ($mailerSettings as $name => $value) {
-            $var = $this->SystemVariables->get($name);
-            if ($var && $var->disabled != 1) {
-                $mail->{$value} = $var->value;
+        foreach ($mailerSettings as $key => $value) {
+            $variable = $this->SystemVariables->get($key);
+            if ($variable !== false) {
+                $mail->{$value} = $variable;
             } else {
-                $this->ApiLogging->write("ERROR RETRIEVING SMTP SETTING <{$name}>", LOG_WARNING, $this->logFileName);
+                $this->ApiLogging->write("ERROR RETRIEVING SMTP SETTING <{$key}>", LOG_WARNING, $this->logFileName);
                 $success = false;
             }
         }
@@ -124,7 +124,6 @@ class EmailService {
         }
         
         if ($mail->send()) {
-            $this->ApiLogging->write("EMAIL FAILURE\nError <{$mail->ErrorInfo}>/n Params:/n" . json_encode($email), LOG_ERR, $this->logFileName);
             return true;
         } else {
             // log the error

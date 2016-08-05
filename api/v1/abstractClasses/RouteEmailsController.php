@@ -35,6 +35,11 @@ abstract class RouteEmailsController {
      * System Logger Instance
      */
     protected $ApiLogging;
+    
+    /*
+     * Email Log File Name String
+     */
+    private $logFileName = 'route_emails';
 
     /**
      * System Variables Handler to manage the use of variables stored in the database
@@ -70,7 +75,6 @@ abstract class RouteEmailsController {
         // Retrieve template
         $emailTemplate = $this->selectEmailTemplate($templateId);
         if (!$emailTemplate) {
-            $this->ApiLogging->write("ERROR RETRIEVING EMAIL TEMPLATE, templateId <{$templateId}>", LOG_ERR, $this->logFileName);
             return array('error' => true, 'msg' => "Error generating email <{$templateId}>");
         }
         
@@ -106,7 +110,7 @@ abstract class RouteEmailsController {
     private function replaceTemplateVariables($templateText, $variableArray) {
         // Template substitution is for parms named @EMAIL@, @FIRST_NAME@, etc     
         foreach($variableArray AS $key => $value) {
-            $templateText = str_replace($key, $value, $templateText);
+            $templateText = str_replace("@{$key}@", $value, $templateText);
         }
         return $templateText;
     }
