@@ -6,7 +6,7 @@ require_once dirname(__FILE__) . '/passwordManagmentDB.php';
 
 use \Respect\Validation\Validator as v;
 
-class PasswordManagmentController {
+class PasswordManagmentController extends RouteController {
 
     protected $slimContainer;
    
