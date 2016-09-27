@@ -59,7 +59,7 @@ class ApiLogging {
         }
         
         return (!$success) ? false :
-            "{$loggerSettings['systemPath']}{$loggerSettings['dirLogs']}{$loggerSettings['apiVersion']}_" . date('y_m') . "_{$name}.log";
+            "{$loggerSettings['systemPath']}{$loggerSettings['dirLogs']}{$loggerSettings['apiVersion']}_" . date('m_y') . "_{$name}.log";
     }
     
     /* Change a Exception to a string and write it to the log file
