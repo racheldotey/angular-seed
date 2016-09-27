@@ -74,6 +74,7 @@ class AuthenticationController extends RouteController {
                 'attempts' => ($attempts) ? intval($attempts) : 0,
                 'timeoutMin' => ($minutes) ? intval($minutes) : 0
             );
+            return $this->render($response, 401, $result);
         }
 
         // Create logged in token
