@@ -124,9 +124,10 @@ class AuthRoutes {
              *              "status": 200
              *          }
              *      }
-             */
-            
+             */            
             $this->post('/signup', '\API\SignupController:signup');
+
+            $this->post('/signup/confirm-email', '\API\SignupController:confirmNewUserEmail');
             
             /* email, nameFirst, nameLast, facebookId, accessToken */
 

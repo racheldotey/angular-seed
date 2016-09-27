@@ -49,7 +49,7 @@ app.config(['$stateProvider', 'USER_ROLES',
         $stateProvider.state('app.auth.signup.invite', {
             bodyClass: 'auth signup',
             title: 'You have been invited!',
-            url: '/:token',
+            url: '/:linkToken',
             views: {
                 'content@app': {
                     templateUrl: 'app/views/auth/playerInvite/playerInvite.html',
@@ -78,13 +78,56 @@ app.config(['$stateProvider', 'USER_ROLES',
         });
 
         $stateProvider.state('app.auth.signup.confirmEmail', {
-            title: 'Please Confirm Your Email',
-            url: '/please-confirm-email'
+            title: 'Confirming Email..',
+            url: '/confirm-email/:linkToken/:linkPassword',
+            views: {
+                'content@app': {}
+            },
+            resolve: {
+                $q: '$q',
+                ApiRoutesEmails: 'ApiRoutesAuth',
+                $stateParams: '$stateParams',
+                $state: '$state',
+                TempLinkTokenData: function($q, $stateParams, $state, ApiRoutesAuth) {
+                    return $q(function(resolve, reject) {  
+                        var data = {
+                            linkToken : $stateParams.linkToken,
+                            linkPassword : $stateParams.linkPassword
+                        };
+                        ApiRoutesAuth.postConfirmNewUserEmail(data).then(function (result) {
+                            resolve(result.invite);
+                            console.log(result);
+                            $state.go('app.auth.signup.confirmSuccess', data);
+                        }, function(error) {
+                            console.log(error);
+                            resolve(error);
+                            $state.go('app.auth.signup.confirmFail', data);
+                        });
+                    });
+                }
+            }
         });
         
-        $stateProvider.state('app.auth.signup.success', {
-            title: 'Success! Your Email is Confirmed',
-            url: '/success'
+        $stateProvider.state('app.auth.signup.confirmSuccess', {
+            title: 'Success! Your Email Is Confirmed',
+            url: '/confirm-email/success',
+            views: {
+                'content@app': {
+                    templateUrl: 'app/views/auth/confirmEmail/confirmEmailSuccess.html',
+                    controller: 'ConfirmEmailCtrl'
+                }
+            }
+        });
+        
+        $stateProvider.state('app.auth.signup.confirmFail', {
+            title: 'Your Email Could Not Be Confirmed',
+            url: '/confirm-email/failed',
+            views: {
+                'content@app': {
+                    templateUrl: 'app/views/auth/confirmEmail/confirmEmailFail.html',
+                    controller: 'ConfirmEmailCtrl'
+                }
+            }
         });
         
         $stateProvider.state('app.auth.login', {

@@ -1,5 +1,6 @@
 <?php namespace API;
 
+require_once dirname(dirname(dirname((dirname(__FILE__))))) . '/services/TempLinkTokens.php';
 require_once dirname(__FILE__) . '/signupDB.php';
 require_once dirname(__FILE__) . '/signupEmails.php';
 
@@ -84,7 +85,7 @@ class SignupController extends RouteController {
             $found['sessionLifeHours'] = $token['sessionLifeHours'];
             $found['registered'] = true;
             
-            $email = $this->sendEmailConfirmationTokenEmail($found['user']->email, $found['user']->nameFirst, $found['user']->nameLast);
+            $email = $this->sendEmailConfirmationTokenEmail($user->id, $found['user']->email, $found['user']->nameFirst, $found['user']->nameLast);
 
             return $this->render($response, 200, $found);  
         } else {
@@ -97,6 +98,7 @@ class SignupController extends RouteController {
     public function facebookSignup($request, $response, $args) {
         
         $result = AuthControllerFacebook::signup($app);
+
         if ($result['registered']) {
             AuthHooks::signup($app, $result);
             if (isset($result['user']->teams[0])) {
@@ -112,9 +114,37 @@ class SignupController extends RouteController {
         return $this->render($response, 200, 'facebookSignup');
     }
 
-    private function sendEmailConfirmationTokenEmail($email, $nameFirst, $nameLast) {
+    private function sendEmailConfirmationTokenEmail($userId, $email, $nameFirst, $nameLast) {
+        $timeoutInHours = ($this->SystemVariables->get('TEMP_LINK_EMAIL_CONFIRMATION_TIMEOUT_HOURS')) ? 
+            $this->SystemVariables->get('TEMP_LINK_EMAIL_CONFIRMATION_TIMEOUT_HOURS') : 6;
 
+        $TempLinkTokens = new TempLinkTokens($this->slimContainer->get('ApiDBConn'), $this->SystemVariables, $this->slimContainer->get('ApiLogging'));
+
+        // Use a hash of the users email to create the "password" that will be sent as part of the URL
+        $password = $email;// urlencode($email);
+        $resetToken = $TempLinkTokens->generateToken($userId, $password, $timeoutInHours, 'new-user-email-confirmation');
+
+        if(!$resetToken) {
+            return false;
+        }
         
-        $email = $this->SignupEmails->sendWebsiteSignupEmailConfirmation('xxx', $email, $nameFirst, $nameLast);
+        $confirmationLink = $this->SystemVariables->get('WEBSITE_URL') . '/signup/confirm-email/' . $resetToken . '/' . $password;
+        return $this->SignupEmails->sendWebsiteSignupEmailConfirmation($confirmationLink, $email, $nameFirst, $nameLast);
+    }
+
+    public function confirmNewUserEmail($request, $response, $args) {
+        $post = $request->getParsedBody();
+
+        // Validate Sent Input
+        if (!v::key('linkToken', v::stringType()->length(32, 32))->validate($post) || !v::key('linkPassword', v::stringType())->validate($post)) {
+            return $this->render($response, 400, array('validated' => false, 'msg' => "Invalid parameters sent. Could not validate confirm email token."));
+        }
+
+        $TempLinkTokens = new TempLinkTokens($this->slimContainer->get('ApiDBConn'), $this->SystemVariables, $this->slimContainer->get('ApiLogging'));
+        if(!$TempLinkTokens->validateToken($post['linkToken'], $post['linkPassword'])) {
+            return $this->render($response, 400, array('confirmed' => false, 'msg' => 'Invalid link token. Could not validate email address.'));       
+        } else {
+            return $this->render($response, 200, array('confirmed' => true, 'msg' => 'New user email successfully confirmed.'));       
+        }
     }
 }

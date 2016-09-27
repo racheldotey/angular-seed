@@ -25,6 +25,7 @@ angular.module('app.views', [
     'app.admin.systemVariables',
     'app.admin.users',
     
+    'app.auth.confirmEmail',
     'app.auth.login',
     'app.auth.resetPassword',
     'app.auth.signup',
