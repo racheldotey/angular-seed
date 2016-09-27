@@ -70,4 +70,11 @@ class SignupDB extends RouteDBController {
                 . "SET user_id =:user_id, response='accepted', last_visited=NOW() "
                 . "WHERE token = :token LIMIT 1;", $validInvite);
     }
+
+    /* Confirm User Email */
+    public function updateAcceptSignupEmail($userId) {
+        return $this->DBConn->update("UPDATE {$this->prefix}users "
+                . "SET email_verified = NOW() "
+                . "WHERE id = :id LIMIT 1;", array(':id' => $userId));
+    }
 }

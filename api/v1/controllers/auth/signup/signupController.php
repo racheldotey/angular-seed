@@ -66,7 +66,7 @@ class SignupController extends RouteController {
         // Select our new user
         $user = $this->SignupDB->selectUserById($userId);
         if(!$user) { 
-            /// FAIL - If Inserting the user failed (hopefully this is redundant)
+            /// FAIL - If Inserting the user failed
             return $this->render($response, 400, array('registered' => false, 'msg' => 'Signup failed. Could not select user.'));    
         }
         
@@ -85,7 +85,7 @@ class SignupController extends RouteController {
             $found['sessionLifeHours'] = $token['sessionLifeHours'];
             $found['registered'] = true;
             
-            $email = $this->sendEmailConfirmationTokenEmail($user->id, $found['user']->email, $found['user']->nameFirst, $found['user']->nameLast);
+            $found['emailSent'] = $this->sendEmailConfirmationTokenEmail($user->id, $found['user']->email, $found['user']->nameFirst, $found['user']->nameLast);
 
             return $this->render($response, 200, $found);  
         } else {
@@ -141,10 +141,18 @@ class SignupController extends RouteController {
         }
 
         $TempLinkTokens = new TempLinkTokens($this->slimContainer->get('ApiDBConn'), $this->SystemVariables, $this->slimContainer->get('ApiLogging'));
-        if(!$TempLinkTokens->validateToken($post['linkToken'], $post['linkPassword'])) {
+        if(!$TempLinkTokens->validateToken($post['linkToken'], $post['linkPassword'])) {        
             return $this->render($response, 400, array('confirmed' => false, 'msg' => 'Invalid link token. Could not validate email address.'));       
+        } 
+        
+        $user = $TempLinkTokens->getUserByToken($post['linkToken']);
+        $updated = $this->SignupDB->updateAcceptSignupEmail($user->userId);
+        
+        if($updated) {
+            $email = $this->SignupEmails->sendWebsiteSignupSuccess($user->email, $user->nameFirst, $user->nameLast);
+            return $this->render($response, 200, array('confirmed' => $updated, 'emailSent' => $email, 'msg' => 'New user email successfully confirmed.'));       
         } else {
-            return $this->render($response, 200, array('confirmed' => true, 'msg' => 'New user email successfully confirmed.'));       
+            return $this->render($response, 400, array('confirmed' => $updated, 'msg' => 'Unknown Error. Could not validate email address.'));     
         }
     }
 }

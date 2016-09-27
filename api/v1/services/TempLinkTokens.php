@@ -50,6 +50,8 @@ class TempLinkTokens {
      *
      * @param String $token Link token 
      * @param String $password Additional string to use as a password
+     *
+     * @return Mixed Boolean
      */
     public function validateToken($linkToken, $password = false) {
         $token = $this->selectTempToken($linkToken);
@@ -69,6 +71,8 @@ class TempLinkTokens {
      * @param String $password Optional string to use as a password
      * @param String $timeoutInHours Optional timeout duration in hours for the token expiration
      * @param String $optionalDesc Optional token description (ex: 'password-reset', 'confirm-email')
+     *
+     * @return Mixed false or String
      */
     public function generateToken($userId = false, $password = false, $timeoutInHours = 24, $optionalDesc = '') {
         // md5 Calculate the md5 hash of a string
@@ -91,6 +95,17 @@ class TempLinkTokens {
     }
 
     /**
+     * Selects basic user data if a user id is associated with the link token.
+     *
+     * @param String $token Link token 
+     *
+     * @return Mixed false or associative array
+     */
+    public function getUserByToken($linkToken) {
+        return $this->selectUserByToken($linkToken);
+    }
+
+    /**
      * Delete a token.
      *
      * @param String $token Md5 hash token to delete.
@@ -107,6 +122,13 @@ class TempLinkTokens {
     private function selectTempToken($token) {
         return $this->DBConn->selectOne("SELECT token, password, `desc`, created, expires FROM {$this->dbTablePrefix}tokens_temp_links "
                 . "WHERE token = :token AND expires > NOW() LIMIT 1;", array(':token' => $token));
+    }
+
+    private function selectUserByToken($token) {
+        return $this->DBConn->selectOne("SELECT u.id AS userId, u.name_first AS nameFirst, u.name_last AS nameLast, u.email "
+                . "FROM {$this->dbTablePrefix}tokens_temp_links AS l "
+                . "JOIN {$this->dbTablePrefix}users AS u ON l.user_id = u.id "
+                . "WHERE token = :token LIMIT 1;", array(':token' => $token));
     }
 
     private function deleteTempToken($token) {
