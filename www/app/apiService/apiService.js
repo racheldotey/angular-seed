@@ -103,10 +103,17 @@ angular.module('api.v1', [
             })
             .success(function (response) {
                     // If its successful, resolve the promise
-                    return resolve(response.data);
+                    if (angular.isDefined(response.data)) {
+                        return resolve(response.data);
+                    } else {
+                        // If there is an error log it
+                        $log.error(getErrorMessage(false, err));
+                        // Reject the promise
+                        return reject(getErrorMessage(false, err));
+                    }
                 })
                 .error(function(error) {
-                    // If there eas an error log it
+                    // If there is an error log it
                     var msg = (!angular.isDefined(error) || !angular.isDefined(error.data)) ? false : error.data.msg;
                     $log.error(getErrorMessage(msg, err));
                     // Reject the promise

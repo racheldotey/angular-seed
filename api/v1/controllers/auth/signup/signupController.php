@@ -64,7 +64,7 @@ class SignupController extends RouteController {
         }
         
         // Select our new user
-        $user = $this->SignupDB->selectUserById($userId);
+        $user = $this->SignupDB->selectMemberDataByUserId($userId);
         if(!$user) { 
             /// FAIL - If Inserting the user failed
             return $this->render($response, 400, array('registered' => false, 'msg' => 'Signup failed. Could not select user.'));    

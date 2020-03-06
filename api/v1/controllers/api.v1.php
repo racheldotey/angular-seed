@@ -23,6 +23,7 @@ require_once dirname(dirname(__FILE__)) . '/slimMiddleware/JsonResponseView.php'
 
 // API Route Controllers 
 require_once dirname(__FILE__) . '/auth/auth.routes.php';
+require_once dirname(__FILE__) . '/user/user.routes.php';
 
 use Psr7Middlewares\Middleware\TrailingSlash;
 use Psr7Middlewares\Middleware\Gzip;

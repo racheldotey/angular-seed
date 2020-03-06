@@ -18,7 +18,9 @@ angular.module('apiRoutes.auth', [])
             return API.reject('Invalid credentials please verify your information and try again.');
         }
 
-        return API.post('auth/authenticate/', credentials, 'Error, User Not Authenticated.');
+        var user = API.post('auth/authenticate/', credentials, 'Error, User Not Authenticated.');
+
+        return ;
     };
 
     // Standard Login

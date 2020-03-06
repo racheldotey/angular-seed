@@ -4,21 +4,6 @@
 
 class SignupDB extends RouteDBController {
     
-    public function selectUserById($id) {
-        $user = $this->DBConn->selectOne("SELECT id, name_first as nameFirst, name_last as nameLast, email, phone "
-                        . "FROM {$this->prefix}users WHERE id = :id LIMIT 1;", array(':id' => $id));
-        if ($user) {
-            $user->displayName = $user->nameFirst;
-            $user->roles = $this->DBConn->selectAll("SELECT DISTINCT(gr.auth_role_id) "
-                    . "FROM {$this->prefix}auth_lookup_user_group AS ug "
-                    . "JOIN {$this->prefix}auth_lookup_group_role AS gr ON ug.auth_group_id = gr.auth_group_id "
-                    . "WHERE ug.user_id = :id;", array(':id' => $user->id), \PDO::FETCH_COLUMN);
-            
-            $user->notifications = array();
-        }
-        return $user;
-    }
-    
     public function selectUserByEmail($email) {
         return $this->DBConn->selectColumn("SELECT id FROM {$this->prefix}users WHERE email = :email LIMIT 1;", array(':email' => $email));
     }

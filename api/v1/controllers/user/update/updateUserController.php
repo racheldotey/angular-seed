@@ -1,24 +1,31 @@
 <?php namespace API;
-require_once dirname(__FILE__) . '/user.data.php';
+
+require_once dirname(__FILE__) . '/updateUserDB.php';
+require_once dirname(__FILE__) . '/updateUserEmails.php';
+
+/* @author  Rachel L Carbone <hello@rachellcarbone.com> */
 
 use \Respect\Validation\Validator as v;
+v::with('API\\Validation\\Rules');
 
+class UpdateUserController extends RouteController {
 
-class UserController {
+    protected $UpdateUserDB;
+    protected $SystemVariables;
+    protected $passwordRegex;
+    protected $passwordRegexDescription;
+   
+    public function __construct(\Interop\Container\ContainerInterface $slimContainer) {
+        parent::__construct($slimContainer);
 
-    static function selectUser($app, $userId) {
-        if(!v::intVal()->validate($userId)) {
-            return $app->render(400,  array('msg' => 'Could not find user. Check your parameters and try again.'));
-        }
-        $user = UserData::selectUserById($userId);
-        if($user) {
-            return $app->render(200, array('user' => $user ));
-        } else {
-            return $app->render(400,  array('msg' => 'User could not be found.'));
-        }
-    }
+        $this->UpdateUserDB = new UpdateUserDB($slimContainer->get('ApiDBConn'));
+
+        $this->SystemVariables = $slimContainer->get('SystemVariables');
+        $this->passwordRegex = $this->SystemVariables->get('USER_PASSWORD_REGEX');
+        $this->passwordRegexDescription = $this->SystemVariables->get('USER_PASSWORD_REGEX_DESCRIPTION');
+    }  
     
-    static function insertUser($app) {
+    public function adminInsertUser($app) {
         if(!v::key('nameFirst', v::stringType()->length(0,255))->validate($app->request->post()) ||
             !v::key('nameLast', v::stringType()->length(0,255), false)->validate($app->request->post()) || 
             !v::key('email', v::email())->validate($app->request->post())) {
@@ -29,7 +36,7 @@ class UserController {
                     . "Check your parameters and try again."));
         } 
         
-        $found = UserData::selectOtherUsersWithEmail($app->request->post('email'));
+        $found = $this->UpdateUserDB->selectOtherUsersWithEmail($app->request->post('email'));
         
         if ($found && count($found) > 0) {
             return $app->render(400,  array('msg' => 'An account with that email already exists. No two users may have the same email address.'));
@@ -40,17 +47,17 @@ class UserController {
                 ':email' => $app->request->post('email'),
                 ':password' => password_hash($app->request->post('password'), PASSWORD_DEFAULT)
             );
-            $userId = UserData::insertUser($data);
-            $user = UserData::selectUserById($userId);
+            $userId = $this->UpdateUserDB->insertUser($data);
+            $user = $this->UpdateUserDB->selectUserById($userId);
             return $app->render(200, array('user' => $user ));
         }
     }
     
-    private static function validatePassword($post, $key = 'password') {
+    private function validatePassword($post, $key = 'password') {
         return (v::key($key, v::stringType()->length(8,255)->noWhitespace()->alnum('!@#$%^&*_+=-')->regex('/^(?=.*[a-zA-Z])(?=.*[0-9])/'))->validate($post));
     }
 
-    static function updateUser($app, $userId) {
+    public function updateUser($app, $userId) {
         $post = $app->request->post();
         if(!v::intVal()->validate($userId) ||
             !v::key('nameFirst', v::stringType()->length(0,255))->validate($post) ||
@@ -60,7 +67,7 @@ class UserController {
             return $app->render(400,  array('msg' => 'Invalid user. Check your parameters and try again.'));
         } 
         
-        $found = UserData::selectOtherUsersWithEmail($post['email'], $userId);
+        $found = $this->UpdateUserDB->selectOtherUsersWithEmail($post['email'], $userId);
         
         if ($found && count($found) > 0) {
             return $app->render(400,  array('msg' => 'An account with that email already exists. No two users may have the same email address.'));
@@ -73,67 +80,31 @@ class UserController {
             ':email' => $post['email'],
             ':phone' => $post['phone']
         );
-        UserData::updateUser($data);
+        $this->UpdateUserDB->updateUser($data);
         
         if((v::key('disabled', v::stringType()->length(1,5))->validate($post)) && 
                 ($post['disabled'] === true || $post['disabled'] === 'true')) {
-            UserData::disableUser($userId);
+            $this->UpdateUserDB->disableUser($userId);
         } else if((v::key('disabled', v::stringType()->length(1,5))->validate($post)) && 
                 ($post['disabled'] === false || $post['disabled'] === 'false')) {
-            UserData::enableUser($userId);
+            $this->UpdateUserDB->enableUser($userId);
         }
         
-        $user = UserData::selectUserById($userId);
+        $user = $this->UpdateUserDB->selectUserById($userId);
         return $app->render(200, array('user' => $user));
     }
 
     // TODO: Delete user from any look up tables
     // TODO: Add hooks for events such as deleting  auser so I dont have to import other controllers
-    static function deleteUser($app, $userId) {
+    public function adminDeleteUser($app, $userId) {
         if(!v::intVal()->validate($userId)) {
             return $app->render(400,  array('msg' => 'Could not find user. Check your parameters and try again.'));
         }
-        if(UserData::deleteUser($userId)) {
+        if($this->UpdateUserDB->deleteUser($userId)) {
             return $app->render(200,  array('msg' => 'User has been deleted.'));
         } else {
             return $app->render(400,  array('msg' => 'Could not delete user.'));
         }
     }
-    
-    static function unassignGroup($app) {
-        if(!v::key('groupId', v::stringType())->validate($app->request->post()) || 
-           !v::key('userId', v::stringType())->validate($app->request->post())) {
-            return $app->render(400,  array('msg' => 'Could not unassign user from group. Check your parameters and try again.'));
-        } 
-        
-        $data = array (
-            ':auth_group_id' => $app->request->post('groupId'),
-            ':user_id' => $app->request->post('userId')
-        );
-        
-        if(UserData::deleteGroupAssignment($data)) {
-            return $app->render(200,  array('msg' => 'User has been unassigned from group.'));
-        } else {
-            return $app->render(400,  array('msg' => 'Could not unassign user from group.'));
-        }
-    }
-    
-    static function assignGroup($app) {
-        if(!v::key('groupId', v::stringType())->validate($app->request->post()) || 
-           !v::key('userId', v::stringType())->validate($app->request->post())) {
-            return $app->render(400,  array('msg' => 'Could not assign user from group. Check your parameters and try again.'));
-        }
-        
-        $data = array (
-            ':auth_group_id' => $app->request->post('groupId'),
-            ':user_id' => $app->request->post('userId'),
-            ":created_user_id" => APIAuth::getUserId()
-        );
-        
-        if(UserData::insertGroupAssignment($data)) {
-            return $app->render(200,  array('msg' => 'User has been assigned to group.'));
-        } else {
-            return $app->render(400,  array('msg' => 'Could not assign user to group.', 'data' => $data));
-        }
-    }
+
 }

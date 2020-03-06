@@ -8,7 +8,7 @@
 
 angular.module('app.auth.login', [])
     .controller('AuthLoginCtrl', ['$scope', '$state', 'AuthService', 'ModalService',
-    function ($scope, $state, AuthService,ModalService) {
+    function ($scope, $state, AuthService, ModalService) {
         
     /* Used to restrict alert bars */
     $scope.alertProxy = {};
@@ -30,7 +30,7 @@ angular.module('app.auth.login', [])
         'remember' : false
     };
 
-    $scope.buttonLogin = function() {
+    $scope.submitLogin = function() {
         $scope.$broadcast('show-errors-check-validity');
 
         if($scope.form.login.$valid) {

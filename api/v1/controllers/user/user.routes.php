@@ -1,55 +1,41 @@
 <?php namespace API;
- require_once dirname(__FILE__) . '/user.controller.php';
+ require_once dirname(__FILE__) . '/get/getUserController.php';
+ require_once dirname(__FILE__) . '/permissions/userPermissionsController.php';
+ require_once dirname(__FILE__) . '/update/updateUserController.php';
 
 class UserRoutes {
     // TODO: API Docs
-    static function addRoutes($app, $authenticateForRole) {
+    public function addRoutes($app, $authenticateForRole) {
         
-        //* /user/id - members can get their own profile
-        
-        $app->map("/user/get/:userId/", $authenticateForRole('member'), function ($userId) use ($app) {
-            UserController::selectUser($app, $userId);
-        })->via('GET', 'POST');
+        // /user/id - members can get their own profile
+        // TODO: Add 'self' to api middleware and make it accept multiple roles (array)
+        $this->map(['GET', 'POST'], '/user/{userId}', '\API\GetUserController:getMemberDataObject')
+            ->add(new \API\ApiAuthMiddleware($slimApp->getContainer(), 'member'));
 
-        /*
-         * id, nameFirst, nameLast, email, phone
-         */
-        $app->post("/user/update/:userId/", $authenticateForRole('member'), function ($userId) use ($app) {
-            UserController::updateUser($app, $userId);
-        });
+        // id, nameFirst, nameLast, email, phone
+        // TODO: Add 'self' to api middleware and make it accept multiple roles (array)
+        $this->post('/user/update/{userId}', '\API\UpdateUserController:updateUser')
+            ->add(new \API\ApiAuthMiddleware($slimApp->getContainer(), 'member'));
             
-        //* /user/ routes - admin users only
+        // /user/ routes - admin users only
+        $app->group('/user', function () {
 
-        $app->group('/user', $authenticateForRole('admin'), function () use ($app) {
+            // userId
+            $this->map(['GET', 'POST'], '/get/{userId}', '\API\GetUserController:getMemberDataObject');
 
-            /*
-             * nameFirst, nameLast, email, password
-             */
-            $app->post("/insert/", function () use ($app) {
-                UserController::insertUser($app);
-            });
+            // nameFirst, nameLast, email, password
+            $this->post('/insert', '\API\UpdateUserController:adminInsertUser');
 
-            /*
-             * id
-             */
-            $app->map("/delete/:userId/", function ($userId) use ($app) {
-                UserController::deleteUser($app, $userId);
-            })->via('DELETE', 'POST');
+            // userId
+            $this->map(['DELETE', 'POST'], '/delete/{userId}', '\API\UpdateUserController:adminDeleteUser');
             
-            /*
-             * userId, groupId
-             */
-            $app->post("/unassign-group/", function () use ($app) {
-                UserController::unassignGroup($app);
-            });
+
+            // userId, groupId
+            $this->post('/assign-group', '\API\UserPermissionsController:assignGroup');
             
-            /*
-             * userId, groupId
-             */
-            $app->post("/assign-group/", function () use ($app) {
-                UserController::assignGroup($app);
-            });
+            // userId, groupId
+            $this->post('/unassign-group', '\API\UserPermissionsController:unassignGroup');
             
-        });
+        })->add(new \API\ApiAuthMiddleware($slimApp->getContainer(), 'admin'));
     }
 }

@@ -197,7 +197,7 @@ class FacebookSDK {
         }
         
         // Select our new user
-        $user = AuthData::selectUserById($userId);
+        $user = AuthData::selectUserById($userId); ///// selectMemberDataByUserId
         if(!$user) { 
             /// FAIL - If Inserting the user failed (hopefully this is redundant)
             return array('registered' => false, 'msg' => 'Facebook signup failed. Could not select user.');    
